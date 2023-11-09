@@ -399,7 +399,7 @@ def walk_dirpath(dirpath_list):
                 if is_archive(file):
                     find_archive_set.add(file)
                 elif is_image(file):
-                    find_image_set.add(find_image_set)
+                    find_image_set.add(file)
     # 根据图片路径，提取其上级文件夹
     temp_dir_set = set()
     for image in find_image_set:
