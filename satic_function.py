@@ -1,3 +1,4 @@
+import inspect
 import os
 import random
 import string
@@ -24,8 +25,7 @@ history_back_dir = '查重结果'
 def print_function_info(mode: str = 'current'):
     """打印当前/上一个执行的函数信息
     传参：mode 'current' 或 'last'"""
-    import time
-    import inspect
+    # pass
 
     if mode == 'current':
         print(time.strftime('%H:%M:%S ', time.localtime()),
@@ -340,7 +340,8 @@ def walk_dirpath(dirpath_list):
                     parentdir_path = os.path.split(filepath)[0]
                     find_dir_set.add(parentdir_path)
     # 根据提取的文件夹是否符合要求
-    for f_dir in find_dir_set:
+    find_dir_set_copy = find_dir_set.copy()
+    for f_dir in find_dir_set_copy:
         if not is_comic_folder(f_dir):
             find_dir_set.remove(f_dir)
 
