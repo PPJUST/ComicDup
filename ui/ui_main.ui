@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>678</width>
-    <height>502</height>
+    <width>846</width>
+    <height>535</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Doudup</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,1">
@@ -135,6 +135,9 @@
          </property>
          <item row="0" column="0">
           <widget class="QCheckBox" name="checkBox_ahash">
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;均值哈希，计算最快。&lt;/p&gt;&lt;p&gt;差值为5时基本可以认定为两张图片相同。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
            <property name="text">
             <string>aHash</string>
            </property>
@@ -158,6 +161,9 @@
          </item>
          <item row="1" column="0">
           <widget class="QCheckBox" name="checkBox_phash">
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;感知哈希，计算较慢但更加准确。&lt;/p&gt;&lt;p&gt;差值为5时基本可以认定为两张图片相同。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
            <property name="text">
             <string>pHash</string>
            </property>
@@ -204,6 +210,9 @@
          </item>
          <item row="4" column="0">
           <widget class="QCheckBox" name="checkBox_ssim">
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;结构相似性，越大越相似。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
            <property name="text">
             <string>SSIM</string>
            </property>
@@ -211,6 +220,9 @@
          </item>
          <item row="6" column="0">
           <widget class="QLabel" name="label">
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;从每个文件夹/压缩包中提取的图片数，提取数越多计算量越大（不止翻倍）&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
            <property name="text">
             <string>提取图片数</string>
            </property>
@@ -238,6 +250,9 @@
          </item>
          <item row="2" column="0">
           <widget class="QCheckBox" name="checkBox_dhash">
+           <property name="toolTip">
+            <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;差值哈希，计算较慢但更加准确。&lt;/p&gt;&lt;p&gt;差值为5时基本可以认定为两张图片相同。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           </property>
            <property name="text">
             <string>dHash</string>
            </property>

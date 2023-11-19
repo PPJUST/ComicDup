@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'ui_mainRSDjfI.ui'
+## Form generated from reading UI file 'ui_maintFkpPJ.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.1.3
 ##
@@ -17,7 +17,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(678, 502)
+        MainWindow.resize(846, 535)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.horizontalLayout_2 = QHBoxLayout(self.centralwidget)
@@ -220,17 +220,32 @@ class Ui_MainWindow(object):
     # setupUi
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
+        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Doudup", None))
         self.groupBox_button.setTitle(QCoreApplication.translate("MainWindow", u"\u6267\u884c", None))
         self.pushButton_start.setText(QCoreApplication.translate("MainWindow", u"\u5f00\u59cb", None))
         self.pushButton_stop.setText(QCoreApplication.translate("MainWindow", u"\u505c\u6b62", None))
         self.groupBox_folderlist.setTitle(QCoreApplication.translate("MainWindow", u"\u9009\u62e9\u6587\u4ef6\u5939", None))
         self.groupBox_similar.setTitle(QCoreApplication.translate("MainWindow", u"\u76f8\u4f3c\u5ea6\u7b97\u6cd5", None))
+#if QT_CONFIG(tooltip)
+        self.checkBox_ahash.setToolTip(QCoreApplication.translate("MainWindow", u"<html><head/><body><p>\u5747\u503c\u54c8\u5e0c\uff0c\u8ba1\u7b97\u6700\u5feb\u3002</p><p>\u5dee\u503c\u4e3a5\u65f6\u57fa\u672c\u53ef\u4ee5\u8ba4\u5b9a\u4e3a\u4e24\u5f20\u56fe\u7247\u76f8\u540c\u3002</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.checkBox_ahash.setText(QCoreApplication.translate("MainWindow", u"aHash", None))
+#if QT_CONFIG(tooltip)
+        self.checkBox_phash.setToolTip(QCoreApplication.translate("MainWindow", u"<html><head/><body><p>\u611f\u77e5\u54c8\u5e0c\uff0c\u8ba1\u7b97\u8f83\u6162\u4f46\u66f4\u52a0\u51c6\u786e\u3002</p><p>\u5dee\u503c\u4e3a5\u65f6\u57fa\u672c\u53ef\u4ee5\u8ba4\u5b9a\u4e3a\u4e24\u5f20\u56fe\u7247\u76f8\u540c\u3002</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.checkBox_phash.setText(QCoreApplication.translate("MainWindow", u"pHash", None))
+#if QT_CONFIG(tooltip)
+        self.checkBox_ssim.setToolTip(QCoreApplication.translate("MainWindow", u"<html><head/><body><p>\u7ed3\u6784\u76f8\u4f3c\u6027\uff0c\u8d8a\u5927\u8d8a\u76f8\u4f3c\u3002</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.checkBox_ssim.setText(QCoreApplication.translate("MainWindow", u"SSIM", None))
+#if QT_CONFIG(tooltip)
+        self.label.setToolTip(QCoreApplication.translate("MainWindow", u"<html><head/><body><p>\u4ece\u6bcf\u4e2a\u6587\u4ef6\u5939/\u538b\u7f29\u5305\u4e2d\u63d0\u53d6\u7684\u56fe\u7247\u6570\uff0c\u63d0\u53d6\u6570\u8d8a\u591a\u8ba1\u7b97\u91cf\u8d8a\u5927\uff08\u4e0d\u6b62\u7ffb\u500d\uff09</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.label.setText(QCoreApplication.translate("MainWindow", u"\u63d0\u53d6\u56fe\u7247\u6570", None))
         self.spinBox_threshold_ahash.setSuffix("")
+#if QT_CONFIG(tooltip)
+        self.checkBox_dhash.setToolTip(QCoreApplication.translate("MainWindow", u"<html><head/><body><p>\u5dee\u503c\u54c8\u5e0c\uff0c\u8ba1\u7b97\u8f83\u6162\u4f46\u66f4\u52a0\u51c6\u786e\u3002</p><p>\u5dee\u503c\u4e3a5\u65f6\u57fa\u672c\u53ef\u4ee5\u8ba4\u5b9a\u4e3a\u4e24\u5f20\u56fe\u7247\u76f8\u540c\u3002</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.checkBox_dhash.setText(QCoreApplication.translate("MainWindow", u"dHash", None))
         self.groupBox_schedule.setTitle(QCoreApplication.translate("MainWindow", u"\u8fd0\u884c\u8fdb\u5ea6", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"\u603b\u8017\u65f6\uff1a", None))

@@ -7,7 +7,8 @@ from PySide6.QtWidgets import *
 
 
 class WidgetShowComic(QWidget):
-    signal_del_file = Signal()  # 删除文件的信号
+    signal_del_file = Signal(str)  # 删除文件的路径信号
+    signal_double_click = Signal(str)  # 左键双击预览图信号，附带路径str
 
     def __init__(self):
         super().__init__()
@@ -16,7 +17,7 @@ class WidgetShowComic(QWidget):
         self.verticalLayout.setSpacing(3)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
 
-        # 控件组1
+        # 控件组 勾选框和文件名
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setSpacing(3)
 
@@ -25,12 +26,19 @@ class WidgetShowComic(QWidget):
 
         self.label_filename = QLabel()
         self.label_filename.setText('文件名')
+        self.label_filename.setWordWrap(True)
         self.horizontalLayout.addWidget(self.label_filename)
 
         self.horizontalLayout.setStretch(1, 1)
         self.verticalLayout.addLayout(self.horizontalLayout)
 
-        # 控件组2
+        # 控件组 文件夹
+        self.label_dirpath = QLabel()
+        self.label_dirpath.setText('文件路径')
+        self.label_dirpath.setWordWrap(True)
+        self.verticalLayout.addWidget(self.label_dirpath)
+
+        # 控件组 图标和文件数
         self.horizontalLayout_2 = QHBoxLayout()
         self.horizontalLayout_2.setSpacing(3)
 
@@ -46,18 +54,24 @@ class WidgetShowComic(QWidget):
         self.horizontalLayout_2.setStretch(1, 1)
         self.verticalLayout.addLayout(self.horizontalLayout_2)
 
-        # 控件组3
+        # 控件组 预览图
         self.label_preview = QLabel()
         self.label_size_and_count.setText('显示图像')
         self.label_preview.setFrameShape(QFrame.Box)
         self.label_preview.setFixedSize(125, 175)
+        self.label_preview.mouseDoubleClickEvent = self.label_double_clicked
         self.verticalLayout.addWidget(self.label_preview)
 
-        # self.verticalLayout.setStretch(2, 1)
+        self.verticalLayout.setStretch(3, 1)
 
         """初始化"""
         self.filepath = None
         self.set_label_menu()
+
+    def label_double_clicked(self, event):
+        if event.button() == Qt.LeftButton:
+            if self.filepath:
+                self.signal_double_click.emit(self.filepath)
 
     def set_label_menu(self):
         """设置label的右键菜单"""
@@ -81,8 +95,9 @@ class WidgetShowComic(QWidget):
     def set_filepath(self, filepath):
         self.filepath = filepath
 
-    def set_filename(self, text):
-        self.label_filename.setText(text)
+        dirpath, filename = os.path.split(filepath)
+        self.label_dirpath.setText(dirpath)
+        self.label_filename.setText(filename)
 
     def set_size_and_count(self, text):
         self.label_size_and_count.setText(text)
@@ -115,7 +130,7 @@ class WidgetShowComic(QWidget):
 
     def del_file(self):
         send2trash.send2trash(self.filepath)
-        self.signal_del_file.emit()
+        self.signal_del_file.emit(self.filepath)
 
 
 def main():

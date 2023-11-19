@@ -19,6 +19,10 @@ path_7zip = '7-Zip/7z.exe'
 icon_del = r'icon/del.png'
 icon_archive = r'icon/archive.png'
 icon_folder = r'icon/folder.png'
+icon_previous = r'icon/previous.png'
+icon_recycle_bin = r'icon/recycle_bin.png'
+icon_next = r'icon/next.png'
+icon_refresh = r'icon/refresh.png'
 history_back_dir = '查重结果'
 
 
@@ -285,7 +289,7 @@ def calc_images_ssim(image_1, image_2):
 
 
 def is_comic_folder(dirpath):
-    """检查是否为漫画文件夹（文件夹内部>4张图片，0压缩文件，0子文件夹）"""
+    """检查是否为漫画文件夹（文件夹内部>=4张图片，0压缩文件，0子文件夹）"""
     print_function_info()
     image_count = 0
     for i in os.listdir(dirpath):
@@ -344,7 +348,6 @@ def walk_dirpath(dirpath_list):
     for f_dir in find_dir_set_copy:
         if not is_comic_folder(f_dir):
             find_dir_set.remove(f_dir)
-
     return find_dir_set, find_archive_set
 
 

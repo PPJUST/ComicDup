@@ -65,8 +65,8 @@ class CompareQthread(QThread):
         for archivefile in archive_set:
             if self.stop_code:
                 return self.signal_stop.emit()
-            extract_image_list, image_count_in_archive = satic_function.extract_image_from_archive(archivefile,
-                                                                                                   self.need_image_number)
+            extract_image_list, image_count_archive = satic_function.extract_image_from_archive(archivefile,
+                                                                                                self.need_image_number)
             # 写入图片对应的数据字典
             for i in extract_image_list:
                 if i not in image_data_dict:
@@ -78,7 +78,7 @@ class CompareQthread(QThread):
                 origin_data_dict[archivefile] = dict()
             origin_data_dict[archivefile]['preview'] = natsort.natsorted(list(extract_image_list))[0]
             origin_data_dict[archivefile]['filetype'] = 'archive'
-            origin_data_dict[archivefile]['image_number'] = image_count_in_archive
+            origin_data_dict[archivefile]['image_number'] = image_count_archive
             origin_data_dict[archivefile]['filesize'] = os.path.getsize(archivefile)
         # 获取文件夹中的指定数量图片文件，并写入字典数据
         for dirpath in dir_set:

@@ -7,6 +7,7 @@ from PySide6.QtWidgets import *  # type: ignore
 
 import satic_function
 from thread_run import CompareQthread
+from ui.dialog_compare_result import DialogShowComic
 from ui.listwidget_folderlist import ListWidgetFolderlist
 from ui.ui_main import Ui_MainWindow
 from ui.widget_show_comic import WidgetShowComic
@@ -21,6 +22,8 @@ class DouDup(QMainWindow):
         # 设置初始变量
         self.folder_dict = dict()  # 当前选择的文件夹
         self.start_thread_time = None
+        self.similar_group_list = []  # 相似组列表，内部元素为元组
+        self.origin_data_dict = {}  # 原始文件数据字典，key为源文件路径，value为数据的字典
 
         # 实例化子线程
         self.thread_run = CompareQthread()
@@ -124,16 +127,19 @@ class DouDup(QMainWindow):
 
     def accept_compare_result(self, similar_group_list, origin_data_dict):
         """接收子线程的结果，包括一个相似组list和源文件数据dict"""
+        # 写入全局变量
+        self.similar_group_list = similar_group_list
+        self.origin_data_dict = origin_data_dict
         # 保存结果到xlsx
         satic_function.save_similar_result(similar_group_list, origin_data_dict)
         # 显示结果在ui中
         self.ui.treeWidget_show.clear()
         group_number = 0
-        for group_set in similar_group_list:
+        for group_turple in similar_group_list:
             group_number += 1
             # 创建父节点
             parent_item = QTreeWidgetItem(self.ui.treeWidget_show)
-            parent_item.setText(0, f'■ 相似组 {group_number} - {len(group_set)}项')
+            parent_item.setText(0, f'■ 相似组 {group_number} - {len(group_turple)}项')
             parent_item.setBackground(0, QColor(248, 232, 137))
             # 创建子节点
             child_item = QTreeWidgetItem(parent_item)
@@ -142,20 +148,19 @@ class DouDup(QMainWindow):
             layout = QHBoxLayout(widget)
             layout.setContentsMargins(0, 0, 0, 0)
             layout.setSpacing(30)
-            for file in group_set:
+            for file in group_turple:
                 # 提取数据
-                filename = os.path.split(file)[1]
                 filesize_mb = round(origin_data_dict[file]['filesize'] / 1024 / 1024, 0)
                 image_number = origin_data_dict[file]['image_number']
                 preview_image = origin_data_dict[file]['preview']
                 filetype = origin_data_dict[file]['filetype']
                 # 实例化自定义控件
                 widget_comic = WidgetShowComic()
-                widget_comic.signal_del_file.connect(self.accept_del_file)
-                widget_comic.setFixedSize(125, 215)
+                widget_comic.signal_del_file.connect(self.accept_signal_del_file)
+                widget_comic.signal_double_click.connect(self.show_dialog_compare_result)
+                # widget_comic.setFixedSize(125, 215)
                 widget_comic.setStyleSheet('{border: 1px solid gray;')
                 widget_comic.set_filepath(file)
-                widget_comic.set_filename(filename)
                 widget_comic.set_size_and_count(f'{filesize_mb}MB/{image_number}图')
                 widget_comic.set_preview(preview_image)
                 if filetype == 'folder':
@@ -165,13 +170,12 @@ class DouDup(QMainWindow):
                 layout.addWidget(widget_comic)
             scroll_area = QScrollArea()
             scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+            scroll_area.setWidgetResizable(True)
             scroll_area.setWidget(widget)
             # 将控件组设置为子节点的单元格部件
             self.ui.treeWidget_show.setItemWidget(child_item, 0, scroll_area)
-
-    def accept_del_file(self):
-        """接收删除文件信号"""
-        self.sender().deleteLater()
+            # 打开所有父节点
+            self.ui.treeWidget_show.expandAll()
 
     def set_start_button_state(self, mode='start'):
         """设置开始和停止按钮状态"""
@@ -202,14 +206,83 @@ class DouDup(QMainWindow):
         minutes, seconds = divmod(runtime, 60)
         self.ui.label_schedule_time.setText(f'{int(minutes)}:{int(seconds):02d}')
 
+    def show_dialog_compare_result(self, path):
+        """显示结果对应dialog"""
+        # 找到path对应的相似组
+        the_similar_group = None
+        for group in self.similar_group_list:
+            if path in group:
+                the_similar_group = group
+                break
+        # 实例化dialog
+        dialog = DialogShowComic()
+        dialog.set_show_path_list(the_similar_group)
+        dialog.signal_del_file.connect(self.accept_signal_del_file)
+        dialog.exec()
+
+    def accept_signal_del_file(self, path):
+        """接收删除文件的路径信号，刷新对应的树状视图中的父节点"""
+        # 找父节点对象
+        find_index = 0
+        find_group = None
+        for group_turple in self.similar_group_list:
+            if path in group_turple:
+                find_group = list(group_turple)
+                find_group.remove(path)
+                break
+            else:
+                find_index += 1
+
+        parent_item = self.ui.treeWidget_show.topLevelItem(find_index)
+        # 清空子节点
+        while parent_item.childCount() > 0:
+            child_item = parent_item.takeChild(0)
+            del child_item
+        # 重新设置子节点的控件
+        child_item = QTreeWidgetItem(parent_item)
+        # 创建自定义控件组（ScrollArea->Widget->ComicWidget)
+        widget = QWidget()
+        layout = QHBoxLayout(widget)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setSpacing(30)
+        for file in find_group:
+            # 提取数据
+            filesize_mb = round(self.origin_data_dict[file]['filesize'] / 1024 / 1024, 0)
+            image_number = self.origin_data_dict[file]['image_number']
+            preview_image = self.origin_data_dict[file]['preview']
+            filetype = self.origin_data_dict[file]['filetype']
+            # 实例化自定义控件
+            widget_comic = WidgetShowComic()
+            widget_comic.signal_del_file.connect(self.accept_signal_del_file)
+            widget_comic.signal_double_click.connect(self.show_dialog_compare_result)
+            # widget_comic.setFixedSize(125, 215)
+            widget_comic.setStyleSheet('{border: 1px solid gray;')
+            widget_comic.set_filepath(file)
+            widget_comic.set_size_and_count(f'{filesize_mb}MB/{image_number}图')
+            widget_comic.set_preview(preview_image)
+            if filetype == 'folder':
+                widget_comic.set_filetype_icon(satic_function.icon_folder)
+            elif filetype == 'archive':
+                widget_comic.set_filetype_icon(satic_function.icon_archive)
+            layout.addWidget(widget_comic)
+        scroll_area = QScrollArea()
+        scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setWidget(widget)
+        # 将控件组设置为子节点的单元格部件
+        self.ui.treeWidget_show.setItemWidget(child_item, 0, scroll_area)
+        # 打开所有父节点
+        self.ui.treeWidget_show.expandAll()
+
 
 def main():
     app = QApplication()
     app.setStyle('Fusion')  # 设置风格
     # 设置白色背景色
-    # palette = QPalette()
-    # palette.setColor(QPalette.Window, QColor(255, 255, 255))
-    # app.setPalette(palette)
+    palette = QPalette()
+    palette.setColor(QPalette.Window, QColor(255, 255, 255))
+    app.setPalette(palette)
+    app.setWindowIcon(QIcon('icon/icon.ico'))
     show_ui = DouDup()
     show_ui.show()
     app.exec()

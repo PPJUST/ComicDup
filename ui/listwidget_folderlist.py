@@ -65,7 +65,7 @@ class WidgetFolderlist(QWidget):
 
         """连接信号与槽函数"""
         self.checkBox_checked.stateChanged.connect(self.click_checkbox)
-        self.toolButton_del.clicked.connect(self.click_delbutton)
+        self.toolButton_del.clicked.connect(self.click_del_button)
         self.lineEdit_dirpath.signal_lineEdit_dropped.connect(self.accept_signal_dropped)
 
     def set_checked(self, mode):
@@ -82,7 +82,7 @@ class WidgetFolderlist(QWidget):
     def click_checkbox(self):
         self.signal_checkbox_clicked.emit(self.checkBox_checked.isChecked())
 
-    def click_delbutton(self):
+    def click_del_button(self):
         self.signal_delbutton_clicked.emit()
 
 
