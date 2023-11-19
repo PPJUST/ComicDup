@@ -42,6 +42,7 @@ class WidgetShowComic(QWidget):
 
         self.label_filepath = QLabel()
         self.label_filepath.setText('文件路径')
+        self.label_filepath.setWordWrap(True)
         self.horizontalLayout_2.addWidget(self.label_filepath)
         self.horizontalLayout_2.setStretch(2, 1)
 
