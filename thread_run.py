@@ -98,14 +98,54 @@ class CompareQthread(QThread):
             origin_data_dict[dirpath]['image_number'] = image_count_in_dir
             origin_data_dict[dirpath]['filesize'] = satic_function.get_folder_size(dirpath)
 
+        self.signal_schedule.emit('步骤', '3/4 提取图片特征缓存')
+        # 提取图片特征缓存
+        file_cache_data = satic_function.check_hash_cache()
+
         self.signal_schedule.emit('步骤', '3/4 计算图片特征')
         # 计算图片hash值
+        image_data_dict_copy = image_data_dict.copy()
         for image in image_data_dict:
             if self.stop_code:
                 return self.signal_stop.emit()
-            hash_dict = satic_function.get_image_attr(image, mode_ahash=self.mode_ahash, mode_phash=self.mode_phash,
-                                                      mode_dhash=self.mode_dhash)
-            image_data_dict[image].update(hash_dict)
+            hash_dict = {'ahash': None, 'phash': None, 'dhash': None}
+            # 提取缓存中已有的hash数据
+            origin_path = image
+            cache_ahash, cache_phash, cache_dhash = None, None, None
+            if origin_path in file_cache_data:
+                cache_ahash = file_cache_data[origin_path]['ahash']
+                cache_phash = file_cache_data[origin_path]['phash']
+                cache_dhash = file_cache_data[origin_path]['dhash']
+            if self.mode_ahash:
+                if cache_ahash:
+                    hash_dict['ahash'] = cache_ahash
+                else:
+                    hash_dict['ahash'] = satic_function.get_image_attr(image, mode_hash='ahash')
+            if self.mode_phash:
+                if cache_phash:
+                    hash_dict['phash'] = cache_phash
+                else:
+                    hash_dict['phash'] = satic_function.get_image_attr(image, mode_hash='phash')
+            if self.mode_dhash:
+                if cache_dhash:
+                    hash_dict['dhash'] = cache_dhash
+                else:
+                    hash_dict['dhash'] = satic_function.get_image_attr(image, mode_hash='dhash')
+            image_data_dict_copy[image].update(hash_dict)
+        image_data_dict = image_data_dict_copy
+
+        self.signal_schedule.emit('步骤', '3/4 保存图片特征')
+        # 保存图片特征（只保存源文件为文件夹的图片数据）
+        save_cache_data = {}  # {源文件路径:{'filesize':int, 'ahash':'str', ...}...}
+        for image in image_data_dict:
+            origin_path = image_data_dict[image]['origin_path']
+            if os.path.isdir(origin_path):
+                filesize = os.path.getsize(image)
+                ahash = image_data_dict[image]['ahash']
+                phash = image_data_dict[image]['phash']
+                dhash = image_data_dict[image]['dhash']
+                save_cache_data[image] = {'filesize': filesize, 'ahash': ahash, 'phash': phash, 'dhash': dhash}
+        satic_function.update_hash_cache(save_cache_data)
 
         self.signal_schedule.emit('步骤', '4/4 对比图片特征')
         # 对比hash值，查找相似项

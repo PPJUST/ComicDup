@@ -1,3 +1,4 @@
+import configparser
 import inspect
 import os
 import random
@@ -24,6 +25,7 @@ icon_recycle_bin = r'icon/recycle_bin.png'
 icon_next = r'icon/next.png'
 icon_refresh = r'icon/refresh.png'
 history_back_dir = '查重结果'
+cache_filename = 'hash_cache.ini'
 
 
 def print_function_info(mode: str = 'current'):
@@ -306,20 +308,27 @@ def is_comic_folder(dirpath):
         return False
 
 
-def get_image_attr(imagefile, mode_ahash=True, mode_phash=True, mode_dhash=True):
-    """计算图片的所有特征值"""
+def get_image_attr(imagefile, mode_hash: str):
+    """计算图片的特征值
+    传参 mode_hash 需要计算的哈希值,ahash/phash/dhash"""
     print_function_info()
-    """
-    ahash 均值哈希
-    phash 感知哈希
-    dhash 差异哈希
-    """
-    ahash, phash, dhash = calc_image_hash(imagefile, mode_ahash=mode_ahash, mode_phash=mode_phash,
-                                          mode_dhash=mode_dhash)
-    hash_dict = {'ahash': ahash,
-                 'phash': phash,
-                 'dhash': dhash}
-    return hash_dict
+    image_pil = Image.open(imagefile)
+    if mode_hash == 'ahash':
+        calc_hash = imagehash.average_hash(image_pil)  # 均值哈希
+    elif mode_hash == 'phash':
+        calc_hash = imagehash.phash(image_pil)  # 感知哈希
+    elif mode_hash == 'dhash':
+        calc_hash = imagehash.dhash(image_pil)  # 差异哈希
+    else:
+        calc_hash = None
+
+    # 转为01二进制字符串，方便存储和读取
+    if calc_hash:
+        calc_hash_str = hash_numpy2str(calc_hash)
+    else:
+        calc_hash_str = None
+
+    return calc_hash_str
 
 
 def walk_dirpath(dirpath_list):
@@ -370,11 +379,14 @@ def compare_image(image_data_dict, mode_ahash=True, mode_phash=True, mode_dhash=
             compare_ahash = image_data_dict[compare]['ahash']
             compare_phash = image_data_dict[compare]['phash']
             compare_dhash = image_data_dict[compare]['dhash']
+            # 检查是否为同一源文件，是则跳过
+            if key_origin == compare_origin:
+                continue
             # 对比hash值
             similar_check = []  # 存放bool值，通过内部True的个数来判断是否为相似
             if mode_ahash:
                 if key_ahash is not None and compare_ahash is not None:
-                    dist_ahash = abs(key_ahash - compare_ahash)
+                    dist_ahash = calc_two_hash_str_hamming_distance(key_ahash, compare_ahash)
                     if dist_ahash <= mode_ahash:
                         similar_check.append(True)
                     else:
@@ -384,7 +396,7 @@ def compare_image(image_data_dict, mode_ahash=True, mode_phash=True, mode_dhash=
 
             if mode_phash:
                 if key_phash is not None and compare_phash is not None:
-                    dist_phash = abs(key_phash - compare_phash)
+                    dist_phash = calc_two_hash_str_hamming_distance(key_phash, compare_phash)
                     if dist_phash <= mode_phash:
                         similar_check.append(True)
                     else:
@@ -394,7 +406,7 @@ def compare_image(image_data_dict, mode_ahash=True, mode_phash=True, mode_dhash=
 
             if mode_dhash:
                 if key_dhash is not None and compare_dhash is not None:
-                    dist_dhash = abs(key_dhash - compare_dhash)
+                    dist_dhash = calc_two_hash_str_hamming_distance(key_dhash, compare_dhash)
                     if dist_dhash <= mode_dhash:
                         similar_check.append(True)
                     else:
@@ -449,3 +461,90 @@ def save_similar_result(data_list, date_dict):
             index_row += 1
     # 保存
     wb.save(filename=xlsx_name)
+
+
+def hash_numpy2str(hash_numpy):
+    """将哈希值的numpy数组(imagehash.hash)转换为二进制字符串"""
+    if not hash_numpy:
+        return None
+    if type(hash_numpy) is imagehash.ImageHash:
+        hash_numpy = hash_numpy.hash
+    hash_str = ''
+    for row in hash_numpy:
+        for col in row:
+            if col:
+                hash_str += '1'
+            else:
+                hash_str += '0'
+
+    return hash_str
+
+
+def calc_two_hash_str_similar(hash_str1, hash_str2):
+    """计算两个二进制字符串哈希值的相似度"""
+    hash_int1 = int(hash_str1, 2)
+    hash_int2 = int(hash_str2, 2)
+    # 使用异或操作计算差异位数
+    diff_bits = bin(hash_int1 ^ hash_int2).count('1')
+    # 计算相似性
+    similarity = 1 - diff_bits / len(hash_str1)
+
+    return similarity
+
+
+def calc_two_hash_str_hamming_distance(hash_str1, hash_str2):
+    """计算两个二进制字符串哈希值的汉明距离"""
+    hamming_distance = sum(ch1 != ch2 for ch1, ch2 in zip(hash_str1, hash_str2))
+
+    return hamming_distance
+
+
+def check_hash_cache():
+    """检查哈希值缓存文件"""
+    if not os.path.exists(cache_filename):
+        with open(cache_filename, 'w', encoding='utf-8') as cw:
+            cw.close()
+
+    file_cache_data = {}
+    config = configparser.ConfigParser()
+    config.read(cache_filename, encoding='utf-8')
+    section_list = config.sections()
+    for path in section_list:
+        # 删除多余缓存
+        if not os.path.exists(path):
+            config.remove_section(path)
+        else:
+            # 删除文件大小已经改变的缓存
+            if os.path.isdir(path):
+                real_filesize = get_folder_size(path)
+            else:
+                real_filesize = os.path.getsize(path)
+
+            if real_filesize != int(config[path]['filesize']):
+                config.remove_section(path)
+            # 提取已有数据
+            else:
+                file_cache_data[path] = {}  # {源文件路径:{'filesize':int, 'ahash':'str', ...}...}
+                for option in config.options(path):
+                    file_cache_data[path][option] = config.get(path, option)
+    config.write(open(cache_filename, 'w', encoding='utf-8'))
+
+    return file_cache_data
+
+
+def update_hash_cache(new_file_cache_data):
+    """更新哈希值缓存文件
+    传参：特定格式的字典，{源文件路径:{'filesize':int, 'ahash':'str', ...}...}"""
+    config = configparser.ConfigParser()
+    config.read(cache_filename, encoding='utf-8')
+
+    for path_key in new_file_cache_data:
+        if path_key in config:  # 若存在则更新
+            for option, value in new_file_cache_data[path_key].items():
+                if value:
+                    config.set(path_key, option, str(value))
+        else:  # 不存在则新增
+            config.add_section(path_key)
+            for option, value in new_file_cache_data[path_key].items():
+                config.set(path_key, option, str(value))
+    config.write(open(cache_filename, 'w', encoding='utf-8'))
