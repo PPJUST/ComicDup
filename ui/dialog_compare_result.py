@@ -23,8 +23,10 @@ class WidgetShowComic(QWidget):
         # 控件组 预览图
         self.label_preview = QLabel()
         self.label_preview.setText('显示图像')
-        self.label_preview.setFixedSize(295, 420)
-        self.label_preview.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
+        self.label_preview.setFixedSize(385, 550)
+        self.label_preview.setScaledContents(True)
+        self.label_preview.setAlignment(Qt.AlignCenter)
+        self.label_preview.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
         self.label_preview.setFrameShape(QFrame.Box)
         self.verticalLayout.addWidget(self.label_preview)
 
@@ -118,11 +120,10 @@ class WidgetShowComic(QWidget):
     def show_preview(self):
         """显示预览图"""
         self.show_index()
-        self.label_preview.setAlignment(Qt.AlignCenter)
         # 设置图片对象
         pixmap = QPixmap(self.image_list[self.image_index])
         # 获取QLabel的大小
-        label_size = self.label_preview.size()
+        label_size = self.label_preview.sizeHint()
         # 根据图片大小和QLabel大小来缩放图片并保持纵横比
         scaled_pixmap = pixmap.scaled(label_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         self.label_preview.setPixmap(scaled_pixmap)
@@ -185,7 +186,7 @@ class DialogShowComic(QDialog):
         super().__init__()
         """设置ui"""
         self.verticalLayout = QVBoxLayout(self)
-        self.setMinimumSize(710, 550)
+        self.setMinimumSize(1135, 700)
 
         # 控件组 同步滚动
         self.horizontalLayout = QHBoxLayout()
