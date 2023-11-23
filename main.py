@@ -232,9 +232,14 @@ class DouDup(QMainWindow):
                 break
             else:
                 find_index += 1
-
-        parent_item = self.ui.treeWidget_show.topLevelItem(find_index)
+        # 同步删除全局变量中的数据
+        pre_split = self.similar_group_list[:find_index]
+        change_split = []
+        change_split.append(tuple(find_group))
+        after_split = self.similar_group_list[find_index+1:]
+        self.similar_group_list = pre_split + change_split + after_split
         # 清空子节点
+        parent_item = self.ui.treeWidget_show.topLevelItem(find_index)
         while parent_item.childCount() > 0:
             child_item = parent_item.takeChild(0)
             del child_item
