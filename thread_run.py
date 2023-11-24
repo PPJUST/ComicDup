@@ -67,19 +67,20 @@ class CompareQthread(QThread):
                 return self.signal_stop.emit()
             extract_image_list, image_count_archive = satic_function.extract_image_from_archive(archivefile,
                                                                                                 self.need_image_number)
-            # 写入图片对应的数据字典
-            for i in extract_image_list:
-                if i not in image_data_dict:
-                    image_data_dict[i] = dict()
-                image_data_dict[i]['origin_path'] = archivefile
+            if extract_image_list:  # 如果压缩包中有特殊字符，则返回的列表为空
+                # 写入图片对应的数据字典
+                for i in extract_image_list:
+                    if i not in image_data_dict:
+                        image_data_dict[i] = dict()
+                    image_data_dict[i]['origin_path'] = archivefile
 
-            # 写入源文件对应的数据字典
-            if archivefile not in origin_data_dict:
-                origin_data_dict[archivefile] = dict()
-            origin_data_dict[archivefile]['preview'] = natsort.natsorted(list(extract_image_list))[0]
-            origin_data_dict[archivefile]['filetype'] = 'archive'
-            origin_data_dict[archivefile]['image_number'] = image_count_archive
-            origin_data_dict[archivefile]['filesize'] = os.path.getsize(archivefile)
+                # 写入源文件对应的数据字典
+                if archivefile not in origin_data_dict:
+                    origin_data_dict[archivefile] = dict()
+                origin_data_dict[archivefile]['preview'] = natsort.natsorted(list(extract_image_list))[0]
+                origin_data_dict[archivefile]['filetype'] = 'archive'
+                origin_data_dict[archivefile]['image_number'] = image_count_archive
+                origin_data_dict[archivefile]['filesize'] = os.path.getsize(archivefile)
         # 获取文件夹中的指定数量图片文件，并写入字典数据
         for dirpath in dir_set:
             if self.stop_code:
