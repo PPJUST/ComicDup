@@ -55,7 +55,7 @@ class CompareQthread(QThread):
     def run(self):
         self.signal_schedule.emit('步骤', '1/4 检查文件夹')
         # 提取文件夹中符合要求的文件夹、压缩包
-        dir_set, archive_set = satic_function.walk_dirpath(self.check_folder_list)
+        comic_dir_dict, archive_set = satic_function.walk_dirpath(self.check_folder_list)
         # 设置对应的字典，格式为{图片文件:{源文件:..., hash值:...}...}
         image_data_dict = dict()  # 图片对应的数据字典
         origin_data_dict = dict()  # 源文件对应的数据字典
@@ -82,19 +82,23 @@ class CompareQthread(QThread):
                 origin_data_dict[archivefile]['image_number'] = image_count_archive
                 origin_data_dict[archivefile]['filesize'] = os.path.getsize(archivefile)
         # 获取文件夹中的指定数量图片文件，并写入字典数据
-        for dirpath in dir_set:
+        for dirpath, image_list in comic_dir_dict.items():
             if self.stop_code:
                 return self.signal_stop.emit()
-            get_image_list, image_count_in_dir = satic_function.get_image_from_dir(dirpath, self.need_image_number)
+            image_count_in_dir = len(image_list)
+            # 提取指定数量的图片路径
+            calc_image_list = []
+            for i in range(self.need_image_number):
+                calc_image_list.append(image_list[i])
             # 写入图片对应的数据字典
-            for i in get_image_list:
+            for i in calc_image_list:
                 image_data_dict[i] = dict()
                 image_data_dict[i]['origin_path'] = dirpath
 
             # 写入源文件对应的数据字典
             if dirpath not in origin_data_dict:
                 origin_data_dict[dirpath] = dict()
-            origin_data_dict[dirpath]['preview'] = natsort.natsorted(get_image_list)[0]
+            origin_data_dict[dirpath]['preview'] = natsort.natsorted(calc_image_list)[0]
             origin_data_dict[dirpath]['filetype'] = 'folder'
             origin_data_dict[dirpath]['image_number'] = image_count_in_dir
             origin_data_dict[dirpath]['filesize'] = satic_function.get_folder_size(dirpath)
@@ -105,6 +109,7 @@ class CompareQthread(QThread):
 
         self.signal_schedule.emit('步骤', '3/4 计算图片特征')
         # 计算图片hash值
+        print(f'image_data_dict {image_data_dict}')
         image_data_dict_copy = image_data_dict.copy()
         for image in image_data_dict:
             if self.stop_code:

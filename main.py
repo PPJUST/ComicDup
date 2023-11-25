@@ -234,9 +234,8 @@ class DouDup(QMainWindow):
                 find_index += 1
         # 同步删除全局变量中的数据
         pre_split = self.similar_group_list[:find_index]
-        change_split = []
-        change_split.append(tuple(find_group))
-        after_split = self.similar_group_list[find_index+1:]
+        change_split = [tuple(find_group)]
+        after_split = self.similar_group_list[find_index + 1:]
         self.similar_group_list = pre_split + change_split + after_split
         # 清空子节点
         parent_item = self.ui.treeWidget_show.topLevelItem(find_index)

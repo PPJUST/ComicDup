@@ -292,7 +292,6 @@ def calc_images_ssim(image_1, image_2):
 
 def is_comic_folder(dirpath):
     """检查是否为漫画文件夹（文件夹内部>=4张图片，0压缩文件，0子文件夹）"""
-    print_function_info()
     image_count = 0
     for i in os.listdir(dirpath):
         fullpath = os.path.join(dirpath, i)
@@ -334,30 +333,50 @@ def get_image_attr(imagefile, mode_hash: str):
 def walk_dirpath(dirpath_list):
     """遍历输入的文件夹，找出需要处理的文件夹/压缩包"""
     print_function_info()
-    find_dir_set = set()
-    find_archive_set = set()
-    find_image_set = set()
-    # 遍历所有文件，找出其中的压缩文件和图片文件
+    check_dir_dict = dict()  # {文件夹路径:{'dir':set(), 'image':set(), 'archive':set()}...}
+    # 遍历所有文件，找出需要的文件
     for checkpath in set(dirpath_list):
         for dir_path, dirnames, filenames in os.walk(checkpath):
-            # for dirname in dirnames:
-            #     dirpath = os.path.normpath(os.path.join(dir_path, dirname))
-            #     parentdirpath = os.path.split(dirpath)[0]
-            #     all_folder_dict[parentdirpath] = set().add(dirpath)
+            # 找出所有文件夹
+            for dirname in dirnames:
+                dirpath = os.path.normpath(os.path.join(dir_path, dirname))
+                # 文件夹写入字典
+                if dirpath not in check_dir_dict:
+                    check_dir_dict[dirpath] = {'dir': set(), 'image': set(), 'archive': set()}
+                # 父文件夹写入字典，并添加子文件夹数据
+                parent_dir = os.path.split(dirpath)[0]
+                if parent_dir not in check_dir_dict:
+                    check_dir_dict[parent_dir] = {'dir': set(), 'image': set(), 'archive': set()}
+                check_dir_dict[parent_dir]['dir'].add(dirpath)
+            # 找出所有文件
             for filename in filenames:
                 filepath = os.path.normpath(os.path.join(dir_path, filename))
-                if is_archive(filepath):
-                    find_archive_set.add(filepath)
-                elif is_image(filepath):
-                    find_image_set.add(filepath)
-                    parentdir_path = os.path.split(filepath)[0]
-                    find_dir_set.add(parentdir_path)
-    # 根据提取的文件夹是否符合要求
-    find_dir_set_copy = find_dir_set.copy()
-    for f_dir in find_dir_set_copy:
-        if not is_comic_folder(f_dir):
-            find_dir_set.remove(f_dir)
-    return find_dir_set, find_archive_set
+                dirpath = os.path.split(filepath)[0]
+                if dirpath not in check_dir_dict:
+                    check_dir_dict[dirpath] = {'dir': set(), 'image': set(), 'archive': set()}
+                if is_image(filepath):
+                    check_dir_dict[dirpath]['image'].add(filepath)
+                elif is_archive(filepath):
+                    check_dir_dict[dirpath]['archive'].add(filepath)
+    # 检查字典，筛选出需要的压缩包和文件夹
+    final_archive_set = set()
+    final_comic_dir_dict = dict()  # {文件夹路径:[内部所有图片文件路径]...}
+    for key_dirpath, data_dict in check_dir_dict.items():
+        value_dir = data_dict['dir']
+        value_image = data_dict['image']
+        value_archive = data_dict['archive']
+        if value_archive:  # 内部有压缩包则不视为漫画文件夹
+            final_archive_set.update(value_archive)
+            continue
+        elif value_dir:  # 内部有文件夹则不视为漫画文件夹
+            continue
+        else:
+            if len(value_image) <= 4:  # 内部图片数<=4则不视为漫画文件夹
+                continue
+            sorted_image = natsort.natsorted(list(value_image))
+            final_comic_dir_dict[key_dirpath] = sorted_image
+
+    return final_comic_dir_dict, final_archive_set
 
 
 def compare_image(image_data_dict, mode_ahash=True, mode_phash=True, mode_dhash=True, mode_ssim=True):
