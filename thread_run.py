@@ -109,7 +109,6 @@ class CompareQthread(QThread):
 
         self.signal_schedule.emit('步骤', '3/4 计算图片特征')
         # 计算图片hash值
-        print(f'image_data_dict {image_data_dict}')
         image_data_dict_copy = image_data_dict.copy()
         for image in image_data_dict:
             if self.stop_code:

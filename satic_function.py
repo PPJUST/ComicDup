@@ -31,14 +31,14 @@ cache_filename = 'hash_cache.ini'
 def print_function_info(mode: str = 'current'):
     """打印当前/上一个执行的函数信息
     传参：mode 'current' 或 'last'"""
-    # pass
+    pass
 
-    if mode == 'current':
-        print(time.strftime('%H:%M:%S ', time.localtime()),
-              inspect.getframeinfo(inspect.currentframe().f_back).function)
-    elif mode == 'last':
-        print(time.strftime('%H:%M:%S ', time.localtime()),
-              inspect.getframeinfo(inspect.currentframe().f_back.f_back).function)
+    # if mode == 'current':
+    #     print(time.strftime('%H:%M:%S ', time.localtime()),
+    #           inspect.getframeinfo(inspect.currentframe().f_back).function)
+    # elif mode == 'last':
+    #     print(time.strftime('%H:%M:%S ', time.localtime()),
+    #           inspect.getframeinfo(inspect.currentframe().f_back.f_back).function)
 
 
 def merge_intersecting_tuples(tuples_list: list) -> list:
@@ -205,6 +205,7 @@ def extract_image_from_archive(filepath: str, extract_file_number=1):
         return extract_image_list, len(image_in_archive)
 
 
+'''
 def get_image_from_dir(dirpath: str, file_number=1):
     """获取文件夹中指定数量的图片文件路径"""
     print_function_info()
@@ -226,6 +227,7 @@ def get_image_from_dir(dirpath: str, file_number=1):
         get_image_list.append(image_path)
 
     return get_image_list, len(all_imagefiles)
+'''
 
 
 def convert_image_to_numpy(image_file, gray=False, resize: Tuple[int, int] = None):
@@ -290,6 +292,7 @@ def calc_images_ssim(image_1, image_2):
     return ssim
 
 
+'''
 def is_comic_folder(dirpath):
     """检查是否为漫画文件夹（文件夹内部>=4张图片，0压缩文件，0子文件夹）"""
     image_count = 0
@@ -305,6 +308,7 @@ def is_comic_folder(dirpath):
         return True
     else:
         return False
+'''
 
 
 def get_image_attr(imagefile, mode_hash: str):
@@ -334,6 +338,8 @@ def walk_dirpath(dirpath_list):
     """遍历输入的文件夹，找出需要处理的文件夹/压缩包"""
     print_function_info()
     check_dir_dict = dict()  # {文件夹路径:{'dir':set(), 'image':set(), 'archive':set()}...}
+    image_suffix = ['.jpg', '.png', 'webp']  # 取后4位
+    archive_suffix = ['zip', 'rar', '.7z']  # 取后3位
     # 遍历所有文件，找出需要的文件
     for checkpath in set(dirpath_list):
         for dir_path, dirnames, filenames in os.walk(checkpath):
@@ -354,10 +360,17 @@ def walk_dirpath(dirpath_list):
                 dirpath = os.path.split(filepath)[0]
                 if dirpath not in check_dir_dict:
                     check_dir_dict[dirpath] = {'dir': set(), 'image': set(), 'archive': set()}
+                """改用后缀名判断，加快速度但是不精确
                 if is_image(filepath):
                     check_dir_dict[dirpath]['image'].add(filepath)
                 elif is_archive(filepath):
                     check_dir_dict[dirpath]['archive'].add(filepath)
+                """
+                if filepath[-4:].lower() in image_suffix:
+                    check_dir_dict[dirpath]['image'].add(filepath)
+                elif filepath[-3:].lower() in archive_suffix:
+                    check_dir_dict[dirpath]['archive'].add(filepath)
+
     # 检查字典，筛选出需要的压缩包和文件夹
     final_archive_set = set()
     final_comic_dir_dict = dict()  # {文件夹路径:[内部所有图片文件路径]...}
