@@ -2,9 +2,10 @@ import configparser
 import inspect
 import os
 import random
+import shutil
 import string
-import subprocess
 import time
+import zipfile
 from typing import Tuple
 
 import cv2
@@ -12,6 +13,7 @@ import filetype
 import imagehash
 import natsort
 import numpy
+import rarfile
 from PIL import Image
 from openpyxl import Workbook, load_workbook, styles
 
@@ -66,7 +68,8 @@ def clear_temp_image_folder():
     if os.path.exists(temp_image_folder):
         for i in os.listdir(temp_image_folder):
             fullpath = os.path.join(temp_image_folder, i)
-            os.remove(fullpath)
+            if os.path.isfile(fullpath):
+                os.remove(fullpath)
     else:
         os.mkdir(temp_image_folder)
 
@@ -143,6 +146,7 @@ def create_random_string(length: int):
     return random_string
 
 
+'''替换为zipfile和rarfile，不再调用7zip解压
 def extract_image_from_archive(filepath: str, extract_file_number=1):
     """解压压缩包中的指定数量的图片到指定文件夹"""
     print_function_info()
@@ -203,31 +207,52 @@ def extract_image_from_archive(filepath: str, extract_file_number=1):
                     extract_image_list.add(new_file)
 
         return extract_image_list, len(image_in_archive)
-
-
 '''
-def get_image_from_dir(dirpath: str, file_number=1):
-    """获取文件夹中指定数量的图片文件路径"""
-    print_function_info()
-    all_imagefiles = []
-    for i in os.listdir(dirpath):
-        fullpath = os.path.normpath(os.path.join(dirpath, i))
-        if is_image(fullpath):
-            all_imagefiles.append(fullpath)
-    all_imagefiles = natsort.natsorted(all_imagefiles)
 
-    if file_number > len(all_imagefiles):
-        get_number = len(all_imagefiles)
+
+def extract_image_from_archive(filepath: str, extract_file_number=1):
+    """解压zip/rar压缩包中的指定数量的图片到指定文件夹"""
+    try:
+        archive_file = zipfile.ZipFile(filepath)
+    except zipfile.BadZipFile:
+        try:
+            archive_file = rarfile.RarFile(filepath)
+        except rarfile.NotRarFile:
+            return [], 0  # 按照正常格式返回空值
+
+    filelist = archive_file.namelist()  # 中文会变为乱码，需要转utf-8编码
+    image_in_archive = []
+    for file in filelist:
+        for suffix in ['.jpg', '.png', '.webp']:
+            if suffix in file.lower():
+                image_in_archive.append(file)
+    image_in_archive = natsort.natsorted(image_in_archive)
+
+    if extract_file_number > len(image_in_archive):
+        ex_number = len(image_in_archive)
     else:
-        get_number = file_number
+        ex_number = extract_file_number
 
-    get_image_list = []
-    for index in range(get_number):
-        image_path = all_imagefiles[index]
-        get_image_list.append(image_path)
+    extract_image_list = set()
+    new_temp_image_folder = temp_image_folder + r'\temp'
+    for index in range(ex_number):
+        # 解压
+        extract_image_path = image_in_archive[index]
+        archive_file.extract(extract_image_path, new_temp_image_folder)
+        # 改名
+        local_image_file = os.path.join(new_temp_image_folder, extract_image_path)
+        suffix = os.path.splitext(local_image_file)[1]
+        new_name = f'{index}_' + create_random_string(16) + suffix
+        new_file = os.path.join(temp_image_folder, new_name)
+        # 移动
+        shutil.move(local_image_file, new_file)
+        extract_image_list.add(new_file)
 
-    return get_image_list, len(all_imagefiles)
-'''
+    archive_file.close()
+
+    # send2trash.send2trash(new_temp_image_folder)
+
+    return extract_image_list, len(image_in_archive)
 
 
 def convert_image_to_numpy(image_file, gray=False, resize: Tuple[int, int] = None):
@@ -244,29 +269,6 @@ def convert_image_to_numpy(image_file, gray=False, resize: Tuple[int, int] = Non
             pass
 
     return image_numpy
-
-
-def calc_image_hash(image, mode_ahash=True, mode_phash=True, mode_dhash=True):
-    """计算路径图片哈希值"""
-    print_function_info()
-    image_pil = Image.open(image)
-
-    if mode_ahash:
-        ahash = imagehash.average_hash(image_pil)  # 均值hash
-    else:
-        ahash = None
-
-    if mode_phash:
-        phash = imagehash.phash(image_pil)  # 感知hash
-    else:
-        phash = None
-
-    if mode_dhash:
-        dhash = imagehash.dhash(image_pil)
-    else:
-        dhash = None
-
-    return ahash, phash, dhash
 
 
 def calc_images_ssim(image_1, image_2):
@@ -292,37 +294,21 @@ def calc_images_ssim(image_1, image_2):
     return ssim
 
 
-'''
-def is_comic_folder(dirpath):
-    """检查是否为漫画文件夹（文件夹内部>=4张图片，0压缩文件，0子文件夹）"""
-    image_count = 0
-    for i in os.listdir(dirpath):
-        fullpath = os.path.join(dirpath, i)
-        if os.path.isdir(fullpath):
-            return False
-        elif is_archive(fullpath):
-            return False
-        elif is_image(fullpath):
-            image_count += 1
-    if image_count >= 4:
-        return True
-    else:
-        return False
-'''
-
-
 def get_image_attr(imagefile, mode_hash: str):
     """计算图片的特征值
     传参 mode_hash 需要计算的哈希值,ahash/phash/dhash"""
     print_function_info()
-    image_pil = Image.open(imagefile)
-    if mode_hash == 'ahash':
-        calc_hash = imagehash.average_hash(image_pil)  # 均值哈希
-    elif mode_hash == 'phash':
-        calc_hash = imagehash.phash(image_pil)  # 感知哈希
-    elif mode_hash == 'dhash':
-        calc_hash = imagehash.dhash(image_pil)  # 差异哈希
-    else:
+    try:
+        image_pil = Image.open(imagefile)
+        if mode_hash == 'ahash':
+            calc_hash = imagehash.average_hash(image_pil)  # 均值哈希
+        elif mode_hash == 'phash':
+            calc_hash = imagehash.phash(image_pil)  # 感知哈希
+        elif mode_hash == 'dhash':
+            calc_hash = imagehash.dhash(image_pil)  # 差异哈希
+        else:
+            calc_hash = None
+    except:
         calc_hash = None
 
     # 转为01二进制字符串，方便存储和读取
@@ -384,7 +370,7 @@ def walk_dirpath(dirpath_list):
         elif value_dir:  # 内部有文件夹则不视为漫画文件夹
             continue
         else:
-            if len(value_image) <= 4:  # 内部图片数<=4则不视为漫画文件夹
+            if len(value_image) < 4:  # 内部图片数<4则不视为漫画文件夹
                 continue
             sorted_image = natsort.natsorted(list(value_image))
             final_comic_dir_dict[key_dirpath] = sorted_image
@@ -462,6 +448,8 @@ def compare_image(image_data_dict, mode_ahash=True, mode_phash=True, mode_dhash=
 def save_similar_result(data_list, date_dict):
     """保存相似项结果到xlsx"""
     print_function_info()
+    if not data_list:
+        return
     if not os.path.exists(history_back_dir):
         os.mkdir(history_back_dir)
     current_time = time.strftime('%Y-%m-%d %H_%M_%S', time.localtime())

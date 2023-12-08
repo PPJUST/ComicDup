@@ -20,7 +20,7 @@ class DouDup(QMainWindow):
         self.ui.setupUi(self)
         """初始化设置"""
         # 设置初始变量
-        self.folder_dict = dict()  # 当前选择的文件夹
+        self.folder_list = []  # 当前选择的文件夹
         self.start_thread_time = None
         self.similar_group_list = []  # 相似组列表，内部元素为元组
         self.origin_data_dict = {}  # 原始文件数据字典，key为源文件路径，value为数据的字典
@@ -44,14 +44,14 @@ class DouDup(QMainWindow):
         self.ui.pushButton_stop.setEnabled(False)
 
         """连接信号与槽函数"""
-        self.ui.listWidget_folderlist.signal_folder_dict.connect(self.accept_folder_dict)
+        self.ui.listWidget_folderlist.signal_folderlist.connect(self.accept_folderlist)
         self.ui.pushButton_start.clicked.connect(self.start_check)
         self.ui.pushButton_stop.clicked.connect(self.stop_thread)
 
-    def accept_folder_dict(self, folder_dict):
+    def accept_folderlist(self, folderlist):
         """接收子控件的信号"""
         satic_function.print_function_info()
-        self.folder_dict = folder_dict
+        self.folder_list = folderlist
 
     def get_similar_mode(self):
         """获取当前选择的相似算法"""
@@ -93,8 +93,12 @@ class DouDup(QMainWindow):
         # 设置启动时间
         self.start_thread_time = time.time()
         self.timer.start()
+        # 更新运行时间0:00
+        self.update_schedule('总耗时', '0:00')
         # 改变按钮状态
         self.set_start_button_state(mode='start')
+        # 清除上一次的查重结果
+        self.ui.treeWidget_show.clear()
         # 获取相似度算法设置
         similar_mode_dict = self.get_similar_mode()
         need_image_number = similar_mode_dict['image_number']
@@ -106,8 +110,8 @@ class DouDup(QMainWindow):
         satic_function.clear_temp_image_folder()
         # 获取需要检查的文件夹
         check_folder_list = []
-        for path, mode in self.folder_dict.items():
-            if path != '' and mode is True and os.path.exists(path):
+        for path in self.folder_list:
+            if path != '' and os.path.exists(path):
                 check_folder_list.append(path)
         # 设置子线程参数
         self.thread_run.reset_var()
@@ -150,7 +154,7 @@ class DouDup(QMainWindow):
             layout.setSpacing(30)
             for file in group_turple:
                 # 提取数据
-                filesize_mb = round(origin_data_dict[file]['filesize'] / 1024 / 1024, 0)
+                filesize_mb = round(origin_data_dict[file]['filesize'] / 1024 / 1024, 2)
                 image_number = origin_data_dict[file]['image_number']
                 preview_image = origin_data_dict[file]['preview']
                 filetype = origin_data_dict[file]['filetype']
