@@ -90,8 +90,8 @@ class WidgetShowComic(QWidget):
 
         """连接槽函数"""
         self.toolButton_recycle_bin.clicked.connect(self.delete_file)
-        self.toolButton_next_image.clicked.connect(self.show_next_image)
-        self.toolButton_previous_image.clicked.connect(self.show_previous_image)
+        self.toolButton_next_image.clicked.connect(lambda: self.show_next_image(step=1))
+        self.toolButton_previous_image.clicked.connect(lambda: self.show_previous_image(step=1))
 
     def set_path(self, path):
         """设置需要显示的路径"""
@@ -137,7 +137,6 @@ class WidgetShowComic(QWidget):
         scaled_pixmap = pixmap.scaled(label_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
         # 设置显示图片
         self.label_preview.setPixmap(scaled_pixmap)
-        print(self.label_preview.size())
 
     def delete_file(self):
         """删除文件"""
@@ -146,23 +145,31 @@ class WidgetShowComic(QWidget):
         self.signal_del_file.emit(self.path)
         self.deleteLater()
 
-    def show_next_image(self):
+    def show_next_image(self, step: int = 1):
         """显示下一张图片"""
-        max_index = len(self.image_list)
-        if self.image_index + 1 >= max_index:
+        max_index = len(self.image_list) - 1
+        if self.image_index == max_index:
             self.image_index = 0
         else:
-            self.image_index += 1
+            if self.image_index + step >= max_index:
+                self.image_index = max_index
+            else:
+                self.image_index += step
+
         self.show_preview()
 
-    def show_previous_image(self):
-        """显示下一张图片"""
-        max_index = len(self.image_list)
-        if self.image_index - 1 < - max_index:
-            self.image_index = -1
-        else:
-            self.image_index -= 1
+    def show_previous_image(self, step: int = 1):
+        """显示上一张图片"""
+        max_index = len(self.image_list) - 1
 
+        if self.image_index == 0:
+            self.image_index = max_index
+        else:
+            if self.image_index - step <= 0:
+                self.image_index = 0
+            else:
+                self.image_index -= step
+        self.image_index
         self.show_preview()
 
     def show_index(self):
@@ -256,8 +263,11 @@ class DialogShowComic(QDialog):
         self.sync_scroll_index = 0  # 同步滚动索引
 
         """连接槽函数"""
-        self.toolButton_next_image.clicked.connect(self.sync_show_next_image)
-        self.toolButton_previous_image.clicked.connect(self.show_previous_image)
+        self.toolButton_next_image.clicked.connect(lambda: self.sync_show_next_image(step=1))
+        self.toolButton_previous_image.clicked.connect(lambda: self.sync_show_previous_image(step=1))
+        self.toolButton_next_5p_image.clicked.connect(lambda: self.sync_show_next_image(step=5))
+        self.toolButton_previous_5p_image.clicked.connect(lambda: self.sync_show_previous_image(step=5))
+
         self.toolButton_refresh.clicked.connect(self.refresh_index)
         self.signal_resized.connect(self.resize_preview_size)
 
@@ -267,7 +277,6 @@ class DialogShowComic(QDialog):
 
     def resize_preview_size(self):
         height = self.size().height() - 200
-        print(height)
         layout = self.layout_comic_widget.layout()
         for i in range(layout.count()):
             item = layout.itemAt(i)
@@ -288,21 +297,21 @@ class DialogShowComic(QDialog):
                 show_comic_widget.set_path(path)
                 show_comic_widget.signal_del_file.connect(self.accept_signal_del_file)
 
-    def sync_show_next_image(self):
+    def sync_show_next_image(self, step: int = 1):
         """全局滚动，索引+1"""
         layout = self.layout_comic_widget.layout()
         for i in range(layout.count()):
             item = layout.itemAt(i)
             show_comic_widget = item.widget()
-            show_comic_widget.show_next_image()
+            show_comic_widget.show_next_image(step)
 
-    def show_previous_image(self):
+    def sync_show_previous_image(self, step: int = 1):
         """全局滚动，索引-1"""
         layout = self.layout_comic_widget.layout()
         for i in range(layout.count()):
             item = layout.itemAt(i)
             show_comic_widget = item.widget()
-            show_comic_widget.show_previous_image()
+            show_comic_widget.show_previous_image(step)
 
     def refresh_index(self):
         """重置索引"""
