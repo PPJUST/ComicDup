@@ -1,7 +1,7 @@
-import configparser
 import os
 import random
 import shutil
+import sqlite3
 import string
 import time
 import zipfile
@@ -26,7 +26,7 @@ icon_recycle_bin = r'icon/recycle_bin.png'
 icon_next = r'icon/next.png'
 icon_refresh = r'icon/refresh.png'
 history_back_dir = '查重结果'
-cache_filename = 'hash_cache.ini'
+cache_filename = 'hash_cache.db'
 icon_next_5p = r'icon/next_5p.png'
 icon_previous_5p = r'icon/previous_5p.png'
 
@@ -522,33 +522,33 @@ def calc_two_hash_str_hamming_distance(hash_str1, hash_str2):
 
 def check_hash_cache():
     """检查哈希值缓存文件"""
-    if not os.path.exists(cache_filename):
-        with open(cache_filename, 'w', encoding='utf-8') as cw:
-            cw.close()
-
-    file_cache_data = {}
-    config = configparser.ConfigParser()
-    config.read(cache_filename, encoding='utf-8')
-    section_list = config.sections()
-    for path in section_list:
-        # 删除多余缓存
-        if not os.path.exists(path):
-            config.remove_section(path)
-        else:
-            # 删除文件大小已经改变的缓存
+    # 检查数据库是否存在
+    conn = sqlite3.connect(cache_filename)
+    cursor = conn.cursor()
+    cursor.execute(
+        'CREATE TABLE IF NOT EXISTS Table_Hash (path TEXT Primary KEY, filesize INTEGER, ahash TEXT, phash TEXT, dhash TEXT)')
+    # 读取数据库记录
+    cursor.execute("SELECT * FROM Table_Hash")
+    data = cursor.fetchall()
+    columns_name = [i[0] for i in cursor.description]
+    data_origin = [dict(zip(columns_name, row)) for row in data]
+    # 提取需要的数据，并进行检查
+    file_cache_data = {}  # {源文件路径:{'filesize':int, 'ahash':'str', ...}...}
+    for group_dict in data_origin:
+        path = group_dict['path']
+        filesize = group_dict['filesize']
+        # 检查路径是否存在
+        if os.path.exists(path):
+            # 检查路径对应的文件大小是否正确
             if os.path.isdir(path):
                 real_filesize = get_folder_size(path)
             else:
                 real_filesize = os.path.getsize(path)
-
-            if real_filesize != int(config[path]['filesize']):
-                config.remove_section(path)
-            # 提取已有数据
-            else:
-                file_cache_data[path] = {}  # {源文件路径:{'filesize':int, 'ahash':'str', ...}...}
-                for option in config.options(path):
-                    file_cache_data[path][option] = config.get(path, option)
-    config.write(open(cache_filename, 'w', encoding='utf-8'))
+            if real_filesize == int(filesize):
+                file_cache_data[path] = {}
+                for key, value in group_dict.items():
+                    if key != 'path':
+                        file_cache_data[path][key] = value
 
     return file_cache_data
 
@@ -556,16 +556,24 @@ def check_hash_cache():
 def update_hash_cache(new_file_cache_data):
     """更新哈希值缓存文件
     传参：特定格式的字典，{源文件路径:{'filesize':int, 'ahash':'str', ...}...}"""
-    config = configparser.ConfigParser()
-    config.read(cache_filename, encoding='utf-8')
-
+    conn = sqlite3.connect(cache_filename)
+    cursor = conn.cursor()
+    # 获取路径列中的数据
+    cursor.execute("SELECT path FROM Table_Hash")
+    data = cursor.fetchall()
+    exist_data_path = []
+    for group_tuple in data:
+        exist_data_path += group_tuple
+    # 更新或插入新数据
     for path_key in new_file_cache_data:
-        if path_key in config:  # 若存在则更新
+        if path_key in exist_data_path:  # 若存在则更新
             for option, value in new_file_cache_data[path_key].items():
-                if value:
-                    config.set(path_key, option, str(value))
+                cursor.execute(f'UPDATE Table_Hash SET {option} = "{str(value)}" WHERE path = "{path_key}"')
         else:  # 不存在则新增
-            config.add_section(path_key)
+            cursor.execute(f'INSERT INTO Table_Hash (path) VALUES ("{path_key}")')
             for option, value in new_file_cache_data[path_key].items():
-                config.set(path_key, option, str(value))
-    config.write(open(cache_filename, 'w', encoding='utf-8'))
+                cursor.execute(f'UPDATE Table_Hash SET {option} = "{str(value)}" WHERE path = "{path_key}"')
+    # 更新并关闭数据库
+    cursor.close()
+    conn.commit()
+    conn.close()
