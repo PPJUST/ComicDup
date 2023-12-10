@@ -23,7 +23,6 @@ class WidgetShowComic(QWidget):
         # 控件组 预览图
         self.label_preview = QLabel()
         self.label_preview.setText('显示图像')
-        self.label_preview.setFixedSize(385, 550)
         self.label_preview.setScaledContents(True)
         self.label_preview.setAlignment(Qt.AlignCenter)
         self.label_preview.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
@@ -87,6 +86,7 @@ class WidgetShowComic(QWidget):
         self.path = None
         self.image_list = []
         self.image_index = 0
+        self.resize_height = self.sizeHint().height()  # 重设预览图控件的高度
 
         """连接槽函数"""
         self.toolButton_recycle_bin.clicked.connect(self.delete_file)
@@ -117,16 +117,27 @@ class WidgetShowComic(QWidget):
         self.image_index = 0
         self.show_preview()
 
+    def reset_height(self, height: int):
+        """重设预览图控件的高度"""
+        self.resize_height = height
+        self.show_preview()
+
     def show_preview(self):
         """显示预览图"""
         self.show_index()
         # 设置图片对象
         pixmap = QPixmap(self.image_list[self.image_index])
-        # 获取QLabel的大小
-        label_size = self.label_preview.sizeHint()
-        # 根据图片大小和QLabel大小来缩放图片并保持纵横比
+        pixmap_height = pixmap.height()
+        pixmap_width = pixmap.width()
+        # 重设预览QLabel的大小
+        resize_width = int(pixmap_width * self.resize_height / pixmap_height)
+        label_size = QSize(resize_width, self.resize_height)
+        self.label_preview.resize(label_size)
+        # 缩放图片并保持纵横比
         scaled_pixmap = pixmap.scaled(label_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        # 设置显示图片
         self.label_preview.setPixmap(scaled_pixmap)
+        print(self.label_preview.size())
 
     def delete_file(self):
         """删除文件"""
@@ -181,12 +192,13 @@ class WidgetShowComic(QWidget):
 
 class DialogShowComic(QDialog):
     signal_del_file = Signal(str)
+    signal_resized = Signal()
 
     def __init__(self):
         super().__init__()
         """设置ui"""
         self.verticalLayout = QVBoxLayout(self)
-        self.setMinimumSize(1135, 700)
+        self.setMinimumSize(900, 600)
 
         # 控件组 同步滚动
         self.horizontalLayout = QHBoxLayout()
@@ -200,6 +212,10 @@ class DialogShowComic(QDialog):
         self.label_sync_scroll.setText('同步滚动')
         self.horizontalLayout.addWidget(self.label_sync_scroll)
 
+        self.toolButton_previous_5p_image = QToolButton()
+        self.toolButton_previous_5p_image.setIcon(QIcon(satic_function.icon_previous_5p))
+        self.horizontalLayout.addWidget(self.toolButton_previous_5p_image)
+
         self.toolButton_previous_image = QToolButton()
         self.toolButton_previous_image.setIcon(QIcon(satic_function.icon_previous))
         self.horizontalLayout.addWidget(self.toolButton_previous_image)
@@ -207,6 +223,10 @@ class DialogShowComic(QDialog):
         self.toolButton_next_image = QToolButton()
         self.toolButton_next_image.setIcon(QIcon(satic_function.icon_next))
         self.horizontalLayout.addWidget(self.toolButton_next_image)
+
+        self.toolButton_next_5p_image = QToolButton()
+        self.toolButton_next_5p_image.setIcon(QIcon(satic_function.icon_next_5p))
+        self.horizontalLayout.addWidget(self.toolButton_next_5p_image)
 
         self.toolButton_refresh = QToolButton()
         self.toolButton_refresh.setIcon(QIcon(satic_function.icon_refresh))
@@ -239,6 +259,20 @@ class DialogShowComic(QDialog):
         self.toolButton_next_image.clicked.connect(self.sync_show_next_image)
         self.toolButton_previous_image.clicked.connect(self.show_previous_image)
         self.toolButton_refresh.clicked.connect(self.refresh_index)
+        self.signal_resized.connect(self.resize_preview_size)
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self.signal_resized.emit()
+
+    def resize_preview_size(self):
+        height = self.size().height() - 200
+        print(height)
+        layout = self.layout_comic_widget.layout()
+        for i in range(layout.count()):
+            item = layout.itemAt(i)
+            show_comic_widget = item.widget()
+            show_comic_widget.reset_height(height)
 
     def set_show_path_list(self, path_list):
         """设置需要显示的文件的列表"""

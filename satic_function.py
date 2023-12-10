@@ -1,5 +1,4 @@
 import configparser
-import inspect
 import os
 import random
 import shutil
@@ -28,6 +27,8 @@ icon_next = r'icon/next.png'
 icon_refresh = r'icon/refresh.png'
 history_back_dir = '查重结果'
 cache_filename = 'hash_cache.ini'
+icon_next_5p = r'icon/next_5p.png'
+icon_previous_5p = r'icon/previous_5p.png'
 
 
 def print_function_info(mode: str = 'current'):
