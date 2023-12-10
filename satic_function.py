@@ -250,7 +250,6 @@ def extract_image_from_archive(filepath: str, extract_file_number=1):
         extract_image_list.add(new_file)
 
     archive_file.close()
-
     # send2trash.send2trash(new_temp_image_folder)
 
     return extract_image_list, len(image_in_archive)
@@ -301,12 +300,13 @@ def get_image_attr(imagefile, mode_hash: str):
     print_function_info()
     try:
         image_pil = Image.open(imagefile)
+        resize_image_pil = image_pil.resize((8, 8))
         if mode_hash == 'ahash':
-            calc_hash = imagehash.average_hash(image_pil)  # 均值哈希
+            calc_hash = imagehash.average_hash(resize_image_pil)  # 均值哈希
         elif mode_hash == 'phash':
-            calc_hash = imagehash.phash(image_pil)  # 感知哈希
+            calc_hash = imagehash.phash(resize_image_pil)  # 感知哈希
         elif mode_hash == 'dhash':
-            calc_hash = imagehash.dhash(image_pil)  # 差异哈希
+            calc_hash = imagehash.dhash(resize_image_pil)  # 差异哈希
         else:
             calc_hash = None
     except:

@@ -169,7 +169,7 @@ class WidgetShowComic(QWidget):
                 self.image_index = 0
             else:
                 self.image_index -= step
-        self.image_index
+
         self.show_preview()
 
     def show_index(self):
@@ -238,10 +238,6 @@ class DialogShowComic(QDialog):
         self.toolButton_refresh = QToolButton()
         self.toolButton_refresh.setIcon(QIcon(satic_function.icon_refresh))
         self.horizontalLayout.addWidget(self.toolButton_refresh)
-
-        # self.label_show_index = QLabel()
-        # self.label_show_index.setText('显示索引')
-        # self.horizontalLayout.addWidget(self.label_show_index)
 
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
         self.horizontalLayout.addItem(self.horizontalSpacer)
