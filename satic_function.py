@@ -47,7 +47,7 @@ def print_function_info(mode: str = 'current'):
 def merge_intersecting_tuples(tuples_list: list) -> list:
     """合并list中的有交集的元组 [(1,2),(2,3)]->[(1,2,3)]"""
     merged_list = []
-
+    print(f'tuples_list {tuples_list}')
     for i in range(len(tuples_list)):
         tuple_merged = False
 
@@ -59,7 +59,7 @@ def merge_intersecting_tuples(tuples_list: list) -> list:
 
         if not tuple_merged:
             merged_list.append(tuples_list[i])
-
+    print(f'merged_list {merged_list}')
     return merged_list
 
 
@@ -548,6 +548,8 @@ def check_hash_cache():
                 file_cache_data[path] = {}
                 for key, value in group_dict.items():
                     if key != 'path':
+                        if value == 'None':  # 从数据库取得的None值为字符串类型，而非python的None类型
+                            value = None
                         file_cache_data[path][key] = value
 
     return file_cache_data
