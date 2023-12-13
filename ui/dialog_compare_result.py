@@ -258,18 +258,21 @@ class DialogShowComic(QDialog):
         self.show_path_list = None
         self.sync_scroll_index = 0  # 同步滚动索引
 
+        """设置定时器，用于延迟改变预览图控件大小"""
+        self.resize_timer = QTimer()
+        self.resize_timer.setSingleShot(True)  # 设置单次触发
+        self.resize_timer.timeout.connect(self.resize_preview_size)
+
         """连接槽函数"""
         self.toolButton_next_image.clicked.connect(lambda: self.sync_show_next_image(step=1))
         self.toolButton_previous_image.clicked.connect(lambda: self.sync_show_previous_image(step=1))
         self.toolButton_next_5p_image.clicked.connect(lambda: self.sync_show_next_image(step=5))
         self.toolButton_previous_5p_image.clicked.connect(lambda: self.sync_show_previous_image(step=5))
-
         self.toolButton_refresh.clicked.connect(self.refresh_index)
-        self.signal_resized.connect(self.resize_preview_size)
 
     def resizeEvent(self, event):
         super().resizeEvent(event)
-        self.signal_resized.emit()
+        self.resize_timer.start(300)  # 延迟x毫秒
 
     def resize_preview_size(self):
         height = self.size().height() - 200
