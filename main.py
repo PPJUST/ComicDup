@@ -6,6 +6,7 @@ from PySide6.QtGui import *  # type: ignore
 from PySide6.QtWidgets import *  # type: ignore
 
 import satic_function
+from config_function import *
 from thread_run import CompareQthread
 from ui.dialog_compare_result import DialogShowComic
 from ui.listwidget_folderlist import ListWidgetFolderlist
@@ -284,6 +285,8 @@ class DouDup(QMainWindow):
 
 
 def main():
+    check_config()
+
     app = QApplication()
     app.setStyle('Fusion')  # 设置风格
     # 设置白色背景色

@@ -5,6 +5,7 @@ import send2trash
 from PySide6.QtCore import *
 from PySide6.QtGui import *
 from PySide6.QtWidgets import *
+from config_function import get_preview_widget_wh
 
 import satic_function
 
@@ -205,7 +206,8 @@ class DialogShowComic(QDialog):
         super().__init__()
         """设置ui"""
         self.verticalLayout = QVBoxLayout(self)
-        self.setMinimumSize(900, 600)
+        width, height = get_preview_widget_wh()
+        self.setMinimumSize(width, height)
 
         # 控件组 同步滚动
         self.horizontalLayout = QHBoxLayout()

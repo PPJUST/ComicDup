@@ -47,7 +47,7 @@ def print_function_info(mode: str = 'current'):
 def merge_intersecting_tuples(tuples_list: list) -> list:
     """合并list中的有交集的元组 [(1,2),(2,3)]->[(1,2,3)]"""
     merged_list = []
-    print(f'tuples_list {tuples_list}')
+
     for i in range(len(tuples_list)):
         tuple_merged = False
 
@@ -59,7 +59,7 @@ def merge_intersecting_tuples(tuples_list: list) -> list:
 
         if not tuple_merged:
             merged_list.append(tuples_list[i])
-    print(f'merged_list {merged_list}')
+
     return merged_list
 
 
@@ -319,64 +319,6 @@ def get_image_attr(imagefile, mode_hash: str):
         calc_hash_str = None
 
     return calc_hash_str
-
-
-def walk_dirpath(dirpath_list):
-    """遍历输入的文件夹，找出需要处理的文件夹/压缩包"""
-    print_function_info()
-    check_dir_dict = dict()  # {文件夹路径:{'dir':set(), 'image':set(), 'archive':set()}...}
-    image_suffix = ['.jpg', '.png', 'webp']  # 取后4位
-    archive_suffix = ['zip', 'rar', '.7z']  # 取后3位
-    # 遍历所有文件，找出需要的文件
-    for checkpath in set(dirpath_list):
-        for dir_path, dirnames, filenames in os.walk(checkpath):
-            # 找出所有文件夹
-            for dirname in dirnames:
-                dirpath = os.path.normpath(os.path.join(dir_path, dirname))
-                # 文件夹写入字典
-                if dirpath not in check_dir_dict:
-                    check_dir_dict[dirpath] = {'dir': set(), 'image': set(), 'archive': set()}
-                # 父文件夹写入字典，并添加子文件夹数据
-                parent_dir = os.path.split(dirpath)[0]
-                if parent_dir not in check_dir_dict:
-                    check_dir_dict[parent_dir] = {'dir': set(), 'image': set(), 'archive': set()}
-                check_dir_dict[parent_dir]['dir'].add(dirpath)
-            # 找出所有文件
-            for filename in filenames:
-                filepath = os.path.normpath(os.path.join(dir_path, filename))
-                dirpath = os.path.split(filepath)[0]
-                if dirpath not in check_dir_dict:
-                    check_dir_dict[dirpath] = {'dir': set(), 'image': set(), 'archive': set()}
-                """改用后缀名判断，加快速度但是不精确
-                if is_image(filepath):
-                    check_dir_dict[dirpath]['image'].add(filepath)
-                elif is_archive(filepath):
-                    check_dir_dict[dirpath]['archive'].add(filepath)
-                """
-                if filepath[-4:].lower() in image_suffix:
-                    check_dir_dict[dirpath]['image'].add(filepath)
-                elif filepath[-3:].lower() in archive_suffix:
-                    check_dir_dict[dirpath]['archive'].add(filepath)
-
-    # 检查字典，筛选出需要的压缩包和文件夹
-    final_archive_set = set()
-    final_comic_dir_dict = dict()  # {文件夹路径:[内部所有图片文件路径]...}
-    for key_dirpath, data_dict in check_dir_dict.items():
-        value_dir = data_dict['dir']
-        value_image = data_dict['image']
-        value_archive = data_dict['archive']
-        if value_archive:  # 内部有压缩包则不视为漫画文件夹
-            final_archive_set.update(value_archive)
-            continue
-        elif value_dir:  # 内部有文件夹则不视为漫画文件夹
-            continue
-        else:
-            if len(value_image) < 4:  # 内部图片数<4则不视为漫画文件夹
-                continue
-            sorted_image = natsort.natsorted(list(value_image))
-            final_comic_dir_dict[key_dirpath] = sorted_image
-
-    return final_comic_dir_dict, final_archive_set
 
 
 def compare_image(image_data_dict, mode_ahash=True, mode_phash=True, mode_dhash=True, mode_ssim=True):
