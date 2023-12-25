@@ -6,12 +6,11 @@ from PySide6.QtCore import *
 
 class ThreadCheckFolder(QThread):
     signal_schedule_check_folder = Signal(str)
+    signal_finished = Signal(dict, set)
 
     def __init__(self):
         super().__init__()
         self.dirpath_list = []
-        self.comic_dir_dict = dict()  # 格式：{文件夹路径:(排序后的内部图片路径), ...}
-        self.archive_set = set()  # 格式：(压缩包路径, ...)
 
     def set_dirpath_list(self, dirpath_list):
         self.dirpath_list = set(dirpath_list)
@@ -54,8 +53,8 @@ class ThreadCheckFolder(QThread):
                         check_dir_dict[dirpath]['archive'].add(filepath)
 
         # 检查字典，筛选出需要的压缩包和文件夹
-        final_archive_set = set()
-        final_comic_dir_dict = dict()  # {文件夹路径:[内部所有图片文件路径]...}
+        final_archive_set = set()  # 格式：(压缩包路径, ...)
+        final_comic_dir_dict = dict()  # 格式：{文件夹路径:(排序后的内部图片路径), ...}
         for key_dirpath, data_dict in check_dir_dict.items():
             value_dir = data_dict['dir']
             value_image = data_dict['image']
@@ -71,8 +70,4 @@ class ThreadCheckFolder(QThread):
                 sorted_image = natsort.natsorted(list(value_image))
                 final_comic_dir_dict[key_dirpath] = sorted_image
 
-        self.comic_dir_dict = final_comic_dir_dict
-        self.archive_set = final_archive_set
-
-    def get_result(self):
-        return self.comic_dir_dict, self.archive_set
+        self.signal_finished.emit(final_comic_dir_dict, final_archive_set)

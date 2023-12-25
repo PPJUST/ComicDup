@@ -32,15 +32,19 @@ class DouDup(QMainWindow):
         # 实例化子线程
         self.thread_check_folder = ThreadCheckFolder()
         self.thread_check_folder.signal_schedule_check_folder.connect(self.update_schedule_rate)
+        self.thread_check_folder.signal_finished.connect(self.start_check_step_2)
 
         self.thread_extract_image = ThreadExtractImage()
         self.thread_extract_image.signal_schedule_extract_image.connect(self.update_schedule_rate)
+        self.thread_extract_image.signal_finished.connect(self.start_check_step_3)
 
         self.thread_calc_hash = ThreadCalcHash()
         self.thread_calc_hash.signal_schedule_calc_hash.connect(self.update_schedule_rate)
+        self.thread_calc_hash.signal_finished.connect(self.start_check_step_5)
 
         self.thread_compare_image = ThreadCompareImage()
         self.thread_compare_image.signal_schedule_compare_image.connect(self.update_schedule_rate)
+        self.thread_compare_image.signal_finished.connect(self.start_check_step_finished)
 
         # 设置一个定时器用于更新时间
         self.timer = QTimer()
@@ -56,7 +60,7 @@ class DouDup(QMainWindow):
 
         """连接信号与槽函数"""
         self.ui.listWidget_folderlist.signal_folderlist.connect(self.accept_folderlist)
-        self.ui.pushButton_start.clicked.connect(self.start_check)
+        self.ui.pushButton_start.clicked.connect(self.start_check_step_1)
         self.ui.pushButton_stop.clicked.connect(self.stop_thread)
 
     def accept_folderlist(self, folderlist):
@@ -98,7 +102,7 @@ class DouDup(QMainWindow):
 
         return similar_mode_dict
 
-    def start_check(self):
+    def start_check_step_1(self):
         """原神，启动！"""
         """
         准备工作
@@ -111,75 +115,81 @@ class DouDup(QMainWindow):
         self.ui.label_schedule_time.setText('0:00')
         # 改变按钮状态
         self.set_start_button_state(mode='start')
-        # 获取相似度算法设置
-        similar_mode_dict = self.get_similar_mode()
-        need_image_number = similar_mode_dict['image_number']
-        mode_ahash = similar_mode_dict['ahash']
-        mode_phash = similar_mode_dict['phash']
-        mode_dhash = similar_mode_dict['dhash']
-        mode_ssim = similar_mode_dict['ssim']
         # 清空临时文件夹中的图片
         satic_function.clear_temp_image_folder()
         # 清除上一次的查重结果
         self.ui.treeWidget_show.clear()
-        print('测试节点1')
 
         """
         第1步 检查文件夹，提取漫画文件夹和压缩包
         """
-        self.ui.label_schedule_time.setText('1/4 检查文件夹')
+        self.ui.label_schedule_step.setText('1/6 检查文件夹')
         # 获取需要检查的文件夹
         check_folder_list = []
         for path in self.folder_list:
             if path != '' and os.path.exists(path):
                 check_folder_list.append(path)
-        print('测试节点2')
         # 提取文件夹中符合要求的文件夹、压缩包
         self.thread_check_folder.set_dirpath_list(check_folder_list)
         self.thread_check_folder.start()
-        self.thread_check_folder.wait()
-        comic_dir_dict, archive_set = self.thread_check_folder.get_result()
+        # 获取的数据
         # comic_dir_dict 格式：{文件夹路径:(排序后的内部图片路径), ...}
         # archive_set 格式：(压缩包路径, ...)
-        print('测试节点3')
+
+    def start_check_step_2(self, comic_dir_dict, archive_set):
         """
         第2步 提取文件夹和压缩包中的图片
         """
-        self.ui.label_schedule_time.setText('2/4 提取图片')
+        # comic_dir_dict 格式：{文件夹路径:(排序后的内部图片路径), ...}
+        # archive_set 格式：(压缩包路径, ...)
+        # 获取相似度算法设置
+        similar_mode_dict = self.get_similar_mode()
+        need_image_number = similar_mode_dict['image_number']
+
+        self.ui.label_schedule_step.setText('2/6 提取图片')
         self.thread_extract_image.set_comic_dir_dict(comic_dir_dict)
         self.thread_extract_image.set_archive_set(archive_set)
         self.thread_extract_image.set_need_image_number(need_image_number)
         self.thread_extract_image.start()
-        self.thread_extract_image.wait()
-        comic_data_dict, image_data_dict = self.thread_extract_image.get_result()
-        # self.image_data_dict 图片对应的数据字典 {图片文件:{origin_path:...}, ...}
-        # self.comic_data_dict 源文件对应的数据字典 {源文件/文件夹:{preview:..., filetype/image_number/filesize}, ...}
-        print('测试节点4')
+        # 获取的数据
+        # image_data_dict 图片对应的数据字典 {图片文件:{origin_path:...}, ...}
+        # comic_data_dict 源文件对应的数据字典 {源文件/文件夹:{preview:..., filetype/image_number/filesize}, ...}
+
+    def start_check_step_3(self, comic_data_dict, image_data_dict):
         """
         第3步 提取已有图片缓存
         """
-        self.ui.label_schedule_time.setText('3/4 提取图片特征缓存')
+        # image_data_dict 图片对应的数据字典 {图片文件:{origin_path:...}, ...}
+        # comic_data_dict 源文件对应的数据字典 {源文件/文件夹:{preview:..., filetype/image_number/filesize}, ...}
+
+        self.comic_data_dict = comic_data_dict
+        self.ui.label_schedule_step.setText('3/6 提取图片特征缓存')
         image_cache_data = satic_function.check_hash_cache()
-        print('测试节点5')
+        self.start_check_step_4(image_data_dict, image_cache_data)
+
+    def start_check_step_4(self, image_data_dict, image_cache_data):
         """
         第4步 计算图片特征
         """
-        print('测试节点6')
-        self.ui.label_schedule_time.setText('3/4 计算图片特征')
+        # 获取相似度算法设置
+        similar_mode_dict = self.get_similar_mode()
+        mode_ahash = similar_mode_dict['ahash']
+        mode_phash = similar_mode_dict['phash']
+        mode_dhash = similar_mode_dict['dhash']
+
+        self.ui.label_schedule_step.setText('4/6 计算图片特征')
         self.thread_calc_hash.set_image_data_dict(image_data_dict)
         self.thread_calc_hash.set_comic_cache_data(image_cache_data)
         self.thread_calc_hash.set_mode_hash(mode_ahash, mode_phash, mode_dhash)
         self.thread_calc_hash.start()
-        self.thread_calc_hash.wait()
-        new_image_data_dict = self.thread_calc_hash.get_result()
-        print('测试节点7')
+
+    def start_check_step_5(self, image_data_dict):
         """
         第5步 保存图片缓存，只保存源文件为文件夹的图片数据
         """
-        print('测试节点8')
-        self.ui.label_schedule_time.setText('3/4 保存图片缓存')
+        self.ui.label_schedule_step.setText('5/6 保存图片缓存')
         save_cache_data = {}  # {图片路径:{'filesize源文件大小':int, 'ahash':'str', ...}...}
-        for image, data in new_image_data_dict.items():
+        for image, data in image_data_dict.items():
             origin_path = data['origin_path']
             if os.path.isdir(origin_path):
                 filesize = os.path.getsize(image)
@@ -188,20 +198,30 @@ class DouDup(QMainWindow):
                 dhash = data['dhash']
                 save_cache_data[image] = {'filesize': filesize, 'ahash': ahash, 'phash': phash, 'dhash': dhash}
         satic_function.update_hash_cache(save_cache_data)
-        print('测试节点9')
+        self.start_check_step_6(image_data_dict)
+
+    def start_check_step_6(self, image_data_dict):
         """
         第6步 对比图片特征
         """
-        self.ui.label_schedule_time.setText('4/4 对比图片特征')
-        self.thread_compare_image.set_image_data_dict(new_image_data_dict)
+        # 获取相似度算法设置
+        similar_mode_dict = self.get_similar_mode()
+        mode_ahash = similar_mode_dict['ahash']
+        mode_phash = similar_mode_dict['phash']
+        mode_dhash = similar_mode_dict['dhash']
+        mode_ssim = similar_mode_dict['ssim']
+
+        self.ui.label_schedule_step.setText('6/6 对比图片特征')
+        self.thread_compare_image.set_image_data_dict(image_data_dict)
         self.thread_compare_image.set_mode_compare(mode_ahash=mode_ahash,
                                                    mode_phash=mode_phash,
                                                    mode_dhash=mode_dhash,
                                                    mode_ssim=mode_ssim)
         self.thread_compare_image.start()
-        self.thread_compare_image.wait()
-        similar_group_list = self.thread_compare_image.get_result()
-        print('测试节点10')
+        # 获取的数据
+        # similar_group_list 相似组列表 [(源文件1,源文件2), (...)...]
+
+    def start_check_step_finished(self, similar_group_list):
         """
         结束
         """
@@ -210,19 +230,17 @@ class DouDup(QMainWindow):
         self.set_start_button_state(mode='stop')
         self.timer.stop()
         # 处理最终结果
-        self.deal_compare_result(similar_group_list, comic_data_dict)
-
-    def deal_compare_result(self, similar_group_list, comic_data_dict):
-        """接收最终结果，包括一个相似组list和源文件数据dict"""
-        # 写入全局变量
         self.similar_group_list = similar_group_list
-        self.comic_data_dict = comic_data_dict
+        self.deal_compare_result()
+
+    def deal_compare_result(self):
+        """接收最终结果，包括一个相似组list和源文件数据dict"""
         # 保存结果到xlsx
-        satic_function.save_similar_result(similar_group_list, comic_data_dict)
+        satic_function.save_similar_result(self.similar_group_list, self.comic_data_dict)
         # 显示结果在ui中
         self.ui.treeWidget_show.clear()
         group_number = 0
-        for group_turple in similar_group_list:
+        for group_turple in self.similar_group_list:
             group_number += 1
             # 创建父节点
             parent_item = QTreeWidgetItem(self.ui.treeWidget_show)
@@ -237,10 +255,10 @@ class DouDup(QMainWindow):
             layout.setSpacing(30)
             for file in group_turple:
                 # 提取数据
-                filesize_mb = round(comic_data_dict[file]['filesize'] / 1024 / 1024, 2)
-                image_number = comic_data_dict[file]['image_number']
-                preview_image = comic_data_dict[file]['preview']
-                filetype = comic_data_dict[file]['filetype']
+                filesize_mb = round(self.comic_data_dict[file]['filesize'] / 1024 / 1024, 2)
+                image_number = self.comic_data_dict[file]['image_number']
+                preview_image = self.comic_data_dict[file]['preview']
+                filetype = self.comic_data_dict[file]['filetype']
                 # 实例化自定义控件
                 widget_comic = WidgetShowComic()
                 widget_comic.signal_del_file.connect(self.accept_signal_del_file)

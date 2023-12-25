@@ -5,6 +5,7 @@ import satic_function
 
 class ThreadCompareImage(QThread):
     signal_schedule_compare_image = Signal(str)
+    signal_finished = Signal(list)
 
     def __init__(self):
         super().__init__()
@@ -13,7 +14,6 @@ class ThreadCompareImage(QThread):
         self.mode_phash = 0
         self.mode_dhash = 0
         self.mode_ssim = 0
-        self.final_similar_group_list = list()
 
     def set_image_data_dict(self, image_data_dict=None):
         if image_data_dict is None:
@@ -87,7 +87,6 @@ class ThreadCompareImage(QThread):
                     else:
                         similar_group_list.append((key_origin, compare_origin))
         # 处理相似组列表（去重、合并交集项）
-        self.final_similar_group_list = satic_function.merge_intersecting_tuples(similar_group_list)
+        similar_group_list = satic_function.merge_intersecting_tuples(similar_group_list)
 
-    def get_result(self):
-        return self.final_similar_group_list
+        self.signal_finished.emit(similar_group_list)
