@@ -3,7 +3,7 @@ from PySide6.QtCore import *
 import satic_function
 
 
-class CompareImageQthread(QThread):
+class ThreadCompareImage(QThread):
     signal_schedule_compare_image = Signal(str)
 
     def __init__(self):
@@ -15,10 +15,12 @@ class CompareImageQthread(QThread):
         self.mode_ssim = 0
         self.final_similar_group_list = list()
 
-    def set_args(self, image_data_dict=None, mode_ahash=0, mode_phash=0, mode_dhash=0, mode_ssim=0):
+    def set_image_data_dict(self, image_data_dict=None):
         if image_data_dict is None:
             image_data_dict = dict()
         self.image_data_dict = image_data_dict
+
+    def set_mode_compare(self, mode_ahash=0, mode_phash=0, mode_dhash=0, mode_ssim=0):
         self.mode_ahash = mode_ahash
         self.mode_phash = mode_phash
         self.mode_dhash = mode_dhash
@@ -28,7 +30,7 @@ class CompareImageQthread(QThread):
         """传入数据字典，对比其中的图片，查找相似项"""
         similar_group_list = []  # 相似组列表 [(源文件1,源文件2), (...)...]
         all_image_list = list(self.image_data_dict.keys())
-        total_group = len(all_image_list)
+        total_group = len(all_image_list) - 1
         # 提取检查的图
         for index, key in enumerate(all_image_list[:-1]):  # 最后一张图不需要进行检查
             self.signal_schedule_compare_image.emit(f'{index + 1}/{total_group}')

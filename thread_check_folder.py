@@ -4,20 +4,19 @@ import natsort
 from PySide6.QtCore import *
 
 
-class CheckFolderQthread(QThread):
+class ThreadCheckFolder(QThread):
     signal_schedule_check_folder = Signal(str)
 
     def __init__(self):
         super().__init__()
         self.dirpath_list = []
-        self.comic_dir_dict = dict()
-        self.archive_set = set()
+        self.comic_dir_dict = dict()  # 格式：{文件夹路径:(排序后的内部图片路径), ...}
+        self.archive_set = set()  # 格式：(压缩包路径, ...)
 
     def set_dirpath_list(self, dirpath_list):
         self.dirpath_list = set(dirpath_list)
 
     def run(self):
-        """遍历输入的文件夹，找出需要处理的文件夹/压缩包"""
         total_folder = len(self.dirpath_list)
         check_dir_dict = dict()  # {文件夹路径:{'dir':set(), 'image':set(), 'archive':set()}...}
         image_suffix = ['.jpg', '.png', 'webp']  # 取后4位
