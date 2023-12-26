@@ -46,10 +46,7 @@
         <property name="flat">
          <bool>false</bool>
         </property>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <property name="spacing">
-          <number>6</number>
-         </property>
+        <layout class="QGridLayout" name="gridLayout_3">
          <property name="leftMargin">
           <number>0</number>
          </property>
@@ -62,17 +59,31 @@
          <property name="bottomMargin">
           <number>0</number>
          </property>
-         <item>
+         <item row="0" column="1">
+          <widget class="QPushButton" name="pushButton_stop">
+           <property name="text">
+            <string>停止</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0">
           <widget class="QPushButton" name="pushButton_start">
            <property name="text">
             <string>开始</string>
            </property>
           </widget>
          </item>
-         <item>
-          <widget class="QPushButton" name="pushButton_stop">
+         <item row="1" column="0">
+          <widget class="QPushButton" name="pushButton_refresh_result">
            <property name="text">
-            <string>停止</string>
+            <string>刷新记录</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QPushButton" name="pushButton_load_result">
+           <property name="text">
+            <string>加载记录</string>
            </property>
           </widget>
          </item>

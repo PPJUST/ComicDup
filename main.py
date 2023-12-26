@@ -62,6 +62,8 @@ class DouDup(QMainWindow):
         self.ui.listWidget_folderlist.signal_folderlist.connect(self.accept_folderlist)
         self.ui.pushButton_start.clicked.connect(self.start_check_step_1)
         self.ui.pushButton_stop.clicked.connect(self.stop_thread)
+        self.ui.pushButton_load_result.clicked.connect(self.load_compare_result)
+        self.ui.pushButton_refresh_result.clicked.connect(self.refresh_compare_result)
 
     def accept_folderlist(self, folderlist):
         """接收子控件的信号"""
@@ -229,18 +231,20 @@ class DouDup(QMainWindow):
         self.ui.label_schedule_rate.setText('-/-')
         self.set_start_button_state(mode='stop')
         self.timer.stop()
-        # 处理最终结果
         self.similar_group_list = similar_group_list
-        self.deal_compare_result()
-
-    def deal_compare_result(self):
-        """接收最终结果，包括一个相似组list和源文件数据dict"""
         # 保存结果到xlsx
         satic_function.save_similar_result(self.similar_group_list, self.comic_data_dict)
-        # 显示结果在ui中
+        # 保存原始数据到本地
+        save_data_pickle(self.similar_group_list, self.comic_data_dict)
+        self.show_compare_result()
+
+    def show_compare_result(self):
+        """将对比结果显示在ui中"""
         self.ui.treeWidget_show.clear()
         group_number = 0
         for group_turple in self.similar_group_list:
+            if len(group_turple) <= 1:  # 无相似的项不显示
+                continue
             group_number += 1
             # 创建父节点
             parent_item = QTreeWidgetItem(self.ui.treeWidget_show)
@@ -254,25 +258,26 @@ class DouDup(QMainWindow):
             layout.setContentsMargins(0, 0, 0, 0)
             layout.setSpacing(30)
             for file in group_turple:
-                # 提取数据
-                filesize_mb = round(self.comic_data_dict[file]['filesize'] / 1024 / 1024, 2)
-                image_number = self.comic_data_dict[file]['image_number']
-                preview_image = self.comic_data_dict[file]['preview']
-                filetype = self.comic_data_dict[file]['filetype']
-                # 实例化自定义控件
-                widget_comic = WidgetShowComic()
-                widget_comic.signal_del_file.connect(self.accept_signal_del_file)
-                widget_comic.signal_double_click.connect(self.show_dialog_compare_result)
-                # widget_comic.setFixedSize(125, 215)
-                widget_comic.setStyleSheet('{border: 1px solid gray;')
-                widget_comic.set_filepath(file)
-                widget_comic.set_size_and_count(f'{filesize_mb}MB/{image_number}图')
-                widget_comic.set_preview(preview_image)
-                if filetype == 'folder':
-                    widget_comic.set_filetype_icon(satic_function.icon_folder)
-                elif filetype == 'archive':
-                    widget_comic.set_filetype_icon(satic_function.icon_archive)
-                layout.addWidget(widget_comic)
+                if os.path.exists(file) and file in self.comic_data_dict:
+                    # 提取数据
+                    filesize_mb = round(self.comic_data_dict[file]['filesize'] / 1024 / 1024, 2)
+                    image_number = self.comic_data_dict[file]['image_number']
+                    preview_image = self.comic_data_dict[file]['preview']
+                    filetype = self.comic_data_dict[file]['filetype']
+                    # 实例化自定义控件
+                    widget_comic = WidgetShowComic()
+                    widget_comic.signal_del_file.connect(self.accept_signal_del_file)
+                    widget_comic.signal_double_click.connect(self.show_dialog_compare_result)
+                    # widget_comic.setFixedSize(125, 215)
+                    widget_comic.setStyleSheet('{border: 1px solid gray;')
+                    widget_comic.set_filepath(file)
+                    widget_comic.set_size_and_count(f'{filesize_mb}MB/{image_number}图')
+                    widget_comic.set_preview(preview_image)
+                    if filetype == 'folder':
+                        widget_comic.set_filetype_icon(satic_function.icon_folder)
+                    elif filetype == 'archive':
+                        widget_comic.set_filetype_icon(satic_function.icon_archive)
+                    layout.addWidget(widget_comic)
             scroll_area = QScrollArea()
             scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
             scroll_area.setWidgetResizable(True)
@@ -281,6 +286,26 @@ class DouDup(QMainWindow):
             self.ui.treeWidget_show.setItemWidget(child_item, 0, scroll_area)
             # 打开所有父节点
             self.ui.treeWidget_show.expandAll()
+
+    def load_compare_result(self):
+        """加载保存的对比结果数据"""
+        similar_group_list, comic_data_dict = get_data_pickle()
+        self.similar_group_list = similar_group_list
+        self.comic_data_dict = comic_data_dict
+        self.show_compare_result()
+
+    def refresh_compare_result(self):
+        """刷新结果，剔除不存在的项"""
+        checked_similar_group_list = []
+        for group_turple in self.similar_group_list:
+            checked_group_list = []
+            for file in group_turple:
+                if os.path.exists(file):
+                    checked_group_list.append(file)
+            checked_similar_group_list.append(tuple(checked_group_list))
+
+        self.similar_group_list = checked_similar_group_list
+        self.show_compare_result()
 
     def set_start_button_state(self, mode='start'):
         """设置开始和停止按钮状态"""
