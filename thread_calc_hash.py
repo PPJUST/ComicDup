@@ -43,27 +43,24 @@ class ThreadCalcHash(QThread):
             if self.mode_ahash:
                 if cache_ahash:
                     hash_dict['ahash'] = cache_ahash
-                    hash_dict['ahash_count0'] = cache_ahash.count('0')
                 else:
-                    ahash = get_image_attr(image, mode_hash='ahash')
-                    hash_dict['ahash'] = ahash
-                    hash_dict['ahash_count0'] = ahash.count('0')
+                    hash_dict['ahash'] = get_image_attr(image, mode_hash='ahash')
+                if hash_dict['ahash']:
+                    hash_dict['ahash_count0'] = hash_dict['ahash'].count('0')
             if self.mode_phash:
                 if cache_phash:
                     hash_dict['phash'] = cache_phash
-                    hash_dict['phash_count0'] = cache_phash.count('0')
                 else:
-                    phash = get_image_attr(image, mode_hash='phash')
-                    hash_dict['phash'] = phash
-                    hash_dict['phash_count0'] = phash.count('0')
+                    hash_dict['phash'] = get_image_attr(image, mode_hash='phash')
+                if hash_dict['phash']:
+                    hash_dict['phash_count0'] = hash_dict['phash'].count('0')
             if self.mode_dhash:
                 if cache_dhash:
                     hash_dict['dhash'] = cache_dhash
-                    hash_dict['dhash_count0'] = cache_dhash.count('0')
                 else:
-                    dhash = get_image_attr(image, mode_hash='dhash')
-                    hash_dict['dhash'] = dhash
-                    hash_dict['dhash_count0'] = dhash.count('0')
+                    hash_dict['dhash'] = get_image_attr(image, mode_hash='dhash')
+                if hash_dict['dhash']:
+                    hash_dict['dhash_count0'] = hash_dict['dhash'].count('0')
 
             new_image_data_dict[image].update(hash_dict)
 
