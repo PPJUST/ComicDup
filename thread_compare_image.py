@@ -62,7 +62,10 @@ class ThreadCompareImage(QThread):
                 compare_phash_count0 = self.image_data_dict[compare]['phash_count0']
                 # 检查phash中0的个数，如果超限则提前结束循环
                 limit_count = self.mode_phash / 2  # 限制为选定的哈希值差额/2（0/1差异各占一半）
-                diff_count = compare_phash_count0 - key_phash_count0  # 数据字典已经按count值升序排序
+                try:
+                    diff_count = compare_phash_count0 - key_phash_count0  # 数据字典已经按count值升序排序
+                except TypeError:  # 防止None相减 TypeError: unsupported operand type(s) for -: 'NoneType' and 'int'
+                    break
                 if diff_count > limit_count:
                     break
 
