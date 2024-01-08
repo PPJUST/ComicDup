@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'ui_mainaDAcRe.ui'
+## Form generated from reading UI file 'ui_mainAeqdVx.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.1.3
 ##
@@ -78,6 +78,7 @@ class Ui_MainWindow(object):
         self.buttonGroup.setObjectName(u"buttonGroup")
         self.buttonGroup.addButton(self.checkBox_ahash)
         self.checkBox_ahash.setObjectName(u"checkBox_ahash")
+        self.checkBox_ahash.setEnabled(False)
         self.checkBox_ahash.setChecked(False)
 
         self.gridLayout.addWidget(self.checkBox_ahash, 0, 0, 1, 1)
@@ -92,6 +93,7 @@ class Ui_MainWindow(object):
         self.checkBox_phash = QCheckBox(self.groupBox_similar)
         self.buttonGroup.addButton(self.checkBox_phash)
         self.checkBox_phash.setObjectName(u"checkBox_phash")
+        self.checkBox_phash.setCheckable(True)
         self.checkBox_phash.setChecked(True)
 
         self.gridLayout.addWidget(self.checkBox_phash, 1, 0, 1, 1)
@@ -121,6 +123,7 @@ class Ui_MainWindow(object):
 
         self.checkBox_ssim = QCheckBox(self.groupBox_similar)
         self.checkBox_ssim.setObjectName(u"checkBox_ssim")
+        self.checkBox_ssim.setChecked(True)
 
         self.gridLayout.addWidget(self.checkBox_ssim, 4, 0, 1, 1)
 
@@ -131,6 +134,7 @@ class Ui_MainWindow(object):
 
         self.spinBox_threshold_ahash = QSpinBox(self.groupBox_similar)
         self.spinBox_threshold_ahash.setObjectName(u"spinBox_threshold_ahash")
+        self.spinBox_threshold_ahash.setEnabled(False)
         self.spinBox_threshold_ahash.setMaximum(30)
         self.spinBox_threshold_ahash.setValue(10)
 
@@ -146,11 +150,13 @@ class Ui_MainWindow(object):
         self.checkBox_dhash = QCheckBox(self.groupBox_similar)
         self.buttonGroup.addButton(self.checkBox_dhash)
         self.checkBox_dhash.setObjectName(u"checkBox_dhash")
+        self.checkBox_dhash.setEnabled(False)
 
         self.gridLayout.addWidget(self.checkBox_dhash, 2, 0, 1, 1)
 
         self.spinBox_threshold_dhash = QSpinBox(self.groupBox_similar)
         self.spinBox_threshold_dhash.setObjectName(u"spinBox_threshold_dhash")
+        self.spinBox_threshold_dhash.setEnabled(False)
         self.spinBox_threshold_dhash.setMaximum(30)
         self.spinBox_threshold_dhash.setValue(10)
 

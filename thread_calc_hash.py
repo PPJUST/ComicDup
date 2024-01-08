@@ -31,7 +31,8 @@ class ThreadCalcHash(QThread):
         total_data = len(self.image_data_dict)
         for index, image in enumerate(self.image_data_dict):
             self.signal_schedule_calc_hash.emit(f'{index}/{total_data}')
-            hash_dict = {'ahash': None, 'phash': None, 'dhash': None}
+            hash_dict = {'ahash': None, 'phash': None, 'dhash': None,
+                         'ahash_count0': None, 'phash_count0': None, 'dhash_count0': None}
             # 提取缓存中已有的hash数据
             origin_path = image
             cache_ahash, cache_phash, cache_dhash = None, None, None
@@ -42,18 +43,27 @@ class ThreadCalcHash(QThread):
             if self.mode_ahash:
                 if cache_ahash:
                     hash_dict['ahash'] = cache_ahash
+                    hash_dict['ahash_count0'] = cache_ahash.count('0')
                 else:
-                    hash_dict['ahash'] = get_image_attr(image, mode_hash='ahash')
+                    ahash = get_image_attr(image, mode_hash='ahash')
+                    hash_dict['ahash'] = ahash
+                    hash_dict['ahash_count0'] = ahash.count('0')
             if self.mode_phash:
                 if cache_phash:
                     hash_dict['phash'] = cache_phash
+                    hash_dict['phash_count0'] = cache_phash.count('0')
                 else:
-                    hash_dict['phash'] = get_image_attr(image, mode_hash='phash')
+                    phash = get_image_attr(image, mode_hash='phash')
+                    hash_dict['phash'] = phash
+                    hash_dict['phash_count0'] = phash.count('0')
             if self.mode_dhash:
                 if cache_dhash:
                     hash_dict['dhash'] = cache_dhash
+                    hash_dict['dhash_count0'] = cache_dhash.count('0')
                 else:
-                    hash_dict['dhash'] = get_image_attr(image, mode_hash='dhash')
+                    dhash = get_image_attr(image, mode_hash='dhash')
+                    hash_dict['dhash'] = dhash
+                    hash_dict['dhash_count0'] = dhash.count('0')
 
             new_image_data_dict[image].update(hash_dict)
 

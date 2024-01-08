@@ -146,6 +146,9 @@
          </property>
          <item row="0" column="0">
           <widget class="QCheckBox" name="checkBox_ahash">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="toolTip">
             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;均值哈希，计算最快。&lt;/p&gt;&lt;p&gt;差值为5时基本可以认定为两张图片相同。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
@@ -177,6 +180,9 @@
            </property>
            <property name="text">
             <string>pHash</string>
+           </property>
+           <property name="checkable">
+            <bool>true</bool>
            </property>
            <property name="checked">
             <bool>true</bool>
@@ -227,6 +233,9 @@
            <property name="text">
             <string>SSIM</string>
            </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
           </widget>
          </item>
          <item row="6" column="0">
@@ -241,6 +250,9 @@
          </item>
          <item row="0" column="1">
           <widget class="QSpinBox" name="spinBox_threshold_ahash">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="suffix">
             <string/>
            </property>
@@ -261,6 +273,9 @@
          </item>
          <item row="2" column="0">
           <widget class="QCheckBox" name="checkBox_dhash">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="toolTip">
             <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;差值哈希，计算较慢但更加准确。&lt;/p&gt;&lt;p&gt;差值为5时基本可以认定为两张图片相同。&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
            </property>
@@ -274,6 +289,9 @@
          </item>
          <item row="2" column="1">
           <widget class="QSpinBox" name="spinBox_threshold_dhash">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="maximum">
             <number>30</number>
            </property>
