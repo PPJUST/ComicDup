@@ -1,3 +1,4 @@
+import inspect
 import os
 import random
 import shutil
@@ -34,14 +35,14 @@ icon_previous_5p = r'icon/previous_5p.png'
 def print_function_info(mode: str = 'current'):
     """打印当前/上一个执行的函数信息
     传参：mode 'current' 或 'last'"""
-    pass
+    # pass
 
-    # if mode == 'current':
-    #     print(time.strftime('%H:%M:%S ', time.localtime()),
-    #           inspect.getframeinfo(inspect.currentframe().f_back).function)
-    # elif mode == 'last':
-    #     print(time.strftime('%H:%M:%S ', time.localtime()),
-    #           inspect.getframeinfo(inspect.currentframe().f_back.f_back).function)
+    if mode == 'current':
+        print(time.strftime('%H:%M:%S ', time.localtime()),
+              inspect.getframeinfo(inspect.currentframe().f_back).function)
+    elif mode == 'last':
+        print(time.strftime('%H:%M:%S ', time.localtime()),
+              inspect.getframeinfo(inspect.currentframe().f_back.f_back).function)
 
 
 def merge_intersecting_tuples(tuples_list: list) -> list:
@@ -239,12 +240,15 @@ def extract_image_from_archive(filepath: str, extract_file_number=1):
     for index in range(ex_number):
         # 解压
         extract_image_path = image_in_archive[index]
-        archive_file.extract(extract_image_path, new_temp_image_folder)
+        local_image_file = archive_file.extract(extract_image_path, new_temp_image_folder)
+        local_image_file = os.path.normpath(local_image_file)
+        while True:  # 需要判断是否存在，不然后续的移动会在图片解压前执行而报错
+            if os.path.exists(local_image_file):
+                break
         # 改名
-        local_image_file = os.path.join(new_temp_image_folder, extract_image_path)
         suffix = os.path.splitext(local_image_file)[1]
         new_name = f'{index}_' + create_random_string(16) + suffix
-        new_file = os.path.join(temp_image_folder, new_name)
+        new_file = os.path.normpath(os.path.join(temp_image_folder, new_name))
         # 移动
         shutil.move(local_image_file, new_file)
         extract_image_list.add(new_file)

@@ -146,6 +146,7 @@ class DouDup(QMainWindow):
         """
         第2步 提取文件夹和压缩包中的图片
         """
+        satic_function.print_function_info()
         # comic_dir_dict 格式：{文件夹路径:(排序后的内部图片路径), ...}
         # archive_set 格式：(压缩包路径, ...)
         # 获取相似度算法设置
@@ -165,18 +166,23 @@ class DouDup(QMainWindow):
         """
         第3步 提取已有图片缓存
         """
+        satic_function.print_function_info()
         # image_data_dict 图片对应的数据字典 {图片文件:{origin_path:...}, ...}
         # comic_data_dict 源文件对应的数据字典 {源文件/文件夹:{preview:..., filetype/image_number/filesize}, ...}
-
         self.comic_data_dict = comic_data_dict
+        print('1')
         self.ui.label_schedule_step.setText('3/6 提取图片特征缓存')
+        print(2)
         image_cache_data = satic_function.check_hash_cache()
+        print(3)
         self.start_check_step_4(image_data_dict, image_cache_data)
+        print(4)
 
     def start_check_step_4(self, image_data_dict, image_cache_data):
         """
         第4步 计算图片特征
         """
+        satic_function.print_function_info()
         # 获取相似度算法设置
         similar_mode_dict = self.get_similar_mode()
         mode_ahash = similar_mode_dict['ahash']
@@ -193,6 +199,7 @@ class DouDup(QMainWindow):
         """
         第5步 保存图片缓存，只保存源文件为文件夹的图片数据
         """
+        satic_function.print_function_info()
         self.ui.label_schedule_step.setText('5/6 保存图片缓存')
         save_cache_data = {}  # {图片路径:{'filesize源文件大小':int, 'ahash':'str', ...}...}
         for image, data in image_data_dict.items():
@@ -210,6 +217,7 @@ class DouDup(QMainWindow):
         """
         第6步 对比图片特征
         """
+        satic_function.print_function_info()
         # 获取相似度算法设置
         similar_mode_dict = self.get_similar_mode()
         mode_ahash = similar_mode_dict['ahash']
@@ -231,6 +239,7 @@ class DouDup(QMainWindow):
         """
         结束
         """
+        satic_function.print_function_info()
         self.ui.label_schedule_step.setText('-/- 结束')
         self.ui.label_schedule_rate.setText('-/-')
         self.set_start_button_state(mode='stop')
@@ -244,6 +253,7 @@ class DouDup(QMainWindow):
 
     def show_compare_result(self):
         """将对比结果显示在ui中"""
+        satic_function.print_function_info()
         self.ui.treeWidget_show.clear()
         group_number = 0
         for group_turple in self.similar_group_list:
@@ -293,6 +303,7 @@ class DouDup(QMainWindow):
 
     def load_compare_result(self):
         """加载保存的对比结果数据"""
+        satic_function.print_function_info()
         similar_group_list, comic_data_dict = get_data_pickle()
         self.similar_group_list = similar_group_list
         self.comic_data_dict = comic_data_dict
@@ -300,6 +311,7 @@ class DouDup(QMainWindow):
 
     def refresh_compare_result(self):
         """刷新结果，剔除不存在的项"""
+        satic_function.print_function_info()
         checked_similar_group_list = []
         for group_turple in self.similar_group_list:
             checked_group_list = []
@@ -337,6 +349,7 @@ class DouDup(QMainWindow):
 
     def show_dialog_compare_result(self, path):
         """显示结果对应dialog"""
+        satic_function.print_function_info()
         # 找到path对应的相似组
         the_similar_group = None
         for group in self.similar_group_list:
