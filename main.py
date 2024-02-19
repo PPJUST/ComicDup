@@ -7,13 +7,13 @@ from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 
 from module import function_cache_comicdata
+from module import function_cache_hash
 from module import function_cache_similargroup
 from module import function_config
 from module import function_normal
-from module import function_cache_hash
-from ui.thread_compare import CompareThread
 from ui.dialog_cache_setting import DialogCacheSetting
 from ui.listwidget_folderlist import ListWidgetFolderlist
+from ui.thread_compare import ThreadCompare
 from ui.treewidget_similar_comics import TreeWidgetSimilarComics
 from ui.ui_main import Ui_MainWindow
 
@@ -42,9 +42,10 @@ class ComicDup(QMainWindow):
         self.ui.groupBox_comics.layout().addWidget(self.treeWidget_similar_comics)
 
         # 实例化子线程
-        self.thread_compare = CompareThread()
+        self.thread_compare = ThreadCompare()
+        self.thread_compare.signal_start_thread.connect(lambda: self.set_ui_with_thread_state(state='start'))
         self.thread_compare.signal_finished.connect(self.compare_thread_finished)
-        self.thread_compare.signal_schedule_setp.connect(self.update_schedule_setp)
+        self.thread_compare.signal_schedule_step.connect(self.update_schedule_step)
         self.thread_compare.signal_schedule_rate.connect(self.update_schedule_rate)
 
         """连接信号与槽函数"""
@@ -81,23 +82,15 @@ class ComicDup(QMainWindow):
         minutes, seconds = divmod(runtime, 60)
         self.ui.label_schedule_time.setText(f'{int(minutes)}:{int(seconds):02d}')
 
-    @staticmethod
-    def cache_setting():
+    def cache_setting(self):
         """打开缓存设置"""
         function_normal.print_function_info()
-        dialog = DialogCacheSetting()
-        dialog.exec()
-
-    def set_start_button_state(self, mode='start'):
-        """设置开始和停止按钮状态"""
-        if mode == 'start':
-            self.ui.pushButton_start.setEnabled(False)
-            self.ui.pushButton_stop.setEnabled(True)
-            self.ui.pushButton_cache_setting.setEnabled(False)
-        elif mode == 'stop':
-            self.ui.pushButton_start.setEnabled(True)
-            self.ui.pushButton_stop.setEnabled(False)
-            self.ui.pushButton_cache_setting.setEnabled(True)
+        self.dialog_cache = DialogCacheSetting()
+        self.dialog_cache.signal_start_thread.connect(lambda: self.set_ui_with_thread_state(state='start'))
+        self.dialog_cache.signal_compare_cache_finished.connect(self.compare_thread_finished)
+        self.dialog_cache.signal_schedule_step.connect(self.update_schedule_step)
+        self.dialog_cache.signal_schedule_rate.connect(self.update_schedule_rate)
+        self.dialog_cache.exec()
 
     def start_compare_thread(self):
         """原神，启动！"""
@@ -105,10 +98,8 @@ class ComicDup(QMainWindow):
         # 启动计时器
         self.start_time_run = time.time()
         self.timer_runtime.start()
-        # 初始化ui
-        self.ui.label_schedule_time.setText('0:00')
-        self.set_start_button_state(mode='start')  # 调整按钮状态
-        self.treeWidget_similar_comics.clear()  # 重置视图
+        # 重置视图
+        self.treeWidget_similar_comics.clear()
         # 执行子线程
         self.thread_compare.start()
 
@@ -118,12 +109,47 @@ class ComicDup(QMainWindow):
         # 暂停计时器
         self.timer_runtime.stop()
         # 设置ui
-        self.ui.label_schedule_step.setText('完成')
-        self.ui.label_schedule_rate.setText('-/-')
-        self.ui.pushButton_refresh_result.setEnabled(True)
-        self.set_start_button_state(mode='stop')
+        self.set_ui_with_thread_state(state='finish')
         # 将相似组显示在ui上
         self.show_similar_comics()
+
+    def set_ui_with_thread_state(self, state='start'):
+        """在线程开始或结束时改变ui"""
+        if state == 'start':
+            self.ui.pushButton_start.setEnabled(False)
+            self.ui.pushButton_stop.setEnabled(True)
+            self.ui.pushButton_cache_setting.setEnabled(False)
+            self.ui.pushButton_refresh_result.setEnabled(False)
+            self.ui.pushButton_load_result.setEnabled(False)
+
+            self.ui.groupBox_similar.setEnabled(False)
+            self.ui.groupBox_folderlist.setEnabled(False)
+
+            self.ui.label_schedule_time.setText('0:00')
+        elif state == 'finish':
+            self.ui.pushButton_start.setEnabled(True)
+            self.ui.pushButton_stop.setEnabled(False)
+            self.ui.pushButton_cache_setting.setEnabled(True)
+            self.ui.pushButton_refresh_result.setEnabled(True)
+            self.ui.pushButton_load_result.setEnabled(True)
+
+            self.ui.groupBox_similar.setEnabled(True)
+            self.ui.groupBox_folderlist.setEnabled(True)
+
+            self.ui.label_schedule_step.setText('完成')
+            self.ui.label_schedule_rate.setText('-/-')
+        elif state == 'stop':
+            self.ui.pushButton_start.setEnabled(True)
+            self.ui.pushButton_stop.setEnabled(False)
+            self.ui.pushButton_cache_setting.setEnabled(True)
+            self.ui.pushButton_refresh_result.setEnabled(False)
+            self.ui.pushButton_load_result.setEnabled(False)
+
+            self.ui.groupBox_similar.setEnabled(True)
+            self.ui.groupBox_folderlist.setEnabled(True)
+
+            self.ui.label_schedule_step.setText('终止')
+            self.ui.label_schedule_rate.setText('-/-')
 
     def load_last_compare_result(self):
         """加载上一次的相似组匹配结果"""
@@ -165,12 +191,9 @@ class ComicDup(QMainWindow):
         # 暂停计时器
         self.timer_runtime.stop()
         # 设置ui
-        self.ui.label_schedule_step.setText('终止')
-        self.ui.label_schedule_rate.setText('-/-')
-        self.ui.pushButton_refresh_result.setEnabled(False)
-        self.set_start_button_state(mode='stop')
+        self.set_ui_with_thread_state(state='stop')
 
-    def update_schedule_setp(self, text):
+    def update_schedule_step(self, text):
         """刷新运行步骤"""
         self.ui.label_schedule_step.setText(text)
 

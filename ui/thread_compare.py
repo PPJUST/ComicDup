@@ -14,9 +14,10 @@ from module import function_ssim
 from module.class_comic_data import ComicData
 
 
-class CompareThread(QThread):
+class ThreadCompare(QThread):
     """进行相似比较的子线程"""
-    signal_schedule_setp = Signal(str)
+    signal_start_thread = Signal()
+    signal_schedule_step = Signal(str)
     signal_schedule_rate = Signal(str)
     signal_finished = Signal()
 
@@ -25,6 +26,7 @@ class CompareThread(QThread):
         self.code_stop = False
 
     def run(self):
+        self.signal_start_thread.emit()
         self.code_stop = False
         # 获取设置
         check_folders = function_config.get_select_folders()
@@ -34,7 +36,7 @@ class CompareThread(QThread):
         mode_hash = function_config.get_mode_hash()
         mode_ssim = function_config.get_mode_ssim()
 
-        self.signal_schedule_setp.emit('1/5 检查文件夹')
+        self.signal_schedule_step.emit('1/5 检查文件夹')
         # 提取符合要求的漫画文件夹和压缩包
         all_comic_folders = set()
         all_archives = set()
@@ -46,7 +48,7 @@ class CompareThread(QThread):
             all_comic_folders.update(comic_folders)
             all_archives.update(archives)
 
-        self.signal_schedule_setp.emit('2/5 提取漫画数据')
+        self.signal_schedule_step.emit('2/5 提取漫画数据')
         # 遍历两个列表，并提取漫画数据
         comics_data = {}
         all_files = all_comic_folders.union(all_archives)
@@ -62,7 +64,7 @@ class CompareThread(QThread):
         # 保存漫画数据
         function_cache_comicdata.save_comics_data_pickle(comics_data)
 
-        self.signal_schedule_setp.emit('3/5 计算Hash')
+        self.signal_schedule_step.emit('3/5 计算Hash')
         # 读取本地hash缓存(读取到的数据不考虑path是否已经失效)
         cache_image_data_dict = function_cache_hash.read_hash_cache()
 
@@ -89,7 +91,7 @@ class CompareThread(QThread):
         # 将当前任务的图片数据字典更新写入hash缓存
         function_cache_hash.update_hash_cache(image_data_dict)
 
-        self.signal_schedule_setp.emit('4/5 排序Hash')
+        self.signal_schedule_step.emit('4/5 排序Hash')
         # 向dict中增加键值对hash_count0，并按该key升序排列，最后进行查重（统计hash中0的个数，用于确定需要对比的图片范围）
         # 相似对比方式为在当前hash字典内部对比+与缓存对比
         # 先向字典中添加hash_count0键
@@ -102,7 +104,7 @@ class CompareThread(QThread):
         image_data_dict = function_hash.add_count_key_to_dict(image_data_dict, mode_hash)
         compare_image_data_dict = function_hash.add_count_key_to_dict(compare_image_data_dict, mode_hash)
 
-        self.signal_schedule_setp.emit('5/5 相似匹配')
+        self.signal_schedule_step.emit('5/5 相似匹配')
         # 再遍历需要匹配的图片列表
         similar_groups = []  # 全部的相似组列表（漫画路径）
         index_rate = 0

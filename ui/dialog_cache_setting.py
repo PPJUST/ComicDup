@@ -1,6 +1,7 @@
 # 缓存设置的Dialog控件
 import os
 
+from PySide6.QtCore import Signal
 from PySide6.QtWidgets import *
 
 from constant import MAX_EXTRACT_IMAGE_NUMBER
@@ -12,10 +13,15 @@ from module import function_hash
 from module import function_normal
 from module.class_comic_data import ComicData
 from ui.listwidget_folderlist import ListWidgetFolderlist
+from ui.thread_compare_cache import ThreadCompareCache
 
 
 class DialogCacheSetting(QDialog):
     """缓存设置的Dialog控件"""
+    signal_start_thread = Signal()
+    signal_schedule_step = Signal(str)
+    signal_schedule_rate = Signal(str)
+    signal_compare_cache_finished = Signal()
 
     def __init__(self):
         super().__init__()
@@ -42,6 +48,11 @@ class DialogCacheSetting(QDialog):
         self.pushButton_update.setText('增量更新缓存')
         self.pushButton_update.clicked.connect(self._update_cache)
         self.verticalLayout_right.addWidget(self.pushButton_update)
+
+        self.pushButton_check_similar = QPushButton()
+        self.pushButton_check_similar.setText('缓存数据查重')
+        self.pushButton_check_similar.clicked.connect(self._check_similar)
+        self.verticalLayout_right.addWidget(self.pushButton_check_similar)
 
         self.pushButton_refresh = QPushButton()
         self.pushButton_refresh.setText('重置缓存')
@@ -132,3 +143,19 @@ class DialogCacheSetting(QDialog):
         cache_folders = function_config.get_cache_folder()
         if cache_folders:
             self.ListWidgetFolderlist.add_item(cache_folders)
+
+    def _check_similar(self):
+        """对缓存内数据进行查重"""
+        self.thread_compare_cache = ThreadCompareCache()
+        self.thread_compare_cache.signal_start_thread.connect(self.signal_start_thread.emit)
+        self.thread_compare_cache.signal_finished.connect(self.signal_compare_cache_finished.emit)
+        self.thread_compare_cache.signal_schedule_step.connect(self.emit_signal_schedule_step)
+        self.thread_compare_cache.signal_schedule_rate.connect(self.emit_signal_schedule_rate)
+        self.thread_compare_cache.start()
+        self.close()
+
+    def emit_signal_schedule_step(self, arg):
+        self.signal_schedule_step.emit(arg)
+
+    def emit_signal_schedule_rate(self, arg):
+        self.signal_schedule_rate.emit(arg)
