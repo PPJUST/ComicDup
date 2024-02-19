@@ -1,3 +1,4 @@
+# 漫画预览控件
 import os.path
 
 import natsort
@@ -5,12 +6,141 @@ import send2trash
 from PySide6.QtCore import *
 from PySide6.QtGui import *
 from PySide6.QtWidgets import *
-from config_function import get_preview_widget_wh
 
-import satic_function
+import constant
+from module import function_config
+from module import function_normal
 
 
-class WidgetShowComic(QWidget):
+class DialogComicsPreview(QDialog):
+    """用于对比多本漫画差异的Dialog控件"""
+    signal_del_file = Signal(str)
+    signal_resized = Signal()
+
+    def __init__(self):
+        super().__init__()
+        """设置ui"""
+        self.verticalLayout = QVBoxLayout(self)
+        width, height = function_config.get_preview_widget_wh()
+        self.resize(width, height)
+
+        # 控件组 同步滚动
+        self.horizontalLayout = QHBoxLayout()
+
+        self.label_sync_scroll = QLabel()
+        self.label_sync_scroll.setText('同步滚动')
+        self.horizontalLayout.addWidget(self.label_sync_scroll)
+
+        self.toolButton_previous_5p_image = QToolButton()
+        self.toolButton_previous_5p_image.setIcon(QIcon(constant.ICON_PREVIOUS_5P))
+        self.horizontalLayout.addWidget(self.toolButton_previous_5p_image)
+
+        self.toolButton_previous_image = QToolButton()
+        self.toolButton_previous_image.setIcon(QIcon(constant.ICON_PREVIOUS))
+        self.horizontalLayout.addWidget(self.toolButton_previous_image)
+
+        self.toolButton_next_image = QToolButton()
+        self.toolButton_next_image.setIcon(QIcon(constant.ICON_NEXT))
+        self.horizontalLayout.addWidget(self.toolButton_next_image)
+
+        self.toolButton_next_5p_image = QToolButton()
+        self.toolButton_next_5p_image.setIcon(QIcon(constant.ICON_NEXT_5P))
+        self.horizontalLayout.addWidget(self.toolButton_next_5p_image)
+
+        self.toolButton_refresh = QToolButton()
+        self.toolButton_refresh.setIcon(QIcon(constant.ICON_REFRESH))
+        self.horizontalLayout.addWidget(self.toolButton_refresh)
+
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
+        self.horizontalLayout.addItem(self.horizontalSpacer)
+
+        self.verticalLayout.addLayout(self.horizontalLayout)
+
+        # 控件组 预览
+        self.scrollArea = QScrollArea()
+        self.scrollArea.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.scrollArea.setWidgetResizable(True)
+        self.scrollAreaWidgetContents = QWidget()
+        self.layout_comic_widget = QHBoxLayout(self.scrollAreaWidgetContents)
+        self.scrollArea.setWidget(self.scrollAreaWidgetContents)
+
+        self.verticalLayout.addWidget(self.scrollArea)
+
+        """设置初始变量"""
+        self.show_path_list = None
+        self.sync_scroll_index = 0  # 同步滚动索引
+
+        """设置定时器，用于延迟改变预览图控件大小"""
+        self.resize_timer = QTimer()
+        self.resize_timer.setSingleShot(True)  # 设置单次触发
+        self.resize_timer.timeout.connect(self.resize_preview_size)
+
+        """连接槽函数"""
+        self.toolButton_next_image.clicked.connect(lambda: self.sync_show_next_image(step=1))
+        self.toolButton_previous_image.clicked.connect(lambda: self.sync_show_previous_image(step=1))
+        self.toolButton_next_5p_image.clicked.connect(lambda: self.sync_show_next_image(step=5))
+        self.toolButton_previous_5p_image.clicked.connect(lambda: self.sync_show_previous_image(step=5))
+        self.toolButton_refresh.clicked.connect(self.refresh_index)
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self.resize_timer.start(300)  # 延迟x毫秒
+
+    def resize_preview_size(self):
+        height = self.size().height() - 200
+        layout = self.layout_comic_widget.layout()
+        function_config.reset_preview_widget_wh(self.size().width(), self.size().height())
+
+        for i in range(layout.count()):
+            item = layout.itemAt(i)
+            show_comic_widget = item.widget()
+            show_comic_widget.reset_height(height)
+
+    def set_show_path_list(self, path_list):
+        """设置需要显示的文件的列表"""
+        self.show_path_list = path_list
+        self.show_path()
+
+    def show_path(self):
+        """将列表中的文件显示在ui上"""
+        for path in self.show_path_list:
+            if os.path.exists(path) and os.path.isdir(path):
+                show_comic_widget = WidgetSingleComicPreview()
+                self.layout_comic_widget.addWidget(show_comic_widget)
+                show_comic_widget.set_path(path)
+                show_comic_widget.signal_del_file.connect(self.accept_signal_del_file)
+
+    def sync_show_next_image(self, step: int = 1):
+        """全局滚动，索引+1"""
+        layout = self.layout_comic_widget.layout()
+        for i in range(layout.count()):
+            item = layout.itemAt(i)
+            show_comic_widget = item.widget()
+            show_comic_widget.show_next_image(step)
+
+    def sync_show_previous_image(self, step: int = 1):
+        """全局滚动，索引-1"""
+        layout = self.layout_comic_widget.layout()
+        for i in range(layout.count()):
+            item = layout.itemAt(i)
+            show_comic_widget = item.widget()
+            show_comic_widget.show_previous_image(step)
+
+    def refresh_index(self):
+        """重置索引"""
+        layout = self.layout_comic_widget.layout()
+        for i in range(layout.count()):
+            item = layout.itemAt(i)
+            show_comic_widget = item.widget()
+            show_comic_widget.reset_index()
+
+    def accept_signal_del_file(self, path):
+        """接收子控件删除文件的信号，并再次发送信号"""
+        self.signal_del_file.emit(path)
+
+
+class WidgetSingleComicPreview(QWidget):
+    """单本漫画预览控件，附带一些小功能"""
     signal_del_file = Signal(str)
 
     def __init__(self):
@@ -27,7 +157,7 @@ class WidgetShowComic(QWidget):
         self.label_preview.setScaledContents(True)
         self.label_preview.setAlignment(Qt.AlignCenter)
         self.label_preview.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
-        self.label_preview.setFrameShape(QFrame.Box)
+        self.label_preview.setStyleSheet('border: 2px solid red')
         self.verticalLayout.addWidget(self.label_preview)
 
         # 控件组 文件信息
@@ -57,11 +187,11 @@ class WidgetShowComic(QWidget):
         self.horizontalLayout.addItem(self.horizontalSpacer)
 
         self.toolButton_previous_image = QToolButton()
-        self.toolButton_previous_image.setIcon(QIcon(satic_function.icon_previous))
+        self.toolButton_previous_image.setIcon(QIcon(constant.ICON_PREVIOUS))
         self.horizontalLayout.addWidget(self.toolButton_previous_image)
 
         self.toolButton_next_image = QToolButton()
-        self.toolButton_next_image.setIcon(QIcon(satic_function.icon_next))
+        self.toolButton_next_image.setIcon(QIcon(constant.ICON_NEXT))
         self.horizontalLayout.addWidget(self.toolButton_next_image)
 
         self.label_index = QLabel()
@@ -74,7 +204,7 @@ class WidgetShowComic(QWidget):
         self.horizontalLayout.addWidget(self.line)
 
         self.toolButton_recycle_bin = QToolButton()
-        self.toolButton_recycle_bin.setIcon(QIcon(satic_function.icon_recycle_bin))
+        self.toolButton_recycle_bin.setIcon(QIcon(constant.ICON_RECYCLE_BIN))
         self.horizontalLayout.addWidget(self.toolButton_recycle_bin)
 
         self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
@@ -100,10 +230,10 @@ class WidgetShowComic(QWidget):
 
         for i in natsort.natsorted(os.listdir(path)):
             fullpath = os.path.join(path, i)
-            if satic_function.is_image(fullpath):
+            if function_normal.check_filetype(fullpath) == 'image':
                 self.image_list.append(fullpath)
 
-        self.set_filetype_icon(satic_function.icon_folder)
+        self.set_filetype_icon(constant.ICON_FOLDER)
         self.set_filesize_text()
         self.label_filepath.setText(path)
         self.show_preview()
@@ -194,146 +324,5 @@ class WidgetShowComic(QWidget):
 
     def set_filesize_text(self):
         """设置大小文本"""
-        size_mb = round(satic_function.get_folder_size(self.path) / 1024 / 1024, 2)
+        size_mb = round(function_normal.get_size(self.path) / 1024 / 1024, 2)
         self.label_size_and_count.setText(f'| {size_mb}MB |')
-
-
-class DialogShowComic(QDialog):
-    signal_del_file = Signal(str)
-    signal_resized = Signal()
-
-    def __init__(self):
-        super().__init__()
-        """设置ui"""
-        self.verticalLayout = QVBoxLayout(self)
-        width, height = get_preview_widget_wh()
-        self.setMinimumSize(width, height)
-
-        # 控件组 同步滚动
-        self.horizontalLayout = QHBoxLayout()
-
-        # self.checkBox_sync_scroll = QCheckBox()
-        # self.checkBox_sync_scroll.setText('同步滚动')
-        # self.checkBox_sync_scroll.setChecked(True)
-        # self.horizontalLayout.addWidget(self.checkBox_sync_scroll)
-
-        self.label_sync_scroll = QLabel()
-        self.label_sync_scroll.setText('同步滚动')
-        self.horizontalLayout.addWidget(self.label_sync_scroll)
-
-        self.toolButton_previous_5p_image = QToolButton()
-        self.toolButton_previous_5p_image.setIcon(QIcon(satic_function.icon_previous_5p))
-        self.horizontalLayout.addWidget(self.toolButton_previous_5p_image)
-
-        self.toolButton_previous_image = QToolButton()
-        self.toolButton_previous_image.setIcon(QIcon(satic_function.icon_previous))
-        self.horizontalLayout.addWidget(self.toolButton_previous_image)
-
-        self.toolButton_next_image = QToolButton()
-        self.toolButton_next_image.setIcon(QIcon(satic_function.icon_next))
-        self.horizontalLayout.addWidget(self.toolButton_next_image)
-
-        self.toolButton_next_5p_image = QToolButton()
-        self.toolButton_next_5p_image.setIcon(QIcon(satic_function.icon_next_5p))
-        self.horizontalLayout.addWidget(self.toolButton_next_5p_image)
-
-        self.toolButton_refresh = QToolButton()
-        self.toolButton_refresh.setIcon(QIcon(satic_function.icon_refresh))
-        self.horizontalLayout.addWidget(self.toolButton_refresh)
-
-        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-        self.horizontalLayout.addItem(self.horizontalSpacer)
-
-        self.verticalLayout.addLayout(self.horizontalLayout)
-
-        # 控件组 预览
-        self.scrollArea = QScrollArea()
-        self.scrollArea.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        self.scrollArea.setWidgetResizable(True)
-        self.scrollAreaWidgetContents = QWidget()
-        self.layout_comic_widget = QHBoxLayout(self.scrollAreaWidgetContents)
-        self.scrollArea.setWidget(self.scrollAreaWidgetContents)
-
-        self.verticalLayout.addWidget(self.scrollArea)
-
-        """设置初始变量"""
-        self.show_path_list = None
-        self.sync_scroll_index = 0  # 同步滚动索引
-
-        """设置定时器，用于延迟改变预览图控件大小"""
-        self.resize_timer = QTimer()
-        self.resize_timer.setSingleShot(True)  # 设置单次触发
-        self.resize_timer.timeout.connect(self.resize_preview_size)
-
-        """连接槽函数"""
-        self.toolButton_next_image.clicked.connect(lambda: self.sync_show_next_image(step=1))
-        self.toolButton_previous_image.clicked.connect(lambda: self.sync_show_previous_image(step=1))
-        self.toolButton_next_5p_image.clicked.connect(lambda: self.sync_show_next_image(step=5))
-        self.toolButton_previous_5p_image.clicked.connect(lambda: self.sync_show_previous_image(step=5))
-        self.toolButton_refresh.clicked.connect(self.refresh_index)
-
-    def resizeEvent(self, event):
-        super().resizeEvent(event)
-        self.resize_timer.start(300)  # 延迟x毫秒
-
-    def resize_preview_size(self):
-        height = self.size().height() - 200
-        layout = self.layout_comic_widget.layout()
-        for i in range(layout.count()):
-            item = layout.itemAt(i)
-            show_comic_widget = item.widget()
-            show_comic_widget.reset_height(height)
-
-    def set_show_path_list(self, path_list):
-        """设置需要显示的文件的列表"""
-        self.show_path_list = path_list
-        self.show_path()
-
-    def show_path(self):
-        """将列表中的文件显示在ui上"""
-        for path in self.show_path_list:
-            if os.path.exists(path) and os.path.isdir(path):
-                show_comic_widget = WidgetShowComic()
-                self.layout_comic_widget.addWidget(show_comic_widget)
-                show_comic_widget.set_path(path)
-                show_comic_widget.signal_del_file.connect(self.accept_signal_del_file)
-
-    def sync_show_next_image(self, step: int = 1):
-        """全局滚动，索引+1"""
-        layout = self.layout_comic_widget.layout()
-        for i in range(layout.count()):
-            item = layout.itemAt(i)
-            show_comic_widget = item.widget()
-            show_comic_widget.show_next_image(step)
-
-    def sync_show_previous_image(self, step: int = 1):
-        """全局滚动，索引-1"""
-        layout = self.layout_comic_widget.layout()
-        for i in range(layout.count()):
-            item = layout.itemAt(i)
-            show_comic_widget = item.widget()
-            show_comic_widget.show_previous_image(step)
-
-    def refresh_index(self):
-        """重置索引"""
-        layout = self.layout_comic_widget.layout()
-        for i in range(layout.count()):
-            item = layout.itemAt(i)
-            show_comic_widget = item.widget()
-            show_comic_widget.reset_index()
-
-    def accept_signal_del_file(self, path):
-        """接收子控件删除文件的信号，并再次发送信号"""
-        self.signal_del_file.emit(path)
-
-
-def main():
-    app = QApplication()
-    app.setStyle('Fusion')  # 设置风格
-    show_ui = DialogShowComic()
-    show_ui.show()
-    app.exec()
-
-
-if __name__ == '__main__':
-    main()

@@ -1,48 +1,22 @@
+# 文件夹列表显示控件，用于收集拖入的文件夹
 import os.path
 
 from PySide6.QtCore import *
 from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 
-from satic_function import icon_del
-
-
-class WidgetFolderline(QWidget):
-    signal_del = Signal()
-
-    def __init__(self):
-        super().__init__()
-        self.horizontalLayout = QHBoxLayout(self)
-        self.horizontalLayout.setSpacing(6)
-        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
-        self.horizontalLayout.setStretch(1, 1)
-
-        self.toolButton_del = QToolButton()
-        self.toolButton_del.setIcon(QIcon(icon_del))
-        self.toolButton_del.setStyleSheet("background-color: white; border: none;")
-        self.horizontalLayout.addWidget(self.toolButton_del)
-
-        self.label_dirpath = QLabel()
-        self.label_dirpath.setText('显示文件夹路径')
-        self.horizontalLayout.addWidget(self.label_dirpath)
-
-        """连接信号与槽函数"""
-        self.toolButton_del.clicked.connect(self.click_del_button)
-
-    def set_dirpath(self, text):
-        self.label_dirpath.setText(text)
-        self.label_dirpath.setToolTip(text)
-
-    def click_del_button(self):
-        self.signal_del.emit()
+from constant import ICON_DEL
+from module import function_normal
 
 
 class ListWidgetFolderlist(QListWidget):
+    """拖入文件夹列表显示控件，附带一些基本功能"""
     signal_folderlist = Signal(list)
 
     def __init__(self):
         super().__init__()
         self.dirpath_list = []
+
         self.setAcceptDrops(True)
         self.setDragDropMode(QAbstractItemView.InternalMove)
         self.setSpacing(3)
@@ -95,7 +69,7 @@ class ListWidgetFolderlist(QListWidget):
         for i in range(self.count()):
             item = self.item(i)
             item_widget = self.itemWidget(item)
-            dirpath = item_widget.label_dirpath.text()
+            dirpath = item_widget.label_dirpath.toolTip()
             if del_item_widget is item_widget:
                 self.dirpath_list.remove(dirpath)
                 break
@@ -103,13 +77,33 @@ class ListWidgetFolderlist(QListWidget):
         self.refresh_list()
 
 
-def main():
-    app = QApplication()
-    app.setStyle('Fusion')  # 设置风格
-    show_ui = ListWidgetFolderlist()
-    show_ui.show()
-    app.exec()
+class WidgetFolderline(QWidget):
+    """单行路径控件，用于插入至主控件中"""
+    signal_del = Signal()
 
+    def __init__(self):
+        super().__init__()
+        self.horizontalLayout = QHBoxLayout(self)
+        self.horizontalLayout.setSpacing(6)
+        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayout.setStretch(1, 1)
 
-if __name__ == '__main__':
-    main()
+        self.toolButton_del = QToolButton()
+        self.toolButton_del.setIcon(QIcon(ICON_DEL))
+        self.toolButton_del.setStyleSheet("background-color: white; border: none;")
+        self.horizontalLayout.addWidget(self.toolButton_del)
+
+        self.label_dirpath = QLabel()
+        self.label_dirpath.setText('显示文件夹路径')
+        self.horizontalLayout.addWidget(self.label_dirpath)
+
+        """连接信号与槽函数"""
+        self.toolButton_del.clicked.connect(self.click_del_button)
+
+    def set_dirpath(self, path):
+        """设置文本"""
+        self.label_dirpath.setText(function_normal.reverse_path(path))
+        self.label_dirpath.setToolTip(path)
+
+    def click_del_button(self):
+        self.signal_del.emit()

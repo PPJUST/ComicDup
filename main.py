@@ -1,428 +1,226 @@
-"""
-2024.01.08调整：哈希值只使用phash，不再使用其他哈希值（影响对比哈希时的字典排序，其他代码未变动）
-"""
-
+# 主程序
 import os.path
 import time
 
-from PySide6.QtCore import *  # type: ignore
-from PySide6.QtGui import *  # type: ignore
-from PySide6.QtWidgets import *  # type: ignore
+from PySide6.QtCore import *
+from PySide6.QtGui import *
+from PySide6.QtWidgets import *
 
-import satic_function
-from config_function import *
-from thread_calc_hash import ThreadCalcHash
-from thread_check_folder import ThreadCheckFolder
-from thread_compare_image import ThreadCompareImage
-from thread_extract_image import ThreadExtractImage
-from ui.dialog_compare_result import DialogShowComic
+from module import function_cache_comicdata
+from module import function_cache_similargroup
+from module import function_config
+from module import function_normal
+from module import function_cache_hash
+from ui.thread_compare import CompareThread
+from ui.dialog_cache_setting import DialogCacheSetting
 from ui.listwidget_folderlist import ListWidgetFolderlist
+from ui.treewidget_similar_comics import TreeWidgetSimilarComics
 from ui.ui_main import Ui_MainWindow
-from ui.widget_show_comic import WidgetShowComic
 
 
-class DouDup(QMainWindow):
+class ComicDup(QMainWindow):
     def __init__(self):
         super().__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
         """初始化设置"""
-        # 设置初始变量
-        self.folder_list = []  # 当前选择的文件夹
-        self.start_thread_time = None
-        self.similar_group_list = []  # 相似组列表，内部元素为元组
-        self.comic_data_dict = {}  # 源文件对应的数据字典 {源文件/文件夹:{preview:..., filetype/image_number/filesize}, ...}
+        # 初始化
+        self.start_time_run = None  # 查重任务开始运行的时间
+        function_cache_hash.check_hash_cache_exist()
 
-        # 实例化子线程
-        self.thread_check_folder = ThreadCheckFolder()
-        self.thread_check_folder.signal_schedule_check_folder.connect(self.update_schedule_rate)
-        self.thread_check_folder.signal_finished.connect(self.start_check_step_2)
-
-        self.thread_extract_image = ThreadExtractImage()
-        self.thread_extract_image.signal_schedule_extract_image.connect(self.update_schedule_rate)
-        self.thread_extract_image.signal_finished.connect(self.start_check_step_3)
-
-        self.thread_calc_hash = ThreadCalcHash()
-        self.thread_calc_hash.signal_schedule_calc_hash.connect(self.update_schedule_rate)
-        self.thread_calc_hash.signal_finished.connect(self.start_check_step_5)
-
-        self.thread_compare_image = ThreadCompareImage()
-        self.thread_compare_image.signal_schedule_compare_image.connect(self.update_schedule_rate)
-        self.thread_compare_image.signal_finished.connect(self.start_check_step_finished)
-
-        # 设置一个定时器用于更新时间
-        self.timer = QTimer()
-        self.timer.timeout.connect(self.update_runtime)
-        self.timer.setInterval(1000)
+        # 定时器，用于更新运行时间
+        self.timer_runtime = QTimer()
+        self.timer_runtime.timeout.connect(self.update_runtime)
+        self.timer_runtime.setInterval(1000)  # 刷新时间1秒
 
         # 添加自定义控件
-        self.ui.listWidget_folderlist = ListWidgetFolderlist()
-        self.ui.groupBox_folderlist.layout().addWidget(self.ui.listWidget_folderlist)
+        self.listWidget_folderlist = ListWidgetFolderlist()
+        self.listWidget_folderlist.signal_folderlist.connect(self.drop_folders)
+        self.ui.groupBox_folderlist.layout().addWidget(self.listWidget_folderlist)
 
-        # 设置ui
-        self.ui.pushButton_stop.setEnabled(False)
+        self.treeWidget_similar_comics = TreeWidgetSimilarComics()
+        self.ui.groupBox_comics.layout().addWidget(self.treeWidget_similar_comics)
+
+        # 实例化子线程
+        self.thread_compare = CompareThread()
+        self.thread_compare.signal_finished.connect(self.compare_thread_finished)
+        self.thread_compare.signal_schedule_setp.connect(self.update_schedule_setp)
+        self.thread_compare.signal_schedule_rate.connect(self.update_schedule_rate)
 
         """连接信号与槽函数"""
-        self.ui.listWidget_folderlist.signal_folderlist.connect(self.accept_folderlist)
-        self.ui.pushButton_start.clicked.connect(self.start_check_step_1)
+        # 功能
+        self.ui.pushButton_start.clicked.connect(self.start_compare_thread)
         self.ui.pushButton_stop.clicked.connect(self.stop_thread)
-        self.ui.pushButton_load_result.clicked.connect(self.load_compare_result)
+        self.ui.pushButton_cache_setting.clicked.connect(self.cache_setting)
+        self.ui.pushButton_load_result.clicked.connect(self.load_last_compare_result)
         self.ui.pushButton_refresh_result.clicked.connect(self.refresh_compare_result)
+        # 相似度设置
+        self.ui.comboBox_hash.currentTextChanged.connect(self.change_mode_hash)
+        self.ui.spinBox_threshold_hash.valueChanged.connect(self.change_threshold_hash)
+        self.ui.checkBox_ssim.stateChanged.connect(self.change_mode_ssim)
+        self.ui.spinBox_threshold_ssim.valueChanged.connect(self.change_threshold_ssim)
+        self.ui.spinBox_extract_image_number.valueChanged.connect(self.change_extract_image_number)
+        self.ui.spinBox_thread_number.valueChanged.connect(self.change_thread_number)
 
-    def accept_folderlist(self, folderlist):
-        """接收子控件的信号"""
-        satic_function.print_function_info()
-        self.folder_list = folderlist
+        # 设置ui属性
+        self.ui.pushButton_stop.setEnabled(False)
+        self.ui.spinBox_thread_number.setEnabled(False)
+        self.ui.pushButton_refresh_result.setEnabled(False)
+        self.load_setting()
 
-    def get_similar_mode(self):
-        """获取当前选择的相似算法"""
-        satic_function.print_function_info()
-        similar_mode_dict = {}
-        # ahash
-        if self.ui.checkBox_ahash.isChecked():
-            threshold = self.ui.spinBox_threshold_ahash.value()
-            similar_mode_dict['ahash'] = threshold
-        else:
-            similar_mode_dict['ahash'] = False
-        # phash
-        if self.ui.checkBox_phash.isChecked():
-            threshold = self.ui.spinBox_threshold_phash.value()
-            similar_mode_dict['phash'] = threshold
-        else:
-            similar_mode_dict['phash'] = False
-        # dhash
-        if self.ui.checkBox_dhash.isChecked():
-            threshold = self.ui.spinBox_threshold_dhash.value()
-            similar_mode_dict['dhash'] = threshold
-        else:
-            similar_mode_dict['dhash'] = False
-        # ssim
-        if self.ui.checkBox_ssim.isChecked():
-            threshold = self.ui.doubleSpinBox_threshold_ssim.value()
-            similar_mode_dict['ssim'] = threshold
-        else:
-            similar_mode_dict['ssim'] = False
-        # 检查图片数
-        image_number = self.ui.spinBox_extract_image_number.value()
-        similar_mode_dict['image_number'] = image_number
+    @staticmethod
+    def drop_folders(folders):
+        """接收拖入文件夹的信号"""
+        function_normal.print_function_info()
+        function_config.reset_select_folders(folders)
 
-        return similar_mode_dict
+    def update_runtime(self):
+        """更新运行时间"""
+        current_time = time.time()
+        runtime = current_time - self.start_time_run
+        minutes, seconds = divmod(runtime, 60)
+        self.ui.label_schedule_time.setText(f'{int(minutes)}:{int(seconds):02d}')
 
-    def start_check_step_1(self):
-        """原神，启动！"""
-        """
-        准备工作
-        """
-        satic_function.print_function_info()
-        # 设置启动时间
-        self.start_thread_time = time.time()
-        self.timer.start()
-        # 更新运行时间0:00
-        self.ui.label_schedule_time.setText('0:00')
-        # 改变按钮状态
-        self.set_start_button_state(mode='start')
-        # 清空临时文件夹中的图片
-        satic_function.clear_temp_image_folder()
-        # 清除上一次的查重结果
-        self.ui.treeWidget_show.clear()
-
-        """
-        第1步 检查文件夹，提取漫画文件夹和压缩包
-        """
-        self.ui.label_schedule_step.setText('1/6 检查文件夹')
-        # 获取需要检查的文件夹
-        check_folder_list = []
-        for path in self.folder_list:
-            if path != '' and os.path.exists(path):
-                check_folder_list.append(path)
-        # 提取文件夹中符合要求的文件夹、压缩包
-        self.thread_check_folder.set_dirpath_list(check_folder_list)
-        self.thread_check_folder.start()
-        # 获取的数据
-        # comic_dir_dict 格式：{文件夹路径:(排序后的内部图片路径), ...}
-        # archive_set 格式：(压缩包路径, ...)
-
-    def start_check_step_2(self, comic_dir_dict, archive_set):
-        """
-        第2步 提取文件夹和压缩包中的图片
-        """
-        satic_function.print_function_info()
-        # comic_dir_dict 格式：{文件夹路径:(排序后的内部图片路径), ...}
-        # archive_set 格式：(压缩包路径, ...)
-        # 获取相似度算法设置
-        similar_mode_dict = self.get_similar_mode()
-        need_image_number = similar_mode_dict['image_number']
-
-        self.ui.label_schedule_step.setText('2/6 提取图片')
-        self.thread_extract_image.set_comic_dir_dict(comic_dir_dict)
-        self.thread_extract_image.set_archive_set(archive_set)
-        self.thread_extract_image.set_need_image_number(need_image_number)
-        self.thread_extract_image.start()
-        # 获取的数据
-        # image_data_dict 图片对应的数据字典 {图片文件:{origin_path:...}, ...}
-        # comic_data_dict 源文件对应的数据字典 {源文件/文件夹:{preview:..., filetype/image_number/filesize}, ...}
-
-    def start_check_step_3(self, comic_data_dict, image_data_dict):
-        """
-        第3步 提取已有图片缓存
-        """
-        satic_function.print_function_info()
-        # image_data_dict 图片对应的数据字典 {图片文件:{origin_path:...}, ...}
-        # comic_data_dict 源文件对应的数据字典 {源文件/文件夹:{preview:..., filetype/image_number/filesize}, ...}
-        self.comic_data_dict = comic_data_dict
-        print('1')
-        self.ui.label_schedule_step.setText('3/6 提取图片特征缓存')
-        print(2)
-        image_cache_data = satic_function.check_hash_cache()
-        print(3)
-        self.start_check_step_4(image_data_dict, image_cache_data)
-        print(4)
-
-    def start_check_step_4(self, image_data_dict, image_cache_data):
-        """
-        第4步 计算图片特征
-        """
-        satic_function.print_function_info()
-        # 获取相似度算法设置
-        similar_mode_dict = self.get_similar_mode()
-        mode_ahash = similar_mode_dict['ahash']
-        mode_phash = similar_mode_dict['phash']
-        mode_dhash = similar_mode_dict['dhash']
-
-        self.ui.label_schedule_step.setText('4/6 计算图片特征')
-        self.thread_calc_hash.set_image_data_dict(image_data_dict)
-        self.thread_calc_hash.set_comic_cache_data(image_cache_data)
-        self.thread_calc_hash.set_mode_hash(mode_ahash, mode_phash, mode_dhash)
-        self.thread_calc_hash.start()
-
-    def start_check_step_5(self, image_data_dict):
-        """
-        第5步 保存图片缓存，只保存源文件为文件夹的图片数据
-        """
-        satic_function.print_function_info()
-        self.ui.label_schedule_step.setText('5/6 保存图片缓存')
-        save_cache_data = {}  # {图片路径:{'filesize源文件大小':int, 'ahash':'str', ...}...}
-        for image, data in image_data_dict.items():
-            origin_path = data['origin_path']
-            if os.path.isdir(origin_path):
-                filesize = os.path.getsize(image)
-                ahash = data['ahash']
-                phash = data['phash']
-                dhash = data['dhash']
-                save_cache_data[image] = {'filesize': filesize, 'ahash': ahash, 'phash': phash, 'dhash': dhash}
-        satic_function.update_hash_cache(save_cache_data)
-        self.start_check_step_6(image_data_dict)
-
-    def start_check_step_6(self, image_data_dict):
-        """
-        第6步 对比图片特征
-        """
-        satic_function.print_function_info()
-        # 获取相似度算法设置
-        similar_mode_dict = self.get_similar_mode()
-        mode_ahash = similar_mode_dict['ahash']
-        mode_phash = similar_mode_dict['phash']
-        mode_dhash = similar_mode_dict['dhash']
-        mode_ssim = similar_mode_dict['ssim']
-
-        self.ui.label_schedule_step.setText('6/6 对比图片特征')
-        self.thread_compare_image.set_image_data_dict(image_data_dict)
-        self.thread_compare_image.set_mode_compare(mode_ahash=mode_ahash,
-                                                   mode_phash=mode_phash,
-                                                   mode_dhash=mode_dhash,
-                                                   mode_ssim=mode_ssim)
-        self.thread_compare_image.start()
-        # 获取的数据
-        # similar_group_list 相似组列表 [(源文件1,源文件2), (...)...]
-
-    def start_check_step_finished(self, similar_group_list):
-        """
-        结束
-        """
-        satic_function.print_function_info()
-        self.ui.label_schedule_step.setText('-/- 结束')
-        self.ui.label_schedule_rate.setText('-/-')
-        self.set_start_button_state(mode='stop')
-        self.timer.stop()
-        self.similar_group_list = similar_group_list
-        # 保存结果到xlsx
-        satic_function.save_similar_result(self.similar_group_list, self.comic_data_dict)
-        # 保存原始数据到本地
-        save_data_pickle(self.similar_group_list, self.comic_data_dict)
-        self.show_compare_result()
-
-    def show_compare_result(self):
-        """将对比结果显示在ui中"""
-        satic_function.print_function_info()
-        self.ui.treeWidget_show.clear()
-        group_number = 0
-        for group_turple in self.similar_group_list:
-            if len(group_turple) <= 1:  # 无相似的项不显示
-                continue
-            group_number += 1
-            # 创建父节点
-            parent_item = QTreeWidgetItem(self.ui.treeWidget_show)
-            parent_item.setText(0, f'■ 相似组 {group_number} - {len(group_turple)}项')
-            parent_item.setBackground(0, QColor(248, 232, 137))
-            # 创建子节点
-            child_item = QTreeWidgetItem(parent_item)
-            # 创建自定义控件组（ScrollArea->Widget->ComicWidget)
-            widget = QWidget()
-            layout = QHBoxLayout(widget)
-            layout.setContentsMargins(0, 0, 0, 0)
-            layout.setSpacing(30)
-            for file in group_turple:
-                if os.path.exists(file) and file in self.comic_data_dict:
-                    # 提取数据
-                    filesize_mb = round(self.comic_data_dict[file]['filesize'] / 1024 / 1024, 2)
-                    image_number = self.comic_data_dict[file]['image_number']
-                    preview_image = self.comic_data_dict[file]['preview']
-                    filetype = self.comic_data_dict[file]['filetype']
-                    # 实例化自定义控件
-                    widget_comic = WidgetShowComic()
-                    widget_comic.signal_del_file.connect(self.accept_signal_del_file)
-                    widget_comic.signal_double_click.connect(self.show_dialog_compare_result)
-                    # widget_comic.setFixedSize(125, 215)
-                    widget_comic.setStyleSheet('{border: 1px solid gray;')
-                    widget_comic.set_filepath(file)
-                    widget_comic.set_size_and_count(f'{filesize_mb}MB/{image_number}图')
-                    widget_comic.set_preview(preview_image)
-                    if filetype == 'folder':
-                        widget_comic.set_filetype_icon(satic_function.icon_folder)
-                    elif filetype == 'archive':
-                        widget_comic.set_filetype_icon(satic_function.icon_archive)
-                    layout.addWidget(widget_comic)
-            scroll_area = QScrollArea()
-            scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-            scroll_area.setWidgetResizable(True)
-            scroll_area.setWidget(widget)
-            # 将控件组设置为子节点的单元格部件
-            self.ui.treeWidget_show.setItemWidget(child_item, 0, scroll_area)
-            # 打开所有父节点
-            self.ui.treeWidget_show.expandAll()
-
-    def load_compare_result(self):
-        """加载保存的对比结果数据"""
-        satic_function.print_function_info()
-        similar_group_list, comic_data_dict = get_data_pickle()
-        self.similar_group_list = similar_group_list
-        self.comic_data_dict = comic_data_dict
-        self.show_compare_result()
-
-    def refresh_compare_result(self):
-        """刷新结果，剔除不存在的项"""
-        satic_function.print_function_info()
-        checked_similar_group_list = []
-        for group_turple in self.similar_group_list:
-            checked_group_list = []
-            for file in group_turple:
-                if os.path.exists(file):
-                    checked_group_list.append(file)
-            checked_similar_group_list.append(tuple(checked_group_list))
-
-        self.similar_group_list = checked_similar_group_list
-        self.show_compare_result()
+    @staticmethod
+    def cache_setting():
+        """打开缓存设置"""
+        function_normal.print_function_info()
+        dialog = DialogCacheSetting()
+        dialog.exec()
 
     def set_start_button_state(self, mode='start'):
         """设置开始和停止按钮状态"""
         if mode == 'start':
             self.ui.pushButton_start.setEnabled(False)
             self.ui.pushButton_stop.setEnabled(True)
+            self.ui.pushButton_cache_setting.setEnabled(False)
         elif mode == 'stop':
             self.ui.pushButton_start.setEnabled(True)
             self.ui.pushButton_stop.setEnabled(False)
+            self.ui.pushButton_cache_setting.setEnabled(True)
+
+    def start_compare_thread(self):
+        """原神，启动！"""
+        function_normal.print_function_info()
+        # 启动计时器
+        self.start_time_run = time.time()
+        self.timer_runtime.start()
+        # 初始化ui
+        self.ui.label_schedule_time.setText('0:00')
+        self.set_start_button_state(mode='start')  # 调整按钮状态
+        self.treeWidget_similar_comics.clear()  # 重置视图
+        # 执行子线程
+        self.thread_compare.start()
+
+    def compare_thread_finished(self):
+        """相似组匹配子线程结束，执行相关任务"""
+        function_normal.print_function_info()
+        # 暂停计时器
+        self.timer_runtime.stop()
+        # 设置ui
+        self.ui.label_schedule_step.setText('完成')
+        self.ui.label_schedule_rate.setText('-/-')
+        self.ui.pushButton_refresh_result.setEnabled(True)
+        self.set_start_button_state(mode='stop')
+        # 将相似组显示在ui上
+        self.show_similar_comics()
+
+    def load_last_compare_result(self):
+        """加载上一次的相似组匹配结果"""
+        function_normal.print_function_info()
+        # 将相似组显示在ui上
+        self.show_similar_comics()
+
+    def refresh_compare_result(self):
+        """刷新结果，剔除失效的项"""
+        function_normal.print_function_info()
+        similar_groups = function_cache_similargroup.read_similar_groups_pickle()
+        comics_data = function_cache_comicdata.read_comics_data_pickle()
+
+        checked_similar_groups = []  # 检查后的相似组列表
+        for group in similar_groups:
+            checked_group = set()  # 检查后的单个相似组
+            for comic_path in group:
+                if os.path.exists(comic_path):  # 是否存在
+                    comic_class = comics_data[comic_path]
+                    comic_filesize = comic_class.filesize
+                    if function_normal.get_size(comic_path) == comic_filesize:  # 大小是否变化
+                        checked_group.add(comic_path)
+            if len(checked_group) >= 2:  # 2项以上才添加
+                checked_similar_groups.append(tuple(checked_group))
+
+        function_cache_similargroup.save_similar_groups_pickle(checked_similar_groups)
+        self.show_similar_comics()
+
+    def show_similar_comics(self):
+        """将相似漫画显示在ui中"""
+        function_normal.print_function_info()
+        self.treeWidget_similar_comics.show_comics()
 
     def stop_thread(self):
         """停止子线程"""
-        pass
+        function_normal.print_function_info()
+        # 停止线程任务
+        self.thread_compare.code_stop = True
+        # 暂停计时器
+        self.timer_runtime.stop()
+        # 设置ui
+        self.ui.label_schedule_step.setText('终止')
+        self.ui.label_schedule_rate.setText('-/-')
+        self.ui.pushButton_refresh_result.setEnabled(False)
+        self.set_start_button_state(mode='stop')
+
+    def update_schedule_setp(self, text):
+        """刷新运行步骤"""
+        self.ui.label_schedule_step.setText(text)
 
     def update_schedule_rate(self, text):
         """刷新运行进度"""
         self.ui.label_schedule_rate.setText(text)
 
-    def update_runtime(self):
-        """更新运行时间"""
-        current_time = time.time()
-        runtime = current_time - self.start_thread_time
-        minutes, seconds = divmod(runtime, 60)
-        self.ui.label_schedule_time.setText(f'{int(minutes)}:{int(seconds):02d}')
+    def load_setting(self):
+        """加载设置"""
+        function_normal.print_function_info()
+        # hash设置
+        self.ui.comboBox_hash.setCurrentText(function_config.get_mode_hash())
+        self.ui.spinBox_threshold_hash.setValue(function_config.get_threshold_hash_percent())
+        # ssim设置
+        self.ui.checkBox_ssim.setChecked(function_config.get_mode_ssim())
+        self.ui.spinBox_threshold_ssim.setValue(function_config.get_threshold_ssim_percent())
+        # 提取图片数
+        self.ui.spinBox_extract_image_number.setValue(function_config.get_extract_image_number())
+        # 线程数
+        self.ui.spinBox_thread_number.setValue(function_config.get_thread_number())
+        # 需要检查的文件夹
+        self.listWidget_folderlist.add_item(function_config.get_select_folders())
 
-    def show_dialog_compare_result(self, path):
-        """显示结果对应dialog"""
-        satic_function.print_function_info()
-        # 找到path对应的相似组
-        the_similar_group = None
-        for group in self.similar_group_list:
-            if path in group:
-                the_similar_group = group
-                break
-        # 实例化dialog
-        dialog = DialogShowComic()
-        dialog.set_show_path_list(the_similar_group)
-        dialog.signal_del_file.connect(self.accept_signal_del_file)
-        dialog.exec()
+    def change_mode_hash(self):
+        mode_hash = self.ui.comboBox_hash.currentText()
+        function_config.reset_mode_hash(mode_hash)
 
-    def accept_signal_del_file(self, path):
-        """接收删除文件的路径信号，刷新对应的树状视图中的父节点"""
-        # 找父节点对象
-        find_index = 0
-        find_group = None
-        for group_turple in self.similar_group_list:
-            if path in group_turple:
-                find_group = list(group_turple)
-                find_group.remove(path)
-                break
-            else:
-                find_index += 1
-        # 同步删除全局变量中的数据
-        pre_split = self.similar_group_list[:find_index]
-        change_split = [tuple(find_group)]
-        after_split = self.similar_group_list[find_index + 1:]
-        self.similar_group_list = pre_split + change_split + after_split
-        # 清空子节点
-        parent_item = self.ui.treeWidget_show.topLevelItem(find_index)
-        while parent_item.childCount() > 0:
-            child_item = parent_item.takeChild(0)
-            del child_item
-        # 重新设置子节点的控件
-        child_item = QTreeWidgetItem(parent_item)
-        # 创建自定义控件组（ScrollArea->Widget->ComicWidget)
-        widget = QWidget()
-        layout = QHBoxLayout(widget)
-        layout.setContentsMargins(0, 0, 0, 0)
-        layout.setSpacing(30)
-        for file in find_group:
-            # 提取数据
-            filesize_mb = round(self.comic_data_dict[file]['filesize'] / 1024 / 1024, 0)
-            image_number = self.comic_data_dict[file]['image_number']
-            preview_image = self.comic_data_dict[file]['preview']
-            filetype = self.comic_data_dict[file]['filetype']
-            # 实例化自定义控件
-            widget_comic = WidgetShowComic()
-            widget_comic.signal_del_file.connect(self.accept_signal_del_file)
-            widget_comic.signal_double_click.connect(self.show_dialog_compare_result)
-            # widget_comic.setFixedSize(125, 215)
-            widget_comic.setStyleSheet('{border: 1px solid gray;')
-            widget_comic.set_filepath(file)
-            widget_comic.set_size_and_count(f'{filesize_mb}MB/{image_number}图')
-            widget_comic.set_preview(preview_image)
-            if filetype == 'folder':
-                widget_comic.set_filetype_icon(satic_function.icon_folder)
-            elif filetype == 'archive':
-                widget_comic.set_filetype_icon(satic_function.icon_archive)
-            layout.addWidget(widget_comic)
-        scroll_area = QScrollArea()
-        scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
-        scroll_area.setWidgetResizable(True)
-        scroll_area.setWidget(widget)
-        # 将控件组设置为子节点的单元格部件
-        self.ui.treeWidget_show.setItemWidget(child_item, 0, scroll_area)
-        # 打开所有父节点
-        self.ui.treeWidget_show.expandAll()
+    def change_threshold_hash(self):
+        threshold_hash = self.ui.spinBox_threshold_hash.value()
+        function_config.reset_threshold_hash(threshold_hash)
+
+    def change_mode_ssim(self):
+        mode_ssim = self.ui.checkBox_ssim.isChecked()
+        function_config.reset_mode_ssim(mode_ssim)
+
+    def change_threshold_ssim(self):
+        threshold_ssim = self.ui.spinBox_threshold_ssim.value()
+        function_config.reset_threshold_ssim(threshold_ssim)
+
+    def change_extract_image_number(self):
+        extract_image_number = self.ui.spinBox_extract_image_number.value()
+        function_config.reset_extract_image_number(extract_image_number)
+
+    def change_thread_number(self):
+        thread_number = self.ui.spinBox_thread_number.value()
+        function_config.reset_thread_number(thread_number)
 
 
 def main():
-    check_config()
+    function_config.check_config_exist()
 
     app = QApplication()
     app.setStyle('Fusion')  # 设置风格
@@ -431,7 +229,7 @@ def main():
     palette.setColor(QPalette.Window, QColor(255, 255, 255))
     app.setPalette(palette)
     app.setWindowIcon(QIcon('icon/icon.ico'))
-    show_ui = DouDup()
+    show_ui = ComicDup()
     show_ui.show()
     app.exec()
 
