@@ -17,7 +17,7 @@ HASH_CACHE_FILE = CACHE_FOLDER + '/hash_cache.db'
 SIMILAR_GROUPS_PICKLE = CACHE_FOLDER + '/similar_groups.pickle'
 COMICS_DATA_PICKLE = CACHE_FOLDER + '/comics_data.pickle'
 TEMP_IMAGE_FOLDER = CACHE_FOLDER + '/temp_image_folder'
-EXTRACT_TEMP_IMAGE_FOLDER = CACHE_FOLDER + TEMP_IMAGE_FOLDER + '/extract_archive'
+EXTRACT_TEMP_IMAGE_FOLDER = TEMP_IMAGE_FOLDER + '/extract_archive'
 
 # 配置文件相关
 CONFIG_FILE = 'config.ini'

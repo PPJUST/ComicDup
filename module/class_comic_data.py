@@ -49,7 +49,7 @@ class ComicData:
         # 如果是压缩包类型，则需要先提取本地已解压的记录（若存在），否则进行解压
         elif self.filetype == 'archive':
             extract_images_cache = function_cache_comicdata.get_extract_images_from_archive(self.path)
-            if extract_images_cache < calc_number:
+            if len(extract_images_cache) < calc_number:
                 self.calc_hash_images = function_comic.extract_archive_image(self.path, calc_number)
             else:
                 self.calc_hash_images = extract_images_cache
