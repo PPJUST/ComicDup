@@ -173,7 +173,7 @@ class ComicDup(QMainWindow):
                     if function_normal.get_size(comic_path) == comic_filesize:  # 大小是否变化
                         checked_group.add(comic_path)
             if len(checked_group) >= 2:  # 2项以上才添加
-                checked_similar_groups.append(tuple(checked_group))
+                checked_similar_groups.append(checked_group)
 
         function_cache_similargroup.save_similar_groups_pickle(checked_similar_groups)
         self.show_similar_comics()

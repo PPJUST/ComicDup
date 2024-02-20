@@ -4,6 +4,7 @@ import os
 import imagehash
 from PIL import Image
 
+from constant import RESIZE_IMAGE_ACCURACY
 from module import function_normal
 
 
@@ -14,7 +15,8 @@ def calc_image_hash(image_file, calc_hash: str = 'all'):
     """
     function_normal.print_function_info()
     image_pil = Image.open(image_file)
-    resize_image_pil = image_pil.resize((8, 8))
+    grey_image = image_pil.convert('L')  # 转灰度图
+    resize_image_pil = grey_image.resize(RESIZE_IMAGE_ACCURACY)
 
     pic_hash_dict = {'ahash': None, 'phash': None, 'dhash': None}
     # 均值哈希

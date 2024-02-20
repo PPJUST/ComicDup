@@ -116,8 +116,15 @@ class ThreadCompare(QThread):
             current_dict = {image: hash_dict}
             similar_hash_group = function_hash.filter_similar_hash_group(current_dict, compare_image_data_dict,
                                                                          threshold_hamming_distance)
+            # 剔除不存在的路径
+            if similar_hash_group:
+                similar_hash_group_copy = similar_hash_group.copy()
+                for path in similar_hash_group_copy:
+                    if not os.path.exists(path):
+                        similar_hash_group.remove(path)
 
-            if mode_ssim:  # 使用ssim再次筛选
+            # 使用ssim再次筛选
+            if similar_hash_group and mode_ssim:
                 similar_hash_group_temp = similar_hash_group.copy()
                 for compare_image in similar_hash_group_temp:
                     ssim = function_ssim.calc_images_ssim(image, compare_image)
