@@ -7,6 +7,8 @@ from PIL import Image
 from constant import RESIZE_IMAGE_ACCURACY
 from module import function_normal
 
+Image.MAX_IMAGE_PIXELS = None
+
 
 def calc_image_hash(image_file, calc_hash: str = 'all'):
     """计算图片的哈希值
@@ -16,22 +18,22 @@ def calc_image_hash(image_file, calc_hash: str = 'all'):
     function_normal.print_function_info()
     image_pil = Image.open(image_file)
     grey_image = image_pil.convert('L')  # 转灰度图
-    resize_image_pil = grey_image.resize(RESIZE_IMAGE_ACCURACY)
+    resize_image_pil = grey_image.resize(size=(RESIZE_IMAGE_ACCURACY, RESIZE_IMAGE_ACCURACY))
 
     pic_hash_dict = {'ahash': None, 'phash': None, 'dhash': None}
     # 均值哈希
     if calc_hash == 'ahash' or calc_hash == 'all':
-        hash_a = imagehash.average_hash(resize_image_pil)
+        hash_a = imagehash.average_hash(resize_image_pil, hash_size=RESIZE_IMAGE_ACCURACY)
         hash_a_str = _hash_numpy2str(hash_a)
         pic_hash_dict['ahash'] = hash_a_str
     # 感知哈希
     if calc_hash == 'phash' or calc_hash == 'all':
-        hash_p = imagehash.phash(resize_image_pil)
+        hash_p = imagehash.phash(resize_image_pil, hash_size=RESIZE_IMAGE_ACCURACY)
         hash_p_str = _hash_numpy2str(hash_p)
         pic_hash_dict['phash'] = hash_p_str
     # 差异哈希
     if calc_hash == 'dhash' or calc_hash == 'all':
-        hash_d = imagehash.dhash(resize_image_pil)
+        hash_d = imagehash.dhash(resize_image_pil, hash_size=RESIZE_IMAGE_ACCURACY)
         hash_d_str = _hash_numpy2str(hash_d)
         pic_hash_dict['dhash'] = hash_d_str
 

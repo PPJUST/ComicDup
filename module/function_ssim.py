@@ -9,7 +9,7 @@ from module import function_normal
 def _image_to_numpy(image_file):
     """将图片转换为numpy图片对象"""
     image_numpy = cv2.imdecode(numpy.fromfile(image_file, dtype=numpy.uint8), -1)
-    image_numpy = cv2.resize(image_numpy, RESIZE_IMAGE_ACCURACY)
+    image_numpy = cv2.resize(image_numpy, dsize=(RESIZE_IMAGE_ACCURACY, RESIZE_IMAGE_ACCURACY))
 
     try:
         image_numpy = cv2.cvtColor(image_numpy, cv2.COLOR_BGR2GRAY)

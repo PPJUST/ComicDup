@@ -98,8 +98,6 @@ class ComicDup(QMainWindow):
         # 启动计时器
         self.start_time_run = time.time()
         self.timer_runtime.start()
-        # 重置视图
-        self.treeWidget_similar_comics.clear()
         # 执行子线程
         self.thread_compare.start()
 
@@ -116,6 +114,7 @@ class ComicDup(QMainWindow):
     def set_ui_with_thread_state(self, state='start'):
         """在线程开始或结束时改变ui"""
         if state == 'start':
+            self.treeWidget_similar_comics.clear()
             self.ui.pushButton_start.setEnabled(False)
             self.ui.pushButton_stop.setEnabled(True)
             self.ui.pushButton_cache_setting.setEnabled(False)

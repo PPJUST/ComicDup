@@ -2,7 +2,7 @@
 import configparser
 import os.path
 
-from constant import CONFIG_FILE, CACHE_FOLDER
+from constant import CONFIG_FILE, CACHE_FOLDER, RESIZE_IMAGE_ACCURACY
 
 
 def check_config_exist():
@@ -79,8 +79,10 @@ def get_threshold_hash():
     config = configparser.ConfigParser()
     config.read(CONFIG_FILE, encoding='utf-8')
     threshold_hash_percent = config.get('setting', 'threshold_hash')
-    # 取得的阈值为百位数，需要/100*8*8转换为汉明距离单位
-    threshold_hash = 64 - int(threshold_hash_percent) / 100 * 64
+    # 取得的阈值为百位数，需要转换为汉明距离单位
+    threshold_hash = (1 - int(threshold_hash_percent) / 100) * RESIZE_IMAGE_ACCURACY * RESIZE_IMAGE_ACCURACY
+    # 设100%相似度时，汉明距离为5，0%相似度时，汉明距离为50，以此建立方程式
+    # threshold_hash = 50 - 45 * int(threshold_hash_percent) / 100
 
     return threshold_hash
 
