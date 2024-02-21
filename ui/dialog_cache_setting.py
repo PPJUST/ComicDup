@@ -1,20 +1,16 @@
 # 缓存设置的Dialog控件
-import os
 
 from PySide6.QtCore import Signal
 from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import *
 
-from constant import MAX_EXTRACT_IMAGE_NUMBER, ICON_REFRESH, ICON_CHECK, ICON_RESET, ICON_CLEAR
+from constant import ICON_REFRESH, ICON_CHECK, ICON_RESET, ICON_CLEAR
 from module import function_cache_hash
-from module import function_cache_similargroup
-from module import function_comic
 from module import function_config
-from module import function_hash
 from module import function_normal
-from module.class_comic_data import ComicData
 from ui.listwidget_folderlist import ListWidgetFolderlist
 from ui.thread_compare_cache import ThreadCompareCache
+from ui.thread_update_cache import ThreadUpdateCache
 
 
 class DialogCacheSetting(QDialog):
@@ -79,57 +75,15 @@ class DialogCacheSetting(QDialog):
         """接受拖入文件夹信号"""
         function_config.reset_cache_folder(folderlist)
 
-    @staticmethod
-    def _update_cache():
+    def _update_cache(self):
         """增量更新缓存"""
-        function_normal.print_function_info()
-        # 读取缓存
-        cache_image_data_dict = function_cache_similargroup.read_similar_groups_pickle()
-        cache_folders = function_config.get_cache_folder()
-
-        # 提取符合要求的漫画文件夹和压缩包
-        all_comic_folders = set()
-        all_archives = set()
-        for dirpath in cache_folders:
-            comic_folders, archives = function_comic.filter_comic_folder_and_archive(dirpath)
-            all_comic_folders.update(comic_folders)
-            all_archives.update(archives)
-
-        # 遍历两个列表，并提取漫画数据
-        comics_data = {}
-        all_files = all_comic_folders.union(all_archives)
-        for path in all_files:
-            comic_class = ComicData()
-            comic_class.set_path(path)
-            comic_class.set_calc_number(MAX_EXTRACT_IMAGE_NUMBER)  # 提取图片数上限为3
-            comics_data[path] = comic_class
-
-        # 生成图片数据字典
-        image_data_dict = {}
-        for comic_class in comics_data.values():
-            comic_path = comic_class.path
-            calc_hash_images = comic_class.calc_hash_images
-            for image in calc_hash_images:
-                # 生成基本数据
-                image_filesize = os.path.getsize(image)
-                image_data_dict[image] = {'comic_path': comic_path, 'filesize': image_filesize}
-                # 计算hash
-                if (image in cache_image_data_dict
-                        and image_filesize == cache_image_data_dict['filesize']
-                        and cache_image_data_dict['ahash']
-                        and cache_image_data_dict['phash']
-                        and cache_image_data_dict['dhash']):  # 同一文件且3种hash齐全时才直接提取缓存中的数据，否则重新计算
-                    image_data_dict[image]['ahash'] = cache_image_data_dict[image]['ahash']
-                    image_data_dict[image]['phash'] = cache_image_data_dict[image]['phash']
-                    image_data_dict[image]['dhash'] = cache_image_data_dict[image]['dhash']
-                else:
-                    hash_dict = function_hash.calc_image_hash(image)
-                    image_data_dict[image]['ahash'] = hash_dict['ahash']
-                    image_data_dict[image]['phash'] = hash_dict['phash']
-                    image_data_dict[image]['dhash'] = hash_dict['dhash']
-
-        # 更新写入hash缓存
-        function_cache_hash.update_hash_cache(image_data_dict)
+        self.thread_update = ThreadUpdateCache()
+        self.thread_update.signal_start_thread.connect(self.signal_start_thread.emit)
+        self.thread_update.signal_finished.connect(self.signal_compare_cache_finished.emit)
+        self.thread_update.signal_schedule_step.connect(self.emit_signal_schedule_step)
+        self.thread_update.signal_schedule_rate.connect(self.emit_signal_schedule_rate)
+        self.thread_update.start()
+        self.close()
 
     def _refresh_cache(self):
         """重置缓存"""

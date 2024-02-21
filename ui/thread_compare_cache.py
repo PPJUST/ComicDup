@@ -36,17 +36,19 @@ class ThreadCompareCache(QThread):
         # 先向字典中添加hash_count0键
         cache_image_data_dict = function_hash.add_count_key_to_dict(cache_image_data_dict, mode_hash)
 
-        self.signal_schedule_step.emit('5/5 相似匹配')
+        self.signal_schedule_step.emit('1/1 相似匹配')
         # 再遍历需要匹配的图片列表
         similar_groups = []  # 全部的相似组列表（漫画路径）
         index_rate = 0
+        compare_image_data_dict = cache_image_data_dict.copy()
         for image, hash_dict in cache_image_data_dict.items():
             index_rate += 1
             self.signal_schedule_rate.emit(f'{index_rate}/{len(cache_image_data_dict)}')
             if not os.path.exists(image):
                 continue
             current_dict = {image: hash_dict}
-            similar_hash_group = function_hash.filter_similar_hash_group(current_dict, cache_image_data_dict,
+            compare_image_data_dict.pop(image)  # 每次都删除当前图片项，避免重复对比
+            similar_hash_group = function_hash.filter_similar_hash_group(current_dict, compare_image_data_dict,
                                                                          threshold_hamming_distance)
 
             if mode_ssim:  # 使用ssim再次筛选

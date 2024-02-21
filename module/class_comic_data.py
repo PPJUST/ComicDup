@@ -43,14 +43,15 @@ class ComicData:
     def set_calc_number(self, calc_number: int):
         """设置需要计算的图片数量，并提取响应的图片路径"""
         calc_number = min(calc_number, self.image_count)
-        if self.filetype == 'folder':
-            self.calc_hash_images = self.images[0:calc_number]
+        if calc_number != 0:
+            if self.filetype == 'folder':
+                self.calc_hash_images = self.images[0:calc_number]
 
-        # 如果是压缩包类型，则需要先提取本地已解压的记录（若存在），否则进行解压
-        elif self.filetype == 'archive':
-            extract_images_cache = function_cache_comicdata.get_extract_images_from_archive(self.path)
-            if len(extract_images_cache) < calc_number:
-                self.calc_hash_images = function_comic.extract_archive_image(self.path, calc_number)
-            else:
-                self.calc_hash_images = extract_images_cache
-            self.preview_file = self.calc_hash_images[0]
+            # 如果是压缩包类型，则需要先提取本地已解压的记录（若存在），否则进行解压
+            elif self.filetype == 'archive':
+                extract_images_cache = function_cache_comicdata.get_extract_images_from_archive(self.path)
+                if len(extract_images_cache) < calc_number:
+                    self.calc_hash_images = function_comic.extract_archive_image(self.path, calc_number)
+                else:
+                    self.calc_hash_images = extract_images_cache
+                self.preview_file = self.calc_hash_images[0]

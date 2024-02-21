@@ -60,6 +60,8 @@ class ComicDup(QMainWindow):
         self.ui.pushButton_cache_setting.setIcon(QIcon(ICON_CACHE))
         self.ui.pushButton_info.setIcon(QIcon(ICON_information))
 
+        self.load_setting()
+
         """连接信号与槽函数"""
         # 功能
         self.ui.pushButton_start.clicked.connect(self.start_compare_thread)
@@ -101,17 +103,12 @@ class ComicDup(QMainWindow):
     def start_compare_thread(self):
         """原神，启动！"""
         function_normal.print_function_info()
-        # 启动计时器
-        self.start_time_run = time.time()
-        self.timer_runtime.start()
         # 执行子线程
         self.thread_compare.start()
 
     def compare_thread_finished(self):
         """相似组匹配子线程结束，执行相关任务"""
         function_normal.print_function_info()
-        # 暂停计时器
-        self.timer_runtime.stop()
         # 设置ui
         self.set_ui_with_thread_state(state='finish')
         # 将相似组显示在ui上
@@ -131,6 +128,10 @@ class ComicDup(QMainWindow):
             self.ui.groupBox_folderlist.setEnabled(False)
 
             self.ui.label_schedule_time.setText('0:00')
+
+            # 启动计时器
+            self.start_time_run = time.time()
+            self.timer_runtime.start()
         elif state == 'finish':
             self.ui.pushButton_start.setEnabled(True)
             self.ui.pushButton_stop.setEnabled(False)
@@ -143,6 +144,9 @@ class ComicDup(QMainWindow):
 
             self.ui.label_schedule_step.setText('完成')
             self.ui.label_schedule_rate.setText('-/-')
+
+            # 暂停计时器
+            self.timer_runtime.stop()
         elif state == 'stop':
             self.ui.pushButton_start.setEnabled(True)
             self.ui.pushButton_stop.setEnabled(False)

@@ -16,11 +16,16 @@ def calc_image_hash(image_file, calc_hash: str = 'all'):
     :param calc_hash: 计算的hash类型，ahash/phash/dhash/all
     """
     function_normal.print_function_info()
-    image_pil = Image.open(image_file)
-    grey_image = image_pil.convert('L')  # 转灰度图
+    pic_hash_dict = {'ahash': None, 'phash': None, 'dhash': None}
+
+    try:
+        image_pil = Image.open(image_file)
+        grey_image = image_pil.convert('L')  # 转灰度图
+    except OSError:  # 如果图片损坏，会抛出异常OSError: image file is truncated (4 bytes not processed)
+        return pic_hash_dict
+
     resize_image_pil = grey_image.resize(size=(RESIZE_IMAGE_ACCURACY, RESIZE_IMAGE_ACCURACY))
 
-    pic_hash_dict = {'ahash': None, 'phash': None, 'dhash': None}
     # 均值哈希
     if calc_hash == 'ahash' or calc_hash == 'all':
         hash_a = imagehash.average_hash(resize_image_pil, hash_size=RESIZE_IMAGE_ACCURACY)
