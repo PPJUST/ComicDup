@@ -49,6 +49,17 @@ class ComicDup(QMainWindow):
         self.thread_compare.signal_schedule_step.connect(self.update_schedule_step)
         self.thread_compare.signal_schedule_rate.connect(self.update_schedule_rate)
 
+        # 设置ui属性
+        self.ui.pushButton_stop.setEnabled(False)
+        self.ui.spinBox_thread_number.setEnabled(False)
+        self.ui.pushButton_refresh_result.setEnabled(False)
+        self.ui.pushButton_start.setIcon(QIcon(ICON_START))
+        self.ui.pushButton_stop.setIcon(QIcon(ICON_STOP))
+        self.ui.pushButton_refresh_result.setIcon(QIcon(ICON_REFRESH))
+        self.ui.pushButton_load_result.setIcon(QIcon(ICON_LOAD))
+        self.ui.pushButton_cache_setting.setIcon(QIcon(ICON_CACHE))
+        self.ui.pushButton_info.setIcon(QIcon(ICON_information))
+
         """连接信号与槽函数"""
         # 功能
         self.ui.pushButton_start.clicked.connect(self.start_compare_thread)
@@ -63,17 +74,6 @@ class ComicDup(QMainWindow):
         self.ui.spinBox_threshold_ssim.valueChanged.connect(self.change_threshold_ssim)
         self.ui.spinBox_extract_image_number.valueChanged.connect(self.change_extract_image_number)
         self.ui.spinBox_thread_number.valueChanged.connect(self.change_thread_number)
-
-        # 设置ui属性
-        self.ui.pushButton_stop.setEnabled(False)
-        self.ui.spinBox_thread_number.setEnabled(False)
-        self.ui.pushButton_refresh_result.setEnabled(False)
-        self.ui.pushButton_start.setIcon(QIcon(ICON_START))
-        self.ui.pushButton_stop.setIcon(QIcon(ICON_STOP))
-        self.ui.pushButton_refresh_result.setIcon(QIcon(ICON_REFRESH))
-        self.ui.pushButton_load_result.setIcon(QIcon(ICON_LOAD))
-        self.ui.pushButton_cache_setting.setIcon(QIcon(ICON_CACHE))
-        self.ui.pushButton_info.setIcon(QIcon(ICON_information))
 
     @staticmethod
     def drop_folders(folders):
