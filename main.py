@@ -6,6 +6,7 @@ from PySide6.QtCore import *
 from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 
+from constant import ICON_START, ICON_STOP, ICON_LOAD, ICON_CACHE, ICON_information, ICON_REFRESH
 from module import function_cache_comicdata
 from module import function_cache_hash
 from module import function_cache_similargroup
@@ -67,7 +68,12 @@ class ComicDup(QMainWindow):
         self.ui.pushButton_stop.setEnabled(False)
         self.ui.spinBox_thread_number.setEnabled(False)
         self.ui.pushButton_refresh_result.setEnabled(False)
-        self.load_setting()
+        self.ui.pushButton_start.setIcon(QIcon(ICON_START))
+        self.ui.pushButton_stop.setIcon(QIcon(ICON_STOP))
+        self.ui.pushButton_refresh_result.setIcon(QIcon(ICON_REFRESH))
+        self.ui.pushButton_load_result.setIcon(QIcon(ICON_LOAD))
+        self.ui.pushButton_cache_setting.setIcon(QIcon(ICON_CACHE))
+        self.ui.pushButton_info.setIcon(QIcon(ICON_information))
 
     @staticmethod
     def drop_folders(folders):

@@ -2,9 +2,10 @@
 import os
 
 from PySide6.QtCore import Signal
+from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import *
 
-from constant import MAX_EXTRACT_IMAGE_NUMBER
+from constant import MAX_EXTRACT_IMAGE_NUMBER, ICON_REFRESH, ICON_CHECK, ICON_RESET, ICON_CLEAR
 from module import function_cache_hash
 from module import function_cache_similargroup
 from module import function_comic
@@ -45,22 +46,26 @@ class DialogCacheSetting(QDialog):
         self.verticalLayout_right = QVBoxLayout()
 
         self.pushButton_update = QPushButton()
-        self.pushButton_update.setText('增量更新缓存')
+        self.pushButton_update.setText('增量更新')
+        self.pushButton_update.setIcon(QIcon(ICON_REFRESH))
         self.pushButton_update.clicked.connect(self._update_cache)
         self.verticalLayout_right.addWidget(self.pushButton_update)
 
         self.pushButton_check_similar = QPushButton()
-        self.pushButton_check_similar.setText('缓存数据查重')
+        self.pushButton_check_similar.setText('缓存查重')
+        self.pushButton_check_similar.setIcon(QIcon(ICON_CHECK))
         self.pushButton_check_similar.clicked.connect(self._check_similar)
         self.verticalLayout_right.addWidget(self.pushButton_check_similar)
 
         self.pushButton_refresh = QPushButton()
         self.pushButton_refresh.setText('重置缓存')
+        self.pushButton_refresh.setIcon(QIcon(ICON_RESET))
         self.pushButton_refresh.clicked.connect(self._refresh_cache)
         self.verticalLayout_right.addWidget(self.pushButton_refresh)
 
         self.pushButton_clear = QPushButton()
         self.pushButton_clear.setText('清除缓存')
+        self.pushButton_clear.setIcon(QIcon(ICON_CLEAR))
         self.pushButton_clear.clicked.connect(self._clear_cache)
         self.verticalLayout_right.addWidget(self.pushButton_clear)
 

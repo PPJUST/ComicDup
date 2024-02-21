@@ -7,8 +7,8 @@ from PySide6.QtCore import *
 from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 
-import constant
-from constant import OVERSIZE_IMAGE
+from constant import OVERSIZE_IMAGE, ICON_PREVIOUS_5P, ICON_PREVIOUS, ICON_NEXT, ICON_REFRESH, ICON_FOLDER, \
+    ICON_NEXT_5P, ICON_RECYCLE_BIN
 from module import function_config
 from module import function_normal
 
@@ -33,23 +33,23 @@ class DialogComicsPreview(QDialog):
         self.horizontalLayout.addWidget(self.label_sync_scroll)
 
         self.toolButton_previous_5p_image = QToolButton()
-        self.toolButton_previous_5p_image.setIcon(QIcon(constant.ICON_PREVIOUS_5P))
+        self.toolButton_previous_5p_image.setIcon(QIcon(ICON_PREVIOUS_5P))
         self.horizontalLayout.addWidget(self.toolButton_previous_5p_image)
 
         self.toolButton_previous_image = QToolButton()
-        self.toolButton_previous_image.setIcon(QIcon(constant.ICON_PREVIOUS))
+        self.toolButton_previous_image.setIcon(QIcon(ICON_PREVIOUS))
         self.horizontalLayout.addWidget(self.toolButton_previous_image)
 
         self.toolButton_next_image = QToolButton()
-        self.toolButton_next_image.setIcon(QIcon(constant.ICON_NEXT))
+        self.toolButton_next_image.setIcon(QIcon(ICON_NEXT))
         self.horizontalLayout.addWidget(self.toolButton_next_image)
 
         self.toolButton_next_5p_image = QToolButton()
-        self.toolButton_next_5p_image.setIcon(QIcon(constant.ICON_NEXT_5P))
+        self.toolButton_next_5p_image.setIcon(QIcon(ICON_NEXT_5P))
         self.horizontalLayout.addWidget(self.toolButton_next_5p_image)
 
         self.toolButton_refresh = QToolButton()
-        self.toolButton_refresh.setIcon(QIcon(constant.ICON_REFRESH))
+        self.toolButton_refresh.setIcon(QIcon(ICON_REFRESH))
         self.horizontalLayout.addWidget(self.toolButton_refresh)
 
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
@@ -188,11 +188,11 @@ class WidgetSingleComicPreview(QWidget):
         self.horizontalLayout.addItem(self.horizontalSpacer)
 
         self.toolButton_previous_image = QToolButton()
-        self.toolButton_previous_image.setIcon(QIcon(constant.ICON_PREVIOUS))
+        self.toolButton_previous_image.setIcon(QIcon(ICON_PREVIOUS))
         self.horizontalLayout.addWidget(self.toolButton_previous_image)
 
         self.toolButton_next_image = QToolButton()
-        self.toolButton_next_image.setIcon(QIcon(constant.ICON_NEXT))
+        self.toolButton_next_image.setIcon(QIcon(ICON_NEXT))
         self.horizontalLayout.addWidget(self.toolButton_next_image)
 
         self.label_index = QLabel()
@@ -205,7 +205,7 @@ class WidgetSingleComicPreview(QWidget):
         self.horizontalLayout.addWidget(self.line)
 
         self.toolButton_recycle_bin = QToolButton()
-        self.toolButton_recycle_bin.setIcon(QIcon(constant.ICON_RECYCLE_BIN))
+        self.toolButton_recycle_bin.setIcon(QIcon(ICON_RECYCLE_BIN))
         self.horizontalLayout.addWidget(self.toolButton_recycle_bin)
 
         self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
@@ -234,7 +234,7 @@ class WidgetSingleComicPreview(QWidget):
             if function_normal.check_filetype(fullpath) == 'image':
                 self.image_list.append(fullpath)
 
-        self.set_filetype_icon(constant.ICON_FOLDER)
+        self.set_filetype_icon(ICON_FOLDER)
         self.set_filesize_text()
         self.label_filepath.setText(path)
         self.show_preview()

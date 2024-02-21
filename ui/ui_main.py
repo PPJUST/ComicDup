@@ -1,24 +1,17 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'ui_mainuhWuNx.ui'
+## Form generated from reading UI file 'ui_maincKBmov.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.5.3
+## Created by: Qt User Interface Compiler version 6.1.3
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
-from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
-    QMetaObject, QObject, QPoint, QRect,
-    QSize, QTime, QUrl, Qt)
-from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
-    QFont, QFontDatabase, QGradient, QIcon,
-    QImage, QKeySequence, QLinearGradient, QPainter,
-    QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QFrame,
-    QGridLayout, QGroupBox, QHBoxLayout, QLabel,
-    QMainWindow, QPushButton, QSizePolicy, QSpinBox,
-    QVBoxLayout, QWidget)
+from PySide6.QtCore import *  # type: ignore
+from PySide6.QtGui import *  # type: ignore
+from PySide6.QtWidgets import *  # type: ignore
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -42,16 +35,6 @@ class Ui_MainWindow(object):
         self.gridLayout_3.setSpacing(3)
         self.gridLayout_3.setObjectName(u"gridLayout_3")
         self.gridLayout_3.setContentsMargins(0, 0, 0, 3)
-        self.pushButton_refresh_result = QPushButton(self.groupBox_button)
-        self.pushButton_refresh_result.setObjectName(u"pushButton_refresh_result")
-
-        self.gridLayout_3.addWidget(self.pushButton_refresh_result, 2, 0, 1, 1)
-
-        self.pushButton_load_result = QPushButton(self.groupBox_button)
-        self.pushButton_load_result.setObjectName(u"pushButton_load_result")
-
-        self.gridLayout_3.addWidget(self.pushButton_load_result, 2, 1, 1, 1)
-
         self.pushButton_start = QPushButton(self.groupBox_button)
         self.pushButton_start.setObjectName(u"pushButton_start")
 
@@ -62,10 +45,25 @@ class Ui_MainWindow(object):
 
         self.gridLayout_3.addWidget(self.pushButton_stop, 0, 1, 1, 1)
 
+        self.pushButton_refresh_result = QPushButton(self.groupBox_button)
+        self.pushButton_refresh_result.setObjectName(u"pushButton_refresh_result")
+
+        self.gridLayout_3.addWidget(self.pushButton_refresh_result, 1, 0, 1, 1)
+
         self.pushButton_cache_setting = QPushButton(self.groupBox_button)
         self.pushButton_cache_setting.setObjectName(u"pushButton_cache_setting")
 
-        self.gridLayout_3.addWidget(self.pushButton_cache_setting, 1, 0, 1, 1)
+        self.gridLayout_3.addWidget(self.pushButton_cache_setting, 2, 0, 1, 1)
+
+        self.pushButton_load_result = QPushButton(self.groupBox_button)
+        self.pushButton_load_result.setObjectName(u"pushButton_load_result")
+
+        self.gridLayout_3.addWidget(self.pushButton_load_result, 1, 1, 1, 1)
+
+        self.pushButton_info = QPushButton(self.groupBox_button)
+        self.pushButton_info.setObjectName(u"pushButton_info")
+
+        self.gridLayout_3.addWidget(self.pushButton_info, 2, 1, 1, 1)
 
 
         self.verticalLayout_3.addWidget(self.groupBox_button)
@@ -244,11 +242,12 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Doudup", None))
         self.groupBox_button.setTitle(QCoreApplication.translate("MainWindow", u"\u529f\u80fd\u533a", None))
-        self.pushButton_refresh_result.setText(QCoreApplication.translate("MainWindow", u"\u5237\u65b0\u7ed3\u679c", None))
-        self.pushButton_load_result.setText(QCoreApplication.translate("MainWindow", u"\u52a0\u8f7d\u4e0a\u6b21\u7ed3\u679c", None))
         self.pushButton_start.setText(QCoreApplication.translate("MainWindow", u"\u5f00\u59cb", None))
         self.pushButton_stop.setText(QCoreApplication.translate("MainWindow", u"\u505c\u6b62", None))
+        self.pushButton_refresh_result.setText(QCoreApplication.translate("MainWindow", u"\u5237\u65b0\u7ed3\u679c", None))
         self.pushButton_cache_setting.setText(QCoreApplication.translate("MainWindow", u"\u7f13\u5b58\u8bbe\u7f6e", None))
+        self.pushButton_load_result.setText(QCoreApplication.translate("MainWindow", u"\u52a0\u8f7d\u7ed3\u679c", None))
+        self.pushButton_info.setText(QCoreApplication.translate("MainWindow", u"\u7a0b\u5e8f\u8bf4\u660e", None))
         self.groupBox_similar.setTitle(QCoreApplication.translate("MainWindow", u"\u76f8\u4f3c\u5ea6\u7b97\u6cd5\u8bbe\u7f6e", None))
         self.label_6.setText(QCoreApplication.translate("MainWindow", u"\u5f20", None))
 #if QT_CONFIG(tooltip)
