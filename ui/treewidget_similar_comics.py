@@ -6,7 +6,7 @@ from PySide6.QtCore import *
 from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 
-from constant import ICON_FOLDER, ICON_ARCHIVE
+from constant import ICON_FOLDER, ICON_ARCHIVE, OVERSIZE_IMAGE
 from module import function_cache_comicdata
 from module import function_cache_similargroup
 from ui.dialog_comics_preview import DialogComicsPreview
@@ -228,6 +228,8 @@ class WidgetSingleComicData(QWidget):
         self.label_preview.setAlignment(Qt.AlignCenter)
         # 设置图片对象
         pixmap = QPixmap(image)
+        if pixmap.isNull():  # 处理超过限制的图片对象，替换为裂图图标
+            pixmap = QPixmap(OVERSIZE_IMAGE)
         # 获取QLabel的大小
         label_size = self.label_preview.size()
         # 根据图片大小和QLabel大小来缩放图片并保持纵横比

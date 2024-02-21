@@ -10,6 +10,7 @@ ICON_NEXT = 'icon/next.png'
 ICON_REFRESH = 'icon/refresh.png'
 ICON_NEXT_5P = 'icon/next_5p.png'
 ICON_PREVIOUS_5P = 'icon/previous_5p.png'
+OVERSIZE_IMAGE = 'icon/oversize_image.jpg'
 
 # 缓存文件相关
 CACHE_FOLDER = 'cache'

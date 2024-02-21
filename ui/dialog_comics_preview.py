@@ -8,6 +8,7 @@ from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 
 import constant
+from constant import OVERSIZE_IMAGE
 from module import function_config
 from module import function_normal
 
@@ -258,6 +259,8 @@ class WidgetSingleComicPreview(QWidget):
         self.show_index()
         # 设置图片对象
         pixmap = QPixmap(self.image_list[self.image_index])
+        if pixmap.isNull():  # 处理超过限制的图片对象，替换为裂图图标
+            pixmap = QPixmap(OVERSIZE_IMAGE)
         pixmap_height = pixmap.height()
         pixmap_width = pixmap.width()
         # 重设预览QLabel的大小
