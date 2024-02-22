@@ -19,6 +19,9 @@ ICON_information = 'icon/information.png'
 ICON_CHECK = 'icon/check.png'
 ICON_RESET = 'icon/reset.png'
 ICON_CLEAR = 'icon/clear.png'
+INFO_MAIN = 'icon/info_main.png'
+INFO_PREVIEW = 'icon/info_preview.png'
+INFO_CACHE = 'icon/info_cache.png'
 
 # 缓存文件相关
 CACHE_FOLDER = 'cache'

@@ -13,6 +13,7 @@ from module import function_cache_similargroup
 from module import function_config
 from module import function_normal
 from ui.dialog_cache_setting import DialogCacheSetting
+from ui.dialog_info import DialogInfo
 from ui.listwidget_folderlist import ListWidgetFolderlist
 from ui.thread_compare import ThreadCompare
 from ui.treewidget_similar_comics import TreeWidgetSimilarComics
@@ -69,6 +70,7 @@ class ComicDup(QMainWindow):
         self.ui.pushButton_cache_setting.clicked.connect(self.cache_setting)
         self.ui.pushButton_load_result.clicked.connect(self.load_last_compare_result)
         self.ui.pushButton_refresh_result.clicked.connect(self.refresh_compare_result)
+        self.ui.pushButton_info.clicked.connect(self.show_info_dialog)
         # 相似度设置
         self.ui.comboBox_hash.currentTextChanged.connect(self.change_mode_hash)
         self.ui.spinBox_threshold_hash.valueChanged.connect(self.change_threshold_hash)
@@ -225,6 +227,12 @@ class ComicDup(QMainWindow):
         self.ui.spinBox_thread_number.setValue(function_config.get_thread_number())
         # 需要检查的文件夹
         self.listWidget_folderlist.add_item(function_config.get_select_folders())
+
+    @staticmethod
+    def show_info_dialog():
+        """显示说明dialog"""
+        dialog = DialogInfo()
+        dialog.exec()
 
     def change_mode_hash(self):
         mode_hash = self.ui.comboBox_hash.currentText()
