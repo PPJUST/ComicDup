@@ -6,9 +6,12 @@ import zipfile
 
 import natsort
 import rarfile
+from PIL import Image
 
-from constant import EXTRACT_TEMP_IMAGE_FOLDER, TEMP_IMAGE_FOLDER
+from constant import EXTRACT_TEMP_IMAGE_FOLDER, TEMP_IMAGE_FOLDER, RESIZE_IMAGE_HEIGHT
 from module import function_normal
+
+Image.MAX_IMAGE_PIXELS = None
 
 
 def filter_comic_folder_and_archive(check_dirpath):
@@ -122,7 +125,22 @@ def extract_archive_image(archive: str, extract_number=0):
         new_filepath = os.path.normpath(os.path.join(TEMP_IMAGE_FOLDER, new_name))
         shutil.move(local_image_file, new_filepath)
         extract_images.append(new_filepath)
+        resize_image(new_filepath)
 
     archive_file.close()
 
     return extract_images
+
+
+def resize_image(image_path: str):
+    """调整图片大小"""
+    image = Image.open(image_path)
+    width, height = image.size
+    resize_height = RESIZE_IMAGE_HEIGHT
+    resize_width = int(resize_height * width / height)
+    try:
+        image = image.resize((resize_width, resize_height))
+        image.save(image_path)
+    except OSError:
+        pass
+    image.close()
