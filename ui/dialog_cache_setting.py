@@ -48,22 +48,28 @@ class DialogCacheSetting(QDialog):
         self.verticalLayout_right.addWidget(self.pushButton_update)
 
         self.pushButton_check_similar = QPushButton()
-        self.pushButton_check_similar.setText('缓存查重')
+        self.pushButton_check_similar.setText('缓存内查重')
         self.pushButton_check_similar.setIcon(QIcon(ICON_CHECK))
         self.pushButton_check_similar.clicked.connect(self._check_similar)
         self.verticalLayout_right.addWidget(self.pushButton_check_similar)
 
         self.pushButton_refresh = QPushButton()
-        self.pushButton_refresh.setText('重置缓存')
+        self.pushButton_refresh.setText('重置并更新')
         self.pushButton_refresh.setIcon(QIcon(ICON_RESET))
         self.pushButton_refresh.clicked.connect(self._refresh_cache)
         self.verticalLayout_right.addWidget(self.pushButton_refresh)
 
-        self.pushButton_clear = QPushButton()
-        self.pushButton_clear.setText('清除缓存')
-        self.pushButton_clear.setIcon(QIcon(ICON_CLEAR))
-        self.pushButton_clear.clicked.connect(self._clear_cache)
-        self.verticalLayout_right.addWidget(self.pushButton_clear)
+        self.pushButton_clear_unuseful = QPushButton()
+        self.pushButton_clear_unuseful.setText('清理失效项')
+        self.pushButton_clear_unuseful.setIcon(QIcon(ICON_CLEAR))
+        self.pushButton_clear_unuseful.clicked.connect(self._clear_unuseful)
+        self.verticalLayout_right.addWidget(self.pushButton_clear_unuseful)
+
+        self.pushButton_delete = QPushButton()
+        self.pushButton_delete.setText('删除缓存')
+        self.pushButton_delete.setIcon(QIcon(ICON_CLEAR))
+        self.pushButton_delete.clicked.connect(self._delete_cache)
+        self.verticalLayout_right.addWidget(self.pushButton_delete)
 
         self.horizontalLayout_main.addLayout(self.verticalLayout_right)
 
@@ -89,14 +95,20 @@ class DialogCacheSetting(QDialog):
         """重置缓存"""
         function_normal.print_function_info()
         function_normal.clear_temp_image_folder()
-        self._clear_cache()
+        self._delete_cache()
         self._update_cache()
 
     @staticmethod
-    def _clear_cache():
-        """清除缓存"""
+    def _delete_cache():
+        """删除全部缓存"""
         function_normal.print_function_info()
-        function_cache_hash.clear_hash_cache()
+        function_cache_hash.delete_hash_cache()
+
+    @staticmethod
+    def _clear_unuseful():
+        """清理无效项"""
+        function_normal.print_function_info()
+        function_cache_hash.clear_unuseful_cache()
 
     def _load_setting(self):
         cache_folders = function_config.get_cache_folder()

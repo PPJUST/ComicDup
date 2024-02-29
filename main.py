@@ -1,5 +1,5 @@
 # 主程序
-import os.path
+import os
 import time
 
 from PySide6.QtCore import *
