@@ -85,7 +85,7 @@ def _calc_hash_hamming_distance(hash_str1, hash_str2):
 
 
 def add_count_key_to_dict(image_data_dict: dict, calc_hash: str):
-    """在字典中添加hash_count0键，根据该键升序排列字典（并剔除None项，替换hash键名）
+    """在字典中添加hash_count0键，根据该键升序排列字典（并剔除None项，替换hash键名，剔除纯色图像）
     :param image_data_dict: 图片数据字典
     :param calc_hash: 计算的hash类型
     :return: 添加了count键并升序后的图片哈希字典
@@ -95,8 +95,11 @@ def add_count_key_to_dict(image_data_dict: dict, calc_hash: str):
     for image, data_dict in image_data_dict.items():
         hash_str = data_dict[calc_hash]
         if hash_str:  # 剔除None项
-            data_dict['hash_count0'] = hash_str.count('0')
             data_dict['hash'] = hash_str
+            zero_count = hash_str.count('0')
+            if zero_count == len(hash_str):  # 剔除纯色图像（哈希值全为0）
+                continue
+            data_dict['hash_count0'] = zero_count
             new_image_data_dict[image] = data_dict
 
     # 升序排列

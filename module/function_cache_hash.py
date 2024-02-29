@@ -65,12 +65,29 @@ def update_hash_cache(image_hash_dict: dict):
     conn.close()
 
 
-def clear_hash_cache():
-    """清除hash缓存"""
+def delete_hash_cache():
+    """删除hash缓存"""
     function_normal.print_function_info()
     conn = sqlite3.connect(HASH_CACHE_FILE)
     cursor = conn.cursor()
     cursor.execute("DELETE FROM hash")
+    cursor.close()
+    conn.commit()
+    conn.close()
+
+
+def clear_unuseful_cache():
+    """删除hash缓存中的无效项"""
+    function_normal.print_function_info()
+    conn = sqlite3.connect(HASH_CACHE_FILE)
+    cursor = conn.cursor()
+    cursor.execute('SELECT path, filesize FROM hash')
+    datas = cursor.fetchall()
+    for data in datas:
+        image_path = data[0]
+        filesize = data[1]
+        if not os.path.exists(image_path) or function_normal.get_size(image_path) != filesize:
+            cursor.execute(f'''DELETE FROM hash WHERE path="{image_path}"''')  # 路径外的引号必须使用“双引号（Windows文件名可以带'而不能带"）
     cursor.close()
     conn.commit()
     conn.close()
