@@ -8,17 +8,19 @@ from constant import ICON_REFRESH, ICON_CHECK, ICON_RESET, ICON_CLEAR
 from module import function_cache_hash
 from module import function_config
 from module import function_normal
+from thread.thread_compare_cache_manager import ThreadCompareCacheManager
+from thread.thread_update_cache import ThreadUpdateCache
 from ui.listwidget_folderlist import ListWidgetFolderlist
-from ui.thread_compare_cache import ThreadCompareCache
-from ui.thread_update_cache import ThreadUpdateCache
 
 
 class DialogCacheSetting(QDialog):
     """缓存设置的Dialog控件"""
-    signal_start_thread = Signal()
-    signal_schedule_step = Signal(str)
-    signal_schedule_rate = Signal(str)
-    signal_compare_cache_finished = Signal()
+    signal_start = Signal()
+    signal_step = Signal(str)
+    signal_rate = Signal(str)
+    signal_finished_compare = Signal()
+    signal_finished_update = Signal()
+    signal_stopped = Signal()
 
     def __init__(self):
         super().__init__()
@@ -76,6 +78,25 @@ class DialogCacheSetting(QDialog):
         # 加载设置
         self._load_setting()
 
+        # 实例化子线程
+        self.thread_update = ThreadUpdateCache()
+        self.thread_update.signal_start.connect(lambda: self.signal_start.emit())
+        self.thread_update.signal_finished.connect(lambda: self.signal_finished_update.emit())
+        self.thread_update.signal_stopped.connect(lambda: self.signal_stopped.emit())
+        self.thread_update.signal_step.connect(self.emit_signal_step)
+        self.thread_update.signal_rate.connect(self.emit_signal_rate)
+
+        self.thread_compare_cache = ThreadCompareCacheManager()
+        self.thread_compare_cache.signal_start.connect(lambda: self.signal_start.emit())
+        self.thread_compare_cache.signal_finished.connect(lambda: self.signal_finished_compare.emit())
+        self.thread_compare_cache.signal_stopped.connect(lambda: self.signal_stopped.emit())
+        self.thread_compare_cache.signal_step.connect(self.emit_signal_step)
+        self.thread_compare_cache.signal_rate.connect(self.emit_signal_rate)
+
+    def reset_stop_code(self):
+        self.thread_update.reset_stop_code()
+        self.thread_compare_cache.reset_stop_code()
+
     @staticmethod
     def _accept_folderlist(folderlist: list):
         """接受拖入文件夹信号"""
@@ -83,11 +104,6 @@ class DialogCacheSetting(QDialog):
 
     def _update_cache(self):
         """增量更新缓存"""
-        self.thread_update = ThreadUpdateCache()
-        self.thread_update.signal_start_thread.connect(self.signal_start_thread.emit)
-        self.thread_update.signal_finished.connect(self.signal_compare_cache_finished.emit)
-        self.thread_update.signal_schedule_step.connect(self.emit_signal_schedule_step)
-        self.thread_update.signal_schedule_rate.connect(self.emit_signal_schedule_rate)
         self.thread_update.start()
         self.close()
 
@@ -117,16 +133,11 @@ class DialogCacheSetting(QDialog):
 
     def _check_similar(self):
         """对缓存内数据进行查重"""
-        self.thread_compare_cache = ThreadCompareCache()
-        self.thread_compare_cache.signal_start_thread.connect(self.signal_start_thread.emit)
-        self.thread_compare_cache.signal_finished.connect(self.signal_compare_cache_finished.emit)
-        self.thread_compare_cache.signal_schedule_step.connect(self.emit_signal_schedule_step)
-        self.thread_compare_cache.signal_schedule_rate.connect(self.emit_signal_schedule_rate)
         self.thread_compare_cache.start()
         self.close()
 
-    def emit_signal_schedule_step(self, arg):
-        self.signal_schedule_step.emit(arg)
+    def emit_signal_step(self, arg):
+        self.signal_step.emit(arg)
 
-    def emit_signal_schedule_rate(self, arg):
-        self.signal_schedule_rate.emit(arg)
+    def emit_signal_rate(self, arg):
+        self.signal_rate.emit(arg)

@@ -6,16 +6,16 @@ from PySide6.QtCore import *
 from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 
-from constant import ICON_START, ICON_STOP, ICON_LOAD, ICON_CACHE, ICON_information, ICON_REFRESH
+from constant import ICON_START, ICON_STOP, ICON_LOAD, ICON_CACHE, ICON_INFORMATION, ICON_REFRESH
 from module import function_cache_comicdata
 from module import function_cache_hash
 from module import function_cache_similargroup
 from module import function_config
 from module import function_normal
+from thread.thread_compare_manager import ThreadCompareManager
 from ui.dialog_cache_setting import DialogCacheSetting
 from ui.dialog_info import DialogInfo
 from ui.listwidget_folderlist import ListWidgetFolderlist
-from ui.thread_compare import ThreadCompare
 from ui.treewidget_similar_comics import TreeWidgetSimilarComics
 from ui.ui_main import Ui_MainWindow
 
@@ -44,11 +44,23 @@ class ComicDup(QMainWindow):
         self.ui.groupBox_comics.layout().addWidget(self.treeWidget_similar_comics)
 
         # 实例化子线程
-        self.thread_compare = ThreadCompare()
-        self.thread_compare.signal_start_thread.connect(lambda: self.set_ui_with_thread_state(state='start'))
-        self.thread_compare.signal_finished.connect(self.compare_thread_finished)
-        self.thread_compare.signal_schedule_step.connect(self.update_schedule_step)
-        self.thread_compare.signal_schedule_rate.connect(self.update_schedule_rate)
+        self.thread_compare = ThreadCompareManager()
+        self.thread_compare.signal_start.connect(lambda: self.change_ui_with_thread_state(state='start'))
+        self.thread_compare.signal_stopped.connect(lambda: self.change_ui_with_thread_state(state='stop'))
+        self.thread_compare.signal_finished.connect(lambda: self.change_ui_with_thread_state(state='finish'))
+        self.thread_compare.signal_finished.connect(self.show_similar_comics)
+        self.thread_compare.signal_step.connect(self.update_schedule_step)
+        self.thread_compare.signal_rate.connect(self.update_schedule_rate)
+
+        # 实例化dialog
+        self.dialog_cache = DialogCacheSetting()
+        self.dialog_cache.signal_start.connect(lambda: self.change_ui_with_thread_state(state='start'))
+        self.dialog_cache.signal_finished_update.connect(lambda: self.change_ui_with_thread_state(state='finish'))
+        self.dialog_cache.signal_finished_compare.connect(lambda: self.change_ui_with_thread_state(state='finish'))
+        self.dialog_cache.signal_finished_compare.connect(self.show_similar_comics)
+        self.dialog_cache.signal_stopped.connect(lambda: self.change_ui_with_thread_state(state='stop'))
+        self.dialog_cache.signal_step.connect(self.update_schedule_step)
+        self.dialog_cache.signal_rate.connect(self.update_schedule_rate)
 
         # 设置ui属性
         self.ui.pushButton_stop.setEnabled(False)
@@ -59,7 +71,7 @@ class ComicDup(QMainWindow):
         self.ui.pushButton_refresh_result.setIcon(QIcon(ICON_REFRESH))
         self.ui.pushButton_load_result.setIcon(QIcon(ICON_LOAD))
         self.ui.pushButton_cache_setting.setIcon(QIcon(ICON_CACHE))
-        self.ui.pushButton_info.setIcon(QIcon(ICON_information))
+        self.ui.pushButton_info.setIcon(QIcon(ICON_INFORMATION))
 
         self.load_setting()
 
@@ -95,11 +107,6 @@ class ComicDup(QMainWindow):
     def cache_setting(self):
         """打开缓存设置"""
         function_normal.print_function_info()
-        self.dialog_cache = DialogCacheSetting()
-        self.dialog_cache.signal_start_thread.connect(lambda: self.set_ui_with_thread_state(state='start'))
-        self.dialog_cache.signal_compare_cache_finished.connect(self.compare_thread_finished)
-        self.dialog_cache.signal_schedule_step.connect(self.update_schedule_step)
-        self.dialog_cache.signal_schedule_rate.connect(self.update_schedule_rate)
         self.dialog_cache.exec()
 
     def start_compare_thread(self):
@@ -108,16 +115,8 @@ class ComicDup(QMainWindow):
         # 执行子线程
         self.thread_compare.start()
 
-    def compare_thread_finished(self):
-        """相似组匹配子线程结束，执行相关任务"""
-        function_normal.print_function_info()
-        # 设置ui
-        self.set_ui_with_thread_state(state='finish')
-        # 将相似组显示在ui上
-        self.show_similar_comics()
-
-    def set_ui_with_thread_state(self, state='start'):
-        """在线程开始或结束时改变ui"""
+    def change_ui_with_thread_state(self, state='start'):
+        """根据子线程状态改变ui"""
         if state == 'start':
             self.treeWidget_similar_comics.clear()
             self.ui.pushButton_start.setEnabled(False)
@@ -130,10 +129,10 @@ class ComicDup(QMainWindow):
             self.ui.groupBox_folderlist.setEnabled(False)
 
             self.ui.label_schedule_time.setText('0:00')
-
             # 启动计时器
             self.start_time_run = time.time()
             self.timer_runtime.start()
+
         elif state == 'finish':
             self.ui.pushButton_start.setEnabled(True)
             self.ui.pushButton_stop.setEnabled(False)
@@ -146,9 +145,9 @@ class ComicDup(QMainWindow):
 
             self.ui.label_schedule_step.setText('完成')
             self.ui.label_schedule_rate.setText('-/-')
-
             # 暂停计时器
             self.timer_runtime.stop()
+
         elif state == 'stop':
             self.ui.pushButton_start.setEnabled(True)
             self.ui.pushButton_stop.setEnabled(False)
@@ -161,6 +160,8 @@ class ComicDup(QMainWindow):
 
             self.ui.label_schedule_step.setText('终止')
             self.ui.label_schedule_rate.setText('-/-')
+            # 暂停计时器
+            self.timer_runtime.stop()
 
     def load_last_compare_result(self):
         """加载上一次的相似组匹配结果"""
@@ -198,11 +199,8 @@ class ComicDup(QMainWindow):
         """停止子线程"""
         function_normal.print_function_info()
         # 停止线程任务
-        self.thread_compare.code_stop = True
-        # 暂停计时器
-        self.timer_runtime.stop()
-        # 设置ui
-        self.set_ui_with_thread_state(state='stop')
+        self.thread_compare.reset_stop_code()
+        self.dialog_cache.reset_stop_code()
 
     def update_schedule_step(self, text):
         """刷新运行步骤"""
