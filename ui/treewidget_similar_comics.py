@@ -19,11 +19,15 @@ class TreeWidgetSimilarComics(QTreeWidget):
         super().__init__()
         self.setHeaderHidden(True)
 
-    def show_comics(self):
-        """显示所有相似漫画"""
+    def show_comics(self, filter_type:str = None):
+        """显示所有相似漫画
+        :param filter_type: str格式，筛选类型（用于显示经过筛选后的结果）"""
         self.clear()
 
-        similar_groups = function_cache_similargroup.read_similar_groups_pickle()
+        if filter_type:
+            similar_groups = function_cache_similargroup.read_similar_groups_pickle_filter(filter_type)
+        else:
+            similar_groups = function_cache_similargroup.read_similar_groups_pickle()
         comics_data = function_cache_comicdata.read_comics_data_pickle()
 
         for index, similar_group in enumerate(similar_groups, start=1):

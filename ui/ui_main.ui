@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>890</width>
-    <height>550</height>
+    <height>568</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Doudup</string>
+   <string>Comicdup</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,1">
@@ -31,7 +31,7 @@
      <number>3</number>
     </property>
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,1,0">
+     <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,0,1,0">
       <item>
        <widget class="QGroupBox" name="groupBox_button">
         <property name="focusPolicy">
@@ -76,13 +76,6 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="0">
-          <widget class="QPushButton" name="pushButton_refresh_result">
-           <property name="text">
-            <string>刷新结果</string>
-           </property>
-          </widget>
-         </item>
          <item row="2" column="0">
           <widget class="QPushButton" name="pushButton_cache_setting">
            <property name="text">
@@ -90,17 +83,69 @@
            </property>
           </widget>
          </item>
-         <item row="1" column="1">
-          <widget class="QPushButton" name="pushButton_load_result">
-           <property name="text">
-            <string>加载结果</string>
-           </property>
-          </widget>
-         </item>
          <item row="2" column="1">
           <widget class="QPushButton" name="pushButton_info">
            <property name="text">
             <string>程序说明</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item>
+       <widget class="QGroupBox" name="groupBox">
+        <property name="title">
+         <string>相似结果处理</string>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_4">
+         <property name="spacing">
+          <number>3</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>3</number>
+         </property>
+         <item>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <property name="spacing">
+            <number>3</number>
+           </property>
+           <item>
+            <widget class="QPushButton" name="pushButton_refresh_result">
+             <property name="text">
+              <string>刷新结果</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButton_load_result">
+             <property name="text">
+              <string>加载结果</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="checkBox_filter_page_size_same">
+           <property name="text">
+            <string>筛选 页数大小相同项</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="checkBox_filter_page_large_diff">
+           <property name="text">
+            <string>剔除 页数差别过大项</string>
            </property>
           </widget>
          </item>

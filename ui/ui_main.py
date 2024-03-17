@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'ui_mainwBBZMF.ui'
+## Form generated from reading UI file 'ui_mainRaOHYw.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.1.3
 ##
@@ -17,7 +17,7 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(890, 550)
+        MainWindow.resize(890, 568)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.horizontalLayout_2 = QHBoxLayout(self.centralwidget)
@@ -45,20 +45,10 @@ class Ui_MainWindow(object):
 
         self.gridLayout_3.addWidget(self.pushButton_stop, 0, 1, 1, 1)
 
-        self.pushButton_refresh_result = QPushButton(self.groupBox_button)
-        self.pushButton_refresh_result.setObjectName(u"pushButton_refresh_result")
-
-        self.gridLayout_3.addWidget(self.pushButton_refresh_result, 1, 0, 1, 1)
-
         self.pushButton_cache_setting = QPushButton(self.groupBox_button)
         self.pushButton_cache_setting.setObjectName(u"pushButton_cache_setting")
 
         self.gridLayout_3.addWidget(self.pushButton_cache_setting, 2, 0, 1, 1)
-
-        self.pushButton_load_result = QPushButton(self.groupBox_button)
-        self.pushButton_load_result.setObjectName(u"pushButton_load_result")
-
-        self.gridLayout_3.addWidget(self.pushButton_load_result, 1, 1, 1, 1)
 
         self.pushButton_info = QPushButton(self.groupBox_button)
         self.pushButton_info.setObjectName(u"pushButton_info")
@@ -67,6 +57,41 @@ class Ui_MainWindow(object):
 
 
         self.verticalLayout_3.addWidget(self.groupBox_button)
+
+        self.groupBox = QGroupBox(self.centralwidget)
+        self.groupBox.setObjectName(u"groupBox")
+        self.verticalLayout_4 = QVBoxLayout(self.groupBox)
+        self.verticalLayout_4.setSpacing(3)
+        self.verticalLayout_4.setObjectName(u"verticalLayout_4")
+        self.verticalLayout_4.setContentsMargins(0, 0, 0, 3)
+        self.horizontalLayout = QHBoxLayout()
+        self.horizontalLayout.setSpacing(3)
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.pushButton_refresh_result = QPushButton(self.groupBox)
+        self.pushButton_refresh_result.setObjectName(u"pushButton_refresh_result")
+
+        self.horizontalLayout.addWidget(self.pushButton_refresh_result)
+
+        self.pushButton_load_result = QPushButton(self.groupBox)
+        self.pushButton_load_result.setObjectName(u"pushButton_load_result")
+
+        self.horizontalLayout.addWidget(self.pushButton_load_result)
+
+
+        self.verticalLayout_4.addLayout(self.horizontalLayout)
+
+        self.checkBox_filter_page_size_same = QCheckBox(self.groupBox)
+        self.checkBox_filter_page_size_same.setObjectName(u"checkBox_filter_page_size_same")
+
+        self.verticalLayout_4.addWidget(self.checkBox_filter_page_size_same)
+
+        self.checkBox_filter_page_large_diff = QCheckBox(self.groupBox)
+        self.checkBox_filter_page_large_diff.setObjectName(u"checkBox_filter_page_large_diff")
+
+        self.verticalLayout_4.addWidget(self.checkBox_filter_page_large_diff)
+
+
+        self.verticalLayout_3.addWidget(self.groupBox)
 
         self.groupBox_similar = QGroupBox(self.centralwidget)
         self.groupBox_similar.setObjectName(u"groupBox_similar")
@@ -218,7 +243,7 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_3.addWidget(self.groupBox_schedule)
 
-        self.verticalLayout_3.setStretch(2, 1)
+        self.verticalLayout_3.setStretch(3, 1)
 
         self.horizontalLayout_2.addLayout(self.verticalLayout_3)
 
@@ -240,14 +265,17 @@ class Ui_MainWindow(object):
     # setupUi
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Doudup", None))
+        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Comicdup", None))
         self.groupBox_button.setTitle(QCoreApplication.translate("MainWindow", u"\u529f\u80fd\u533a", None))
         self.pushButton_start.setText(QCoreApplication.translate("MainWindow", u"\u5f00\u59cb", None))
         self.pushButton_stop.setText(QCoreApplication.translate("MainWindow", u"\u505c\u6b62", None))
-        self.pushButton_refresh_result.setText(QCoreApplication.translate("MainWindow", u"\u5237\u65b0\u7ed3\u679c", None))
         self.pushButton_cache_setting.setText(QCoreApplication.translate("MainWindow", u"\u7f13\u5b58\u8bbe\u7f6e", None))
-        self.pushButton_load_result.setText(QCoreApplication.translate("MainWindow", u"\u52a0\u8f7d\u7ed3\u679c", None))
         self.pushButton_info.setText(QCoreApplication.translate("MainWindow", u"\u7a0b\u5e8f\u8bf4\u660e", None))
+        self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"\u76f8\u4f3c\u7ed3\u679c\u5904\u7406", None))
+        self.pushButton_refresh_result.setText(QCoreApplication.translate("MainWindow", u"\u5237\u65b0\u7ed3\u679c", None))
+        self.pushButton_load_result.setText(QCoreApplication.translate("MainWindow", u"\u52a0\u8f7d\u7ed3\u679c", None))
+        self.checkBox_filter_page_size_same.setText(QCoreApplication.translate("MainWindow", u"\u7b5b\u9009 \u9875\u6570\u5927\u5c0f\u76f8\u540c\u9879", None))
+        self.checkBox_filter_page_large_diff.setText(QCoreApplication.translate("MainWindow", u"\u5254\u9664 \u9875\u6570\u5dee\u522b\u8fc7\u5927\u9879", None))
         self.groupBox_similar.setTitle(QCoreApplication.translate("MainWindow", u"\u76f8\u4f3c\u5ea6\u7b97\u6cd5\u8bbe\u7f6e", None))
         self.label_6.setText(QCoreApplication.translate("MainWindow", u"\u5f20", None))
 #if QT_CONFIG(tooltip)

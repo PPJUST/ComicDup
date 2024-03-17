@@ -72,6 +72,7 @@ class ComicDup(QMainWindow):
         self.ui.pushButton_load_result.setIcon(QIcon(ICON_LOAD))
         self.ui.pushButton_cache_setting.setIcon(QIcon(ICON_CACHE))
         self.ui.pushButton_info.setIcon(QIcon(ICON_INFORMATION))
+        self.ui.checkBox_filter_page_large_diff.setEnabled(False)
 
         self.load_setting()
 
@@ -80,8 +81,6 @@ class ComicDup(QMainWindow):
         self.ui.pushButton_start.clicked.connect(self.start_compare_thread)
         self.ui.pushButton_stop.clicked.connect(self.stop_thread)
         self.ui.pushButton_cache_setting.clicked.connect(self.cache_setting)
-        self.ui.pushButton_load_result.clicked.connect(self.load_last_compare_result)
-        self.ui.pushButton_refresh_result.clicked.connect(self.refresh_compare_result)
         self.ui.pushButton_info.clicked.connect(self.show_info_dialog)
         # 相似度设置
         self.ui.comboBox_hash.currentTextChanged.connect(self.change_mode_hash)
@@ -90,6 +89,10 @@ class ComicDup(QMainWindow):
         self.ui.spinBox_threshold_ssim.valueChanged.connect(self.change_threshold_ssim)
         self.ui.spinBox_extract_image_number.valueChanged.connect(self.change_extract_image_number)
         self.ui.spinBox_thread_number.valueChanged.connect(self.change_thread_number)
+        # 结果处理
+        self.ui.pushButton_load_result.clicked.connect(self.load_last_compare_result)
+        self.ui.pushButton_refresh_result.clicked.connect(self.refresh_compare_result)
+        self.ui.checkBox_filter_page_size_same.clicked.connect(self.filter_same_page_and_size)
 
     @staticmethod
     def drop_folders(folders):
@@ -194,6 +197,14 @@ class ComicDup(QMainWindow):
         """将相似漫画显示在ui中"""
         function_normal.print_function_info()
         self.treeWidget_similar_comics.show_comics()
+
+    def filter_same_page_and_size(self):
+        """过滤相似组中大小、页数相同的项"""
+        function_normal.print_function_info()
+        if self.ui.checkBox_filter_page_size_same.isChecked():
+            self.treeWidget_similar_comics.show_comics(filter_type='same_page_size')
+        else:
+            self.show_similar_comics()
 
     def stop_thread(self):
         """停止子线程"""
