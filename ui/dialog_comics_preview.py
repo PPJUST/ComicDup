@@ -8,7 +8,7 @@ from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 
 from constant import OVERSIZE_IMAGE, ICON_PREVIOUS_5P, ICON_PREVIOUS, ICON_NEXT, ICON_REFRESH, ICON_FOLDER, \
-    ICON_NEXT_5P, ICON_RECYCLE_BIN
+    ICON_NEXT_5P, ICON_RECYCLE_BIN, ICON_ARCHIVE
 from module import function_config, function_comic
 from module import function_normal
 
@@ -236,13 +236,13 @@ class WidgetSingleComicPreview(QWidget):
                     self.image_list.append(fullpath)
 
             self.set_filetype_icon(ICON_FOLDER)
-            self.set_filesize_text()
-            self.label_filepath.setText(path)
-
         else:  # 漫画压缩包
             images_in_archive = function_comic.get_archive_images(path)
             self.image_list = images_in_archive
+            self.set_filetype_icon(ICON_ARCHIVE)
 
+        self.set_filesize_text()
+        self.label_filepath.setText(path)
         self.show_preview()
 
     def set_index(self, step: int):
