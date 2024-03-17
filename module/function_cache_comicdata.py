@@ -6,7 +6,7 @@ key为漫画路径str，value为自定义的漫画class类
 import os
 import pickle
 
-from constant import COMICS_DATA_PICKLE
+from constant import COMICS_DATA_PICKLE, CURRENT_COMICS_DATA_PICKLE
 from module import function_normal
 
 
@@ -22,7 +22,27 @@ def read_comics_data_pickle():
     return comics_data
 
 
+def read_current_comics_data_pickle():
+    """读取当前任务的漫画数据"""
+    function_normal.print_function_info()
+    if os.path.exists(CURRENT_COMICS_DATA_PICKLE):
+        with open(CURRENT_COMICS_DATA_PICKLE, 'rb') as sp:
+            comics_data = pickle.load(sp)
+    else:
+        comics_data = {}
+
+    return comics_data
+
+
 def save_comics_data_pickle(comics_data: dict):
+    """将漫画数据保存到本地"""
+    function_normal.print_function_info()
+
+    with open(CURRENT_COMICS_DATA_PICKLE, 'wb') as sp:
+        pickle.dump(comics_data, sp)
+
+
+def update_comics_data_pickle(comics_data: dict):
     """将漫画数据保存到本地（增量更新）"""
     function_normal.print_function_info()
     old_comics_data = read_comics_data_pickle()

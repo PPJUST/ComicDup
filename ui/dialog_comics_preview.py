@@ -9,7 +9,7 @@ from PySide6.QtWidgets import *
 
 from constant import OVERSIZE_IMAGE, ICON_PREVIOUS_5P, ICON_PREVIOUS, ICON_NEXT, ICON_REFRESH, ICON_FOLDER, \
     ICON_NEXT_5P, ICON_RECYCLE_BIN
-from module import function_config
+from module import function_config, function_comic
 from module import function_normal
 
 
@@ -105,7 +105,7 @@ class DialogComicsPreview(QDialog):
     def show_path(self):
         """将列表中的文件显示在ui上"""
         for path in self.show_path_list:
-            if os.path.exists(path) and os.path.isdir(path):
+            if os.path.exists(path):
                 show_comic_widget = WidgetSingleComicPreview()
                 self.layout_comic_widget.addWidget(show_comic_widget)
                 show_comic_widget.set_path(path)
@@ -229,14 +229,20 @@ class WidgetSingleComicPreview(QWidget):
         """设置需要显示的路径"""
         self.path = path
 
-        for i in natsort.natsorted(os.listdir(path)):
-            fullpath = os.path.join(path, i)
-            if function_normal.check_filetype(fullpath) == 'image':
-                self.image_list.append(fullpath)
+        if os.path.isdir(path):  # 漫画文件夹
+            for i in natsort.natsorted(os.listdir(path)):
+                fullpath = os.path.join(path, i)
+                if function_normal.check_filetype(fullpath) == 'image':
+                    self.image_list.append(fullpath)
 
-        self.set_filetype_icon(ICON_FOLDER)
-        self.set_filesize_text()
-        self.label_filepath.setText(path)
+            self.set_filetype_icon(ICON_FOLDER)
+            self.set_filesize_text()
+            self.label_filepath.setText(path)
+
+        else:  # 漫画压缩包
+            images_in_archive = function_comic.get_archive_images(path)
+            self.image_list = images_in_archive
+
         self.show_preview()
 
     def set_index(self, step: int):
@@ -258,7 +264,12 @@ class WidgetSingleComicPreview(QWidget):
         """显示预览图"""
         self.show_index()
         # 设置图片对象
-        pixmap = QPixmap(self.image_list[self.image_index])
+        if os.path.isdir(self.path):
+            pixmap = QPixmap(self.image_list[self.image_index])
+        else:
+            img_bytes = function_comic.read_image_in_archive(self.path, self.image_list[self.image_index])
+            pixmap = QPixmap()
+            pixmap.loadFromData(img_bytes)
         if pixmap.isNull():  # 处理超过限制的图片对象，替换为裂图图标
             pixmap = QPixmap(OVERSIZE_IMAGE)
         pixmap_height = pixmap.height()

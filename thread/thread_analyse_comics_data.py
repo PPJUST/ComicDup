@@ -32,6 +32,7 @@ class ThreadAnalyseComicsData(ThreadModel):
             comics_data[path] = comic_class
         # 保存到本地
         function_cache_comicdata.save_comics_data_pickle(comics_data)
+        function_cache_comicdata.update_comics_data_pickle(comics_data)
         # 发送结束信号
         if self.code_stop:
             self.signal_stopped.emit()

@@ -1,4 +1,4 @@
-# 进行相似比较的子线程
+# 增量更新缓存数据的子线程
 
 from module import function_config
 from thread.thread_analyse_comics_data import ThreadAnalyseComicsData

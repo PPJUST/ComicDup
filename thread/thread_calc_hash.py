@@ -20,7 +20,7 @@ class ThreadCalcHash(ThreadModel):
         # 获取设置
         mode_hash = function_config.get_mode_hash()
         # 读取当前漫画set任务缓存
-        comics_data = function_cache_comicdata.read_comics_data_pickle()
+        comics_data = function_cache_comicdata.read_current_comics_data_pickle()
         # 读取本地hash缓存(读取到的数据暂时不考虑路径是否已经失效)
         cache_image_data_dict = function_cache_hash.read_hash_cache()
         # 建立当前任务的图片hash字典

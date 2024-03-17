@@ -53,10 +53,10 @@ def filter_comic_folder_and_archive(check_dirpath):
         inside_images = inside_structure['image']
         inside_archives = inside_structure['archive']
 
-        if inside_dirs:
-            continue
-        elif inside_archives:
+        if inside_archives:
             archives.update(inside_archives)
+        elif inside_dirs:
+            continue
         elif len(inside_images) >= 4:
             comic_folders.add(dirpath)
 
@@ -81,6 +81,43 @@ def count_archive_image(archive: str):
             image_count += 1
 
     return image_count
+
+
+def get_archive_images(archive: str):
+    """提取压缩包内图片路径list"""
+    function_normal.print_function_info()
+    try:
+        archive_file = zipfile.ZipFile(archive)
+    except zipfile.BadZipFile:
+        try:
+            archive_file = rarfile.RarFile(archive)
+        except rarfile.NotRarFile:
+            return 0
+
+    files = archive_file.namelist()  # 中文会变为乱码，可以考虑转utf-8编码
+    images_in_archive = []
+    for file in files:
+        if function_normal.check_filetype(file) == 'image':
+            images_in_archive.append(file)
+
+    return sorted(images_in_archive)
+
+
+def read_image_in_archive(archive, image_path):
+    """读取压缩包中的图片对象"""
+    function_normal.print_function_info()
+    try:
+        archive_file = zipfile.ZipFile(archive)
+    except zipfile.BadZipFile:
+        try:
+            archive_file = rarfile.RarFile(archive)
+        except rarfile.NotRarFile:
+            return 0
+
+    img_data = archive_file.read(image_path)
+    archive_file.close()
+
+    return img_data
 
 
 def extract_archive_image(archive: str, extract_number=0):

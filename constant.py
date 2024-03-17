@@ -25,14 +25,15 @@ INFO_CACHE = 'icon/info_cache.png'
 
 # 缓存文件相关
 CACHE_FOLDER = 'cache'
-HASH_CACHE_FILE = CACHE_FOLDER + '/hash_cache.db'
-SIMILAR_GROUPS_PICKLE = CACHE_FOLDER + '/similar_groups.pickle'
-COMICS_DATA_PICKLE = CACHE_FOLDER + '/comics_data.pickle'
-TEMP_IMAGE_FOLDER = CACHE_FOLDER + '/temp_image_folder'
-EXTRACT_TEMP_IMAGE_FOLDER = TEMP_IMAGE_FOLDER + '/extract_archive'
-COMIC_FOLDERS = CACHE_FOLDER + '/comic_folders.pickle'
-ARCHIVES = CACHE_FOLDER + '/archives.pickle'
-IMAGE_DATA_DICT = CACHE_FOLDER + '/image_data_dict.pickle'
+HASH_CACHE_FILE = CACHE_FOLDER + '/hash_cache.db'  # 哈希值缓存
+SIMILAR_GROUPS_PICKLE = CACHE_FOLDER + '/similar_groups.pickle'  # 相似组结果
+COMICS_DATA_PICKLE = CACHE_FOLDER + '/comics_data.pickle'  # 所有漫画数据（自定义类，包含漫画各种基础信息）
+CURRENT_COMICS_DATA_PICKLE = CACHE_FOLDER + '/current_comics_data.pickle'  # 当前任务的漫画数据
+TEMP_IMAGE_FOLDER = CACHE_FOLDER + '/temp_image_folder'  # 解压后图片存放路径
+EXTRACT_TEMP_IMAGE_FOLDER = TEMP_IMAGE_FOLDER + '/extract_archive'  # 临时解压路径
+COMIC_FOLDERS = CACHE_FOLDER + '/comic_folders.pickle'  # 当前任务找到的漫画文件夹
+ARCHIVES = CACHE_FOLDER + '/archives.pickle'  # 当前任务找到的压缩包
+IMAGE_DATA_DICT = CACHE_FOLDER + '/image_data_dict.pickle'  # 图片对应漫画路径
 
 # 配置文件相关
 CONFIG_FILE = 'config.ini'
