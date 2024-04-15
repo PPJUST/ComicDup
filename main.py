@@ -169,6 +169,8 @@ class ComicDup(QMainWindow):
     def load_last_compare_result(self):
         """加载上一次的相似组匹配结果"""
         function_normal.print_function_info()
+        # 启用刷新按钮
+        self.ui.pushButton_refresh_result.setEnabled(True)
         # 将相似组显示在ui上
         self.show_similar_comics()
 
