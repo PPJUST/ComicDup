@@ -100,7 +100,7 @@ def get_archive_images(archive: str):
         if function_normal.check_filetype(file) == 'image':
             images_in_archive.append(file)
 
-    return sorted(images_in_archive)
+    return natsort.natsorted(images_in_archive)
 
 
 def read_image_in_archive(archive, image_path):
