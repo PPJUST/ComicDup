@@ -85,7 +85,7 @@ def get_size(path: str):
 def check_filetype(file: str):
     """获取一个文件的文件类型"""
     # 为了速度，直接使用后缀名判断
-    image_suffix = ['.jpg', '.png', 'webp', 'jpeg']
+    image_suffix = ['.jpg', '.png', '.webp', '.jpeg']
     archive_suffix = ['.zip', '.rar']
 
     suffix = os.path.splitext(file)[1].lower()
