@@ -1,44 +1,49 @@
-# 常量设置
+# 常量
+
+# 配置文件路径
+_CONFIG_FILE = r'config.ini'
+
+# 缓存路径
+_CACHE_DIRPATH = 'cache/'
+_PREVIEW_DIRPATH = _CACHE_DIRPATH + 'preview/'  # 存放预览图的文件夹
+_COMICS_INFO_DB = _CACHE_DIRPATH + 'comic_info.pkl'  # 漫画信息数据库
+_IMAGE_INFO_DB = _CACHE_DIRPATH + 'image_info.db'  # 图片信息数据库
+_MATCH_RESULT = _CACHE_DIRPATH + 'match_result.pkl'  # 相似漫画匹配结果
 
 # 图标
-ICON_DEL = 'icon/del.png'
-ICON_ARCHIVE = 'icon/archive.png'
-ICON_FOLDER = 'icon/folder.png'
-ICON_PREVIOUS = 'icon/previous.png'
-ICON_RECYCLE_BIN = 'icon/recycle_bin.png'
-ICON_NEXT = 'icon/next.png'
-ICON_REFRESH = 'icon/refresh.png'
-ICON_NEXT_5P = 'icon/next_5p.png'
-ICON_PREVIOUS_5P = 'icon/previous_5p.png'
-OVERSIZE_IMAGE = 'icon/oversize_image.jpg'
-ICON_START = 'icon/start.png'
-ICON_STOP = 'icon/stop.png'
-ICON_LOAD = 'icon/load.png'
-ICON_CACHE = 'icon/cache.png'
-ICON_INFORMATION = 'icon/information.png'
-ICON_CHECK = 'icon/check.png'
-ICON_RESET = 'icon/reset.png'
-ICON_CLEAR = 'icon/clear.png'
-INFO_MAIN = 'icon/info_main.png'
-INFO_PREVIEW = 'icon/info_preview.png'
-INFO_CACHE = 'icon/info_cache.png'
+_ICON_DIRPATH = r'res/icon/'
+# 程序图标
+_ICON_APP = _ICON_DIRPATH + 'app.ico'
+# 执行区
+_ICON_INFORMATION = _ICON_DIRPATH + 'information.png'
+_ICON_RELOAD = _ICON_DIRPATH + 'reload.png'
+_ICON_START = _ICON_DIRPATH + 'start.png'
+_ICON_STOP = _ICON_DIRPATH + 'stop.png'
+# 结果筛选器
+_ICON_REFRESH = _ICON_DIRPATH + 'refresh.png'
+# 算法选项
+_ICON_CACHE = _ICON_DIRPATH + 'cache.png'
+# 搜索列表
+_ICON_ADD = _ICON_DIRPATH + 'add.png'
+_ICON_REMOVE = _ICON_DIRPATH + 'remove.png'
+_ICON_CLEAR = _ICON_DIRPATH + 'clear.png'
+_ICON_DELETE = _ICON_DIRPATH + 'delete.png'
+# 预览控件
+_ICON_COMPUTER = _ICON_DIRPATH + 'computer.png'
+_ICON_RECYCLE_BIN = _ICON_DIRPATH + 'recycle_bin.png'
+_ICON_VIEW = _ICON_DIRPATH + 'view.png'
+_ICON_ARCHIVE = _ICON_DIRPATH + 'archive.png'
+_ICON_FOLDER = _ICON_DIRPATH + 'folder.png'
+_ICON_ERROR_IMAGE = _ICON_DIRPATH + 'error_image.png'
+_ICON_LAST = _ICON_DIRPATH + 'last.png'
+_ICON_LAST_LAST = _ICON_DIRPATH + 'last_last.png'
+_ICON_NEXT = _ICON_DIRPATH + 'next.png'
+_ICON_NEXT_NEXT = _ICON_DIRPATH + 'next_next.png'
+_ICON_QUIT = _ICON_DIRPATH + 'quit.png'
 
-# 缓存文件相关
-CACHE_FOLDER = 'cache'
-HASH_CACHE_FILE = CACHE_FOLDER + '/hash_cache.db'  # 哈希值缓存
-SIMILAR_GROUPS_PICKLE = CACHE_FOLDER + '/similar_groups.pickle'  # 相似组结果
-COMICS_DATA_PICKLE = CACHE_FOLDER + '/comics_data.pickle'  # 所有漫画数据（自定义类，包含漫画各种基础信息）
-CURRENT_COMICS_DATA_PICKLE = CACHE_FOLDER + '/current_comics_data.pickle'  # 当前任务的漫画数据
-TEMP_IMAGE_FOLDER = CACHE_FOLDER + '/temp_image_folder'  # 解压后图片存放路径
-EXTRACT_TEMP_IMAGE_FOLDER = TEMP_IMAGE_FOLDER + '/extract_archive'  # 临时解压路径
-COMIC_FOLDERS = CACHE_FOLDER + '/comic_folders.pickle'  # 当前任务找到的漫画文件夹
-ARCHIVES = CACHE_FOLDER + '/archives.pickle'  # 当前任务找到的压缩包
-IMAGE_DATA_DICT = CACHE_FOLDER + '/image_data_dict.pickle'  # 图片对应漫画路径
-
-# 配置文件相关
-CONFIG_FILE = 'config.ini'
-
-# 其他
-MAX_EXTRACT_IMAGE_NUMBER = 3
-RESIZE_IMAGE_ACCURACY = 16
-RESIZE_IMAGE_HEIGHT = 300
+# 相似算法默认参数
+_SIMILARITY_THRESHOLD = 90
+_HASH_ALGORITHM = ['ahash', 'phash', 'dhash']
+_IMAGE_SIZE = ['8', '12', '16']
+_EXTRACT_IMAGES_COUNT = 1
+_THREADS_COUNT = 1
