@@ -9,8 +9,9 @@ from PySide6.QtWidgets import *
 from class_.class_comic_info import ComicInfo
 from constant import _ICON_FOLDER, _ICON_ARCHIVE, _ICON_COMPUTER, _ICON_LAST, _ICON_NEXT, _ICON_RECYCLE_BIN, \
     _ICON_ERROR_IMAGE
-from module import function_archive, function_qt
+from module import function_archive
 from ui.src.ui_widget_comic_view import Ui_Form
+from ui.tableWidget_filename import TabelWidgetFilename
 
 
 class WidgetComicView(QWidget):
@@ -22,6 +23,9 @@ class WidgetComicView(QWidget):
         self.ui = Ui_Form()
         self.ui.setupUi(self)
 
+        # 添加文件名控件
+        self.tableWidget_filename = TabelWidgetFilename(self)
+        self.ui.horizontalLayout_filename.addWidget(self.tableWidget_filename)
         # 初始化
         self._comic_info = comic_info
         self._page_index = 1  # 页码
@@ -79,9 +83,7 @@ class WidgetComicView(QWidget):
 
         # 文件名
         filename = os.path.basename(self._comic_info.path)
-        self.ui.label_filename.setText(filename)
-        self.ui.label_filename.setToolTip(filename)
-        function_qt.update_label_long_text(self.ui.label_filename)  # 省略长文本
+        self.tableWidget_filename.set_filename(filename)
 
         # 文件大小
         filesize = self._comic_info.filesize  # 字节

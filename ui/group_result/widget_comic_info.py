@@ -9,8 +9,9 @@ from PySide6.QtWidgets import *
 from class_.class_comic_info import ComicInfo
 from constant import _ICON_ERROR_IMAGE
 from constant import _ICON_VIEW, _ICON_COMPUTER, _ICON_RECYCLE_BIN, _ICON_FOLDER, _ICON_ARCHIVE
-from module import function_qt, function_normal
+from module import function_normal
 from ui.src.ui_widget_comic_info import Ui_Form
+from ui.tableWidget_filename import TabelWidgetFilename
 
 
 class WidgetComicInfo(QWidget):
@@ -23,7 +24,7 @@ class WidgetComicInfo(QWidget):
         self.ui = Ui_Form()
         self.ui.setupUi(self)
 
-        # 初始化
+        # ui设置
         self.setFixedSize(150, 290)
         self.ui.label_preview.setFixedSize(140, 200)  # 设置固定高度200，宽度为高度*0.7
         self.setContextMenuPolicy(Qt.CustomContextMenu)
@@ -31,6 +32,11 @@ class WidgetComicInfo(QWidget):
         self.ui.label_preview.setAlignment(Qt.AlignCenter)
         self._set_icon()
 
+        # 添加文件名控件
+        self.tableWidget_filename = TabelWidgetFilename(self)
+        self.ui.horizontalLayout_filename.addWidget(self.tableWidget_filename)
+
+        # 初始化
         self._comic_info = comic_info
         self._update_info()
 
@@ -75,9 +81,7 @@ class WidgetComicInfo(QWidget):
 
         # 文件名
         filename = os.path.basename(self._comic_info.path)
-        self.ui.label_filename.setText(filename)
-        self.ui.label_filename.setToolTip(filename)
-        function_qt.update_label_long_text(self.ui.label_filename)  # 省略长文本
+        self.tableWidget_filename.set_filename(filename)
 
         # 文件大小
         filesize = self._comic_info.filesize  # 字节

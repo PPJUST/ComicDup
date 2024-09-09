@@ -1,17 +1,23 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'ui_widget_comic_viewjbQFKO.ui'
+## Form generated from reading UI file 'ui_widget_comic_viewolUbWq.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.1.3
+## Created by: Qt User Interface Compiler version 6.2.4
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
-from PySide6.QtCore import *  # type: ignore
-from PySide6.QtGui import *  # type: ignore
-from PySide6.QtWidgets import *  # type: ignore
-
+from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
+    QMetaObject, QObject, QPoint, QRect,
+    QSize, QTime, QUrl, Qt)
+from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
+    QFont, QFontDatabase, QGradient, QIcon,
+    QImage, QKeySequence, QLinearGradient, QPainter,
+    QPalette, QPixmap, QRadialGradient, QTransform)
+from PySide6.QtWidgets import (QApplication, QFrame, QHBoxLayout, QLabel,
+    QSizePolicy, QSpacerItem, QToolButton, QVBoxLayout,
+    QWidget)
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -37,10 +43,6 @@ class Ui_Form(object):
 
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.horizontalLayout.addItem(self.horizontalSpacer_4)
-
         self.label_comic_type = QLabel(self.frame)
         self.label_comic_type.setObjectName(u"label_comic_type")
 
@@ -56,15 +58,13 @@ class Ui_Form(object):
 
         self.horizontalLayout.addWidget(self.label)
 
-        self.label_filename = QLabel(self.frame)
-        self.label_filename.setObjectName(u"label_filename")
+        self.horizontalLayout_filename = QHBoxLayout()
+        self.horizontalLayout_filename.setSpacing(0)
+        self.horizontalLayout_filename.setObjectName(u"horizontalLayout_filename")
 
-        self.horizontalLayout.addWidget(self.label_filename)
+        self.horizontalLayout.addLayout(self.horizontalLayout_filename)
 
-        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Expanding, QSizePolicy.Minimum)
-
-        self.horizontalLayout.addItem(self.horizontalSpacer_2)
-
+        self.horizontalLayout.setStretch(3, 1)
 
         self.verticalLayout.addLayout(self.horizontalLayout)
 
@@ -147,7 +147,6 @@ class Ui_Form(object):
         self.label_comic_type.setText(QCoreApplication.translate("Form", u"comic_type", None))
         self.label_filesize.setText(QCoreApplication.translate("Form", u"filesize", None))
         self.label.setText(QCoreApplication.translate("Form", u"|", None))
-        self.label_filename.setText(QCoreApplication.translate("Form", u"filename", None))
         self.toolButton_open_file.setText(QCoreApplication.translate("Form", u"open", None))
         self.toolButton_last.setText(QCoreApplication.translate("Form", u"<", None))
         self.toolButton_next.setText(QCoreApplication.translate("Form", u">", None))
