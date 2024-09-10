@@ -1,9 +1,10 @@
 # 说明
-
-from PySide6.QtGui import QIcon, QPixmap
+from PySide6.QtCore import QSize
+from PySide6.QtGui import QIcon, QPixmap, Qt
 from PySide6.QtWidgets import *
 
-from constant import _ICON_NEXT, _ICON_LAST
+from constant import _ICON_NEXT, _ICON_LAST, _PAGE_MAIN, _PAGE_PREVIEW, _PAGE_CACHE, _PAGE_EXAMPLE_GRAYS_AND_COLOR, \
+    _PAGE_EXAMPLE_DIFF_COMIC, _PAGE_EXAMPLE_COVER_MISSING
 from ui.src.ui_dialog_information import Ui_dialog
 
 
@@ -15,8 +16,15 @@ class DialogInformation(QDialog):
         self.ui = Ui_dialog()
         self.ui.setupUi(self)
 
+        self.setFixedSize(900, 600)
+
         # 插页
-        # 备忘录 插入图片页
+        self._add_image_page(_PAGE_MAIN)
+        self._add_image_page(_PAGE_PREVIEW)
+        self._add_image_page(_PAGE_CACHE)
+        self._add_image_page(_PAGE_EXAMPLE_GRAYS_AND_COLOR)
+        self._add_image_page(_PAGE_EXAMPLE_DIFF_COMIC)
+        self._add_image_page(_PAGE_EXAMPLE_COVER_MISSING)
 
         # 初始化
         self.ui.toolButton_next.setIcon(QIcon(_ICON_NEXT))
@@ -47,7 +55,17 @@ class DialogInformation(QDialog):
 
         label = QLabel()
         pixmap = QPixmap(image_file)
-        label.setPixmap(pixmap)
+        # 重设预览Label的大小
+        pixmap_height = pixmap.height()
+        pixmap_width = pixmap.width()
+        label_height = self.height() - self.ui.label_max_page.height() - 10 * 4
+        resize_width = int(pixmap_width * label_height / pixmap_height)
+        label_size = QSize(resize_width, label_height)
+        label.resize(label_size)
+        # 缩放图片并保持纵横比
+        scaled_pixmap = pixmap.scaled(label_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        # 显示图片
+        label.setPixmap(scaled_pixmap)
 
         layout.addWidget(label)
         new_page.setLayout(layout)

@@ -41,6 +41,15 @@ _ICON_NEXT = _ICON_DIRPATH + 'next.png'
 _ICON_NEXT_NEXT = _ICON_DIRPATH + 'next_next.png'
 _ICON_QUIT = _ICON_DIRPATH + 'quit.png'
 
+# 说明页
+_INFORMATION_DIRPATH = r'res/information/'
+_PAGE_MAIN = _INFORMATION_DIRPATH + 'page mian.png'
+_PAGE_PREVIEW = _INFORMATION_DIRPATH + 'page preview.png'
+_PAGE_CACHE = _INFORMATION_DIRPATH + 'page cache.png'
+_PAGE_EXAMPLE_GRAYS_AND_COLOR = _INFORMATION_DIRPATH + 'example grays and color.png'
+_PAGE_EXAMPLE_DIFF_COMIC = _INFORMATION_DIRPATH + 'example diff comic.png'
+_PAGE_EXAMPLE_COVER_MISSING = _INFORMATION_DIRPATH + 'example cover missing.png'
+
 # 相似算法默认参数
 _SIMILARITY_THRESHOLD = 90
 _HASH_ALGORITHM = ['ahash', 'phash', 'dhash']

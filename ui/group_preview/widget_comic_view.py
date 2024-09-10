@@ -125,7 +125,6 @@ class WidgetComicView(QWidget):
         resize_width = int(pixmap_width * label_height / pixmap_height)
         label_size = QSize(resize_width, label_height)
         self.ui.label_preview.resize(label_size)
-
         # 缩放图片并保持纵横比
         scaled_pixmap = pixmap.scaled(label_size, Qt.KeepAspectRatio, Qt.SmoothTransformation)
 
