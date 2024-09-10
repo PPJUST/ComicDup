@@ -4,6 +4,7 @@ from multiprocessing import Pool
 
 from child_thread.thread_pattern import ThreadPattern
 from class_ import class_image_info
+from class_.class_image_info import ImageInfo
 from module import function_config_similar_option, function_image_hash, function_ssim, function_normal, \
     function_match_result
 
@@ -51,6 +52,7 @@ class ThreadMatch(ThreadPattern):
         image_info_dict_filter = function_image_hash.filter_hash_dict(image_info_dict, hash_algorithm)
         compare_image_info_dict = image_info_dict_filter.copy()
 
+        """以下方式实际测试时发现问题：需匹配的数量较大时，compare_groups会非常非常占用内存，所以不再预先创建匹配组，而是将对比数据固定
         # 多进程的imap方法只支持传递一个可变参数给指定函数，所以两个可变参数需要合并为一组，在函数内部进行拆分
         # 匹配前在对比字典中删除当前项，防止后续重复比对，序列越往后对比量越少速度越快
         compare_groups = []
@@ -59,9 +61,10 @@ class ThreadMatch(ThreadPattern):
             _temp_dict.pop(fake_image_path)
             _group = (image_info, _temp_dict.copy())
             compare_groups.append(_group)
+        """
 
         # 多进程匹配
-        similar_comic_group = self.multi_match(compare_groups)  # 最终的相似漫画组
+        similar_comic_group = self.multi_match(image_info_dict_filter, compare_image_info_dict)  # 最终的相似漫画组
         """未使用多进程的原版方法
         # 内部匹配
         similar_comic_group = list()  # 最终的相似漫画组，内部元素为元组，元组的内部元素为漫画路径
@@ -111,14 +114,16 @@ class ThreadMatch(ThreadPattern):
         image_info_dict_filter = function_image_hash.filter_hash_dict(image_info_dict, hash_algorithm)
         compare_image_info_dict = function_image_hash.filter_hash_dict(cache_image_info_dict, hash_algorithm)
 
+        """以下方式实际测试时发现问题：需匹配的数量较大时，compare_groups会非常非常占用内存，所以不再预先创建匹配组，而是将对比数据固定
         # 多进程的imap方法只支持传递一个可变参数给指定函数，所以两个可变参数需要合并为一组，在函数内部进行拆分
         compare_groups = []
         for _, image_info in image_info_dict_filter.items():
             _group = (image_info, compare_image_info_dict)
             compare_groups.append(_group)
+        """
 
         # 多进程匹配
-        similar_comic_group = self.multi_match(compare_groups)  # 最终的相似漫画组
+        similar_comic_group = self.multi_match(image_info_dict_filter, compare_image_info_dict)  # 最终的相似漫画组
         """未使用多进程的原版方法
         # 进行匹配
         similar_comic_group = list()  # 最终的相似漫画组
@@ -145,9 +150,10 @@ class ThreadMatch(ThreadPattern):
 
         return similar_comic_group
 
-    def multi_match(self, compare_groups: list):
+    def multi_match(self, image_info_dict: dict, compare_image_info_dict: dict):
         """多进程匹配
-        :param compare_groups:list，内部元素为(需处理的image_info, 用于匹配的image_info_dict)"""
+        :param image_info_dict: dict，需处理的image_info_dict
+        :param compare_image_info_dict: dict，用于对比匹配的image_info_dict"""
         # 获取相似度算法设置
         hash_algorithm = function_config_similar_option.hash_algorithm.get()
         resize_image_size = function_config_similar_option.image_size.get()
@@ -156,18 +162,21 @@ class ThreadMatch(ThreadPattern):
         ssim_enable = function_config_similar_option.ssim.get()
         ssim_threshold = function_config_similar_option.similarity_threshold.get_ssim_threshold()
 
+        _total_count = len(image_info_dict)
+
         # 启用多进程
         similar_comic_group = list()  # 最终的相似漫画组
         with Pool(processes=threads_count) as pool:
             # 使用partial固定部分参数
-            calculate_partial = partial(self.filter_similar_group, compare_hash=hash_algorithm,
+            calculate_partial = partial(self.filter_similar_group, compare_image_info_dict=compare_image_info_dict,
+                                        compare_hash=hash_algorithm,
                                         threshold_hamming_distance=threshold_hash, ssim_enable=ssim_enable,
                                         resize_image_size=resize_image_size, ssim_threshold=ssim_threshold)
             # 设置多进程任务：pool.imap()为异步传参，imap中的第一个参数为执行的函数，第二个参数为可迭代对象（用于传参）
-            for index, similar_image_info_dict in enumerate(pool.imap(calculate_partial, compare_groups)):
+            for index, similar_image_info_dict in enumerate(pool.imap(calculate_partial, image_info_dict.values())):
                 if self._stop_code:
                     break
-                self.signal_rate.emit(f'{index + 1}/{len(compare_groups)}')
+                self.signal_rate.emit(f'{index + 1}/{_total_count}')
                 # 提取相似组内的漫画路径
                 comics = set()
                 for _, _image_info in similar_image_info_dict.items():
@@ -180,10 +189,10 @@ class ThreadMatch(ThreadPattern):
         return similar_comic_group
 
     @staticmethod
-    def filter_similar_group(compare_group, compare_hash: str, threshold_hamming_distance: int,
+    def filter_similar_group(image_info: ImageInfo, compare_image_info_dict: dict, compare_hash: str,
+                             threshold_hamming_distance: int,
                              ssim_enable: bool, resize_image_size: int, ssim_threshold: float):
         """用于多线程中转，拆分元组"""
-        image_info, compare_image_info_dict = compare_group
         similar_image_info_dict = function_image_hash.filter_similar_group(image_info, compare_image_info_dict,
                                                                            compare_hash, threshold_hamming_distance)
         # 根据相似算法设置，判断是否使用ssim进行进一步校验

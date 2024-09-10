@@ -158,6 +158,10 @@ def filter_similar_group(image_info: ImageInfo, compare_image_info_dict: dict, c
         compare_hash_str = compare_image_info.get_hash(compare_hash)
         compare_zero_count = compare_image_info.zero_count
 
+        # 检查hash位数，防止不同位数的hash进行对比，导致报错
+        if len(current_hash_str) != len(compare_hash_str):
+            continue
+
         # 对比前检查zero_count的差额，如果差额超限则提前结束循环（限制为选定的汉明距离/2（假设0/1差异各占一半））
         limit_zero_count = threshold_hamming_distance / 2
         diff_zero_count = compare_zero_count - current_zero_count  # 升序排列，所以后-前
