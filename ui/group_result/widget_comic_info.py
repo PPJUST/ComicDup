@@ -1,5 +1,6 @@
 # 显示单本漫画基本信息，预览图、页数、文件大小等
 import os
+from typing import Union
 
 import send2trash
 from PySide6.QtCore import Signal
@@ -48,6 +49,14 @@ class WidgetComicInfo(QWidget):
         self.ui.toolButton_open_file.clicked.connect(self._open_file)
         self.ui.toolButton_delete.clicked.connect(self._delete_file)
 
+    def get_comic_info(self):
+        """获取对应的漫画信息类"""
+        return self._comic_info
+
+    def get_comic_path(self):
+        """获取对应的漫画路径"""
+        return self._comic_info.path
+
     def check_validity(self):
         """检查有效性，无效则删除该项（路径存在，大小一致）"""
         comic_path = self._comic_info.path
@@ -64,8 +73,11 @@ class WidgetComicInfo(QWidget):
         info = {'filesize': filesize, 'image_count': image_count}
         return path, info
 
-    def delete_if_in_list(self, paths: list):
+    def delete_if_in_list(self, paths: Union[list, str]):
         """删除在传入参数list中存在的项"""
+        if isinstance(paths, str):
+            paths = [paths]
+
         path = self._comic_info.path
         if path in paths:
             self.signal_delete.emit()

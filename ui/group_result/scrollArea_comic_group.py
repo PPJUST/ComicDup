@@ -122,8 +122,12 @@ class ScrollAreaComicGroup(QWidget):
     def _view_comics(self):
         """预览相似组中的漫画"""
         dialog_preview = DialogPreview(self)
-        for comic_path in self._similar_group:
-            comic_info = class_comic_info.get_comic_info(comic_path)
+        dialog_preview.signal_deleted.connect(self._remove_widget_in_path)
+        layout = self.ui.horizontalLayout_place
+        for i in range(layout.count()):
+            item = layout.itemAt(i)
+            widget_comic_view: WidgetComicInfo = item.widget()
+            comic_info = widget_comic_view.get_comic_info()
             dialog_preview.add_item(comic_info)
         dialog_preview.exec()
 
@@ -141,3 +145,11 @@ class ScrollAreaComicGroup(QWidget):
         # 如果删除子控件后，layout中无其余控件，则删除发生信号删除自身
         if is_delete:
             self.signal_delete.emit()
+
+    def _remove_widget_in_path(self, deleted_path):
+        """在预览控件中删除漫画时，同步删除主页面的中的漫画控件"""
+        layout = self.ui.horizontalLayout_place
+        for i in range(layout.count()):
+            item = layout.itemAt(i)
+            widget_comic_view: WidgetComicInfo = item.widget()
+            widget_comic_view.delete_if_in_list(deleted_path)

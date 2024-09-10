@@ -1,7 +1,7 @@
 # 用于同时预览多本漫画的外部框架
 import os.path
 
-from PySide6.QtCore import QTimer
+from PySide6.QtCore import QTimer, Signal
 from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 
@@ -15,6 +15,7 @@ from ui.src.ui_dialog_preview import Ui_Dialog
 
 class DialogPreview(QDialog):
     """用于同时预览多本漫画的外部框架"""
+    signal_deleted = Signal(str, name='预览控件中删除的漫画路径')
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -45,7 +46,7 @@ class DialogPreview(QDialog):
         """添加项目"""
         if os.path.exists(comic_info.path):  # 不存在的漫画不进行预览
             widget_comic_view = WidgetComicView(comic_info, self)
-            widget_comic_view.signal_delete.connect(self._comic_deleted)
+            widget_comic_view.signal_deleted.connect(self._comic_deleted)
             self.ui.horizontalLayout_place.addWidget(widget_comic_view)
 
     def _page_turning(self, step: int):
@@ -65,10 +66,11 @@ class DialogPreview(QDialog):
             widget_comic_view: WidgetComicView = item.widget()
             widget_comic_view.reset_page_index()
 
-    def _comic_deleted(self):
+    def _comic_deleted(self, deleted_path: str):
         """删除漫画后，更新ui"""
         widget_ = self.sender()
         widget_.deleteLater()
+        self.signal_deleted.emit(deleted_path)
 
     def _update_preview_size(self):
         """大小变动后更新预览图片大小"""

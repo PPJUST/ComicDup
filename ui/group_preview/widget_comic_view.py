@@ -16,7 +16,7 @@ from ui.tableWidget_filename import TabelWidgetFilename
 
 class WidgetComicView(QWidget):
     """预览单本漫画的控件"""
-    signal_delete = Signal()
+    signal_deleted = Signal(str, name='预览控件中删除的漫画路径')
 
     def __init__(self, comic_info: ComicInfo, parent=None):
         super().__init__(parent)
@@ -135,7 +135,7 @@ class WidgetComicView(QWidget):
         """删除文件"""
         comic_path = self._comic_info.path
         send2trash.send2trash(comic_path)
-        self.signal_delete.emit()
+        self.signal_deleted.emit(comic_path)
 
     def _open_file(self):
         """打开文件"""
