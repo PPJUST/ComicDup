@@ -147,6 +147,7 @@ def filter_similar_group(image_info: ImageInfo, compare_image_info_dict: dict, c
     :param compare_hash: 用于对比的hash类型
     :param threshold_hamming_distance: hash值之间的汉明距离的阈值
     :return: 相似的图片信息字典，key为虚拟图片路径，value为ImageInfo类"""
+    print('匹配hash，主路径', image_info.comic_path, image_info.path)
     similar_image_info_dict = dict()
     # 提取检查项
     current_fake_image_path = image_info.fake_path
@@ -157,10 +158,6 @@ def filter_similar_group(image_info: ImageInfo, compare_image_info_dict: dict, c
         compare_fake_image_path = compare_image_info.fake_path
         compare_hash_str = compare_image_info.get_hash(compare_hash)
         compare_zero_count = compare_image_info.zero_count
-
-        # 检查hash位数，防止不同位数的hash进行对比，导致报错
-        if len(current_hash_str) != len(compare_hash_str):
-            continue
 
         # 对比前检查zero_count的差额，如果差额超限则提前结束循环（限制为选定的汉明距离/2（假设0/1差异各占一半））
         limit_zero_count = threshold_hamming_distance / 2
