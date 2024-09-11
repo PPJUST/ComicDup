@@ -1,11 +1,12 @@
 # 子线程-进一步分析漫画的信息
 import os
+from functools import partial
 from multiprocessing import Pool
 
 from child_thread.thread_pattern import ThreadPattern
 from class_ import class_comic_info
 from class_.class_comic_info import ComicInfo
-from module import function_config_similar_option
+from module import function_config_similar_option, function_normal
 
 
 class ThreadAnalyseComicsInfo(ThreadPattern):
@@ -47,9 +48,12 @@ class ThreadAnalyseComicsInfo(ThreadPattern):
 
         # 启用多进程
         comics_data = {}
+        cache_comic_info_dict = class_comic_info.read_db()
         with Pool(processes=threads_count) as pool:
+            # 使用partial固定部分参数
+            calculate_partial = partial(self.get_comic_info_class, cache_comic_info_dict=cache_comic_info_dict)
             # 设置多进程任务：pool.imap()为异步传参，imap中的第一个参数为执行的函数，第二个参数为可迭代对象（用于传参）
-            for index, comic_info in enumerate(pool.imap(self.get_comic_info_class, comics)):
+            for index, comic_info in enumerate(pool.imap(calculate_partial, comics)):
                 if self._stop_code:
                     break
                 self.signal_rate.emit(f'{index + 1}/{len(comics)}')
@@ -60,10 +64,19 @@ class ThreadAnalyseComicsInfo(ThreadPattern):
         return comics_data
 
     @staticmethod
-    def get_comic_info_class(comic):
+    def get_comic_info_class(comic, cache_comic_info_dict: dict):
         """用于多线程，将类的赋值中转为函数的调用"""
         print('分析漫画', comic)
         if os.path.exists(comic):
+            # 跳过缓存中已存在的漫画（文件大小一致的）
+            if comic in cache_comic_info_dict:
+                cache_comic_info: ComicInfo = cache_comic_info_dict[comic]
+                # 验证文件大小
+                local_size = function_normal.get_size(comic)
+                cache_size = cache_comic_info.filesize
+                if local_size == cache_size:
+                    return cache_comic_info
+            # 不存在于缓存中，则正常计算
             return ComicInfo(comic)
         else:
             return None

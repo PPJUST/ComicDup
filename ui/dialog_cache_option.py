@@ -45,6 +45,8 @@ class DialogCacheOption(QDialog):
         """删除数据库中无效的数据"""
         # 处理漫画信息数据库
         class_comic_info.delete_useless_item()
+        # 处理预览图
+        class_comic_info.delete_useless_preview()
         # 处理图片信息数据库
         class_image_info.delete_useless_item()
         # 更新显示数据

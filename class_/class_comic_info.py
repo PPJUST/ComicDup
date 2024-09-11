@@ -6,7 +6,7 @@
 import os
 import pickle
 
-from constant import _COMICS_INFO_DB
+from constant import _COMICS_INFO_DB, _PREVIEW_DIRPATH
 from module import function_normal, function_archive
 
 
@@ -111,3 +111,22 @@ def delete_useless_item():
 
     clear_db()
     update_db(comic_info_dict, False)
+
+
+def delete_useless_preview():
+    """删除无效的预览图"""
+    previews = []  # 仅包含文件名
+    # 提取数据库中的数据
+    comic_info_dict = read_db()
+    for comic_path, comic_info in comic_info_dict.copy().items():
+        comic_info: ComicInfo
+        preview = comic_info.preview_path
+        filename = os.path.basename(preview)
+        previews.append(filename)
+    # 提取本地目录
+    local_filenames = os.listdir(_PREVIEW_DIRPATH)
+    # 删除本地多余的预览图
+    for filename in local_filenames:
+        if filename not in previews:
+            full_path = os.path.join(_PREVIEW_DIRPATH, filename)
+            os.remove(full_path)
