@@ -18,7 +18,8 @@ from ui.tableWidget_filename import TabelWidgetFilename
 class WidgetComicInfo(QWidget):
     """显示单本漫画基本信息，预览图、页数、文件大小等(■Widget->ScrollArea->TreeWidget)"""
     signal_view = Signal()
-    signal_delete = Signal()
+    signal_delete_comic = Signal(name='删除本地漫画的信号')
+    signal_delete_widget = Signal(name='删除控件的信号（不删除本地漫画）')
 
     def __init__(self, comic_info: ComicInfo, parent=None):
         super().__init__(parent)
@@ -39,6 +40,7 @@ class WidgetComicInfo(QWidget):
 
         # 初始化
         self._comic_info = comic_info
+        self._is_deleted = False  # 是否已删除，用于处理deleteLater不能实时删除的问题
         self._update_info()
 
         # 绑定预览图label双击事件
@@ -62,7 +64,7 @@ class WidgetComicInfo(QWidget):
         comic_path = self._comic_info.path
         filesize = self._comic_info.filesize
         if not os.path.exists(comic_path) or not function_normal.get_size(comic_path) == filesize:
-            self.signal_delete.emit()
+            self.signal_delete_comic.emit()
             return comic_path
 
     def get_size_and_count(self):
@@ -73,14 +75,17 @@ class WidgetComicInfo(QWidget):
         info = {'filesize': filesize, 'image_count': image_count}
         return path, info
 
+    def is_deleted(self):
+        return self._is_deleted
+
     def delete_if_in_list(self, paths: Union[list, str]):
-        """删除在传入参数list中存在的项"""
+        """删除在传入参数list中存在的项（不删除本地漫画）"""
         if isinstance(paths, str):
             paths = [paths]
 
         path = self._comic_info.path
         if path in paths:
-            self.signal_delete.emit()
+            self.signal_delete_widget.emit()
 
     def _update_info(self):
         """更新漫画信息"""
@@ -122,7 +127,7 @@ class WidgetComicInfo(QWidget):
         comic_path = self._comic_info.path
         if os.path.exists(comic_path):
             send2trash.send2trash(comic_path)
-        self.signal_delete.emit()
+        self.signal_delete_comic.emit()
 
     def _set_preview(self):
         """显示预览图"""
@@ -168,3 +173,7 @@ class WidgetComicInfo(QWidget):
         """预览图label双击事件"""
         if event.button() == Qt.LeftButton:
             self.signal_view.emit()
+
+    def deleteLater(self):
+        super().deleteLater()
+        self._is_deleted = True

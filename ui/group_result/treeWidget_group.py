@@ -34,6 +34,7 @@ class TreeWidgetGroup(QTreeWidget):
             # 创建自定义控件
             child_widget = ScrollAreaComicGroup(comic_group)
             child_widget.signal_delete.connect(self._delete_emtpy_group)
+            child_widget.signal_hide.connect(self._hide_group)
             # 将自定义控件设置为子节点的部件
             self.setItemWidget(item_child, 0, child_widget)
 
@@ -44,6 +45,7 @@ class TreeWidgetGroup(QTreeWidget):
         """刷新子控件，重新显示所有漫画"""
         for index in range(self.topLevelItemCount()):
             parent_item = self.topLevelItem(index)  # 父节点
+            parent_item.setExpanded(True)
             for index_ in range(parent_item.childCount()):
                 child_item = parent_item.child(index_)  # 子节点
                 widget: ScrollAreaComicGroup = self.itemWidget(child_item, 0)  # 子节点控件
@@ -85,3 +87,11 @@ class TreeWidgetGroup(QTreeWidget):
             item = self.topLevelItem(index)
             if item == top_level_item:
                 self.takeTopLevelItem(index)  # 删除父节点
+
+    def _hide_group(self):
+        """折叠对应的节点"""
+        widget_scroll_area = self.sender()
+        child_item = self.itemAt(widget_scroll_area.pos())  # 获取子节点对象
+        if child_item:
+            top_level_item = child_item.parent()  # 获取父节点对象
+            top_level_item.setExpanded(False)
