@@ -86,7 +86,7 @@ class MainWindow(QMainWindow):
         """开始匹配"""
         # 开始计时
         self.widget_schedule.set_start_time()
-        # 禁用左半边区域部分功能
+        # 禁用部分功能
         self.set_widget_enable(False)
         # 获取搜索列表中的所有路径
         paths = self.widget_search_list.get_paths_showed()
@@ -97,7 +97,7 @@ class MainWindow(QMainWindow):
         """终止匹配"""
         # 结束计时
         self.widget_schedule.stopped()
-        # 启用左半边区域部分功能
+        # 启用部分功能
         self.set_widget_enable(True)
         # 设置子线程的停止参数
         self.thread_group_normal.stop()
@@ -108,14 +108,14 @@ class MainWindow(QMainWindow):
         """完成匹配"""
         # 结束计时
         self.widget_schedule.finished()
-        # 启用左半边区域部分功能
+        # 启用部分功能
         self.set_widget_enable(True)
 
     def match_cache(self):
         """缓存内部匹配"""
         # 开始计时
         self.widget_schedule.set_start_time()
-        # 禁用左半边区域部分功能
+        # 禁用部分功能
         self.set_widget_enable(False)
         # 获取缓存的漫画数据
         comic_info_dict = class_comic_info.read_db()
@@ -127,7 +127,7 @@ class MainWindow(QMainWindow):
         """更新缓存数据"""
         # 开始计时
         self.widget_schedule.set_start_time()
-        # 禁用左半边区域部分功能
+        # 禁用部分功能
         self.set_widget_enable(False)
         # 获取缓存的漫画数据
         comic_info_dict = class_comic_info.read_db()
@@ -171,6 +171,7 @@ class MainWindow(QMainWindow):
         self.widget_search_list.set_enable(is_enable)
         self.widget_filter_result.set_enable(is_enable)
         self.widget_option.set_enable(is_enable)
+        self.treeWidget_show_group.setEnabled(is_enable)
 
     def update_schedule_total(self, text: str):
         """更新总进度"""

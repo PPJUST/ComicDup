@@ -23,7 +23,7 @@ class ThreadAnalyseComicsInfo(ThreadPattern):
     def run(self):
         super().run()
         # 遍历列表，提取信息
-        comics_data = self.multi_analyse(self.comics)
+        comics_data = self.multi_analyse(self.comics.copy())
         """未使用多进程的原版方法
         # 遍历列表，提取信息
         comics_data = {}
@@ -46,14 +46,24 @@ class ThreadAnalyseComicsInfo(ThreadPattern):
         # 获取相似度算法设置
         threads_count = function_config_similar_option.threads.get()
 
+        # 不计算数据库中已存在的项
+        cache_comic_info_dict = class_comic_info.read_db()
+        cache_data = {}  # 数据库中已存在的项
+        for comic in comics.copy():
+            if comic in cache_comic_info_dict:
+                cache_comic_info: ComicInfo = cache_comic_info_dict[comic]
+                # 验证文件大小
+                local_size = function_normal.get_size(comic)
+                cache_size = cache_comic_info.filesize
+                if local_size == cache_size:
+                    cache_data[comic] = cache_comic_info
+                    comics.remove(comic)
+
         # 启用多进程
         comics_data = {}
-        cache_comic_info_dict = class_comic_info.read_db()
         with Pool(processes=threads_count) as pool:
-            # 使用partial固定部分参数
-            calculate_partial = partial(self.get_comic_info_class, cache_comic_info_dict=cache_comic_info_dict)
             # 设置多进程任务：pool.imap()为异步传参，imap中的第一个参数为执行的函数，第二个参数为可迭代对象（用于传参）
-            for index, comic_info in enumerate(pool.imap(calculate_partial, comics)):
+            for index, comic_info in enumerate(pool.imap(self.get_comic_info_class, comics)):
                 if self._stop_code:
                     break
                 self.signal_rate.emit(f'{index + 1}/{len(comics)}')
@@ -61,22 +71,14 @@ class ThreadAnalyseComicsInfo(ThreadPattern):
                     the_key = comics[index]
                     comics_data[the_key] = comic_info
 
+        comics_data.update(cache_data)
         return comics_data
 
     @staticmethod
-    def get_comic_info_class(comic, cache_comic_info_dict: dict):
+    def get_comic_info_class(comic):
         """用于多线程，将类的赋值中转为函数的调用"""
         print('分析漫画', comic)
         if os.path.exists(comic):
-            # 跳过缓存中已存在的漫画（文件大小一致的）
-            if comic in cache_comic_info_dict:
-                cache_comic_info: ComicInfo = cache_comic_info_dict[comic]
-                # 验证文件大小
-                local_size = function_normal.get_size(comic)
-                cache_size = cache_comic_info.filesize
-                if local_size == cache_size:
-                    return cache_comic_info
-            # 不存在于缓存中，则正常计算
             return ComicInfo(comic)
         else:
             return None

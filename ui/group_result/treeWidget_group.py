@@ -94,4 +94,5 @@ class TreeWidgetGroup(QTreeWidget):
         child_item = self.itemAt(widget_scroll_area.pos())  # 获取子节点对象
         if child_item:
             top_level_item = child_item.parent()  # 获取父节点对象
-            top_level_item.setExpanded(False)
+            if top_level_item:
+                top_level_item.setExpanded(False)

@@ -51,7 +51,7 @@ class ScrollAreaComicGroup(QWidget):
             item = layout.itemAt(i)
             widget_comic_view: WidgetComicInfo = item.widget()
             useless_comic = widget_comic_view.check_validity()
-            if useless_comic:
+            if useless_comic and useless_comic in self._similar_group:
                 self._similar_group.remove(useless_comic)  # 删除已失效的漫画，防止重置筛选器后重新出现
 
         self._is_hide()
