@@ -23,6 +23,7 @@ class TreeWidgetGroup(QTreeWidget):
 
         # 插入节点
         for index, comic_group in enumerate(similar_comic_group, start=1):
+            print('显示相似组 ', index, comic_group)
             # 创建父节点
             item_parent = QTreeWidgetItem()
             item_parent.setText(0, f'■ 第{index}组 - {len(comic_group)}项')
