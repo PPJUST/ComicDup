@@ -83,7 +83,7 @@ class WidgetComicView(QWidget):
 
         # 文件名
         filename = os.path.basename(self._comic_info.path)
-        self.tableWidget_filename.set_filename(filename)
+        self.tableWidget_filename.set_filename(filename, self._comic_info.path)
 
         # 文件大小
         filesize = self._comic_info.filesize  # 字节

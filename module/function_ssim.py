@@ -17,11 +17,17 @@ def compare_ssim(image_info: ImageInfo, compare_image_info_dict: dict, resize_im
     :param resize_image_size: int，图片的计算尺寸
     :param threshold: float，相似度阈值
     :return: 相似的图片信息字典，key为虚拟图片路径，value为ImageInfo类"""
+    print('ssim对比，主key ', image_info.path)
     similar_image_info_dict = dict()
     current_image_bytes = image_info.get_image_bytes()
     for compare_fake_image_path, compare_image_info in compare_image_info_dict.items():
         compare_image_bytes = compare_image_info.get_image_bytes()
-        similar = _calc_images_ssim(current_image_bytes, compare_image_bytes, size=resize_image_size)
+        try:
+            similar = _calc_images_ssim(current_image_bytes, compare_image_bytes, size=resize_image_size)
+        except ValueError:
+            # 匹配线程报错“ValueError: all the input array dimensions except for the concatenation axis must match exactly, but along dimension 1, the array at index 0 has size 64 and the array at index 1 has size 128”
+            # 大概率是ssim的问题
+            continue
         if similar >= threshold:
             similar_image_info_dict[compare_fake_image_path] = compare_image_info
 
@@ -65,6 +71,7 @@ def _calc_images_ssim(image_1: Union[str, bytes], image_2: Union[str, bytes], si
         image_numpy1 = _bytes_to_numpy(image_1, size)
     else:
         return 0
+
     if isinstance(image_2, str):  # 传入图片路径时
         image_numpy2 = _image_to_numpy(image_2, size)
     elif isinstance(image_2, bytes):  # 传入字节时（从压缩包读取的图片）

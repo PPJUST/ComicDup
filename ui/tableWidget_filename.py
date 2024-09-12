@@ -1,5 +1,5 @@
 # 作为文件名控件的tableWidget，利用文本单元格自动隐藏长文本的特性
-
+from PySide6.QtGui import Qt
 from PySide6.QtWidgets import *
 
 
@@ -24,8 +24,14 @@ class TabelWidgetFilename(QTableWidget):
         # 设置文本单元格
         self.item_filename = QTableWidgetItem('')
         self.setItem(0, 0, self.item_filename)
+        # 禁止编辑单元格
+        self.item_filename.setFlags(self.item_filename.flags() & ~Qt.ItemIsEditable)
 
-    def set_filename(self, filename: str):
+    def set_filename(self, filename: str, tool_tip: str = None):
         """设置文件名"""
+        if not tool_tip:
+            tool_tip = filename
+        else:
+            tool_tip = filename + r'\n' + tool_tip
         self.item_filename.setText(filename)
-        self.item_filename.setToolTip(filename)
+        self.item_filename.setToolTip(tool_tip)
