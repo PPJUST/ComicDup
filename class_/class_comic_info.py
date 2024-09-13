@@ -6,6 +6,7 @@
 import os
 import pickle
 
+import module.function_archive
 from constant import _COMICS_INFO_DB, _PREVIEW_DIRPATH
 from module import function_normal, function_archive
 
@@ -39,12 +40,13 @@ class ComicInfo:
         if self.filetype == 'folder':
             self.images = function_normal.get_images_from_folder(self.path)
             self.image_count = len(self.images)
-            self.preview_path = self.images[0]
+            # 缩放文件夹内的第一张图片作为预览图
+            self.preview_path = function_normal.save_image_as_preview(self.images[0])
         else:
-            self.images = function_normal.get_images_from_archive(self.path)
+            self.images = module.function_archive.get_images_from_archive(self.path)
             self.image_count = len(self.images)
             # 解压压缩包内的第一张图片作为预览图
-            self.preview_path = function_archive.save_image(self.path, self.images[0])
+            self.preview_path = function_archive.save_image_as_preview(self.path, self.images[0])
         # 真实文件大小
         if self.filetype == 'folder':
             self.real_filesize = self.filesize
@@ -58,6 +60,15 @@ class ComicInfo:
             return local_filesize == self.filesize
         else:
             return False
+
+    def fix_preview(self):
+        """修复本地不存在的预览图，重新创建预览缩略图"""
+        if not os.path.exists(self.preview_path):
+            if self.filetype == 'folder':
+                preview_fix = function_normal.save_image_as_preview(self.images[0])
+            else:
+                preview_fix = function_archive.save_image_as_preview(self.path, self.images[0])
+            os.rename(preview_fix, self.preview_path)
 
 
 def read_db() -> dict:

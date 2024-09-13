@@ -8,7 +8,7 @@ from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 
 from class_.class_comic_info import ComicInfo
-from constant import _ICON_ERROR_IMAGE
+from constant import _ICON_ERROR_IMAGE, _ICON_DISAPPEAR_IMAGE
 from constant import _ICON_VIEW, _ICON_COMPUTER, _ICON_RECYCLE_BIN, _ICON_FOLDER, _ICON_ARCHIVE
 from module import function_normal
 from ui.src.ui_widget_comic_info import Ui_Form
@@ -131,8 +131,12 @@ class WidgetComicInfo(QWidget):
 
     def _set_preview(self):
         """显示预览图"""
-        review_image_path = self._comic_info.preview_path
-        pixmap = QPixmap(review_image_path)
+        preview_image_path = self._comic_info.preview_path
+        print('加载预览图', preview_image_path)
+        if not os.path.exists(preview_image_path):
+            pixmap = QPixmap(_ICON_DISAPPEAR_IMAGE)
+        else:
+            pixmap = QPixmap(preview_image_path)
         if not pixmap or pixmap.isNull():  # 处理超过限制的图片对象，替换为裂图图标
             pixmap = QPixmap(_ICON_ERROR_IMAGE)
         # 获取QLabel的大小

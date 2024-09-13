@@ -5,11 +5,10 @@ import random
 import shutil
 import string
 import time
-
+from constant import _PREVIEW_DIRPATH
 import natsort
 import send2trash
-
-from module import function_archive
+from PIL import Image
 
 
 def print_function_info(mode: str = 'current'):
@@ -94,16 +93,28 @@ def create_random_string(length: int = 16) -> str:
     return random_string
 
 
+def save_image_as_preview(image_path: str) -> str:
+    """保存图片到本地缓存目录（固定高度200px）
+    :return: 保存的本地图片路径"""
+    image = Image.open(image_path)
+    # 转换图像模式，防止报错OSError: cannot write mode P as JPEG
+    image = image.convert('RGB')
+    # 缩小尺寸，减少空间占用
+    width, height = image.size
+    resize_height = 200  # 固定图片高度为200，宽度自适应
+    resize_width = int(resize_height * width / height)
+    image = image.resize((resize_width, resize_height))
+    # 保存到本地缓存目录
+    save_path = (_PREVIEW_DIRPATH + os.sep + create_random_string() + os.path.splitext(image_path)[1])
+    save_path = os.path.normpath(save_path)
+    image.save(save_path)
+
+    return save_path
+
+
 def get_images_from_folder(dirpath: str) -> list:
     """提取文件夹内的所有图片路径"""
     images = get_images_in_folder(dirpath)
-    images = natsort.natsorted(images)
-    return images
-
-
-def get_images_from_archive(archive: str) -> list:
-    """提取压缩包内的所有图片路径"""
-    images = function_archive.get_images(archive)
     images = natsort.natsorted(images)
     return images
 

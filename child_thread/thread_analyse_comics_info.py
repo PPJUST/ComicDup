@@ -1,6 +1,5 @@
 # 子线程-进一步分析漫画的信息
 import os
-from functools import partial
 from multiprocessing import Pool
 
 from child_thread.thread_pattern import ThreadPattern
@@ -58,6 +57,8 @@ class ThreadAnalyseComicsInfo(ThreadPattern):
                 if local_size == cache_size:
                     cache_data[comic] = cache_comic_info
                     comics.remove(comic)
+                    # 修复本地不存在的预览图
+                    cache_comic_info.fix_preview()
 
         # 启用多进程
         comics_data = {}

@@ -1,6 +1,7 @@
 # 提取符合规则的漫画文件夹/压缩包的方法
 import os
 
+import module.function_archive
 from module import function_normal
 
 _MIN_IMAGE_COUNT = 4
@@ -107,7 +108,7 @@ class _FolderStructure(dict):
     @staticmethod
     def _is_comic_archive(archive_path: str):
         """检查压缩包是否为符合规则的漫画压缩包（内部图片数>=指定数，所有图片都在同一级）"""
-        images = function_normal.get_images_from_archive(archive_path)
+        images = module.function_archive.get_images_from_archive(archive_path)
         # 判断是否都为同级文件
         parents = [os.path.dirname(i) for i in images]
         if len(set(parents)) != 1:

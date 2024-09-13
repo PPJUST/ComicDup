@@ -4,6 +4,7 @@ import os
 import zipfile
 from typing import Union
 
+import natsort
 import rarfile
 from PIL import Image, ImageFile
 
@@ -74,8 +75,8 @@ def read_image(archive_path: str, image_path_in_archive: str) -> bytes:
     return img_data
 
 
-def save_image(archive_path: str, image_path_in_archive: str) -> str:
-    """保存压缩包中的图片到本地缓存目录
+def save_image_as_preview(archive_path: str, image_path_in_archive: str) -> str:
+    """保存压缩包中的图片到本地缓存目录（固定高度200px）
     :return: 保存的本地图片路径"""
     img_bytes = read_image(archive_path, image_path_in_archive)
     image = Image.open(io.BytesIO(img_bytes))
@@ -107,3 +108,10 @@ def _get_infolist(archive_path: str) -> list:
 
     infolist = archive_file.infolist()  # 中文等字符会变为乱码
     return infolist
+
+
+def get_images_from_archive(archive: str) -> list:
+    """提取压缩包内的所有图片路径"""
+    images = get_images(archive)
+    images = natsort.natsorted(images)
+    return images
