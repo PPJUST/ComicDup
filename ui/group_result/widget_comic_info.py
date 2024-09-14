@@ -14,6 +14,9 @@ from module import function_normal
 from ui.src.ui_widget_comic_info import Ui_Form
 from ui.tableWidget_filename import TabelWidgetFilename
 
+_WIDTH = 160
+_HEIGHT = 240
+
 
 class WidgetComicInfo(QWidget):
     """显示单本漫画基本信息，预览图、页数、文件大小等(■Widget->ScrollArea->TreeWidget)"""
@@ -27,10 +30,16 @@ class WidgetComicInfo(QWidget):
         self.ui.setupUi(self)
 
         # ui设置
-        self.setFixedSize(150, 290)
-        self.ui.label_preview.setFixedSize(140, 200)  # 设置固定高度200，宽度为高度*0.7
+        self.setFixedSize(_WIDTH, _HEIGHT)
+        _comic_height = (_HEIGHT
+                         - self.ui.label_type.sizeHint().height()
+                         - self.ui.label_filesize.sizeHint().height()
+                         - self.ui.toolButton_view.sizeHint().height()
+                         - 5 * 5)
+        self.ui.label_preview.setFixedHeight(_comic_height)
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self._set_context_menu()
+        self.ui.label_type.setAlignment(Qt.AlignCenter)
         self.ui.label_preview.setAlignment(Qt.AlignCenter)
         self._set_icon()
 

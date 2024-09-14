@@ -8,7 +8,7 @@ import natsort
 import rarfile
 from PIL import Image, ImageFile
 
-from constant import _PREVIEW_DIRPATH
+from constant import _PREVIEW_DIRPATH, _COMIC_PREVIEW_HEIGHT
 from module import function_normal
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True  # 允许加载截断的图像 防止报错OSError: image file is truncated (4 bytes not processed)
@@ -76,7 +76,7 @@ def read_image(archive_path: str, image_path_in_archive: str) -> bytes:
 
 
 def save_image_as_preview(archive_path: str, image_path_in_archive: str) -> str:
-    """保存压缩包中的图片到本地缓存目录（固定高度200px）
+    """保存压缩包中的图片到本地缓存目录（固定高度）
     :return: 保存的本地图片路径"""
     img_bytes = read_image(archive_path, image_path_in_archive)
     image = Image.open(io.BytesIO(img_bytes))
@@ -84,9 +84,8 @@ def save_image_as_preview(archive_path: str, image_path_in_archive: str) -> str:
     image = image.convert('RGB')
     # 缩小尺寸，减少空间占用
     width, height = image.size
-    resize_height = 200  # 固定图片高度为200，宽度自适应
-    resize_width = int(resize_height * width / height)
-    image = image.resize((resize_width, resize_height))
+    resize_width = int(_COMIC_PREVIEW_HEIGHT * width / height)
+    image = image.resize((resize_width, _COMIC_PREVIEW_HEIGHT))
     # 保存到本地缓存目录
     save_path = (_PREVIEW_DIRPATH + os.sep +
                  function_normal.create_random_string() + os.path.splitext(image_path_in_archive)[1])

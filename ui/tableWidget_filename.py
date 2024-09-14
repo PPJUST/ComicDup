@@ -32,6 +32,6 @@ class TabelWidgetFilename(QTableWidget):
         if not tool_tip:
             tool_tip = filename
         else:
-            tool_tip = f'{filename}\n{tool_tip}'
+            tool_tip = f'{filename}\n\n{tool_tip}'
         self.item_filename.setText(filename)
         self.item_filename.setToolTip(tool_tip)

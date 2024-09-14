@@ -57,3 +57,6 @@ _HASH_ALGORITHM = ['ahash', 'phash', 'dhash']
 _IMAGE_SIZE = ['8', '12', '16']
 _EXTRACT_IMAGES_COUNT = 1
 _THREADS_COUNT = 1
+
+# 提取预览图时缩放漫画的高度
+_COMIC_PREVIEW_HEIGHT = 160

@@ -5,10 +5,12 @@ import random
 import shutil
 import string
 import time
-from constant import _PREVIEW_DIRPATH
+
 import natsort
 import send2trash
 from PIL import Image
+
+from constant import _PREVIEW_DIRPATH, _COMIC_PREVIEW_HEIGHT
 
 
 def print_function_info(mode: str = 'current'):
@@ -94,16 +96,15 @@ def create_random_string(length: int = 16) -> str:
 
 
 def save_image_as_preview(image_path: str) -> str:
-    """保存图片到本地缓存目录（固定高度200px）
+    """保存图片到本地缓存目录（固定高度）
     :return: 保存的本地图片路径"""
     image = Image.open(image_path)
     # 转换图像模式，防止报错OSError: cannot write mode P as JPEG
     image = image.convert('RGB')
     # 缩小尺寸，减少空间占用
     width, height = image.size
-    resize_height = 200  # 固定图片高度为200，宽度自适应
-    resize_width = int(resize_height * width / height)
-    image = image.resize((resize_width, resize_height))
+    resize_width = int(_COMIC_PREVIEW_HEIGHT * width / height)
+    image = image.resize((resize_width, _COMIC_PREVIEW_HEIGHT))
     # 保存到本地缓存目录
     save_path = (_PREVIEW_DIRPATH + os.sep + create_random_string() + os.path.splitext(image_path)[1])
     save_path = os.path.normpath(save_path)
