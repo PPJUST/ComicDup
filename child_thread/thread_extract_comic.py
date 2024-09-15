@@ -1,4 +1,6 @@
 # 子线程-提取符合规则的漫画文件夹/压缩包
+import natsort
+
 from child_thread.thread_pattern import ThreadPattern
 from module import function_extract_comic, function_normal
 
@@ -12,7 +14,7 @@ class ThreadExtractComic(ThreadPattern):
         self.dirpaths = []
 
     def set_folders(self, dirpaths: list):
-        self.dirpaths = dirpaths
+        self.dirpaths = natsort.natsorted(dirpaths)
 
     def run(self):
         super().run()

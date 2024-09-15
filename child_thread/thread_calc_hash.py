@@ -3,6 +3,8 @@ import os
 from functools import partial
 from multiprocessing import Pool
 
+import natsort
+
 from child_thread.thread_pattern import ThreadPattern
 from class_ import class_comic_info, class_image_info
 from class_.class_comic_info import ComicInfo
@@ -19,7 +21,7 @@ class ThreadCalcHash(ThreadPattern):
         self.comics = []
 
     def set_comics(self, comics: list):
-        self.comics = comics
+        self.comics = natsort.natsorted(comics)
 
     def run(self):
         super().run()

@@ -2,6 +2,8 @@
 import os
 from multiprocessing import Pool
 
+import natsort
+
 from child_thread.thread_pattern import ThreadPattern
 from class_ import class_comic_info
 from class_.class_comic_info import ComicInfo
@@ -17,7 +19,7 @@ class ThreadAnalyseComicsInfo(ThreadPattern):
         self.comics = []
 
     def set_comics(self, comics: list):
-        self.comics = list(comics)
+        self.comics = natsort.natsorted(list(comics))
 
     def run(self):
         super().run()
