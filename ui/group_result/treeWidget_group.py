@@ -2,6 +2,7 @@
 
 from PySide6.QtWidgets import *
 
+from class_ import class_comic_info
 from module import function_match_result
 from ui.group_result.scrollArea_comic_group import ScrollAreaComicGroup
 
@@ -20,7 +21,7 @@ class TreeWidgetGroup(QTreeWidget):
 
         # 提取本地缓存
         similar_comic_group = function_match_result.read_result()
-
+        comic_info_dict = class_comic_info.read_db()
         # 插入节点
         for index, comic_group in enumerate(similar_comic_group, start=1):
             print('显示相似组 ', index, comic_group)
@@ -33,7 +34,7 @@ class TreeWidgetGroup(QTreeWidget):
             item_child = QTreeWidgetItem()
             item_parent.addChild(item_child)
             # 创建自定义控件
-            child_widget = ScrollAreaComicGroup(comic_group)
+            child_widget = ScrollAreaComicGroup(comic_group, comic_info_dict=comic_info_dict)
             child_widget.signal_delete.connect(self._delete_emtpy_group)
             child_widget.signal_hide.connect(self._hide_group)
             # 将自定义控件设置为子节点的部件
@@ -45,6 +46,7 @@ class TreeWidgetGroup(QTreeWidget):
     def refresh_widget(self):
         """刷新子控件，重新显示所有漫画"""
         for index in range(self.topLevelItemCount()):
+            print('刷新相似组 ', index)
             parent_item = self.topLevelItem(index)  # 父节点
             parent_item.setExpanded(True)
             for index_ in range(parent_item.childCount()):

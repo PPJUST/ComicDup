@@ -14,8 +14,8 @@ from module import function_normal
 from ui.src.ui_widget_comic_info import Ui_Form
 from ui.tableWidget_filename import TabelWidgetFilename
 
-_WIDTH = 160
-_HEIGHT = 240
+_WIDTH = 150
+_HEIGHT = 200
 
 
 class WidgetComicInfo(QWidget):

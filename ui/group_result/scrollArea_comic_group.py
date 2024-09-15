@@ -12,11 +12,12 @@ from ui.src.ui_scrollArea_comic_group import Ui_Form
 
 class ScrollAreaComicGroup(QWidget):
     """显示一组相似漫画的框架(Widget->■ScrollArea->TreeWidget)
-    :param similar_group: set，漫画相似组，内部元素为漫画路径"""
+    :param similar_group: set，漫画相似组，内部元素为漫画路径
+    :param comic_info_dict: dict，漫画信息字典，直接传参，防止多次读取数据库"""
     signal_delete = Signal(name='删除该控件')
     signal_hide = Signal(name='折叠该控件所在的父节点')
 
-    def __init__(self, similar_group: set, parent=None):
+    def __init__(self, similar_group: set, parent=None, comic_info_dict=None):
         super().__init__(parent)
         self.ui = Ui_Form()
         self.ui.setupUi(self)
@@ -27,6 +28,7 @@ class ScrollAreaComicGroup(QWidget):
         self.ui.scrollArea.setWidgetResizable(True)
 
         self._similar_group = similar_group
+        self._comic_info_dict = comic_info_dict  # 漫画信息字典，直接传参，防止多次读取数据库
         self._add_child_widget()
 
         # 移动scrollArea的横向滚动条到另外的控件中
@@ -121,8 +123,10 @@ class ScrollAreaComicGroup(QWidget):
                 widget.deleteLater()
 
         # 添加子控件
+        if not self._comic_info_dict:
+            self._comic_info_dict = class_comic_info.read_db()
         for comic_path in self._similar_group:
-            comic_info = class_comic_info.get_comic_info(comic_path)
+            comic_info = self._comic_info_dict[comic_path]
             child_widget = WidgetComicInfo(comic_info)
             child_widget.signal_view.connect(self._view_comics)
             child_widget.signal_delete_comic.connect(self._comic_deleted)
