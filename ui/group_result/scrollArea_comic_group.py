@@ -99,16 +99,17 @@ class ScrollAreaComicGroup(QWidget):
             path, info = widget_comic_view.get_size_and_count()
             info_dict[path] = info['image_count']
         # 以最小页数的150%为上限，确认需删除的项目
-        min_page = natsort.natsorted(info_dict.values())[0] * 1.5
-        delete_paths = []
-        for path, page_count in info_dict.items():
-            if page_count > min_page:
-                delete_paths.append(path)
-        # 删除对应项目
-        for i in range(layout.count()):
-            item = layout.itemAt(i)
-            widget_comic_view: WidgetComicInfo = item.widget()
-            widget_comic_view.delete_if_in_list(delete_paths)
+        if info_dict:
+            min_page = natsort.natsorted(info_dict.values())[0] * 1.5
+            delete_paths = []
+            for path, page_count in info_dict.items():
+                if page_count > min_page:
+                    delete_paths.append(path)
+            # 删除对应项目
+            for i in range(layout.count()):
+                item = layout.itemAt(i)
+                widget_comic_view: WidgetComicInfo = item.widget()
+                widget_comic_view.delete_if_in_list(delete_paths)
 
         self._is_hide()
 

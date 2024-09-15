@@ -46,7 +46,7 @@ class TreeWidgetGroup(QTreeWidget):
     def refresh_widget(self):
         """刷新子控件，重新显示所有漫画"""
         for index in range(self.topLevelItemCount()):
-            print('刷新相似组 ', index)
+            print('刷新节点 ', index)
             parent_item = self.topLevelItem(index)  # 父节点
             parent_item.setExpanded(True)
             for index_ in range(parent_item.childCount()):
@@ -57,6 +57,7 @@ class TreeWidgetGroup(QTreeWidget):
     def check_validity(self):
         """检查有效性，无效则删除"""
         for index in range(self.topLevelItemCount()):
+            print('刷新节点', index)
             parent_item = self.topLevelItem(index)  # 父节点
             for index_ in range(parent_item.childCount()):
                 child_item = parent_item.child(index_)  # 子节点
@@ -66,6 +67,7 @@ class TreeWidgetGroup(QTreeWidget):
     def filter_same(self):
         """仅显示页数、大小相同项"""
         for index in range(self.topLevelItemCount()):
+            print('刷新节点', index)
             parent_item = self.topLevelItem(index)  # 父节点
             for index_ in range(parent_item.childCount()):
                 child_item = parent_item.child(index_)  # 子节点
@@ -75,6 +77,7 @@ class TreeWidgetGroup(QTreeWidget):
     def filter_pages_diff(self):
         """剔除页数差异过大项"""
         for index in range(self.topLevelItemCount()):
+            print('刷新节点', index)
             parent_item = self.topLevelItem(index)  # 父节点
             for index_ in range(parent_item.childCount()):
                 child_item = parent_item.child(index_)  # 子节点

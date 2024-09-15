@@ -7,6 +7,7 @@ from PySide6.QtCore import Signal
 from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 
+from class_ import class_comic_info
 from class_.class_comic_info import ComicInfo
 from constant import _ICON_ERROR_IMAGE, _ICON_DISAPPEAR_IMAGE
 from constant import _ICON_VIEW, _ICON_COMPUTER, _ICON_RECYCLE_BIN, _ICON_FOLDER, _ICON_ARCHIVE
@@ -50,7 +51,7 @@ class WidgetComicInfo(QWidget):
         # 初始化
         self._comic_info = comic_info
         self._is_deleted = False  # 是否已删除，用于处理deleteLater不能实时删除的问题
-        self._update_info()
+        self._load_info()
 
         # 绑定预览图label双击事件
         self.ui.label_preview.mouseDoubleClickEvent = self._double_click_preview
@@ -96,8 +97,8 @@ class WidgetComicInfo(QWidget):
         if path in paths:
             self.signal_delete_widget.emit()
 
-    def _update_info(self):
-        """更新漫画信息"""
+    def _load_info(self):
+        """加载漫画信息"""
         # 漫画类别
         comic_type = self._comic_info.filetype
         if comic_type == 'folder':
@@ -176,6 +177,10 @@ class WidgetComicInfo(QWidget):
         action_open_parent_folder.triggered.connect(self._open_parent_folder)
         menu.addAction(action_open_parent_folder)
 
+        action_update_comic_info = QAction('更新漫画信息', menu)
+        action_update_comic_info.triggered.connect(self._update_comic_info)
+        menu.addAction(action_update_comic_info)
+
         action_delete = QAction('删除文件', menu)
         action_delete.triggered.connect(self._delete_file)
         menu.addAction(action_delete)
@@ -186,6 +191,20 @@ class WidgetComicInfo(QWidget):
         """预览图label双击事件"""
         if event.button() == Qt.LeftButton:
             self.signal_view.emit()
+
+    def _update_comic_info(self):
+        """更新漫画信息"""
+        comic_path = self._comic_info.path
+        if os.path.exists(comic_path):
+            new_comic_info = ComicInfo(self._comic_info.path)
+            # 更新本地数据库
+            new_comic_info_dict = {comic_path: new_comic_info}
+            class_comic_info.update_db(new_comic_info_dict)
+            # 更新ui
+            self._comic_info = new_comic_info
+            self._load_info()
+
+
 
     def deleteLater(self):
         super().deleteLater()
