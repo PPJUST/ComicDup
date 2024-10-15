@@ -160,6 +160,7 @@ def read_db(hash_length: int = 64):
     """读取数据库中所有图片的指定长度hash数据
     :param hash_length: int，hash值的长度
     :return: dict，key为图片虚拟路径，value为image_info类"""
+    function_normal.print_function_info()
     # 读取数据库
     conn = sqlite3.connect(_IMAGE_INFO_DB)
     cursor = conn.cursor()
@@ -198,6 +199,7 @@ def read_db(hash_length: int = 64):
 def update_db(image_info_dict: dict):
     """更新数据库（增量更新）
     :param image_info_dict: dict，key为虚拟图片路径，value为image_info类"""
+    function_normal.print_function_info()
     # 读取数据库中的所有图片路径
     conn = sqlite3.connect(_IMAGE_INFO_DB)
     cursor = conn.cursor()
@@ -237,6 +239,7 @@ def update_db(image_info_dict: dict):
 
 def delete_useless_item():
     """删除数据库中无效的数据"""
+    function_normal.print_function_info()
     conn = sqlite3.connect(_IMAGE_INFO_DB)
     cursor = conn.cursor()
 
@@ -255,6 +258,19 @@ def delete_useless_item():
                 continue
         # 路径外的引号必须使用“双引号，防止字符串自动转换引号导致出错（Windows文件名可以带'而不能带"）
         cursor.execute(f'''DELETE FROM {_TABLE_NAME} WHERE {_KEY_PATH}="{image_path}"''')
+
+    cursor.close()
+    conn.commit()
+    conn.close()
+
+
+def delete_item_by_comic(comic_path_deleted: str):
+    """删除指定漫画路径对应的图片项数据"""
+    function_normal.print_function_info()
+    conn = sqlite3.connect(_IMAGE_INFO_DB)
+    cursor = conn.cursor()
+    # 路径外的引号必须使用“双引号，防止字符串自动转换引号导致出错（Windows文件名可以带'而不能带"）
+    cursor.execute(f'''DELETE FROM {_TABLE_NAME} WHERE {_KEY_COMIC_PATH}="{comic_path_deleted}"''')
 
     cursor.close()
     conn.commit()

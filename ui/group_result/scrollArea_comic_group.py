@@ -5,6 +5,7 @@ from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 
 from class_ import class_comic_info
+from module import function_match_result, function_normal
 from ui.group_preview.dialog_preview import DialogPreview
 from ui.group_result.widget_comic_info import WidgetComicInfo
 from ui.src.ui_scrollArea_comic_group import Ui_Form
@@ -40,6 +41,7 @@ class ScrollAreaComicGroup(QWidget):
 
     def refresh_widget(self):
         """刷新子控件，重新显示所有漫画"""
+        function_normal.print_function_info()
         layout = self.ui.horizontalLayout_place
         if layout.count() != len(self._similar_group):  # 存在筛选器时，清空布局后重新添加
             self._add_child_widget()
@@ -48,6 +50,7 @@ class ScrollAreaComicGroup(QWidget):
 
     def check_validity(self):
         """检查有效性，无效则删除"""
+        function_normal.print_function_info()
         layout = self.ui.horizontalLayout_place
         for i in range(layout.count()):
             item = layout.itemAt(i)
@@ -60,6 +63,7 @@ class ScrollAreaComicGroup(QWidget):
 
     def filter_same(self):
         """仅显示页数、大小相同项"""
+        function_normal.print_function_info()
         # 先清除之前的筛选器结果
         self.refresh_widget()
 
@@ -87,6 +91,7 @@ class ScrollAreaComicGroup(QWidget):
 
     def filter_pages_diff(self):
         """剔除页数差异过大项"""
+        function_normal.print_function_info()
         # 先清除之前的筛选器结果
         self.refresh_widget()
 
@@ -127,12 +132,13 @@ class ScrollAreaComicGroup(QWidget):
         if not self._comic_info_dict:
             self._comic_info_dict = class_comic_info.read_db()
         for comic_path in self._similar_group:
-            comic_info = self._comic_info_dict[comic_path]
-            child_widget = WidgetComicInfo(comic_info)
-            child_widget.signal_view.connect(self._view_comics)
-            child_widget.signal_delete_comic.connect(self._comic_deleted)
-            child_widget.signal_delete_widget.connect(self._widget_deleted)
-            layout.addWidget(child_widget)
+            if comic_path in self._comic_info_dict:
+                comic_info = self._comic_info_dict[comic_path]
+                child_widget = WidgetComicInfo(comic_info)
+                child_widget.signal_view.connect(self._view_comics)
+                child_widget.signal_delete_comic.connect(self._comic_deleted)
+                child_widget.signal_delete_widget.connect(self._widget_deleted)
+                layout.addWidget(child_widget)
 
     def _view_comics(self):
         """预览相似组中的漫画"""
@@ -148,6 +154,7 @@ class ScrollAreaComicGroup(QWidget):
 
     def _comic_deleted(self):
         """删除单本漫画后，更新ui"""
+        function_normal.print_function_info()
         widget_: WidgetComicInfo = self.sender()
         widget_.deleteLater()
 
@@ -155,6 +162,11 @@ class ScrollAreaComicGroup(QWidget):
         path = widget_.get_comic_path()
         if path in self._similar_group:
             self._similar_group.remove(path)
+
+        # 在数据库中删除该项
+        # class_comic_info.delete_item(path)  # 删除漫画信息
+        # class_image_info.delete_item_by_comic(path)  # 删除对应的图片信息
+        function_match_result.delete_item(path)  # 删除在匹配组中的项
 
         # 如果删除控件后，若layout中无其余控件，则删除发生信号删除自身
         if self._count_comic() == 0:
@@ -164,6 +176,7 @@ class ScrollAreaComicGroup(QWidget):
 
     def _widget_deleted(self):
         """删除子控件后，更新ui"""
+        function_normal.print_function_info()
         widget_: WidgetComicInfo = self.sender()
         widget_.deleteLater()
 
@@ -171,6 +184,7 @@ class ScrollAreaComicGroup(QWidget):
 
     def _remove_widget_in_path(self, deleted_path):
         """在预览控件中删除漫画时，同步删除主页面的中的漫画控件"""
+        function_normal.print_function_info()
         layout = self.ui.horizontalLayout_place
         for i in range(layout.count()):
             item = layout.itemAt(i)

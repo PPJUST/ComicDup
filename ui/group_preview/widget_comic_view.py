@@ -8,8 +8,8 @@ from PySide6.QtWidgets import *
 
 from class_.class_comic_info import ComicInfo
 from constant import _ICON_FOLDER, _ICON_ARCHIVE, _ICON_COMPUTER, _ICON_LAST, _ICON_NEXT, _ICON_RECYCLE_BIN, \
-    _ICON_ERROR_IMAGE
-from module import function_archive
+    _ICON_ERROR_IMAGE, _ICON_DISAPPEAR_IMAGE
+from module import function_archive, function_normal
 from ui.src.ui_widget_comic_view import Ui_Form
 from ui.tableWidget_filename import TabelWidgetFilename
 
@@ -74,6 +74,7 @@ class WidgetComicView(QWidget):
 
     def _update_info(self):
         """更新漫画信息"""
+        function_normal.print_function_info()
         # 漫画类别
         comic_type = self._comic_info.filetype
         if comic_type == 'folder':
@@ -103,17 +104,25 @@ class WidgetComicView(QWidget):
     def _show_page(self):
         """显示对应页码的图片"""
         self.ui.label_page_index.setText(str(self._page_index))
-        # 设置图片对象
+        # 读取图片bytes
         index = self._page_index - 1  # 页码转为索引
         image_path = self._comic_info.images[index]
         if self._comic_info.filetype == 'folder':
-            pixmap = QPixmap(image_path)
+            img_bytes = function_normal.read_image(image_path)
         else:
             img_bytes = function_archive.read_image(self._comic_info.path, image_path)
-            pixmap = QPixmap()
+        # 检查bytes
+        if not img_bytes:
+            img_bytes = function_normal.read_image(_ICON_DISAPPEAR_IMAGE)
+        # pixmap加载bytes
+        pixmap = QPixmap()
+        pixmap.loadFromData(img_bytes)
+        # 检查pixmap
+        if pixmap.isNull():  # 处理超过尺寸限制的图片对象（10000像素宽/高），缩放0.5倍
+            img_bytes = function_normal.resize_image(img_bytes)
             pixmap.loadFromData(img_bytes)
-        if pixmap.isNull():  # 处理超过限制的图片对象，替换为裂图图标
-            pixmap = QPixmap(_ICON_ERROR_IMAGE)
+            if pixmap.isNull():  # 仍旧无法解决的，替换为裂图
+                pixmap = QPixmap(_ICON_ERROR_IMAGE)
 
         # 重设预览QLabel的大小
         pixmap_height = pixmap.height()
@@ -133,12 +142,14 @@ class WidgetComicView(QWidget):
 
     def _delete_file(self):
         """删除文件"""
+        function_normal.print_function_info()
         comic_path = self._comic_info.path
         send2trash.send2trash(comic_path)
         self.signal_deleted.emit(comic_path)
 
     def _open_file(self):
         """打开文件"""
+        function_normal.print_function_info()
         comic_path = self._comic_info.path
         os.startfile(comic_path)
 

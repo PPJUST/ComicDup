@@ -8,7 +8,7 @@ from child_thread.thread_group_normal import ThreadGroupNormal
 from child_thread.thread_group_update_db import ThreadGroupUpdateDB
 from class_ import class_comic_info
 from constant import _ICON_APP
-from module import function_config_size
+from module import function_config_size, function_normal
 from ui.dialog_information import DialogInformation
 from ui.group_result.treeWidget_group import TreeWidgetGroup
 from ui.src.ui_main import Ui_MainWindow
@@ -84,6 +84,7 @@ class MainWindow(QMainWindow):
 
     def start(self):
         """开始匹配"""
+        function_normal.print_function_info()
         # 开始计时
         self.widget_schedule.set_start_time()
         # 禁用部分功能
@@ -95,6 +96,7 @@ class MainWindow(QMainWindow):
 
     def stop(self):
         """终止匹配"""
+        function_normal.print_function_info()
         # 结束计时
         self.widget_schedule.stopped()
         # 启用部分功能
@@ -106,6 +108,7 @@ class MainWindow(QMainWindow):
 
     def finished(self):
         """完成匹配"""
+        function_normal.print_function_info()
         # 结束计时
         self.widget_schedule.finished()
         # 启用部分功能
@@ -113,6 +116,7 @@ class MainWindow(QMainWindow):
 
     def match_cache(self):
         """缓存内部匹配"""
+        function_normal.print_function_info()
         # 开始计时
         self.widget_schedule.set_start_time()
         # 禁用部分功能
@@ -125,6 +129,7 @@ class MainWindow(QMainWindow):
 
     def update_cache(self):
         """更新缓存数据"""
+        function_normal.print_function_info()
         # 开始计时
         self.widget_schedule.set_start_time()
         # 禁用部分功能
@@ -137,31 +142,38 @@ class MainWindow(QMainWindow):
 
     def refresh_result(self):
         """刷新匹配结果"""
+        function_normal.print_function_info()
         self.treeWidget_show_group.check_validity()
 
     def result_filter_same(self):
         """筛选器 - 仅显示页数、大小相同项"""
+        function_normal.print_function_info()
         self.treeWidget_show_group.filter_same()
 
     def result_filter_pages_diff(self):
         """筛选器 - 剔除页数差异过大项"""
+        function_normal.print_function_info()
         self.treeWidget_show_group.filter_pages_diff()
 
     def result_filter_clear(self):
         """清除筛选器"""
+        function_normal.print_function_info()
         self.treeWidget_show_group.refresh_widget()
 
     def reload_last_result(self):
         """加载上一次的匹配结果"""
+        function_normal.print_function_info()
         self.show_result()
 
     def show_result(self):
         """显示匹配结果"""
+        function_normal.print_function_info()
         self.finished()
         self.treeWidget_show_group.show_group()
 
     def open_information(self):
         """打开说明文档"""
+        function_normal.print_function_info()
         dialog_ = DialogInformation(self)
         dialog_.exec()
 

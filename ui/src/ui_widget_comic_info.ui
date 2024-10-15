@@ -39,11 +39,11 @@
       </widget>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_filename">
-       <property name="spacing">
-        <number>0</number>
+      <widget class="QLabel" name="label_filename">
+       <property name="text">
+        <string>filename</string>
        </property>
-      </layout>
+      </widget>
      </item>
     </layout>
    </item>

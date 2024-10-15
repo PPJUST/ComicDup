@@ -13,9 +13,8 @@ from constant import _ICON_ERROR_IMAGE, _ICON_DISAPPEAR_IMAGE
 from constant import _ICON_VIEW, _ICON_COMPUTER, _ICON_RECYCLE_BIN, _ICON_FOLDER, _ICON_ARCHIVE
 from module import function_normal
 from ui.src.ui_widget_comic_info import Ui_Form
-from ui.tableWidget_filename import TabelWidgetFilename
 
-_WIDTH = 150
+_WIDTH = 200
 _HEIGHT = 200
 
 
@@ -42,11 +41,8 @@ class WidgetComicInfo(QWidget):
         self._set_context_menu()
         self.ui.label_type.setAlignment(Qt.AlignCenter)
         self.ui.label_preview.setAlignment(Qt.AlignCenter)
+        self.ui.label_filename.setWordWrap(True)
         self._set_icon()
-
-        # 添加文件名控件
-        self.tableWidget_filename = TabelWidgetFilename(self)
-        self.ui.horizontalLayout_filename.addWidget(self.tableWidget_filename)
 
         # 初始化
         self._comic_info = comic_info
@@ -71,6 +67,7 @@ class WidgetComicInfo(QWidget):
 
     def check_validity(self):
         """检查有效性，无效则删除该项（路径存在，大小一致）"""
+        function_normal.print_function_info()
         comic_path = self._comic_info.path
         filesize = self._comic_info.filesize
         if not os.path.exists(comic_path) or not function_normal.get_size(comic_path) == filesize:
@@ -108,7 +105,8 @@ class WidgetComicInfo(QWidget):
 
         # 文件名
         filename = os.path.basename(self._comic_info.path)
-        self.tableWidget_filename.set_filename(filename, self._comic_info.path)
+        self.ui.label_filename.setText(filename)
+        self.ui.label_filename.setToolTip(f'{filename}\n\n{self._comic_info.path}')
 
         # 文件大小
         filesize = self._comic_info.filesize  # 字节
@@ -134,6 +132,7 @@ class WidgetComicInfo(QWidget):
 
     def _delete_file(self):
         """删除文件"""
+        function_normal.print_function_info()
         comic_path = self._comic_info.path
         if os.path.exists(comic_path):
             send2trash.send2trash(comic_path)
@@ -203,8 +202,6 @@ class WidgetComicInfo(QWidget):
             # 更新ui
             self._comic_info = new_comic_info
             self._load_info()
-
-
 
     def deleteLater(self):
         super().deleteLater()

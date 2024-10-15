@@ -97,7 +97,7 @@ class ThreadMatch(ThreadPattern):
     def match_cache(self, image_info_dict: dict) -> list:
         """与数据库中的缓存数据匹配，找出相似漫画组
         :param image_info_dict: dict，key为图片路径，value为image_info类
-        :return: list，相似漫画组，内部元素为漫画路径"""
+        :return: list，相似漫画组，内部元素为集合，集合内部元素为漫画路径"""
         # 获取相似度算法设置
         hash_algorithm = function_config_similar_option.hash_algorithm.get()
         resize_image_size = function_config_similar_option.image_size.get()

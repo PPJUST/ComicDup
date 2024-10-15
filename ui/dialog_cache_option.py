@@ -33,16 +33,19 @@ class DialogCacheOption(QDialog):
 
     def check_dup_inside(self):
         """缓存内部查重"""
+        function_normal.print_function_info()
         self.signal_match_cache.emit()
         self.accept()
 
     def update_cache(self):
         """更新缓存数据"""
+        function_normal.print_function_info()
         self.signal_update_cache.emit()
         self.accept()
 
     def delete_useless_cache(self):
         """删除数据库中无效的数据"""
+        function_normal.print_function_info()
         # 处理漫画信息数据库
         class_comic_info.delete_useless_item()
         # 处理预览图
@@ -54,6 +57,7 @@ class DialogCacheOption(QDialog):
 
     def clear_cache(self):
         """清空缓存数据"""
+        function_normal.print_function_info()
         function_normal.delete(_PREVIEW_DIRPATH)  # 删除预览图
         function_normal.delete(_COMICS_INFO_DB)  # 删除漫画信息数据库
         function_normal.delete(_IMAGE_INFO_DB)  # 删除图片信息数据库
@@ -68,6 +72,7 @@ class DialogCacheOption(QDialog):
 
     def _load_info(self):
         """加载设置信息"""
+        function_normal.print_function_info()
         comic_count = len(class_comic_info.read_db())
         self.ui.label_comic_count.setText(str(comic_count))
 

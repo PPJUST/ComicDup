@@ -8,7 +8,7 @@ from PySide6.QtWidgets import *
 from class_.class_comic_info import ComicInfo
 from constant import _ICON_LAST, _ICON_LAST_LAST, _ICON_NEXT, _ICON_NEXT_NEXT, _ICON_QUIT, \
     _ICON_REFRESH
-from module import function_config_size
+from module import function_config_size, function_normal
 from ui.group_preview.widget_comic_view import WidgetComicView
 from ui.src.ui_dialog_preview import Ui_Dialog
 
@@ -44,6 +44,7 @@ class DialogPreview(QDialog):
 
     def add_item(self, comic_info: ComicInfo):
         """添加项目"""
+        function_normal.print_function_info()
         if os.path.exists(comic_info.path):  # 不存在的漫画不进行预览
             widget_comic_view = WidgetComicView(comic_info, self)
             widget_comic_view.signal_deleted.connect(self._comic_deleted)
@@ -68,6 +69,7 @@ class DialogPreview(QDialog):
 
     def _comic_deleted(self, deleted_path: str):
         """删除漫画后，更新ui"""
+        function_normal.print_function_info()
         widget_ = self.sender()
         widget_.deleteLater()
         self.signal_deleted.emit(deleted_path)

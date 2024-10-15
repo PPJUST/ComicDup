@@ -85,7 +85,7 @@ def save_image_as_preview(archive_path: str, image_path_in_archive: str) -> str:
     # 缩小尺寸，减少空间占用
     width, height = image.size
     resize_width = int(_COMIC_PREVIEW_HEIGHT * width / height)
-    image = image.resize((resize_width, _COMIC_PREVIEW_HEIGHT))
+    image = image.resize((resize_width, _COMIC_PREVIEW_HEIGHT), Image.LANCZOS)
     # 保存到本地缓存目录
     save_path = (_PREVIEW_DIRPATH + os.sep +
                  function_normal.create_random_string() + os.path.splitext(image_path_in_archive)[1])

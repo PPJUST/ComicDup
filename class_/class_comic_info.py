@@ -74,6 +74,7 @@ class ComicInfo:
 def read_db() -> dict:
     """读取所有漫画信息
     :return: dict，key为漫画路径，value为comic_info类"""
+    function_normal.print_function_info()
     if os.path.exists(_COMICS_INFO_DB):
         with open(_COMICS_INFO_DB, 'rb') as sp:
             comic_info_dict = pickle.load(sp)
@@ -85,6 +86,7 @@ def read_db() -> dict:
 
 def get_comic_info(comic_path: str) -> ComicInfo:
     """读取单本漫画对应的comic_info类"""
+    function_normal.print_function_info()
     datas = read_db()
     _comic_info = datas[comic_path]
     return _comic_info
@@ -94,6 +96,7 @@ def update_db(comic_info_dict: dict, incremental_update=True):
     """将漫画信息保存到本地（增量更新）
     :param comic_info_dict: dict，key为漫画路径，value为comic_info类
     :param incremental_update: bool，是否增量更新，否则全量更新"""
+    function_normal.print_function_info()
     if incremental_update:
         final_dict = read_db()
         final_dict.update(comic_info_dict)
@@ -106,12 +109,23 @@ def update_db(comic_info_dict: dict, incremental_update=True):
 
 def clear_db():
     """清空数据库"""
+    function_normal.print_function_info()
     with open(_COMICS_INFO_DB, 'wb') as sp:
         pickle.dump({}, sp)
 
 
+def delete_item(comic_path: str):
+    """删除指定项"""
+    function_normal.print_function_info()
+    comic_info_dict = read_db()
+    if comic_path in comic_info_dict:
+        comic_info_dict.pop(comic_path)
+        update_db(comic_info_dict, incremental_update=False)
+
+
 def delete_useless_item():
     """删除数据库中无效的数据"""
+    function_normal.print_function_info()
     comic_info_dict = read_db()
     for comic_path, comic_info in comic_info_dict.copy().items():
         comic_info: ComicInfo
@@ -126,6 +140,7 @@ def delete_useless_item():
 
 def delete_useless_preview():
     """删除无效的预览图"""
+    function_normal.print_function_info()
     previews = []  # 仅包含文件名
     # 提取数据库中的数据
     comic_info_dict = read_db()

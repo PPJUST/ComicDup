@@ -1,5 +1,6 @@
 # 一般的通用方法
 import inspect
+import io
 import os
 import random
 import shutil
@@ -104,7 +105,7 @@ def save_image_as_preview(image_path: str) -> str:
     # 缩小尺寸，减少空间占用
     width, height = image.size
     resize_width = int(_COMIC_PREVIEW_HEIGHT * width / height)
-    image = image.resize((resize_width, _COMIC_PREVIEW_HEIGHT))
+    image = image.resize((resize_width, _COMIC_PREVIEW_HEIGHT), Image.LANCZOS)
     # 保存到本地缓存目录
     save_path = (_PREVIEW_DIRPATH + os.sep + create_random_string() + os.path.splitext(image_path)[1])
     save_path = os.path.normpath(save_path)
@@ -159,3 +160,31 @@ def delete(path: str, send_to_trash: bool = False):
                 os.remove(path)
             else:
                 shutil.rmtree(path)
+
+
+def read_image(image_path: str):
+    """读取图片对象bytes"""
+    if os.path.exists(image_path):
+        with open(image_path, 'rb') as file:
+            image_bytes = file.read()
+    else:
+        image_bytes = rb''
+    return image_bytes
+
+
+def resize_image(image_bytes: bytes, scale_factor=0.5):
+    """缩放图片bytes对象"""
+    # 备忘录 有点慢
+    # 缩放图片
+    image = Image.open(io.BytesIO(image_bytes))
+    new_size = (int(image.width * scale_factor), int(image.height * scale_factor))
+    image_resized = image.resize(new_size)
+
+    # 将缩放后的图像保存到字节流中
+    img_byte_arr = io.BytesIO()
+    image_resized.save(img_byte_arr, format=image.format)
+
+    # 获取字节数据
+    resized_image_bytes = img_byte_arr.getvalue()
+
+    return resized_image_bytes

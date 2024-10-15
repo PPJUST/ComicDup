@@ -3,7 +3,7 @@
 from PySide6.QtWidgets import *
 
 from class_ import class_comic_info
-from module import function_match_result
+from module import function_match_result, function_normal
 from ui.group_result.scrollArea_comic_group import ScrollAreaComicGroup
 
 
@@ -16,6 +16,7 @@ class TreeWidgetGroup(QTreeWidget):
 
     def show_group(self):
         """显示所有组"""
+        function_normal.print_function_info()
         # 清空
         self.clear()
 
@@ -45,6 +46,7 @@ class TreeWidgetGroup(QTreeWidget):
 
     def refresh_widget(self):
         """刷新子控件，重新显示所有漫画"""
+        function_normal.print_function_info()
         for index in range(self.topLevelItemCount()):
             print('刷新节点 ', index)
             parent_item = self.topLevelItem(index)  # 父节点
@@ -56,6 +58,7 @@ class TreeWidgetGroup(QTreeWidget):
 
     def check_validity(self):
         """检查有效性，无效则删除"""
+        function_normal.print_function_info()
         for index in range(self.topLevelItemCount()):
             print('刷新节点', index)
             parent_item = self.topLevelItem(index)  # 父节点
@@ -66,6 +69,7 @@ class TreeWidgetGroup(QTreeWidget):
 
     def filter_same(self):
         """仅显示页数、大小相同项"""
+        function_normal.print_function_info()
         for index in range(self.topLevelItemCount()):
             print('刷新节点', index)
             parent_item = self.topLevelItem(index)  # 父节点
@@ -76,6 +80,7 @@ class TreeWidgetGroup(QTreeWidget):
 
     def filter_pages_diff(self):
         """剔除页数差异过大项"""
+        function_normal.print_function_info()
         for index in range(self.topLevelItemCount()):
             print('刷新节点', index)
             parent_item = self.topLevelItem(index)  # 父节点
