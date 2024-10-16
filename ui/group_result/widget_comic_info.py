@@ -31,12 +31,6 @@ class WidgetComicInfo(QWidget):
 
         # ui设置
         self.setFixedSize(_WIDTH, _HEIGHT)
-        _comic_height = (_HEIGHT
-                         - self.ui.label_type.sizeHint().height()
-                         - self.ui.label_filesize.sizeHint().height()
-                         - self.ui.toolButton_view.sizeHint().height()
-                         - 5 * 5)
-        self.ui.label_preview.setFixedHeight(_comic_height)
         self.setContextMenuPolicy(Qt.CustomContextMenu)
         self._set_context_menu()
         self.ui.label_type.setAlignment(Qt.AlignCenter)
@@ -140,6 +134,14 @@ class WidgetComicInfo(QWidget):
 
     def _set_preview(self):
         """显示预览图"""
+        # 设置预览图label的高度
+        _comic_height = (_HEIGHT
+                         - self.ui.label_filename.sizeHint().height()
+                         - self.ui.label_filesize.size().height()
+                         - self.ui.toolButton_view.sizeHint().height()
+                         - 5 * 5)
+        self.ui.label_preview.setFixedHeight(_comic_height)
+        # 读取预览图
         preview_image_path = self._comic_info.preview_path
         print('加载预览图', preview_image_path)
         if not os.path.exists(preview_image_path):
