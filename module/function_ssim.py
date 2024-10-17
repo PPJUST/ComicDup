@@ -18,7 +18,7 @@ def compare_ssim(image_info: ImageInfo, compare_image_info_dict: dict, resize_im
     :param threshold: float，相似度阈值
     :return: 相似的图片信息字典，key为虚拟图片路径，value为ImageInfo类"""
     print('ssim对比，主key ', image_info.path)
-    resize_image_size = 12  # 图片的计算尺寸为12（12比较适中）
+    resize_image_size = 100  # 锁定图片的计算尺寸为100（需要保留更多图片细节）
     threshold = 0.5  # 锁定SSIM相似度阈值为0.5（正常的0.9太过严格）
     similar_image_info_dict = dict()
     current_image_bytes = image_info.get_image_bytes()
