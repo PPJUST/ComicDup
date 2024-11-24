@@ -6,6 +6,7 @@ import random
 import shutil
 import string
 import time
+from difflib import SequenceMatcher
 
 import natsort
 import send2trash
@@ -188,3 +189,8 @@ def resize_image(image_bytes: bytes, scale_factor=0.5):
     resized_image_bytes = img_byte_arr.getvalue()
 
     return resized_image_bytes
+
+
+def str_similarity(text_1: str, text_2: str):
+    """比较字符相似度"""
+    return SequenceMatcher(None, text_1, text_2).ratio()

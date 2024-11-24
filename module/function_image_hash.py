@@ -7,7 +7,7 @@ import imagehash
 from PIL import Image
 
 from class_.class_image_info import ImageInfo
-from module import function_archive
+from module import function_archive, function_normal
 
 Image.MAX_IMAGE_PIXELS = None  # 解除pillow库的图片最大尺寸限制
 _DEFAULT_HASH_DICT = {'ahash': None, 'phash': None, 'dhash': None}
@@ -162,7 +162,7 @@ def filter_similar_group(image_info: ImageInfo, compare_image_info_dict: dict, c
         # 对比前检查zero_count的差额，如果差额超限则提前结束循环（限制为选定的汉明距离/2（假设0/1差异各占一半））
         limit_zero_count = threshold_hamming_distance / 2
         diff_zero_count = compare_zero_count - current_zero_count  # 升序排列，所以后-前
-        if diff_zero_count < - limit_zero_count:  # 升序排列，所以<limit时跳过，>limit时结束循环
+        if diff_zero_count < - limit_zero_count:  # 升序排列，所以<-limit时跳过，>limit时结束循环
             continue
         elif diff_zero_count > limit_zero_count:
             break
@@ -178,3 +178,29 @@ def filter_similar_group(image_info: ImageInfo, compare_image_info_dict: dict, c
         return dict()
     else:
         return similar_image_info_dict
+
+
+def filter_unsimilar_items(image_info: ImageInfo, compare_image_info_dict: dict, threshold_hamming_distance: int):
+    """剔除对比图片信息dict中不存在相似文件名的项目"""
+    _threshold = 0.4  # 设定字符相似度阈值
+    comic_filetile = os.path.basename(os.path.splitext(image_info.comic_path)[0])  # 匹配的文件名
+    zero_count = image_info.zero_count
+
+    # 处理对比字典
+    for fake_image_path, compare_image_info in compare_image_info_dict.copy().items():
+        compare_comic_filetile = os.path.basename(os.path.splitext(compare_image_info.comic_path)[0])
+        compare_zero_count = compare_image_info.zero_count
+        # 对比前检查zero_count的差额，如果差额超限则提前结束循环（限制为选定的汉明距离/2（假设0/1差异各占一半））
+        limit_zero_count = threshold_hamming_distance / 2
+        diff_zero_count = compare_zero_count - zero_count  # 升序排列，所以后-前
+        if diff_zero_count < - limit_zero_count:  # 升序排列，所以<-limit时跳过，>limit时结束循环
+            compare_image_info_dict.pop(fake_image_path)
+            continue
+        elif diff_zero_count > limit_zero_count:
+            break
+
+        similar_ratio = function_normal.str_similarity(comic_filetile, compare_comic_filetile)
+        if similar_ratio <= _threshold:
+            compare_image_info_dict.pop(fake_image_path)
+
+    return compare_image_info_dict

@@ -3,6 +3,7 @@ from PySide6.QtCore import Signal
 from PySide6.QtGui import *
 from PySide6.QtWidgets import *
 
+from child_thread.thread_delete_useless_cache import ThreadDeleteUselessCache
 from class_ import class_comic_info, class_image_info
 from constant import _ICON_REFRESH, _PREVIEW_DIRPATH, _COMICS_INFO_DB, _IMAGE_INFO_DB, _ICON_CLEAR, _ICON_QUIT, \
     _MATCH_RESULT
@@ -45,15 +46,15 @@ class DialogCacheOption(QDialog):
 
     def delete_useless_cache(self):
         """删除数据库中无效的数据"""
-        function_normal.print_function_info()
-        # 处理漫画信息数据库
-        class_comic_info.delete_useless_item()
-        # 处理预览图
-        class_comic_info.delete_useless_preview()
-        # 处理图片信息数据库
-        class_image_info.delete_useless_item()
-        # 更新显示数据
-        self._load_info()
+        # 启动子线程
+        self.thread_ = ThreadDeleteUselessCache()
+        self.thread_.signal_finished.connect(self._load_info)
+        self.thread_.start()
+        self.setEnabled(False)
+        self.ui.label_preview_filesize.setText('检查中')
+        self.ui.label_db_filesize.setText('检查中')
+        self.ui.label_image_count.setText('检查中')
+        self.ui.label_comic_count.setText('检查中')
 
     def clear_cache(self):
         """清空缓存数据"""
@@ -73,6 +74,7 @@ class DialogCacheOption(QDialog):
     def _load_info(self):
         """加载设置信息"""
         function_normal.print_function_info()
+        self.setEnabled(True)
         comic_count = len(class_comic_info.read_db())
         self.ui.label_comic_count.setText(str(comic_count))
 

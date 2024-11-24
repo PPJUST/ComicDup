@@ -39,7 +39,7 @@ class ThreadMatch(ThreadPattern):
         # 结束后重置参数
         self.image_info_dict.clear()
         # 结束后发送信号
-        self.finished()
+        self.finished('stopped but finished')  # 特殊文本stopped but finished，终止判断为TRUE但是发送finished信号而不是stopped
 
     def match_inside(self, image_info_dict: dict) -> list:
         """内部匹配，找出相似漫画组
@@ -161,6 +161,7 @@ class ThreadMatch(ThreadPattern):
         threshold_hash = function_config_similar_option.similarity_threshold.get_hash_hamming_distance()
         ssim_enable = function_config_similar_option.ssim.get()
         ssim_threshold = function_config_similar_option.similarity_threshold.get_ssim_threshold()
+        match_similar = function_config_similar_option.match_similar.get()
 
         _total_count = len(image_info_dict)
 
@@ -171,7 +172,8 @@ class ThreadMatch(ThreadPattern):
             calculate_partial = partial(self.filter_similar_group, compare_image_info_dict=compare_image_info_dict,
                                         compare_hash=hash_algorithm,
                                         threshold_hamming_distance=threshold_hash, ssim_enable=ssim_enable,
-                                        resize_image_size=resize_image_size, ssim_threshold=ssim_threshold)
+                                        resize_image_size=resize_image_size, ssim_threshold=ssim_threshold,
+                                        match_similar=match_similar)
             # 设置多进程任务：pool.imap()为异步传参，imap中的第一个参数为执行的函数，第二个参数为可迭代对象（用于传参）
             for index, similar_image_info_dict in enumerate(pool.imap(calculate_partial, image_info_dict.values())):
                 if self._stop_code:
@@ -191,10 +193,16 @@ class ThreadMatch(ThreadPattern):
     @staticmethod
     def filter_similar_group(image_info: ImageInfo, compare_image_info_dict: dict, compare_hash: str,
                              threshold_hamming_distance: int,
-                             ssim_enable: bool, resize_image_size: int, ssim_threshold: float):
+                             ssim_enable: bool, resize_image_size: int, ssim_threshold: float, match_similar: bool):
         """用于多线程中转，拆分元组"""
+        # 如果选中的仅匹配相似文件名项目的选项，则先对对比字典进行一次筛选处理，剔除非相似文件名项目
+        if match_similar:
+            compare_image_info_dict = function_image_hash.filter_unsimilar_items(image_info, compare_image_info_dict,
+                                                                                 threshold_hamming_distance)
+
         similar_image_info_dict = function_image_hash.filter_similar_group(image_info, compare_image_info_dict,
                                                                            compare_hash, threshold_hamming_distance)
+
         # 根据相似算法设置，判断是否使用ssim进行进一步校验
         if similar_image_info_dict and ssim_enable:
             similar_image_info_dict = function_ssim.compare_ssim(image_info, similar_image_info_dict, resize_image_size,

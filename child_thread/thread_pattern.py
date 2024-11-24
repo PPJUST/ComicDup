@@ -24,7 +24,9 @@ class ThreadPattern(QThread):
         self._stop_code = False
 
     def finished(self, arg=''):
-        if self._stop_code:
+        if self._stop_code and arg != 'stopped but finished':
             self.signal_stopped.emit()
+        elif arg == 'stopped but finished':
+            self.signal_finished.emit(arg)
         else:
             self.signal_finished.emit(arg)

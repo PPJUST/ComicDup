@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>261</width>
-    <height>221</height>
+    <width>258</width>
+    <height>248</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -136,6 +136,13 @@
        <widget class="Line" name="line">
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="checkBox_match_similar">
+        <property name="text">
+         <string>仅匹配相似文件名的项目</string>
         </property>
        </widget>
       </item>

@@ -1,30 +1,23 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'ui_widget_optionWvHnoG.ui'
+## Form generated from reading UI file 'ui_widget_optionifFeqG.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.2.4
+## Created by: Qt User Interface Compiler version 6.1.3
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
 
-from PySide6.QtCore import (QCoreApplication, QDate, QDateTime, QLocale,
-    QMetaObject, QObject, QPoint, QRect,
-    QSize, QTime, QUrl, Qt)
-from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
-    QFont, QFontDatabase, QGradient, QIcon,
-    QImage, QKeySequence, QLinearGradient, QPainter,
-    QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QFrame,
-    QGroupBox, QHBoxLayout, QLabel, QPushButton,
-    QSizePolicy, QSpacerItem, QSpinBox, QVBoxLayout,
-    QWidget)
+from PySide6.QtCore import *  # type: ignore
+from PySide6.QtGui import *  # type: ignore
+from PySide6.QtWidgets import *  # type: ignore
+
 
 class Ui_Form(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        Form.resize(261, 221)
+        Form.resize(258, 248)
         self.horizontalLayout_5 = QHBoxLayout(Form)
         self.horizontalLayout_5.setSpacing(0)
         self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
@@ -98,6 +91,11 @@ class Ui_Form(object):
         self.line.setFrameShadow(QFrame.Sunken)
 
         self.verticalLayout.addWidget(self.line)
+
+        self.checkBox_match_similar = QCheckBox(self.groupBox)
+        self.checkBox_match_similar.setObjectName(u"checkBox_match_similar")
+
+        self.verticalLayout.addWidget(self.checkBox_match_similar)
 
         self.horizontalLayout_7 = QHBoxLayout()
         self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
@@ -196,6 +194,7 @@ class Ui_Form(object):
         self.label_2.setText(QCoreApplication.translate("Form", u"%", None))
         self.label.setText(QCoreApplication.translate("Form", u"\u57fa\u7840\u5339\u914d\u7b97\u6cd5\uff1a", None))
         self.checkBox_ssim.setText(QCoreApplication.translate("Form", u"\u542f\u7528\u989d\u5916\u76f8\u4f3c\u6821\u9a8c\u7b97\u6cd5\uff1aSSIM\u6821\u9a8c", None))
+        self.checkBox_match_similar.setText(QCoreApplication.translate("Form", u"\u4ec5\u5339\u914d\u76f8\u4f3c\u6587\u4ef6\u540d\u7684\u9879\u76ee", None))
         self.checkBox_match_cache.setText(QCoreApplication.translate("Form", u"\u5339\u914d\u7f13\u5b58\u6570\u636e", None))
         self.pushButton_cache_option.setText(QCoreApplication.translate("Form", u"\u67e5\u770b\u7f13\u5b58", None))
         self.label_6.setText(QCoreApplication.translate("Form", u"\u6bcf\u672c\u6f2b\u753b\u63d0\u53d6\u56fe\u7247\u6570\uff1a", None))

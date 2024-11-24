@@ -15,6 +15,8 @@ _OPTION_SSIM = 'ssim'
 _DEFAULT_VALUE_SSIM = 'ENABLE'
 _OPTION_CACHE = 'cache'
 _DEFAULT_VALUE_CACHE = 'DISABLE'
+_OPTION_MATCH_SIMILAR = 'match_similar'
+_DEFAULT_VALUE_MATCH_SIMILAR = 'DISABLE'
 _OPTION_EXTRACT_IMAGES = 'extract_images'
 _DEFAULT_VALUE_EXTRACT_IMAGES = '1'
 _OPTION_IMAGE_SIZE = 'image_size'
@@ -36,6 +38,7 @@ def check_section(config_file=_CONFIG_FILE):
         config.set(_SECTION_SIMILAR_OPTION, _OPTION_SIMILARITY_THRESHOLD, _DEFAULT_VALUE_SIMILARITY_THRESHOLD)
         config.set(_SECTION_SIMILAR_OPTION, _OPTION_SSIM, _DEFAULT_VALUE_SSIM)
         config.set(_SECTION_SIMILAR_OPTION, _OPTION_CACHE, _DEFAULT_VALUE_CACHE)
+        config.set(_SECTION_SIMILAR_OPTION, _OPTION_MATCH_SIMILAR, _DEFAULT_VALUE_MATCH_SIMILAR)
         config.set(_SECTION_SIMILAR_OPTION, _OPTION_EXTRACT_IMAGES, _DEFAULT_VALUE_EXTRACT_IMAGES)
         config.set(_SECTION_SIMILAR_OPTION, _OPTION_IMAGE_SIZE, _DEFAULT_VALUE_IMAGE_SIZE)
         config.set(_SECTION_SIMILAR_OPTION, _OPTION_THREADS, _DEFAULT_VALUE_THREADS)
@@ -123,6 +126,28 @@ class cache:
         else:
             text = 'DISABLE'
         _update_value(_OPTION_CACHE, text)
+
+
+class match_similar:
+    """设置项-是否仅匹配相似文件名的项目"""
+
+    @staticmethod
+    def get():
+        similar = _get_value(_OPTION_MATCH_SIMILAR)
+        if similar.upper() == 'ENABLE':
+            return True
+        elif similar.upper() == 'DISABLE':
+            return False
+        else:
+            return False
+
+    @staticmethod
+    def update(is_enable: bool):
+        if is_enable is True:
+            text = 'ENABLE'
+        else:
+            text = 'DISABLE'
+        _update_value(_OPTION_MATCH_SIMILAR, text)
 
 
 class extract_images:
