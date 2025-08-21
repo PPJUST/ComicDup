@@ -53,7 +53,11 @@ class ImageInfo:
         self._set_fake_path()
 
         # 设置图片大小
-        self.filesize = self._get_image_size()
+        try:
+            self.filesize = self._get_image_size()
+        except:
+            self.filesize = 0
+
 
     def is_exist(self) -> bool:
         """检验图片是否有效"""

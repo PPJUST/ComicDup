@@ -175,18 +175,21 @@ class ThreadMatch(ThreadPattern):
                                         resize_image_size=resize_image_size, ssim_threshold=ssim_threshold,
                                         match_similar=match_similar)
             # 设置多进程任务：pool.imap()为异步传参，imap中的第一个参数为执行的函数，第二个参数为可迭代对象（用于传参）
-            for index, similar_image_info_dict in enumerate(pool.imap(calculate_partial, image_info_dict.values())):
-                if self._stop_code:
-                    break
-                self.signal_rate.emit(f'{index + 1}/{_total_count}')
-                # 提取相似组内的漫画路径
-                comics = set()
-                for _, _image_info in similar_image_info_dict.items():
-                    comic_path = _image_info.comic_path
-                    comics.add(comic_path)
-                # 检查转换的漫画组，如果组内仅有一个元素则丢弃
-                if len(comics) > 1:
-                    similar_comic_group.append(comics)
+            try:
+                for index, similar_image_info_dict in enumerate(pool.imap(calculate_partial, image_info_dict.values())):
+                    if self._stop_code:
+                        break
+                    self.signal_rate.emit(f'{index + 1}/{_total_count}')
+                    # 提取相似组内的漫画路径
+                    comics = set()
+                    for _, _image_info in similar_image_info_dict.items():
+                        comic_path = _image_info.comic_path
+                        comics.add(comic_path)
+                    # 检查转换的漫画组，如果组内仅有一个元素则丢弃
+                    if len(comics) > 1:
+                        similar_comic_group.append(comics)
+            except FileNotFoundError:
+                pass
 
         return similar_comic_group
 
