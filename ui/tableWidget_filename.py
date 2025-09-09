@@ -1,10 +1,10 @@
-# 作为文件名控件的tableWidget，利用文本单元格自动隐藏长文本的特性
+# 作为文件名控件的tableWidget，支持文本自动换行显示
 from PySide6.QtGui import Qt
 from PySide6.QtWidgets import *
 
 
 class TabelWidgetFilename(QTableWidget):
-    """作为文件名控件的tableWidget，利用文本单元格自动隐藏长文本的特性"""
+    """作为文件名控件的tableWidget，支持文本自动换行显示"""
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -18,12 +18,14 @@ class TabelWidgetFilename(QTableWidget):
         # 设置为单行单列
         self.setColumnCount(1)
         self.insertRow(0)
-        # 固定控件高度、单元格行高
-        self.setFixedHeight(18)
-        self.setRowHeight(0, 16)
+        # 设置控件高度自适应内容
+        self.verticalHeader().setSectionResizeMode(QHeaderView.ResizeMode.ResizeToContents)
         # 设置文本单元格
         self.item_filename = QTableWidgetItem('')
+        self.item_filename.setTextAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         self.setItem(0, 0, self.item_filename)
+        # 启用自动换行
+        self.setWordWrap(True)
         # 禁止编辑单元格
         self.item_filename.setFlags(self.item_filename.flags() & ~Qt.ItemIsEditable)
 
