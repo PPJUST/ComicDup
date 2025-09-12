@@ -14,15 +14,6 @@ def check_config_exists():
             pass
 
 
-
-
-
-
-
-
-
-
-
 class _ModuleChildSetting:
     """抽象类：设置项"""
 
@@ -112,14 +103,20 @@ class SettingBasicAlgorithm(_ModuleChildSetting):
 
     def set(self, value: TYPES_HASH_ALGORITHM):
         """设置设置项"""
-        value_str = value.text
+        if isinstance(value, str):
+            value_str = value
+        elif isinstance(value, TYPES_HASH_ALGORITHM):
+            value_str = value.text
+        else:
+            raise ValueError(value, '传参错误')
         self._set_value(self.section, self.key, value_str)
+
 
 class SettingIsEnhanceAlgorithm(_ModuleChildSettingSingleEnable):
     """相似算法：是否启用相似度增强算法"""
 
     def __init__(self, config):
-        super().__init__(config,section='IsEnhanceAlgorithm', key='is_enable',default_value=False)
+        super().__init__(config, section='IsEnhanceAlgorithm', key='is_enable', default_value=False)
 
 
 class SettingEnhanceAlgorithm(_ModuleChildSetting):
@@ -146,7 +143,12 @@ class SettingEnhanceAlgorithm(_ModuleChildSetting):
 
     def set(self, value: TYPES_ENHANCE_ALGORITHM):
         """设置设置项"""
-        value_str = value.text
+        if isinstance(value, str):
+            value_str = value
+        elif isinstance(value, TYPES_ENHANCE_ALGORITHM):
+            value_str = value.text
+        else:
+            raise ValueError(value, '传参错误')
         self._set_value(self.section, self.key, value_str)
 
 

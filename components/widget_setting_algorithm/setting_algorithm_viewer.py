@@ -13,7 +13,7 @@ class SettingAlgorithmViewer(QWidget):
     ChangeIsEnhanceAlgorithm = Signal(bool, name="修改是否启用增强算法")
     ChangeEnhanceAlgorithm = Signal(str, name="修改增强算法")
     ChangeHashLength = Signal(str, name="修改Hash长度")
-    ChangeSimilarThreshold = Signal(str, name="修改相似度阈值")
+    ChangeSimilarThreshold = Signal(int, name="修改相似度阈值")
 
     def __init__(self, parent=None):
         super().__init__(parent)
