@@ -268,3 +268,43 @@ class SettingThreadCount(_ModuleChildSetting):
         """设置设置项"""
         value_str = str(value)
         self._set_value(self.section, self.key, value_str)
+
+
+class SettingComicPagesLowerLimit(_ModuleChildSetting):
+    """漫画选项：识别为漫画的页数下限"""
+
+    def __init__(self, config):
+        super().__init__(config)
+        self.section = 'ComicPagesLowerLimit'
+        self.key = 'limit'
+        self._default_value: int = 4
+
+    def read(self) -> int:
+        """读取设置项"""
+        value = self._read_key(self.section, self.key, self._default_value)
+        # 将读取的文本值转换为数值
+        if isinstance(value, str):
+            return int(value)
+        elif isinstance(value, int):
+            return value
+        else:
+            raise ValueError(self.section, self.key, '无效的设置项值')
+
+    def set(self, value: int):
+        """设置设置项"""
+        value_str = str(value)
+        self._set_value(self.section, self.key, value_str)
+
+
+class SettingIsAnalyzeArchive(_ModuleChildSettingSingleEnable):
+    """漫画选项：是否识别压缩文件"""
+
+    def __init__(self, config):
+        super().__init__(config, section='IsAnalyzeArchive', key='is_enable', default_value=False)
+
+
+class SettingIsAllowOtherFiletypesInComic(_ModuleChildSettingSingleEnable):
+    """漫画选项：是否允许漫画包含其他类型文件"""
+
+    def __init__(self, config):
+        super().__init__(config, section='IsAllowOtherFiletypesInComic', key='is_enable', default_value=False)
