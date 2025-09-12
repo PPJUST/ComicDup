@@ -202,3 +202,69 @@ class SettingHashLength(_ModuleChildSetting):
         """设置设置项"""
         value_str = str(value)
         self._set_value(self.section, self.key, value_str)
+
+
+class SettingExtractPages(_ModuleChildSetting):
+    """匹配选项：提取漫画页数"""
+
+    def __init__(self, config):
+        super().__init__(config)
+        self.section = 'ExtractPages'
+        self.key = 'count'
+        self._default_value: int = 2
+
+    def read(self) -> int:
+        """读取设置项"""
+        value = self._read_key(self.section, self.key, self._default_value)
+        # 将读取的文本值转换为数值
+        if isinstance(value, str):
+            return int(value)
+        elif isinstance(value, int):
+            return value
+        else:
+            raise ValueError(self.section, self.key, '无效的设置项值')
+
+    def set(self, value: int):
+        """设置设置项"""
+        value_str = str(value)
+        self._set_value(self.section, self.key, value_str)
+
+
+class SettingIsMatchCache(_ModuleChildSettingSingleEnable):
+    """匹配选项：是否匹配缓存"""
+
+    def __init__(self, config):
+        super().__init__(config, section='IsMatchCache', key='is_enable', default_value=False)
+
+
+class SettingIsMatchSimilarFilename(_ModuleChildSettingSingleEnable):
+    """匹配选项：是否仅匹配相似文件名"""
+
+    def __init__(self, config):
+        super().__init__(config, section='IsMatchSimilarFilename', key='is_enable', default_value=False)
+
+
+class SettingThreadCount(_ModuleChildSetting):
+    """匹配选项：线程数"""
+
+    def __init__(self, config):
+        super().__init__(config)
+        self.section = 'ThreadCount'
+        self.key = 'count'
+        self._default_value: int = 2
+
+    def read(self) -> int:
+        """读取设置项"""
+        value = self._read_key(self.section, self.key, self._default_value)
+        # 将读取的文本值转换为数值
+        if isinstance(value, str):
+            return int(value)
+        elif isinstance(value, int):
+            return value
+        else:
+            raise ValueError(self.section, self.key, '无效的设置项值')
+
+    def set(self, value: int):
+        """设置设置项"""
+        value_str = str(value)
+        self._set_value(self.section, self.key, value_str)
