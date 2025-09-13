@@ -3,7 +3,7 @@ from typing import Union
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget, QApplication
 
-from common.class_ import ITEMS_HASH_ALGORITHM, ITEMS_HASH_LENGTH, ITEMS_ENHANCE_ALGORITHM
+from common.class_config import ITEMS_HASH_ALGORITHM, ITEMS_HASH_LENGTH, ITEMS_ENHANCE_ALGORITHM
 from components.widget_setting_algorithm.res.ui_setting_algorithm import Ui_Form
 
 

@@ -1,4 +1,4 @@
-# 自定义类
+# 设置文件相关的自定义类
 
 class SimilarAlgorithm:
     """相似算法"""
@@ -41,26 +41,6 @@ class HashLength:
         """256位（16*16）"""
         text = '256'
         value = 256
-
-
-class FileType:
-    """文件类型"""
-
-    class Archive:
-        """压缩文件"""
-        text = '压缩文件'
-
-    class Folder:
-        """文件夹"""
-        text = '文件夹'
-
-    class Unknown:
-        """未知类型"""
-        text = '未知类型'
-
-    class Error:
-        """错误"""
-        text = '错误'
 
 
 TYPES_HASH_ALGORITHM = (SimilarAlgorithm.aHash, SimilarAlgorithm.pHash, SimilarAlgorithm.dHash)

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'widget_comic_infoqcbPeE.ui'
+## Form generated from reading UI file 'comic_infoDkAlqT.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.0
 ##
@@ -49,10 +49,10 @@ class Ui_Form(object):
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
         self.horizontalLayout_2 = QHBoxLayout()
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
-        self.label_image_count = QLabel(Form)
-        self.label_image_count.setObjectName(u"label_image_count")
+        self.label_page_count = QLabel(Form)
+        self.label_page_count.setObjectName(u"label_page_count")
 
-        self.horizontalLayout_2.addWidget(self.label_image_count)
+        self.horizontalLayout_2.addWidget(self.label_page_count)
 
         self.label = QLabel(Form)
         self.label.setObjectName(u"label")
@@ -107,7 +107,7 @@ class Ui_Form(object):
         self.label_icon.setText(QCoreApplication.translate("Form", u"icon", None))
         self.label_filetitle.setText(QCoreApplication.translate("Form", u"filetitle", None))
         self.label_parent_dirpath.setText(QCoreApplication.translate("Form", u"parent dirpath", None))
-        self.label_image_count.setText(QCoreApplication.translate("Form", u"image count", None))
+        self.label_page_count.setText(QCoreApplication.translate("Form", u"page count", None))
         self.label.setText(QCoreApplication.translate("Form", u"\u9875", None))
         self.label_filesize.setText(QCoreApplication.translate("Form", u"filesize", None))
         self.label_preview.setText(QCoreApplication.translate("Form", u"preview", None))

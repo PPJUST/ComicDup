@@ -5,7 +5,7 @@ import lzytools.archive
 from PySide6.QtCore import Qt
 from PySide6.QtWidgets import QTableWidget, QTableWidgetItem, QPushButton
 
-from common.class_ import FileType
+from common.class_comic import FileType
 from components.widget_search_list.res.icon_base64 import ICON_ARCHIVE, ICON_FOLDER, ICON_WARNING
 
 

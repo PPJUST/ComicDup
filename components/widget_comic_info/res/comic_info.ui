@@ -44,9 +44,9 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
        <item>
-        <widget class="QLabel" name="label_image_count">
+        <widget class="QLabel" name="label_page_count">
          <property name="text">
-          <string>image count</string>
+          <string>page count</string>
          </property>
         </widget>
        </item>

@@ -1,7 +1,7 @@
 import configparser
 
 
-from common.class_ import TYPES_HASH_ALGORITHM, TYPES_ENHANCE_ALGORITHM
+from common.class_config import TYPES_HASH_ALGORITHM, TYPES_ENHANCE_ALGORITHM
 from common.function_config import CONFIG_FILE, check_config_exists, SettingBasicAlgorithm, SettingEnhanceAlgorithm, \
     SettingSimilarThreshold, SettingHashLength, SettingIsEnhanceAlgorithm
 

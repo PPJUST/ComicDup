@@ -6,12 +6,20 @@ from components.widget_similar_result_filter.res.ui_similar_result_filter import
 
 class SimilarResultFilterViewer(QWidget):
     """相似结果筛选器模块的界面组件"""
-
+    RefreshResult = Signal(name='重置匹配结果')
+    FilterSameItems = Signal(name='筛选器 仅显示页数、文件大小相同项')
+    FilterExcludeDiffPages = Signal(name='筛选器 剔除页数差异过大项')
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self.ui = Ui_Form()
         self.ui.setupUi(self)
+
+        # 绑定信号
+        self.ui.pushButton_refresh_result.clicked.connect(self.RefreshResult.emit)
+        self.ui.pushButton_filter_same_items.clicked.connect(self.FilterSameItems.emit)
+        self.ui.pushButton_exclude_diff_pages.clicked.connect(self.FilterExcludeDiffPages.emit)
+
 
 
 

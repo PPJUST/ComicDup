@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'area_similar_result_previewnUnNbF.ui'
+## Form generated from reading UI file 'similar_result_previewjfdmpM.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.0
 ##
@@ -15,9 +15,9 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QComboBox, QHBoxLayout, QHeaderView,
-    QLabel, QPushButton, QSizePolicy, QTreeView,
-    QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QComboBox, QFrame, QHBoxLayout,
+    QHeaderView, QLabel, QPushButton, QSizePolicy,
+    QTreeView, QVBoxLayout, QWidget)
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -38,12 +38,25 @@ class Ui_Form(object):
 
         self.horizontalLayout.addWidget(self.pushButton_next_page)
 
+        self.line = QFrame(Form)
+        self.line.setObjectName(u"line")
+        self.line.setFrameShape(QFrame.Shape.VLine)
+        self.line.setFrameShadow(QFrame.Shadow.Sunken)
+
+        self.horizontalLayout.addWidget(self.line)
+
         self.label = QLabel(Form)
         self.label.setObjectName(u"label")
 
         self.horizontalLayout.addWidget(self.label)
 
         self.comboBox_show_group_count = QComboBox(Form)
+        self.comboBox_show_group_count.addItem("")
+        self.comboBox_show_group_count.addItem("")
+        self.comboBox_show_group_count.addItem("")
+        self.comboBox_show_group_count.addItem("")
+        self.comboBox_show_group_count.addItem("")
+        self.comboBox_show_group_count.addItem("")
         self.comboBox_show_group_count.setObjectName(u"comboBox_show_group_count")
 
         self.horizontalLayout.addWidget(self.comboBox_show_group_count)
@@ -56,6 +69,11 @@ class Ui_Form(object):
 
         self.verticalLayout.addWidget(self.treeView_group)
 
+        self.label_page = QLabel(Form)
+        self.label_page.setObjectName(u"label_page")
+
+        self.verticalLayout.addWidget(self.label_page)
+
 
         self.retranslateUi(Form)
 
@@ -67,5 +85,13 @@ class Ui_Form(object):
         self.pushButton_previous_page.setText(QCoreApplication.translate("Form", u"\u4e0a\u4e00\u9875", None))
         self.pushButton_next_page.setText(QCoreApplication.translate("Form", u"\u4e0b\u4e00\u9875", None))
         self.label.setText(QCoreApplication.translate("Form", u"\u6bcf\u9875\u663e\u793a\u7ec4\u6570", None))
+        self.comboBox_show_group_count.setItemText(0, QCoreApplication.translate("Form", u"5", None))
+        self.comboBox_show_group_count.setItemText(1, QCoreApplication.translate("Form", u"10", None))
+        self.comboBox_show_group_count.setItemText(2, QCoreApplication.translate("Form", u"15", None))
+        self.comboBox_show_group_count.setItemText(3, QCoreApplication.translate("Form", u"20", None))
+        self.comboBox_show_group_count.setItemText(4, QCoreApplication.translate("Form", u"30", None))
+        self.comboBox_show_group_count.setItemText(5, QCoreApplication.translate("Form", u"50", None))
+
+        self.label_page.setText(QCoreApplication.translate("Form", u"1/5", None))
     # retranslateUi
 

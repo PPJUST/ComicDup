@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'area_result_filterdFSlhT.ui'
+## Form generated from reading UI file 'similar_result_filterORdNuJ.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.0
 ##
@@ -27,6 +27,11 @@ class Ui_Form(object):
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.pushButton_refresh_result = QPushButton(Form)
         self.pushButton_refresh_result.setObjectName(u"pushButton_refresh_result")
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.pushButton_refresh_result.sizePolicy().hasHeightForWidth())
+        self.pushButton_refresh_result.setSizePolicy(sizePolicy)
 
         self.horizontalLayout.addWidget(self.pushButton_refresh_result)
 

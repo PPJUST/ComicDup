@@ -2,7 +2,7 @@
 import configparser
 import os
 
-from common.class_ import TYPES_HASH_ALGORITHM, SimilarAlgorithm, TYPES_ENHANCE_ALGORITHM
+from common.class_config import TYPES_HASH_ALGORITHM, SimilarAlgorithm, TYPES_ENHANCE_ALGORITHM
 
 CONFIG_FILE = 'setting.ini'
 
