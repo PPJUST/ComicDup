@@ -1,4 +1,4 @@
-# 检索路径模块
+# 搜索列表模块
 
 from .search_list_model import SearchListModel
 from .search_list_presenter import SearchListPresenter

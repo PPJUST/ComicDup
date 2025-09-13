@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'area_search_listOubXqP.ui'
+## Form generated from reading UI file 'search_listKurYKJ.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.8.1
+## Created by: Qt User Interface Compiler version 6.8.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -15,8 +15,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QHBoxLayout, QListWidget, QListWidgetItem,
-    QPushButton, QSizePolicy, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QHBoxLayout, QPushButton, QSizePolicy,
+    QVBoxLayout, QWidget)
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -50,11 +50,12 @@ class Ui_Form(object):
 
         self.verticalLayout.addLayout(self.horizontalLayout)
 
-        self.listWidget = QListWidget(Form)
-        self.listWidget.setObjectName(u"listWidget")
+        self.layout_filelist = QVBoxLayout()
+        self.layout_filelist.setObjectName(u"layout_filelist")
 
-        self.verticalLayout.addWidget(self.listWidget)
+        self.verticalLayout.addLayout(self.layout_filelist)
 
+        self.verticalLayout.setStretch(1, 1)
 
         self.retranslateUi(Form)
 
