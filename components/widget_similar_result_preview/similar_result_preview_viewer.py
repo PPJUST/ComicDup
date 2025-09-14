@@ -30,8 +30,13 @@ class SimilarResultPreviewViewer(QWidget):
         self.ui.listWidget_group.addItem(list_item)
         self.ui.listWidget_group.setItemWidget(list_item, similar_group_widget)
 
+    def clear(self):
+        """清空内容"""
+        self.ui.listWidget_group.clear()
 
-
+    def get_show_group_count(self) -> int:
+        """获取每页显示的组数"""
+        return self.ui.comboBox_show_group_count.currentText()
 
 if __name__ == "__main__":
     app_ = QApplication()
