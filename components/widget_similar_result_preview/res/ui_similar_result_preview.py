@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'similar_result_previewjfdmpM.ui'
+## Form generated from reading UI file 'similar_result_previewrGrXfS.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.8.0
+## Created by: Qt User Interface Compiler version 6.8.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -16,8 +16,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QComboBox, QFrame, QHBoxLayout,
-    QHeaderView, QLabel, QPushButton, QSizePolicy,
-    QTreeView, QVBoxLayout, QWidget)
+    QLabel, QListWidget, QListWidgetItem, QPushButton,
+    QSizePolicy, QVBoxLayout, QWidget)
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -64,10 +64,10 @@ class Ui_Form(object):
 
         self.verticalLayout.addLayout(self.horizontalLayout)
 
-        self.treeView_group = QTreeView(Form)
-        self.treeView_group.setObjectName(u"treeView_group")
+        self.listWidget_group = QListWidget(Form)
+        self.listWidget_group.setObjectName(u"listWidget_group")
 
-        self.verticalLayout.addWidget(self.treeView_group)
+        self.verticalLayout.addWidget(self.listWidget_group)
 
         self.label_page = QLabel(Form)
         self.label_page.setObjectName(u"label_page")
