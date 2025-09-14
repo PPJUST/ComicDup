@@ -10,7 +10,7 @@ class SimilarResultFilterPresenter(QObject):
     FilterSameItems = Signal(name='筛选器 仅显示页数、文件大小相同项')
     FilterExcludeDiffPages = Signal(name='筛选器 剔除页数差异过大项')
 
-    def __init__(self, viewer: SimilarResultFilterViewer, model=SimilarResultFilterModel):
+    def __init__(self, viewer: SimilarResultFilterViewer, model:SimilarResultFilterModel):
         super().__init__()
         self.viewer = viewer
         self.model = model

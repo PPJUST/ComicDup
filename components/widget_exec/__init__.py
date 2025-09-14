@@ -7,6 +7,6 @@ from .exec_viewer import ExecViewer
 def get_presenter() -> ExecPresenter:
     """获取模块的Presenter"""
     viewer = ExecViewer()
-    model = ExecModel
+    model = ExecModel()
     presenter = ExecPresenter(viewer, model)
     return presenter

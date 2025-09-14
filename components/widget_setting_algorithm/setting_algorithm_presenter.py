@@ -7,7 +7,7 @@ from components.widget_setting_algorithm.setting_algorithm_viewer import Setting
 class SettingAlgorithmPresenter(QObject):
     """设置模块（相似算法设置项）的桥梁组件"""
 
-    def __init__(self, viewer: SettingAlgorithmViewer, model=SettingAlgorithmModel):
+    def __init__(self, viewer: SettingAlgorithmViewer, model:SettingAlgorithmModel):
         super().__init__()
         self.viewer = viewer
         self.model = model

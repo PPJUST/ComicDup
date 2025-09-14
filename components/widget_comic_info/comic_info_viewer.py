@@ -1,3 +1,4 @@
+import lzytools._qt_pyside6
 from PySide6.QtCore import Signal
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QWidget, QApplication
@@ -21,9 +22,10 @@ class ComicInfoViewer(QWidget):
         self.ui.toolButton_refresh.clicked.connect(self.RefreshInfo)
         self.ui.toolButton_delete.clicked.connect(self.Delete)
 
-    def set_icon(self, icon):
+    def set_icon(self, icon_base64: str):
         """设置漫画的文件类型图标"""
-        self.ui.label_icon.setPixmap(icon)
+        pixmap = lzytools._qt_pyside6.base64_to_pixmap(icon_base64)
+        self.ui.label_icon.setPixmap(pixmap)
 
     def set_filetitle(self, filetitle: str):
         """设置漫画标题"""

@@ -7,7 +7,7 @@ from components.widget_search_list.search_list_viewer import SearchListViewer
 class SearchListPresenter(QObject):
     """搜索列表模块的桥梁组件"""
 
-    def __init__(self, viewer: SearchListViewer, model=SearchListModel):
+    def __init__(self, viewer: SearchListViewer, model:SearchListModel):
         super().__init__()
         self.viewer = viewer
         self.model = model

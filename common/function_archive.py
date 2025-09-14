@@ -1,6 +1,18 @@
+import os
+
 import lzytools.archive
 
 from common import function_file
+
+
+def is_archive_by_filename(filepath: str):
+    """通过文件名判断文件是否为压缩文件"""
+    image_suffix = ['.zip', '.rar']
+    suffix = os.path.splitext(filepath)[1].lower()
+    if suffix in image_suffix:
+        return True
+    else:
+        return False
 
 
 def get_images_in_archive(archive: str):

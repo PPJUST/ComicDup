@@ -7,7 +7,7 @@ from components.widget_setting_comic.setting_comic_viewer import SettingComicVie
 class SettingComicPresenter(QObject):
     """设置模块（漫画设置项）的桥梁组件"""
 
-    def __init__(self, viewer: SettingComicViewer, model=SettingComicModel):
+    def __init__(self, viewer: SettingComicViewer, model:SettingComicModel):
         super().__init__()
         self.viewer = viewer
         self.model = model

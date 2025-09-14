@@ -11,7 +11,7 @@ class ExecPresenter(QObject):
     LoadLastResult = Signal(name="加载上次结果")
     OpenAbout = Signal(name="打开程序说明")
 
-    def __init__(self, viewer: ExecViewer, model=ExecModel):
+    def __init__(self, viewer: ExecViewer, model:ExecModel):
         super().__init__()
         self.viewer = viewer
         self.model = model
