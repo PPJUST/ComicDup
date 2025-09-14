@@ -3,7 +3,7 @@ import os
 
 import lzytools.file
 
-from common import function_file, function_archive
+from common import function_file, function_archive, function_cache
 
 
 class FileType:
@@ -74,20 +74,20 @@ class ComicInfo:
         elif isinstance(self.filetype, FileType.Archive):
             self._analyse_archive_pages()
             self._analyse_archive_size_extracted()
-        # 备忘录 提取预览图
 
     def _analyse_folder_pages(self):
         """分析文件夹类漫画页"""
         self.page_paths = function_file.get_images_in_folder(self.filepath)
         self.page_count = len(self.page_paths)
-        # 备忘录 提取预览图
+        self.preview_path = function_cache.save_preview_image_to_cache(self.page_paths[0])  # 保存预览小图
 
     def _analyse_archive_pages(self):
         """分析压缩文件类漫画页"""
         self.page_paths = function_archive.get_images_in_archive(self.filepath)
-        print(self.page_paths)
         self.page_count = len(self.page_paths)
-        # 备忘录 提取预览图
+        # 保存预览小图
+        self.preview_path = function_cache.save_preview_image_in_archive_to_cache(archive=self.filepath,
+                                                                                  image_path_inside=self.page_paths[0])
 
     def _analyse_archive_size_extracted(self):
         """分析压缩文件类漫画大小（解压后的）"""

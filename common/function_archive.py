@@ -1,6 +1,9 @@
+import io
 import os
 
 import lzytools.archive
+import natsort
+from PIL import Image
 
 from common import function_file
 
@@ -26,6 +29,8 @@ def get_images_in_archive(archive: str):
     for file in files:
         if function_file.is_image_by_filename(file):
             images.append(file)
+    # 排序
+    images = natsort.os_sorted(images)
 
     return images
 
@@ -40,3 +45,24 @@ def get_archive_real_size(archive: str) -> int:
         total_size += info.file_size
 
     return total_size
+
+
+def save_preview_image(archive: str, image_path_inside: str, preview_image_path: str,
+                          height_zoom_out: int = 128) -> str:
+    """保存解压文件中指定图片的预览小图
+    :param archive: 压缩文件路径
+    :param image_path_inside: 需要保存的压缩包内图片的内部路径
+    :param preview_image_path: 预览小图存放的路径
+    :param height_zoom_out: 缩放的图片高度"""
+    image_bytes = lzytools.archive.read_image(archive, image_path_inside)
+    image = Image.open(io.BytesIO(image_bytes))
+    # 转换图像模式，防止报错OSError: cannot write mode P as JPEG
+    image = image.convert('RGB')
+    # 缩小尺寸
+    width, height = image.size
+    resize_width = int(height_zoom_out * width / height)
+    image = image.resize((resize_width, height_zoom_out), Image.LANCZOS)
+    # 保存到本地
+    image.save(preview_image_path)
+
+    return preview_image_path

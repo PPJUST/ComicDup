@@ -1,0 +1,51 @@
+import lzytools._qt_pyside6
+from PySide6.QtCore import Signal
+from PySide6.QtWidgets import QWidget, QApplication
+
+from components import widget_comic_info
+from components.widget_similar_group_info.res.icon_base64 import ICON_ZOOM_IN
+from components.widget_similar_group_info.res.ui_similar_group_info import Ui_Form
+
+
+class SimilarGroupInfoViewer(QWidget):
+    """单个相似组信息模块的界面组件"""
+    Preview = Signal(name='预览相似组')
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.ui = Ui_Form()
+        self.ui.setupUi(self)
+
+        # 设置图标
+        self.ui.toolButton_preview.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_ZOOM_IN))
+        self.ui.toolButton_preview.clicked.connect(self.Preview.emit)
+
+    def set_group_index(self, index: int):
+        """设置当前组的编号"""
+        self.ui.label_index.setText(str(index))
+
+    def set_item_count(self, count: int):
+        """设置当前组内部项目的总数"""
+        self.ui.label_item_count.setText(str(count))
+
+    def set_group_sign(self, sign: str):
+        """设置当前组的标记"""
+        self.ui.label_sign.setText(sign)
+
+    def add_comic(self, comic_path: str):
+        """添加漫画项目
+        :param comic_path:漫画路径"""
+        # 添加漫画信息控件
+        comic_info_presenter = widget_comic_info.get_presenter()
+        comic_info_presenter.set_comic(comic_path)
+        widget = comic_info_presenter.viewer
+        # 添加到布局中
+        layout = self.ui.scrollAreaWidgetContents_similar_group.layout()
+        layout.addWidget(widget)
+
+
+if __name__ == "__main__":
+    app_ = QApplication()
+    program_ui = SimilarGroupInfoViewer()
+    program_ui.show()
+    app_.exec()

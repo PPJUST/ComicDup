@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'widget_similar_group_infoXqpWda.ui'
+## Form generated from reading UI file 'similar_group_infoxClccY.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.8.0
+## Created by: Qt User Interface Compiler version 6.8.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -22,15 +22,15 @@ class Ui_Form(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        Form.resize(274, 220)
+        Form.resize(281, 220)
         self.verticalLayout = QVBoxLayout(Form)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.toolButton = QToolButton(Form)
-        self.toolButton.setObjectName(u"toolButton")
+        self.toolButton_preview = QToolButton(Form)
+        self.toolButton_preview.setObjectName(u"toolButton_preview")
 
-        self.horizontalLayout.addWidget(self.toolButton)
+        self.horizontalLayout.addWidget(self.toolButton_preview)
 
         self.label = QLabel(Form)
         self.label.setObjectName(u"label")
@@ -80,7 +80,7 @@ class Ui_Form(object):
         self.scrollArea_similar_group.setWidgetResizable(True)
         self.scrollAreaWidgetContents_similar_group = QWidget()
         self.scrollAreaWidgetContents_similar_group.setObjectName(u"scrollAreaWidgetContents_similar_group")
-        self.scrollAreaWidgetContents_similar_group.setGeometry(QRect(0, 0, 254, 172))
+        self.scrollAreaWidgetContents_similar_group.setGeometry(QRect(0, 0, 261, 171))
         self.horizontalLayout_2 = QHBoxLayout(self.scrollAreaWidgetContents_similar_group)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.scrollArea_similar_group.setWidget(self.scrollAreaWidgetContents_similar_group)
@@ -95,7 +95,7 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
-        self.toolButton.setText(QCoreApplication.translate("Form", u"preview", None))
+        self.toolButton_preview.setText(QCoreApplication.translate("Form", u"preview", None))
         self.label.setText(QCoreApplication.translate("Form", u"\u7ec4", None))
         self.label_index.setText(QCoreApplication.translate("Form", u"index", None))
         self.label_3.setText(QCoreApplication.translate("Form", u"-", None))
