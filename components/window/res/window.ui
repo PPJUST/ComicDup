@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>600</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QTabWidget" name="tabWidget">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="tab_home">
+       <attribute name="title">
+        <string>主页</string>
+       </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0">
+          <item>
+           <widget class="QGroupBox" name="groupBox_exec">
+            <property name="title">
+             <string>功能区</string>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_5"/>
+           </widget>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="groupBox_setting">
+            <property name="title">
+             <string>设置选项</string>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_6">
+             <item>
+              <layout class="QVBoxLayout" name="verticalLayout_setting_1"/>
+             </item>
+             <item>
+              <widget class="Line" name="line">
+               <property name="orientation">
+                <enum>Qt::Orientation::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QVBoxLayout" name="verticalLayout_setting_2"/>
+             </item>
+             <item>
+              <widget class="Line" name="line_2">
+               <property name="orientation">
+                <enum>Qt::Orientation::Horizontal</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <layout class="QVBoxLayout" name="verticalLayout_setting_3"/>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="QStackedWidget" name="stackedWidget">
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <widget class="QWidget" name="page">
+           <layout class="QVBoxLayout" name="verticalLayout">
+            <item>
+             <widget class="QGroupBox" name="groupBox_search_list">
+              <property name="title">
+               <string>检索路径</string>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_7"/>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="page_2">
+           <layout class="QVBoxLayout" name="verticalLayout_2">
+            <item>
+             <widget class="QGroupBox" name="groupBox_runtime_info">
+              <property name="title">
+               <string>运行信息</string>
+              </property>
+              <layout class="QVBoxLayout" name="verticalLayout_8"/>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_result">
+       <attribute name="title">
+        <string>匹配结果</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_4" stretch="0,1">
+        <item>
+         <widget class="QGroupBox" name="groupBox_result_filter">
+          <property name="title">
+           <string>筛选器</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_9"/>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_result_preview">
+          <property name="title">
+           <string>相似组</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_10"/>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
