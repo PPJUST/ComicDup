@@ -2,9 +2,11 @@ from typing import List
 
 from PySide6.QtCore import QObject
 
-from components.widget_similar_group_info import SimilarGroupInfoPresenter
-from components.widget_similar_result_preview.similar_result_preview_model import SimilarResultPreviewModel
-from components.widget_similar_result_preview.similar_result_preview_viewer import SimilarResultPreviewViewer
+from components.widget_assembler_similar_result_preview.widget_similar_group_info import SimilarGroupInfoPresenter
+from components.widget_assembler_similar_result_preview.widget_similar_result_preview.similar_result_preview_model import \
+    SimilarResultPreviewModel
+from components.widget_assembler_similar_result_preview.widget_similar_result_preview.similar_result_preview_viewer import \
+    SimilarResultPreviewViewer
 
 
 class SimilarResultPreviewPresenter(QObject):
@@ -28,7 +30,7 @@ class SimilarResultPreviewPresenter(QObject):
     def add_group(self, similar_group_info_presenter: SimilarGroupInfoPresenter):
         """添加相似信息组类"""
         self.widgets_similar_group_info.append(similar_group_info_presenter)
-        self.calc_total_page()
+        self._calc_total_page()
 
     def show_group(self, show_page: int):
         """显示相似组
@@ -48,9 +50,12 @@ class SimilarResultPreviewPresenter(QObject):
     def change_show_group_count(self, show_count: int):
         """修改一页显示的组数"""
         self.show_group_count = show_count
-        self.calc_total_page()
+        self._calc_total_page()
 
-    def calc_total_page(self):
+    def _calc_total_page(self):
         """计算总页数（向上整除）"""
-        self.total_page = (
-                                      len(self.widgets_similar_group_info) + self.show_group_count) // self.show_group_count  # 向上整除
+        self.total_page = (len(self.widgets_similar_group_info) + self.show_group_count) // self.show_group_count  # 向上整除
+
+    def get_viewer(self):
+        """获取模块的Viewer"""
+        return self.viewer

@@ -4,8 +4,8 @@ from PySide6.QtCore import QObject
 
 from common import function_file
 from common.class_comic import FileType
-from components.widget_comic_info.comic_info_model import ComicInfoModel
-from components.widget_comic_info.comic_info_viewer import ComicInfoViewer
+from components.widget_assembler_similar_result_preview.widget_comic_info.comic_info_model import ComicInfoModel
+from components.widget_assembler_similar_result_preview.widget_comic_info.comic_info_viewer import ComicInfoViewer
 from components.widget_search_list.res.icon_base64 import ICON_FOLDER, ICON_ARCHIVE
 
 
@@ -68,3 +68,7 @@ class ComicInfoPresenter(QObject):
             bytes_size = 0
         size_str = function_file.format_bytes_size(bytes_size)
         self.viewer.set_filesize(size_str)
+
+    def get_viewer(self) -> ComicInfoViewer:
+        """获取viewer"""
+        return self.viewer

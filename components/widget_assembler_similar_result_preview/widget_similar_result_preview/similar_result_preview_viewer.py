@@ -1,7 +1,7 @@
 from PySide6.QtCore import Signal, QSize
 from PySide6.QtWidgets import QWidget, QApplication, QListWidgetItem
 
-from components.widget_similar_result_preview.res.ui_similar_result_preview import Ui_Form
+from components.widget_assembler_similar_result_preview.widget_similar_result_preview.res.ui_similar_result_preview import Ui_Form
 
 
 class SimilarResultPreviewViewer(QWidget):

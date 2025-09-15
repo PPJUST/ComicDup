@@ -2,9 +2,9 @@ import lzytools._qt_pyside6
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget, QApplication
 
-from components import widget_comic_info
-from components.widget_similar_group_info.res.icon_base64 import ICON_ZOOM_IN
-from components.widget_similar_group_info.res.ui_similar_group_info import Ui_Form
+from components.widget_assembler_similar_result_preview import widget_comic_info
+from components.widget_assembler_similar_result_preview.widget_similar_group_info.res.icon_base64 import ICON_ZOOM_IN
+from components.widget_assembler_similar_result_preview.widget_similar_group_info.res.ui_similar_group_info import Ui_Form
 
 
 class SimilarGroupInfoViewer(QWidget):
@@ -32,16 +32,11 @@ class SimilarGroupInfoViewer(QWidget):
         """设置当前组的标记"""
         self.ui.label_sign.setText(sign)
 
-    def add_comic(self, comic_path: str):
-        """添加漫画项目
-        :param comic_path:漫画路径"""
-        # 添加漫画信息控件
-        comic_info_presenter = widget_comic_info.get_presenter()
-        comic_info_presenter.set_comic(comic_path)
-        widget = comic_info_presenter.viewer
-        # 添加到布局中
+    def add_widget(self, widget: QWidget):
+        """添加漫画项控件"""
         layout = self.ui.scrollAreaWidgetContents_similar_group.layout()
         layout.addWidget(widget)
+
 
 
 if __name__ == "__main__":

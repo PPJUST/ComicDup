@@ -3,7 +3,7 @@ from PySide6.QtCore import Signal
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QWidget, QApplication
 
-from components.widget_comic_info.res.ui_comic_info import Ui_Form
+from components.widget_assembler_similar_result_preview.widget_comic_info.res.ui_comic_info import Ui_Form
 
 
 class ComicInfoViewer(QWidget):
