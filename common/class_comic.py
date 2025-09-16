@@ -1,6 +1,7 @@
 # 漫画相关的自定义类
 import os
 
+import lzytools.archive
 import lzytools.file
 
 from common import function_file, function_archive, function_cache
@@ -92,3 +93,51 @@ class ComicInfo:
     def _analyse_archive_size_extracted(self):
         """分析压缩文件类漫画大小（解压后的）"""
         self.filesize_bytes_extracted = function_archive.get_archive_real_size(self.filepath)
+
+
+class ImageInfo:
+    """图片信息类"""
+
+    def __init__(self, image_path: str):
+        # 图片路径
+        self.image_path: str = os.path.normpath(image_path)
+        # 图片大小（字节bytes）
+        # 备忘录
+        self.filesize: int = 0
+        # 图片hash值
+        # aHash
+        self.aHash_64: str = ''
+        self.aHash_144: str = ''
+        self.aHash_256: str = ''
+        # pHash
+        self.pHash_64: str = ''
+        self.pHash_144: str = ''
+        self.pHash_256: str = ''
+        # dHash
+        self.dHash_64: str = ''
+        self.dHash_144: str = ''
+        self.dHash_256: str = ''
+
+        # 图片所属漫画的路径
+        self.comic_path_belong: str = ''
+        # 图片所属漫画的文件类型
+        self.comic_filetype_belong: FileType = FileType.File()
+
+    def update_by_comic_info(self, comic_info: ComicInfo):
+        """根据漫画信息类更新信息"""
+        self.comic_path_belong = comic_info.filepath
+        self.comic_filetype_belong = comic_info.filetype
+
+    def is_useful(self):
+        """检查图片是否有效"""
+        # 所属漫画为文件夹类时
+        if isinstance(self.comic_filetype_belong, FileType.Folder):
+            if os.path.exists(self.image_path):
+                filesize_latest = lzytools.file.get_size(self.image_path)
+                return filesize_latest == self.filesize
+        elif isinstance(self.comic_filetype_belong, FileType.Archive):
+            if os.path.exists(self.comic_path_belong):
+                filesize_latest = function_archive.get_filesize_inside(self.comic_path_belong, self.image_path)
+                return filesize_latest == self.filesize
+
+        return None

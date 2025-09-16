@@ -1,8 +1,11 @@
 import io
 import os
+import zipfile
+from typing import Union
 
 import lzytools.archive
 import natsort
+import rarfile
 from PIL import Image
 
 from common import function_file
@@ -48,7 +51,7 @@ def get_archive_real_size(archive: str) -> int:
 
 
 def save_preview_image(archive: str, image_path_inside: str, preview_image_path: str,
-                          height_zoom_out: int = 128) -> str:
+                       height_zoom_out: int = 128) -> str:
     """保存解压文件中指定图片的预览小图
     :param archive: 压缩文件路径
     :param image_path_inside: 需要保存的压缩包内图片的内部路径
@@ -66,3 +69,16 @@ def save_preview_image(archive: str, image_path_inside: str, preview_image_path:
     image.save(preview_image_path)
 
     return preview_image_path
+
+
+def get_filesize_inside(archive_path: str, filepath_inside: str) -> int:
+    """获取压缩文件中指定文件的大小（解压后的，字节bytes）"""
+    infolist = lzytools.archive.get_infolist(archive_path)
+    for info in infolist:
+        info: Union[zipfile.ZipInfo, rarfile.RarInfo]
+        path = info.filename
+        if filepath_inside == path:
+            size = info.file_size
+            return size
+
+    return 0  # 兜底
