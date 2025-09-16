@@ -1,5 +1,3 @@
-import configparser
-
 from common.function_config import check_config_exists, CONFIG_FILE, SettingExtractPages, SettingIsMatchCache, \
     SettingIsMatchSimilarFilename, SettingThreadCount
 
@@ -11,15 +9,11 @@ class SettingMatchModel:
         # 检查配置文件是否存在
         check_config_exists()
 
-        # 读取配置文件实例对象
-        self.config = configparser.ConfigParser()
-        self.config.read(CONFIG_FILE, encoding='utf-8')
-
         # 实例设置项子类
-        self.setting_extract_pages = SettingExtractPages(self.config)
-        self.setting_is_match_cache = SettingIsMatchCache(self.config)
-        self.setting_is_match_similar_filename = SettingIsMatchSimilarFilename(self.config)
-        self.setting_thread_count = SettingThreadCount(self.config)
+        self.setting_extract_pages = SettingExtractPages(CONFIG_FILE)
+        self.setting_is_match_cache = SettingIsMatchCache(CONFIG_FILE)
+        self.setting_is_match_similar_filename = SettingIsMatchSimilarFilename(CONFIG_FILE)
+        self.setting_thread_count = SettingThreadCount(CONFIG_FILE)
 
     def get_extract_pages(self) -> int:
         return self.setting_extract_pages.read()

@@ -1,5 +1,3 @@
-import configparser
-
 from common.function_config import check_config_exists, CONFIG_FILE, SettingComicPagesLowerLimit, \
     SettingIsAnalyzeArchive, SettingIsAllowOtherFiletypesInComic
 
@@ -12,14 +10,10 @@ class SettingComicModel:
         # 检查配置文件是否存在
         check_config_exists()
 
-        # 读取配置文件实例对象
-        self.config = configparser.ConfigParser()
-        self.config.read(CONFIG_FILE, encoding='utf-8')
-
         # 实例设置项子类
-        self.setting_pages_lower_limit = SettingComicPagesLowerLimit(self.config)
-        self.setting_is_analyze_archive = SettingIsAnalyzeArchive(self.config)
-        self.setting_is_allow_other_filetypes = SettingIsAllowOtherFiletypesInComic(self.config)
+        self.setting_pages_lower_limit = SettingComicPagesLowerLimit(CONFIG_FILE)
+        self.setting_is_analyze_archive = SettingIsAnalyzeArchive(CONFIG_FILE)
+        self.setting_is_allow_other_filetypes = SettingIsAllowOtherFiletypesInComic(CONFIG_FILE)
 
     def get_pages_lower_limit(self) -> int:
         return self.setting_pages_lower_limit.read()

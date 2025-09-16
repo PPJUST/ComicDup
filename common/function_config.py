@@ -17,9 +17,11 @@ def check_config_exists():
 class _ModuleChildSetting:
     """抽象类：设置项"""
 
-    def __init__(self, config: configparser.ConfigParser):
-        """:param config: 配置文件的ConfigParser对象"""
-        self.config = config
+    def __init__(self, config_file: str):
+        """:param config_file: 配置文件的ConfigParser对象"""
+        self.config_file = config_file
+        self.config = configparser.ConfigParser()
+        self.config.read(config_file, encoding='utf-8')
 
     def _read_key(self, section: str, key: str, default_value):
         """读取对应设置项的值，如果失败则返回默认值"""
@@ -27,17 +29,24 @@ class _ModuleChildSetting:
 
     def _set_value(self, section: str, key: str, value: str):
         """设置设置项"""
+        # 由于设置模块分为了3个子模块，更新配置文件时需要重新读取最新的配置文件
+        self._reload()
+
         if section not in self.config:
             self.config.add_section(section)
         self.config.set(section, key, str(value))
         self.config.write(open(CONFIG_FILE, 'w', encoding='utf-8'))
 
+    def _reload(self):
+        self.config = configparser.ConfigParser()
+        self.config.read(self.config_file, encoding='utf-8')
+
 
 class _ModuleChildSettingSingleEnable(_ModuleChildSetting):
     """抽象类：设置项，仅是否启用的选项模版"""
 
-    def __init__(self, config, section: str, key: str, default_value: bool):
-        super().__init__(config)
+    def __init__(self, config_file, section: str, key: str, default_value: bool):
+        super().__init__(config_file)
         self.section = section
         self.key = key
         self._default_value = default_value
@@ -62,8 +71,8 @@ class _ModuleChildSettingSingleEnable(_ModuleChildSetting):
 class _ModuleChildSettingSingleText(_ModuleChildSetting):
     """抽象类：设置项，纯文本项的选项模版"""
 
-    def __init__(self, config, section: str, key: str, default_value: str):
-        super().__init__(config)
+    def __init__(self, config_file, section: str, key: str, default_value: str):
+        super().__init__(config_file)
         self.section = section
         self.key = key
         self._default_value = default_value
@@ -80,8 +89,8 @@ class _ModuleChildSettingSingleText(_ModuleChildSetting):
 class SettingBasicAlgorithm(_ModuleChildSetting):
     """相似算法：相似度基础算法"""
 
-    def __init__(self, config):
-        super().__init__(config)
+    def __init__(self, config_file):
+        super().__init__(config_file)
         self.section = 'BasicAlgorithm'
         self.key = 'algorithm'
         self._default_value: TYPES_HASH_ALGORITHM = SimilarAlgorithm.dHash()
@@ -115,15 +124,15 @@ class SettingBasicAlgorithm(_ModuleChildSetting):
 class SettingIsEnhanceAlgorithm(_ModuleChildSettingSingleEnable):
     """相似算法：是否启用相似度增强算法"""
 
-    def __init__(self, config):
-        super().__init__(config, section='IsEnhanceAlgorithm', key='is_enable', default_value=False)
+    def __init__(self, config_file):
+        super().__init__(config_file, section='IsEnhanceAlgorithm', key='is_enable', default_value=False)
 
 
 class SettingEnhanceAlgorithm(_ModuleChildSetting):
     """相似算法：相似度增强算法"""
 
-    def __init__(self, config):
-        super().__init__(config)
+    def __init__(self, config_file):
+        super().__init__(config_file)
         self.section = 'EnhanceAlgorithm'
         self.key = 'algorithm'
         self._default_value: TYPES_ENHANCE_ALGORITHM = SimilarAlgorithm.SSIM()
@@ -155,8 +164,8 @@ class SettingEnhanceAlgorithm(_ModuleChildSetting):
 class SettingSimilarThreshold(_ModuleChildSetting):
     """相似算法：相似度阈值"""
 
-    def __init__(self, config):
-        super().__init__(config)
+    def __init__(self, config_file):
+        super().__init__(config_file)
         self.section = 'SimilarThreshold'
         self.key = 'threshold'
         self._default_value: int = 90
@@ -181,8 +190,8 @@ class SettingSimilarThreshold(_ModuleChildSetting):
 class SettingHashLength(_ModuleChildSetting):
     """相似算法：Hash值长度"""
 
-    def __init__(self, config):
-        super().__init__(config)
+    def __init__(self, config_file):
+        super().__init__(config_file)
         self.section = 'HashLength'
         self.key = 'length'
         self._default_value: int = 64
@@ -207,8 +216,8 @@ class SettingHashLength(_ModuleChildSetting):
 class SettingExtractPages(_ModuleChildSetting):
     """匹配选项：提取漫画页数"""
 
-    def __init__(self, config):
-        super().__init__(config)
+    def __init__(self, config_file):
+        super().__init__(config_file)
         self.section = 'ExtractPages'
         self.key = 'count'
         self._default_value: int = 2
@@ -233,22 +242,22 @@ class SettingExtractPages(_ModuleChildSetting):
 class SettingIsMatchCache(_ModuleChildSettingSingleEnable):
     """匹配选项：是否匹配缓存"""
 
-    def __init__(self, config):
-        super().__init__(config, section='IsMatchCache', key='is_enable', default_value=False)
+    def __init__(self, config_file):
+        super().__init__(config_file, section='IsMatchCache', key='is_enable', default_value=False)
 
 
 class SettingIsMatchSimilarFilename(_ModuleChildSettingSingleEnable):
     """匹配选项：是否仅匹配相似文件名"""
 
-    def __init__(self, config):
-        super().__init__(config, section='IsMatchSimilarFilename', key='is_enable', default_value=False)
+    def __init__(self, config_file):
+        super().__init__(config_file, section='IsMatchSimilarFilename', key='is_enable', default_value=False)
 
 
 class SettingThreadCount(_ModuleChildSetting):
     """匹配选项：线程数"""
 
-    def __init__(self, config):
-        super().__init__(config)
+    def __init__(self, config_file):
+        super().__init__(config_file)
         self.section = 'ThreadCount'
         self.key = 'count'
         self._default_value: int = 2
@@ -273,8 +282,8 @@ class SettingThreadCount(_ModuleChildSetting):
 class SettingComicPagesLowerLimit(_ModuleChildSetting):
     """漫画选项：识别为漫画的页数下限"""
 
-    def __init__(self, config):
-        super().__init__(config)
+    def __init__(self, config_file):
+        super().__init__(config_file)
         self.section = 'ComicPagesLowerLimit'
         self.key = 'limit'
         self._default_value: int = 4
@@ -299,12 +308,12 @@ class SettingComicPagesLowerLimit(_ModuleChildSetting):
 class SettingIsAnalyzeArchive(_ModuleChildSettingSingleEnable):
     """漫画选项：是否识别压缩文件"""
 
-    def __init__(self, config):
-        super().__init__(config, section='IsAnalyzeArchive', key='is_enable', default_value=False)
+    def __init__(self, config_file):
+        super().__init__(config_file, section='IsAnalyzeArchive', key='is_enable', default_value=False)
 
 
 class SettingIsAllowOtherFiletypesInComic(_ModuleChildSettingSingleEnable):
     """漫画选项：是否允许漫画包含其他类型文件"""
 
-    def __init__(self, config):
-        super().__init__(config, section='IsAllowOtherFiletypesInComic', key='is_enable', default_value=False)
+    def __init__(self, config_file):
+        super().__init__(config_file, section='IsAllowOtherFiletypesInComic', key='is_enable', default_value=False)
