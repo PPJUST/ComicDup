@@ -35,7 +35,7 @@ def set_working_directory_to_exe_path():
     print('工作路径测试完成')
 
     exe_path = sys.argv[0]
-    exe_parent = os.path.dirname(exe_path)
+    exe_parent = os.path.dirname(__file__)
     os.chdir(exe_parent)
     print(f'设置工作路径为{exe_parent}')
 

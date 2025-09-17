@@ -20,6 +20,7 @@ class ThreadSearchComic(ThreadPattern):
         self.search_list = []
         # 搜索到的漫画清单
         self.comics_path = []
+
         # 漫画识别条件
         self.pages_lower_limit = 4  # 漫画页数下限
         self.is_check_archive = False  # 是否识别压缩文件类漫画
@@ -40,6 +41,11 @@ class ThreadSearchComic(ThreadPattern):
     def set_is_allow_other_filetypes(self, is_enable: bool):
         """设置是否允许包含其他类型的文件"""
         self.is_allow_other_filetypes = is_enable
+
+    def clear(self):
+        """清空数据"""
+        self.search_list.clear()
+        self.comics_path.clear()
 
     def run(self):
         super().run()

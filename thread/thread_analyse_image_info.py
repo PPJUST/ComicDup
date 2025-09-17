@@ -19,23 +19,30 @@ class ThreadAnalyseImageInfo(ThreadPattern):
         # 图片列表
         self.images = []
         # 图片hash字典
-        self.image_hash_dict:Dict[str,ImageInfo] = dict()
+        self.image_hash_dict: Dict[str, ImageInfo] = dict()
 
         # 计算的图片hash类型
-        self.hash_type =SimilarAlgorithm.dHash()
+        self.hash_type = SimilarAlgorithm.dHash()
         # 图片hash长度
         self.hash_length = 64
-
 
     def set_images(self, images: list):
         """设置需要计算hash的图片列表"""
         self.images = natsort.os_sorted(images)
-    def set_hash_type(self,hash_type:TYPES_HASH_ALGORITHM):
+
+    def set_hash_type(self, hash_type: TYPES_HASH_ALGORITHM):
         """设置需要计算的图片hash类型"""
         self.hash_type = hash_type
-    def set_hash_length(self,length:int):
+
+    def set_hash_length(self, length: int):
         """设置需要计算的图片hash类型"""
         self.hash_length = length
+
+    def clear(self):
+        """清空数据"""
+        self.images.clear()
+        self.image_hash_dict.clear()
+
     def run(self):
         super().run()
         for index, image_path in enumerate(self.images, start=1):

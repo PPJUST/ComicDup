@@ -23,6 +23,11 @@ class ThreadAnalyseComicInfo(ThreadPattern):
     def set_comics(self, comics: list):
         self.comics = natsort.os_sorted(comics)
 
+    def clear(self):
+        """清空数据"""
+        self.comics.clear()
+        self.comic_info_dict.clear()
+
     def run(self):
         super().run()
         # 遍历列表，提取信息

@@ -31,6 +31,11 @@ class ThreadCompareHash(ThreadPattern):
         """设置最大汉明距离"""
         self.hamming_distance = hamming_distance
 
+    def clear(self):
+        """清空数据"""
+        self.hash_list.clear()
+        self.similar_hash_group.clear()
+
     def run(self):
         super().run()
         self.similar_hash_group = []
