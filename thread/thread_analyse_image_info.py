@@ -8,7 +8,7 @@ from common.class_config import SimilarAlgorithm, TYPES_HASH_ALGORITHM
 from thread.thread_pattern import ThreadPattern
 
 
-class ThreadCalcImageHash(ThreadPattern):
+class ThreadAnalyseImageInfo(ThreadPattern):
     """子线程-计算图片hash"""
 
     def __init__(self):
@@ -33,12 +33,17 @@ class ThreadCalcImageHash(ThreadPattern):
     def set_hash_type(self,hash_type:TYPES_HASH_ALGORITHM):
         """设置需要计算的图片hash类型"""
         self.hash_type = hash_type
-
+    def set_hash_length(self,length:int):
+        """设置需要计算的图片hash类型"""
+        self.hash_length = length
     def run(self):
         super().run()
         for index, image_path in enumerate(self.images, start=1):
             image_info = ImageInfo(image_path)
             self.image_hash_dict[image_path] = image_info
 
+        # 保存到本地缓存中
+        # 备忘录
 
-
+        # 结束后发送信号
+        self.finished()

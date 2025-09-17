@@ -29,6 +29,18 @@ class ThreadSearchComic(ThreadPattern):
         """设置需要搜索的路径"""
         self.search_list = natsort.os_sorted(paths)
 
+    def set_pages_lower_limit(self, limit: int):
+        """设置漫画页数下限"""
+        self.pages_lower_limit = limit
+
+    def set_is_check_archive(self, is_enable: bool):
+        """设置是否识别压缩文件类漫画"""
+        self.is_check_archive = is_enable
+
+    def set_is_allow_other_filetypes(self, is_enable: bool):
+        """设置是否允许包含其他类型的文件"""
+        self.is_allow_other_filetypes = is_enable
+
     def run(self):
         super().run()
         # 剔除搜索路径中包含的子路径
