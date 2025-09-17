@@ -7,7 +7,7 @@ from components.widget_setting_match.setting_match_viewer import SettingMatchVie
 class SettingMatchPresenter(QObject):
     """设置模块（匹配设置项）的桥梁组件"""
 
-    def __init__(self, viewer: SettingMatchViewer, model:SettingMatchModel):
+    def __init__(self, viewer: SettingMatchViewer, model: SettingMatchModel):
         super().__init__()
         self.viewer = viewer
         self.model = model
@@ -17,6 +17,22 @@ class SettingMatchPresenter(QObject):
 
         # 绑定信号
         self._bind_signal()
+
+    def get_extract_pages(self) -> int:
+        """获取每本漫画的提取页数"""
+        return self.model.get_extract_pages()
+
+    def get_is_match_cache(self) -> bool:
+        """获取是否匹配缓存"""
+        return self.model.get_is_match_cache()
+
+    def get_is_match_similar_filename(self) -> bool:
+        """获取是否仅匹配相似文件名"""
+        return self.model.get_is_match_similar_filename()
+
+    def get_thread_count(self) -> int:
+        """获取线程数"""
+        return self.model.get_thread_count()
 
     def _load_setting(self):
         """加载初始设置"""

@@ -7,7 +7,7 @@ from components.widget_setting_comic.setting_comic_viewer import SettingComicVie
 class SettingComicPresenter(QObject):
     """设置模块（漫画设置项）的桥梁组件"""
 
-    def __init__(self, viewer: SettingComicViewer, model:SettingComicModel):
+    def __init__(self, viewer: SettingComicViewer, model: SettingComicModel):
         super().__init__()
         self.viewer = viewer
         self.model = model
@@ -17,6 +17,18 @@ class SettingComicPresenter(QObject):
 
         # 绑定信号
         self._bind_signal()
+
+    def get_pages_lower_limit(self) -> int:
+        """获取识别为漫画的页数下限"""
+        return self.model.get_pages_lower_limit()
+
+    def get_is_analyze_archive(self) -> bool:
+        """获取是否识别压缩文件"""
+        return self.model.get_is_analyze_archive()
+
+    def get_is_allow_other_filetypes(self) -> bool:
+        """获取是否允许漫画包含其他类型文件"""
+        return self.model.get_is_allow_other_filetypes()
 
     def _load_setting(self):
         """加载初始设置"""
