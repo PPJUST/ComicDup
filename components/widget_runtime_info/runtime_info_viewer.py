@@ -19,9 +19,17 @@ class RuntimeInfoViewer(QWidget):
         """更新任务运行当前步骤耗时"""
         self.ui.label_runtime_current.setText(time_str)
 
-    def update_progress_total(self, step: str):
-        """更新任务运行步骤总进度"""
-        self.ui.label_progress_total.setText(step)
+    def update_step_index(self, index: int):
+        """更新当前步骤索引"""
+        self.ui.label_step_index.setText(str(index))
+
+    def update_step_count(self, count: int):
+        """更新步骤总数"""
+        self.ui.label_step_count.setText(str(count))
+
+    def update_step_title(self, title: str):
+        """更新当前步骤标题"""
+        self.ui.label_step_title.setText(title)
 
     def update_progress_current(self, progress: str):
         """更新任务运行当前步骤的内部进度"""

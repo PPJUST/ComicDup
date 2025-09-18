@@ -11,6 +11,14 @@ class WindowViewer(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
+    def turn_page_search_list(self):
+        """翻页到搜索目录页"""
+        self.ui.stackedWidget.setCurrentIndex(0)
+
+    def turn_page_running_info(self):
+        """翻页到运行信息页"""
+        self.ui.stackedWidget.setCurrentIndex(1)
+
     def add_viewer_exec(self, widget):
         """添加功能区控件"""
         self.ui.groupBox_exec.layout().addWidget(widget)

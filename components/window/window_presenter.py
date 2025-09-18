@@ -13,6 +13,7 @@
 """
 from PySide6.QtCore import QObject
 
+from common.class_config import SimilarAlgorithm
 from components import widget_exec, widget_setting_algorithm, widget_setting_match, widget_setting_comic, \
     widget_search_list, widget_runtime_info, widget_similar_result_filter, widget_assembler_similar_result_preview
 from components.window.window_model import WindowModel
@@ -57,8 +58,19 @@ class WindowPresenter(QObject):
         # 绑定子线程信号
         self._bind_thread_signal()
 
+    def load_last_result(self):
+        """加载上一次的匹配结果"""
+        pass  # 备忘录
+
+    def open_about(self):
+        """打开程序说明"""
+        pass  # 备忘录
+
     def start(self):
         """执行查重"""
+        # 切换到运行信息页
+        self.viewer.turn_page_running_info()
+
         # 将设置项传递给子线程
         self._set_thread_setting()
 
@@ -68,6 +80,15 @@ class WindowPresenter(QObject):
         # 传参给子线程，并启动
         self.start_search_comic(search_paths)
 
+    def stop(self):
+        """停止查重"""
+        self.thread_search_comic.set_stop()
+        self.thread_analyse_comic_info.set_stop()
+        self.thread_analyse_image_info.set_stop()
+        self.thread_compare_hash.set_stop()
+        self.thread_compare_ssim.set_stop()
+
+    """子线程方法"""
 
     def start_search_comic(self, search_paths: list):
         """启动子线程-搜索漫画"""
@@ -78,39 +99,79 @@ class WindowPresenter(QObject):
         """子线程-搜索漫画执行完毕"""
         # 提取漫画路径列表
         comics_path = self.thread_search_comic.get_comics_path()
+        print('漫画路径列表', comics_path)
         # 传递给 子线程-分析漫画信息
         self.start_thread_analyse_comic_info(comics_path)
-
-
 
     def start_thread_analyse_comic_info(self, comics_path: list):
         """启动子线程-分析漫画信息"""
         self.thread_analyse_comic_info.set_comics(comics_path)
         self.thread_analyse_comic_info.start()
+
     def thread_analyse_comic_info_finished(self):
         """子线程-分析漫画信息执行完毕"""
         # 提取漫画信息类字典
         comic_info_dict = self.thread_analyse_comic_info.get_comic_info_dict()
+        print('漫画信息类字典', comic_info_dict)
         # 保存到本地数据库中
         # 备忘录
-        # 提取指定数量的漫画内部图片路径，传递给 子线程-分析图片信息
-
-
+        # 提取指定数量的漫画内部图片路径
+        images_in_comic = []
+        # 将提取的图片路径列表传递给 子线程-分析图片信息
+        self.start_analyse_image_info(images_in_comic)
 
     def start_analyse_image_info(self, images_path: list):
         """启动子线程-分析图片信息"""
         self.thread_analyse_image_info.set_images(images_path)
         self.thread_analyse_image_info.start()
 
+    def thread_analyse_image_info_finished(self):
+        """子线程-分析图片信息执行完毕"""
+        # 提取图片信息字典
+        image_info_dict = self.thread_analyse_image_info.get_image_info_dict()
+        # 保存到本地数据库中
+        # 备忘录
+        # 提取图片信息中的hash值
+        hash_list = []
+        # 将提取的hash值列表传递给 子线程-对比图片hash
+        self.start_thread_compare_hash(hash_list)
+
     def start_thread_compare_hash(self, hash_list: list):
         """启动子线程-对比图片hash"""
         self.thread_compare_hash.set_hash_list(hash_list)
         self.thread_compare_hash.start()
 
+    def thread_compare_hash_finished(self):
+        """子线程-对比图片hash执行完毕"""
+        # 提取相似hash组列表
+        similar_hash_group = self.thread_compare_hash.get_similar_hash_group()
+        # 检查设置项，是否需要使用增强算法
+        is_enhance_algorithm = self.widget_setting_algorithm.get_is_enhance_algorithm()
+        enhance_algorithm = self.widget_setting_algorithm.get_enhance_algorithm()
+        if is_enhance_algorithm:
+            if isinstance(enhance_algorithm, SimilarAlgorithm.SSIM):
+                pass  # 备忘录
+            elif isinstance(enhance_algorithm, SimilarAlgorithm.ORB):
+                pass  # 备忘录
+
     def start_thread_compare_ssim(self, image_group: list):
         """启动子线程-对比图片ssim"""
         self.thread_compare_ssim.set_image_group(image_group)
         self.thread_compare_ssim.start()
+
+    """运行信息方法"""
+
+    def update_runtime_info_index(self, index: int):
+        """更新运行信息-步骤索引"""
+        self.widget_runtime_info.update_step_index(index)
+
+    def update_runtime_info_title(self, title: str):
+        """更新运行信息-步骤标题"""
+        self.widget_runtime_info.update_step_title(title)
+
+    def update_runtime_info_rate(self, rate: str):
+        """更新运行信息-步骤内部进度"""
+        self.widget_runtime_info.update_progress_current(rate)
 
     def _set_thread_setting(self):
         """将设置选项传参给子线程"""
@@ -164,44 +225,43 @@ class WindowPresenter(QObject):
     def _bind_signal(self):
         """绑定信号"""
         self.widget_exec.Start.connect(self.start)
-        self.widget_exec.Stop.connect()
-        self.widget_exec.LoadLastResult.connect()
-        self.widget_exec.OpenAbout.connect()
+        self.widget_exec.Stop.connect(self.stop)
+        self.widget_exec.LoadLastResult.connect(self.load_last_result)
+        self.widget_exec.OpenAbout.connect(self.open_about)
+
     def _bind_thread_signal(self):
         """绑定子线程信号"""
-        self.thread_search_comic.SignalStart.connect()
-        self.thread_search_comic.SignalIndex.connect()
-        self.thread_search_comic.SignalInfo.connect()
-        self.thread_search_comic.SignalRate.connect()
+        # self.thread_search_comic.SignalStart.connect()
+        self.thread_search_comic.SignalIndex.connect(self.update_runtime_info_index)
+        self.thread_search_comic.SignalInfo.connect(self.update_runtime_info_title)
+        self.thread_search_comic.SignalRate.connect(self.update_runtime_info_rate)
         self.thread_search_comic.SignalFinished.connect(self.thread_search_comic_finished)
-        self.thread_search_comic.SignalStopped.connect()
+        # self.thread_search_comic.SignalStopped.connect()
 
-        self.thread_analyse_comic_info.SignalStart.connect()
-        self.thread_analyse_comic_info.SignalIndex.connect()
-        self.thread_analyse_comic_info.SignalInfo.connect()
-        self.thread_analyse_comic_info.SignalRate.connect()
-        self.thread_analyse_comic_info.SignalFinished.connect()
-        self.thread_analyse_comic_info.SignalStopped.connect()
+        # self.thread_analyse_comic_info.SignalStart.connect()
+        self.thread_analyse_comic_info.SignalIndex.connect(self.update_runtime_info_index)
+        self.thread_analyse_comic_info.SignalInfo.connect(self.update_runtime_info_title)
+        self.thread_analyse_comic_info.SignalRate.connect(self.update_runtime_info_rate)
+        self.thread_analyse_comic_info.SignalFinished.connect(self.thread_analyse_comic_info_finished)
+        # self.thread_analyse_comic_info.SignalStopped.connect()
 
-        self.thread_analyse_image_info.SignalStart.connect()
-        self.thread_analyse_image_info.SignalIndex.connect()
-        self.thread_analyse_image_info.SignalInfo.connect()
-        self.thread_analyse_image_info.SignalRate.connect()
-        self.thread_analyse_image_info.SignalFinished.connect()
-        self.thread_analyse_image_info.SignalStopped.connect()
+        # self.thread_analyse_image_info.SignalStart.connect()
+        self.thread_analyse_image_info.SignalIndex.connect(self.update_runtime_info_index)
+        self.thread_analyse_image_info.SignalInfo.connect(self.update_runtime_info_title)
+        self.thread_analyse_image_info.SignalRate.connect(self.update_runtime_info_rate)
+        self.thread_analyse_image_info.SignalFinished.connect(self.thread_analyse_image_info_finished)
+        # self.thread_analyse_image_info.SignalStopped.connect()
 
+        # self.thread_compare_hash.SignalStart.connect()
+        self.thread_compare_hash.SignalIndex.connect(self.update_runtime_info_index)
+        self.thread_compare_hash.SignalInfo.connect(self.update_runtime_info_title)
+        self.thread_compare_hash.SignalRate.connect(self.update_runtime_info_rate)
+        self.thread_compare_hash.SignalFinished.connect(self.thread_compare_hash_finished)
+        # self.thread_compare_hash.SignalStopped.connect()
 
-        self.thread_compare_hash.SignalStart.connect()
-        self.thread_compare_hash.SignalIndex.connect()
-        self.thread_compare_hash.SignalInfo.connect()
-        self.thread_compare_hash.SignalRate.connect()
-        self.thread_compare_hash.SignalFinished.connect()
-        self.thread_compare_hash.SignalStopped.connect()
-
-
-        self.thread_compare_ssim.SignalStart.connect()
-        self.thread_compare_ssim.SignalIndex.connect()
-        self.thread_compare_ssim.SignalInfo.connect()
-        self.thread_compare_ssim.SignalRate.connect()
-        self.thread_compare_ssim.SignalFinished.connect()
-        self.thread_compare_ssim.SignalStopped.connect()
+        # self.thread_compare_ssim.SignalStart.connect()
+        self.thread_compare_ssim.SignalIndex.connect(self.update_runtime_info_index)
+        self.thread_compare_ssim.SignalInfo.connect(self.update_runtime_info_title)
+        self.thread_compare_ssim.SignalRate.connect(self.update_runtime_info_rate)
+        # self.thread_compare_ssim.SignalFinished.connect()
+        # self.thread_compare_ssim.SignalStopped.connect()

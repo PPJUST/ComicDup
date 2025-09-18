@@ -44,9 +44,30 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="label_progress_total">
+        <widget class="QLabel" name="label_step_index">
          <property name="text">
-          <string>1/1 xxx</string>
+          <string>-</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string>/</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_step_count">
+         <property name="text">
+          <string>-</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_step_title">
+         <property name="text">
+          <string>...</string>
          </property>
         </widget>
        </item>
@@ -82,7 +103,7 @@
        <item>
         <widget class="QLabel" name="label_progress_current">
          <property name="text">
-          <string>1/100</string>
+          <string>-/-</string>
          </property>
         </widget>
        </item>

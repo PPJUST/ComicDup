@@ -14,6 +14,10 @@ from common import function_file, function_archive
 CACHE_PREVIEW_DIRPATH = 'cache/preview'
 CACHE_PREVIEW_MAX_COUNT = 100  # 单个文件夹内最多缓存的预览图数量
 
+def check_cache_exist(cache_dirpath):
+    """检查缓存文件夹是否存在"""
+    if not os.path.exists(cache_dirpath):
+        os.makedirs(cache_dirpath)
 
 def save_preview_image_to_cache(origin_image_path: str, cache_dirpath: str = CACHE_PREVIEW_DIRPATH,
                                 height_zoom_out: int = 128):
@@ -21,6 +25,8 @@ def save_preview_image_to_cache(origin_image_path: str, cache_dirpath: str = CAC
     :param origin_image_path: 原图
     :param cache_dirpath: 缓存文件夹路径
     :param height_zoom_out: 缩放的图片高度"""
+    # 检查缓存文件夹是否存在
+    check_cache_exist(cache_dirpath)
     # 生成随机文件名
     filetitle_random = lzytools.common.create_random_string(16, uppercase=False)
     filename = f'{filetitle_random}.jpg'
@@ -49,6 +55,8 @@ def save_preview_image_in_archive_to_cache(archive: str, image_path_inside: str,
     :param image_path_inside: 需要保存的压缩包内图片的内部路径
     :param cache_dirpath: 缓存文件夹路径
     :param height_zoom_out: 缩放的图片高度"""
+    # 检查缓存文件夹是否存在
+    check_cache_exist(cache_dirpath)
     # 生成随机文件名
     filetitle_random = lzytools.common.create_random_string(16, uppercase=False)
     filename = f'{filetitle_random}.jpg'

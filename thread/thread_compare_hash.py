@@ -58,9 +58,6 @@ class ThreadCompareHash(ThreadPattern):
             if len(similar) >= 2:
                 self.similar_hash_group.append(similar)
 
-        # 保存到本地缓存中
-        # 备忘录
-
         # 结束后发送信号
         self.finished()
 

@@ -56,8 +56,5 @@ class ThreadCompareSSIM(ThreadPattern):
                     # 相似度高于阈值则加入相似图片组列表
                     self.similar_image_group.append(group_comb)
 
-        # 保存到本地缓存中
-        # 备忘录
-
         # 结束后发送信号
         self.finished()

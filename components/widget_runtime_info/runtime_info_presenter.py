@@ -7,7 +7,7 @@ from components.widget_runtime_info.runtime_info_viewer import RuntimeInfoViewer
 class RuntimeInfoPresenter(QObject):
     """运行信息模块的桥梁组件"""
 
-    def __init__(self, viewer: RuntimeInfoViewer, model:RuntimeInfoModel):
+    def __init__(self, viewer: RuntimeInfoViewer, model: RuntimeInfoModel):
         super().__init__()
         self.viewer = viewer
         self.model = model
@@ -20,9 +20,17 @@ class RuntimeInfoPresenter(QObject):
         """更新任务运行当前步骤耗时"""
         self.viewer.update_runtime_current(time_str)
 
-    def update_progress_total(self, step: str):
-        """更新任务运行步骤总进度"""
-        self.viewer.update_progress_total(step)
+    def update_step_index(self, index: int):
+        """更新当前步骤索引"""
+        self.viewer.update_step_index(index)
+
+    def update_step_count(self, count: int):
+        """更新步骤总数"""
+        self.viewer.update_step_count(count)
+
+    def update_step_title(self, title: str):
+        """更新当前步骤标题"""
+        self.viewer.update_step_title(title)
 
     def update_progress_current(self, progress: str):
         """更新任务运行当前步骤的内部进度"""

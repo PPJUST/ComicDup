@@ -42,8 +42,5 @@ class ThreadAnalyseComicInfo(ThreadPattern):
             comic_info = ComicInfo(comic)
             self.comic_info_dict[comic] = comic_info
 
-        # 保存到本地缓存中
-        # 备忘录
-
         # 结束后发送信号
         self.finished()

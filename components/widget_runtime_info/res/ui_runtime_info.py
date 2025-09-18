@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'area_runtime_infoSfMKHu.ui'
+## Form generated from reading UI file 'runtime_infovJGktZ.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.1
 ##
@@ -49,10 +49,25 @@ class Ui_Form(object):
 
         self.horizontalLayout_4.addWidget(self.label_7)
 
-        self.label_progress_total = QLabel(Form)
-        self.label_progress_total.setObjectName(u"label_progress_total")
+        self.label_step_index = QLabel(Form)
+        self.label_step_index.setObjectName(u"label_step_index")
 
-        self.horizontalLayout_4.addWidget(self.label_progress_total)
+        self.horizontalLayout_4.addWidget(self.label_step_index)
+
+        self.label_4 = QLabel(Form)
+        self.label_4.setObjectName(u"label_4")
+
+        self.horizontalLayout_4.addWidget(self.label_4)
+
+        self.label_step_count = QLabel(Form)
+        self.label_step_count.setObjectName(u"label_step_count")
+
+        self.horizontalLayout_4.addWidget(self.label_step_count)
+
+        self.label_step_title = QLabel(Form)
+        self.label_step_title.setObjectName(u"label_step_title")
+
+        self.horizontalLayout_4.addWidget(self.label_step_title)
 
 
         self.gridLayout.addLayout(self.horizontalLayout_4, 0, 1, 1, 1)
@@ -106,10 +121,13 @@ class Ui_Form(object):
         self.label.setText(QCoreApplication.translate("Form", u"\u603b\u8017\u65f6\uff1a", None))
         self.label_runtime_total.setText(QCoreApplication.translate("Form", u"0:00:00", None))
         self.label_7.setText(QCoreApplication.translate("Form", u"\u603b\u8fdb\u5ea6\uff1a", None))
-        self.label_progress_total.setText(QCoreApplication.translate("Form", u"1/1 xxx", None))
+        self.label_step_index.setText(QCoreApplication.translate("Form", u"-", None))
+        self.label_4.setText(QCoreApplication.translate("Form", u"/", None))
+        self.label_step_count.setText(QCoreApplication.translate("Form", u"-", None))
+        self.label_step_title.setText(QCoreApplication.translate("Form", u"...", None))
         self.label_3.setText(QCoreApplication.translate("Form", u"\u5f53\u524d\u8017\u65f6\uff1a", None))
         self.label_runtime_current.setText(QCoreApplication.translate("Form", u"0:00:00", None))
         self.label_5.setText(QCoreApplication.translate("Form", u"\u5b50\u8fdb\u5ea6\uff1a", None))
-        self.label_progress_current.setText(QCoreApplication.translate("Form", u"1/100", None))
+        self.label_progress_current.setText(QCoreApplication.translate("Form", u"-/-", None))
     # retranslateUi
 
