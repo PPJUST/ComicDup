@@ -22,6 +22,10 @@ class ThreadCompareHash(ThreadPattern):
         # 判断为相似的汉明距离上限
         self.hamming_distance = 10
 
+    def get_similar_hash_group(self):
+        """获取相似hash组列表"""
+        return self.similar_hash_group
+
     def set_hash_list(self, hash_list: list):
         """设置需要匹配的hash值列表"""
         hash_list = self.sort_hash(hash_list)

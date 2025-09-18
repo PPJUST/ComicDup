@@ -1,4 +1,5 @@
 # 子线程-搜索符合条件的文件夹类/压缩文件类漫画
+
 import os
 
 import lzytools.file
@@ -25,6 +26,10 @@ class ThreadSearchComic(ThreadPattern):
         self.pages_lower_limit = 4  # 漫画页数下限
         self.is_check_archive = False  # 是否识别压缩文件类漫画
         self.is_allow_other_filetypes = False  # 是否允许包含其他类型的文件
+
+    def get_comics_path(self):
+        """获取搜索到的漫画清单"""
+        return self.comics_path
 
     def set_search_list(self, paths: list):
         """设置需要搜索的路径"""

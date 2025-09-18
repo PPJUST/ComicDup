@@ -21,6 +21,13 @@ class TableWidgetFilelist(QTableWidget):
         # 隐藏行号
         self.verticalHeader().setVisible(False)
 
+    def get_paths(self):
+        """获取所有文件路径"""
+        paths = []
+        for row in range(self.rowCount()):
+            paths.append(self.item(row, 3).text())
+        return paths
+
     def add_row(self, filepath):
         """添加一行数据"""
         # 插入到最后一行
@@ -81,6 +88,7 @@ class TableWidgetFilelist(QTableWidget):
     def clear(self):
         """清空所有行"""
         self.setRowCount(0)
+
     def _rebind_delete_buttons(self):
         """重新绑定所有删除按钮"""
         for row in range(self.rowCount()):

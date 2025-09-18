@@ -7,13 +7,17 @@ from components.widget_search_list.search_list_viewer import SearchListViewer
 class SearchListPresenter(QObject):
     """搜索列表模块的桥梁组件"""
 
-    def __init__(self, viewer: SearchListViewer, model:SearchListModel):
+    def __init__(self, viewer: SearchListViewer, model: SearchListModel):
         super().__init__()
         self.viewer = viewer
         self.model = model
 
         # 绑定信号
         self.viewer.DropFiles.connect(self.drop_files)
+
+    def get_paths(self):
+        """获取所有文件路径"""
+        return self.viewer.get_paths()
 
     def drop_files(self, files: list):
         """拖入文件"""

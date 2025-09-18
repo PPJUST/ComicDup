@@ -23,8 +23,8 @@ class SearchListViewer(QWidget):
         self.ui.layout_filelist.addWidget(self.table_widget_filelist)
 
         # 绑定信号
-        self.ui.pushButton_add_files.clicked.connect(self.choose_files)
-        self.ui.pushButton_add_folders.clicked.connect(self.choose_folder)
+        self.ui.pushButton_add_files.clicked.connect(self._choose_files)
+        self.ui.pushButton_add_folders.clicked.connect(self._choose_folder)
         self.ui.pushButton_delete_useless_path.clicked.connect(self.remove_useless_row)
         self.ui.pushButton_clear.clicked.connect(self.clear)
 
@@ -42,16 +42,20 @@ class SearchListViewer(QWidget):
         """删除无效行"""
         self.table_widget_filelist.remove_useless_row()
 
+    def get_paths(self) -> list:
+        """获取所有文件路径"""
+        return self.table_widget_filelist.get_paths()
+
     def clear(self):
         """清空列表"""
         self.table_widget_filelist.clear()
 
-    def choose_files(self):
+    def _choose_files(self):
         """弹出文件选择框"""
         paths = QFileDialog.getOpenFileNames(self, "选择文件", "", "All Files (*)")[0]
         self.DropFiles.emit(paths)
 
-    def choose_folder(self):
+    def _choose_folder(self):
         """弹出文件夹选择框"""
         paths = QFileDialog.getExistingDirectory(self, "选择文件夹", "")
         self.DropFiles.emit(paths)

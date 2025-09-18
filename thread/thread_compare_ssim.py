@@ -23,6 +23,10 @@ class ThreadCompareSSIM(ThreadPattern):
         # 判断为相似的相似度下限
         self.threshold = 90
 
+    def get_similar_image_group(self):
+        """获取相似图片组列表"""
+        return self.similar_image_group
+
     def set_image_group(self, image_group: list):
         """需要匹配的图片组列表"""
         self.image_group = image_group

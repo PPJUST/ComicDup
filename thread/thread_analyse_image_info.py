@@ -26,6 +26,10 @@ class ThreadAnalyseImageInfo(ThreadPattern):
         # 图片hash长度
         self.hash_length = 64
 
+    def get_image_hash_dict(self):
+        """获取图片hash字典"""
+        return self.image_hash_dict
+
     def set_images(self, images: list):
         """设置需要计算hash的图片列表"""
         self.images = natsort.os_sorted(images)

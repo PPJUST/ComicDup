@@ -20,6 +20,10 @@ class ThreadAnalyseComicInfo(ThreadPattern):
         # 漫画信息字典
         self.comic_info_dict: Dict[str, ComicInfo] = dict()
 
+    def get_comic_info_dict(self):
+        """获取漫画信息类字典"""
+        return self.comic_info_dict
+
     def set_comics(self, comics: list):
         self.comics = natsort.os_sorted(comics)
 
