@@ -114,9 +114,10 @@ class WindowPresenter(QObject):
         comic_info_dict = self.thread_analyse_comic_info.get_comic_info_dict()
         print('漫画信息类字典', comic_info_dict)
         # 保存到本地数据库中
-        # 备忘录
+        self.model.save_comic_info_to_db(comic_info_dict.values())
         # 提取指定数量的漫画内部图片路径
-        images_in_comic = []
+        extract_pages = self.widget_setting_match.get_extract_pages()  # 每本漫画提取的页数
+        images_in_comic = self.model.get_images_from_comic_infos(comic_info_dict.values(), extract_pages)
         # 将提取的图片路径列表传递给 子线程-分析图片信息
         self.start_analyse_image_info(images_in_comic)
 
@@ -130,9 +131,11 @@ class WindowPresenter(QObject):
         # 提取图片信息字典
         image_info_dict = self.thread_analyse_image_info.get_image_info_dict()
         # 保存到本地数据库中
-        # 备忘录
+        self.model.save_image_info_to_db(image_info_dict.values())
         # 提取图片信息中的hash值
-        hash_list = []
+        hash_algorithm = self.widget_setting_algorithm.get_base_algorithm()  # hash算法
+        hash_length = self.widget_setting_algorithm.get_hash_length()  # hash长度
+        hash_list = self.model.get_hash_from_image_info(image_info_dict.values(), hash_algorithm, hash_length)
         # 将提取的hash值列表传递给 子线程-对比图片hash
         self.start_thread_compare_hash(hash_list)
 
@@ -145,6 +148,8 @@ class WindowPresenter(QObject):
         """子线程-对比图片hash执行完毕"""
         # 提取相似hash组列表
         similar_hash_group = self.thread_compare_hash.get_similar_hash_group()
+        # 将hash转换为对应的漫画路径
+        # 备忘录
         # 检查设置项，是否需要使用增强算法
         is_enhance_algorithm = self.widget_setting_algorithm.get_is_enhance_algorithm()
         enhance_algorithm = self.widget_setting_algorithm.get_enhance_algorithm()

@@ -5,6 +5,7 @@ import lzytools.archive
 import lzytools.file
 
 from common import function_file, function_archive, function_cache
+from common.class_config import TYPES_HASH_ALGORITHM, SimilarAlgorithm
 
 
 class FileType:
@@ -76,6 +77,10 @@ class ComicInfo:
             self._analyse_archive_pages()
             self._analyse_archive_size_extracted()
 
+    def get_page_paths(self):
+        """获取漫画页路径列表"""
+        return self.page_paths
+
     def _analyse_folder_pages(self):
         """分析文件夹类漫画页"""
         self.page_paths = function_file.get_images_in_folder(self.filepath)
@@ -121,7 +126,7 @@ class ImageInfo:
         # 图片所属漫画的路径
         self.comic_path_belong: str = ''
         # 图片所属漫画的文件类型
-        self.comic_filetype_belong: FileType = FileType.File()
+        self.comic_filetype_belong: FileTypes = FileType.File()
 
     def update_by_comic_info(self, comic_info: ComicInfo):
         """根据漫画信息类更新信息"""
@@ -141,3 +146,32 @@ class ImageInfo:
                 return filesize_latest == self.filesize
 
         return None
+
+    def get_hash(self, hash_type: TYPES_HASH_ALGORITHM, hash_length: int):
+        """获取指定的hash值"""
+        if isinstance(hash_type, SimilarAlgorithm.aHash):
+            if hash_length == 64:
+                return self.aHash_64
+            elif hash_length == 144:
+                return self.aHash_144
+            elif hash_length == 256:
+                return self.aHash_256
+        elif isinstance(hash_type, SimilarAlgorithm.pHash):
+            if hash_length == 64:
+                return self.pHash_64
+            elif hash_length == 144:
+                return self.pHash_144
+            elif hash_length == 256:
+                return self.pHash_256
+        elif isinstance(hash_type, SimilarAlgorithm.dHash):
+            if hash_length == 64:
+                return self.dHash_64
+            elif hash_length == 144:
+                return self.dHash_144
+            elif hash_length == 256:
+                return self.dHash_256
+
+        return ''
+
+
+FileTypes = (FileType.File, FileType.Folder, FileType.Archive, FileType.Unknown)
