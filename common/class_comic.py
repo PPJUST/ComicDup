@@ -32,10 +32,13 @@ class FileType:
         text = '错误'
 
 
+FileTypes = (FileType.File, FileType.Folder, FileType.Archive, FileType.Unknown)
+
+
 class ComicInfo:
     """漫画信息类"""
 
-    def __init__(self, comic_path: str):
+    def __init__(self, comic_path: str, db_model: bool = False):
         # 文件信息
         # 路径
         self.filepath: str = os.path.normpath(comic_path)
@@ -46,21 +49,13 @@ class ComicInfo:
         # 文件父级路径
         self.parent_dirpath: str = os.path.dirname(self.filepath)
         # 文件大小（字节）
-        self.filesize_bytes: int = lzytools.file.get_size(self.filepath)
+        self.filesize_bytes: int = None
         # 文件真实大小（文件类型为解压文件时使用，为解压后的文件大小）（字节）
         self.filesize_bytes_extracted: int = self.filesize_bytes
         # 文件类型
-        if os.path.isfile(self.filepath):
-            if function_archive.is_archive_by_filename(self.filepath):
-                self.filetype = FileType.Archive()
-            else:
-                self.filetype = FileType.File()
-        elif os.path.isdir(self.filepath):
-            self.filetype = FileType.Folder()
-        else:
-            self.filetype = FileType.Unknown()
+        self.filetype: FileTypes = None
         # 文件修改时间（自纪元以来的秒数）
-        self.modified_time: float = os.path.getmtime(self.filepath)
+        self.modified_time: float = None
 
         # 漫画信息
         # 内部文件路径
@@ -70,16 +65,58 @@ class ComicInfo:
         # 预览小图本地路径
         self.preview_path: str = None
 
-        # 提取需要的信息
-        if isinstance(self.filetype, FileType.Folder):
-            self._analyse_folder_pages()
-        elif isinstance(self.filetype, FileType.Archive):
-            self._analyse_archive_pages()
-            self._analyse_archive_size_extracted()
+        # 提取需要的信息（数据库模式时，直接由数据库类赋值）
+        if not db_model:
+            # 文件大小
+            self.filesize_bytes = lzytools.file.get_size(self.filepath)
+            self.filesize_bytes_extracted = self.filesize_bytes
+            # 文件类型
+            if os.path.isfile(self.filepath):
+                if function_archive.is_archive_by_filename(self.filepath):
+                    self.filetype = FileType.Archive()
+                else:
+                    self.filetype = FileType.File()
+            elif os.path.isdir(self.filepath):
+                self.filetype = FileType.Folder()
+            else:
+                self.filetype = FileType.Unknown()
+            # 文件修改时间
+            self.modified_time = os.path.getmtime(self.filepath)
+            # 页数和预览图
+            if isinstance(self.filetype, FileType.Folder):
+                self._analyse_folder_pages()
+            elif isinstance(self.filetype, FileType.Archive):
+                self._analyse_archive_pages()
+                self._analyse_archive_size_extracted()
 
     def get_page_paths(self):
         """获取漫画页路径列表"""
         return self.page_paths
+
+    def update_filesize(self, filesize_bytes: int):
+        """更新文件大小（字节）"""
+        self.filesize_bytes = filesize_bytes
+
+    def update_filesize_extracted(self, filesize_bytes: int):
+        """更新文件真实大小（字节，文件类型为解压文件时使用，为解压后的文件大小）"""
+        self.filesize_bytes_extracted = filesize_bytes
+
+    def update_filetype(self, filetype: FileTypes):
+        """更新文件类型"""
+        self.filetype = filetype
+
+    def update_modified_time(self, modified_time: float):
+        """更新文件修改时间"""
+        self.modified_time = modified_time
+
+    def update_page_paths(self, page_paths: tuple):
+        """更新漫画页路径列表"""
+        self.page_paths = page_paths
+        self.page_count = len(self.page_paths)
+
+    def update_preview_path(self, preview_path: str):
+        """更新漫画预览小图路径"""
+        self.preview_path = preview_path
 
     def _analyse_folder_pages(self):
         """分析文件夹类漫画页"""
@@ -107,7 +144,6 @@ class ImageInfo:
         # 图片路径
         self.image_path: str = os.path.normpath(image_path)
         # 图片大小（字节bytes）
-        # 备忘录
         self.filesize: int = 0
         # 图片hash值
         # aHash
@@ -126,12 +162,20 @@ class ImageInfo:
         # 图片所属漫画的路径
         self.comic_path_belong: str = ''
         # 图片所属漫画的文件类型
-        self.comic_filetype_belong: FileTypes = FileType.File()
+        self.comic_filetype_belong: FileTypes = None
 
-    def update_by_comic_info(self, comic_info: ComicInfo):
+    def calc_filesize(self):
+        """计算图片文件大小"""
+        if isinstance(self.comic_filetype_belong, FileType.Folder):
+            self.filesize = lzytools.file.get_size(self.image_path)
+        elif isinstance(self.comic_filetype_belong, FileType.Archive):
+            self.filesize = function_archive.get_filesize_inside(self.comic_path_belong, self.image_path)
+
+    def update_info_by_comic_info(self, comic_info: ComicInfo):
         """根据漫画信息类更新信息"""
         self.comic_path_belong = comic_info.filepath
         self.comic_filetype_belong = comic_info.filetype
+        self.calc_filesize()
 
     def is_useful(self):
         """检查图片是否有效"""
@@ -146,6 +190,30 @@ class ImageInfo:
                 return filesize_latest == self.filesize
 
         return None
+
+    def update_hash(self, hash_: str, hash_type: TYPES_HASH_ALGORITHM, hash_length: int):
+        """更新hash值"""
+        if isinstance(hash_type, SimilarAlgorithm.aHash):
+            if hash_length == 64:
+                self.aHash_64 = hash_
+            elif hash_length == 144:
+                self.aHash_144 = hash_
+            elif hash_length == 256:
+                self.aHash_256 = hash_
+        elif isinstance(hash_type, SimilarAlgorithm.pHash):
+            if hash_length == 64:
+                self.pHash_64 = hash_
+            elif hash_length == 144:
+                self.pHash_144 = hash_
+            elif hash_length == 256:
+                self.pHash_256 = hash_
+        elif isinstance(hash_type, SimilarAlgorithm.dHash):
+            if hash_length == 64:
+                self.dHash_64 = hash_
+            elif hash_length == 144:
+                self.dHash_144 = hash_
+            elif hash_length == 256:
+                self.dHash_256 = hash_
 
     def get_hash(self, hash_type: TYPES_HASH_ALGORITHM, hash_length: int):
         """获取指定的hash值"""
@@ -173,5 +241,16 @@ class ImageInfo:
 
         return ''
 
+    """手动更新参数的方法"""
 
-FileTypes = (FileType.File, FileType.Folder, FileType.Archive, FileType.Unknown)
+    def update_filesize(self, filesize: int):
+        """更新图片大小"""
+        self.filesize = filesize
+
+    def update_comic_path_belong(self, comic_path: str):
+        """更新图片所属漫画的路径"""
+        self.comic_path_belong = comic_path
+
+    def update_comic_filetype_belong(self, comic_filetype: FileTypes):
+        """更新图片所属漫画的文件类型"""
+        self.comic_filetype_belong = comic_filetype

@@ -3,12 +3,11 @@ import os
 import sqlite3
 from typing import Union
 
-from common.class_comic import ComicInfo
+from common.class_comic import ComicInfo, FileType
 
-"""漫画信息数据库"""
 DB_FILEPATH = 'DBComicInfo.db3'
 TABLE_NAME = 'ComicInfo'
-KEY_FILEPATH = 'filepath'  # 文件路径
+KEY_FILEPATH = 'filepath'  # 文件路径（主键）
 KEY_FILENAME = 'filename'  # 文件名（含扩展名）
 KEY_FILETITLE = 'filetitle'  # 文件标题（不含扩展名）
 KEY_PARENT_DIRPATH = 'parent_dirpath'  # 文件父级路径
@@ -59,9 +58,10 @@ class DBComicInfo:
                            f'{KEY_MODIFIED_TIME} REAL,'  # 文件修改时间（自纪元以来的秒数）
                            f'{KEY_PAGE_PATHS} TEXT,'  # 内部文件路径
                            f'{KEY_PAGE_COUNT} INTEGER,'  # 页数
-                           f'{KEY_PREVIEW_PATH} TEXT,'  # 预览小图本地路径
+                           f'{KEY_PREVIEW_PATH} TEXT'  # 预览小图本地路径
                            f')')
 
+            conn.commit()
             cursor.close()
             conn.close()
 
@@ -117,12 +117,52 @@ class DBComicInfo:
         self.cursor.execute(f'''DELETE FROM {TABLE_NAME} WHERE {KEY_FILEPATH} = "{comic_path}"''')
         self.conn.commit()
 
-    def get(self):
-        """获取记录"""
-        # 备忘录
+    def get_comic_info_by_comic_path(self, comic_path: str):
+        """根据漫画文件路径获取漫画信息类"""
+        comic_path = os.path.normpath(comic_path)
+
+        self.cursor.execute(f'SELECT * FROM {TABLE_NAME} WHERE {KEY_FILEPATH} = "{comic_path}"')
+
+        # 获取列名
+        columns = [desc[0] for desc in self.cursor.description]
+
+        # 获取结果列表
+        result = self.cursor.fetchone()
+
+        # 转换为漫画信息类
+        result_dict = dict(zip(columns, result))  # 先转为键名-键值的字典格式
+        comic_info = ComicInfo(comic_path, db_model=True)
+        # 文件大小
+        filesize_bytes = result_dict[KEY_FILESIZE_BYTES]
+        filesize_bytes_extracted = result_dict[KEY_FILESIZE_BYTES_EXTRACTED]
+        comic_info.update_filesize(filesize_bytes)
+        comic_info.update_filesize_extracted(filesize_bytes_extracted)
+        # 文件类型
+        filetype_str = result_dict[KEY_FILETYPE]
+        if filetype_str == FileType.Folder.text:
+            filetype_class = FileType.Folder()
+        elif filetype_str == FileType.Archive.text:
+            filetype_class = FileType.Archive()
+        elif filetype_str == FileType.File.text:
+            filetype_class = FileType.File()
+        else:
+            raise Exception('漫画文件类型错误')
+        comic_info.update_filetype(filetype_class)
+        # 文件修改时间
+        modified_time = result_dict[KEY_MODIFIED_TIME]
+        comic_info.update_modified_time(modified_time)
+        # 漫画页路径列表
+        page_paths = convert_str_to_list(result_dict[KEY_PAGE_PATHS])
+        comic_info.update_page_paths(page_paths)
+        # 漫画预览小图路径
+        preview_path = result_dict[KEY_PREVIEW_PATH]
+        comic_info.update_preview_path(preview_path)
+
+        return ComicInfo(comic_path)
 
     def is_comic_exist(self, comic_path: str):
         """检查漫画路径在数据库中是否已存在"""
+        comic_path = os.path.normpath(comic_path)
         self.cursor.execute(f'SELECT 1 FROM {TABLE_NAME} WHERE {KEY_FILEPATH} = "{comic_path}"')
         result = self.cursor.fetchone()
         if result:

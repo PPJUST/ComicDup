@@ -1,15 +1,15 @@
 # 数据库方法
 import os
 import sqlite3
+from typing import List
 
-from common.class_comic import ImageInfo
-from common.class_config import SimilarAlgorithm
+from common.class_comic import ImageInfo, FileType
+from common.class_config import SimilarAlgorithm, TYPES_HASH_ALGORITHM
 
-"""漫画信息数据库"""
 DB_FILEPATH = 'DBImageInfo.db3'
-KEY_FAKE_PATH = 'fake_path'  # 虚拟路径，组合漫画路径与图片路径，用于处理压缩文件类漫画
 TABLE_NAME = 'ImageInfo'
 KEY_FILEPATH = 'filepath'  # 图片路径
+KEY_FAKE_PATH = 'fake_path'  # 虚拟路径，组合漫画路径与图片路径，用于处理压缩文件类漫画（主键）
 KEY_FILESIZE_BYTES = 'filesize_bytes'  # 文件大小（字节）
 KEY_AHASH_64 = 'aHash_64'  # 均值哈希（64位）
 KEY_AHASH_144 = 'aHash_144'  # 均值哈希（144位）
@@ -53,9 +53,10 @@ class DBImageInfo:
                            f'{KEY_DHASH_144} TEXT,'  # 差异哈希（144位）
                            f'{KEY_DHASH_256} TEXT,'  # 差异哈希（256位）
                            f'{KEY_COMIC_PATH_BELONG} TEXT,'  # 图片所属漫画的路径
-                           f'{KEY_COMIC_FILETYPE_BELONG} TEXT,'  # 图片所属漫画的文件类型
+                           f'{KEY_COMIC_FILETYPE_BELONG} TEXT'  # 图片所属漫画的文件类型
                            f')')
 
+            conn.commit()
             cursor.close()
             conn.close()
 
@@ -131,9 +132,70 @@ class DBImageInfo:
         self.cursor.execute(f'''DELETE FROM {TABLE_NAME} WHERE {KEY_FAKE_PATH} = "{fake_path}"''')
         self.conn.commit()
 
-    def get(self):
-        """获取记录"""
-        # 备忘录
+    def get_image_info_by_hash(self, hash_: str, hash_type: TYPES_HASH_ALGORITHM) -> List[ImageInfo]:
+        """根据hash值获取图片信息类"""
+        hash_length = len(hash_)
+        if isinstance(hash_type, SimilarAlgorithm.aHash):
+            key_hash = KEY_AHASH_64.replace('64', str(hash_length))
+        elif isinstance(hash_type, SimilarAlgorithm.pHash):
+            key_hash = KEY_PHASH_64.replace('64', str(hash_length))
+        elif isinstance(hash_type, SimilarAlgorithm.dHash):
+            key_hash = KEY_DHASH_64.replace('64', str(hash_length))
+        else:
+            raise Exception('未知的hash类型')
+
+        self.cursor.execute(f'SELECT * FROM {TABLE_NAME} WHERE {key_hash} = "{hash_}"')
+
+        # 获取列名
+        columns = [desc[0] for desc in self.cursor.description]
+
+        # 获取结果列表
+        results = self.cursor.fetchall()
+
+        # 转换为图片信息类
+        results_image_info: List[ImageInfo] = []
+        for result in results:
+            result_dict = dict(zip(columns, result))  # 先转为键名-键值的字典格式
+            image_info = ImageInfo(image_path=result_dict[KEY_FILEPATH])
+            # 图片大小
+            filesize = result_dict[KEY_FILESIZE_BYTES]
+            image_info.update_filesize(filesize)
+            # 图片所属
+            comic_path_belong = result_dict[KEY_COMIC_PATH_BELONG]
+            comic_filetype_belong_str = result_dict[KEY_COMIC_FILETYPE_BELONG]
+            if comic_filetype_belong_str == FileType.Folder.text:
+                comic_filetype_belong = FileType.Folder()
+            elif comic_filetype_belong_str == FileType.Archive.text:
+                comic_filetype_belong = FileType.Archive()
+            elif comic_filetype_belong_str == FileType.File.text:
+                comic_filetype_belong = FileType.File()
+            else:
+                raise Exception('漫画文件类型错误')
+            image_info.update_comic_path_belong(comic_path_belong)
+            image_info.update_comic_filetype_belong(comic_filetype_belong)
+            # hash值
+            ahash_64 = result_dict[KEY_AHASH_64]
+            ahash_144 = result_dict[KEY_AHASH_144]
+            ahash_256 = result_dict[KEY_AHASH_256]
+            image_info.update_hash(ahash_64, SimilarAlgorithm.aHash, len(ahash_64))
+            image_info.update_hash(ahash_144, SimilarAlgorithm.aHash, len(ahash_144))
+            image_info.update_hash(ahash_256, SimilarAlgorithm.aHash, len(ahash_256))
+            phash_64 = result_dict[KEY_PHASH_64]
+            phash_144 = result_dict[KEY_PHASH_144]
+            phash_256 = result_dict[KEY_PHASH_256]
+            image_info.update_hash(phash_64, SimilarAlgorithm.pHash, len(phash_64))
+            image_info.update_hash(phash_144, SimilarAlgorithm.pHash, len(phash_144))
+            image_info.update_hash(phash_256, SimilarAlgorithm.pHash, len(phash_256))
+            dhash_64 = result_dict[KEY_DHASH_64]
+            dhash_144 = result_dict[KEY_DHASH_144]
+            dhash_256 = result_dict[KEY_DHASH_256]
+            image_info.update_hash(dhash_64, SimilarAlgorithm.dHash, len(dhash_64))
+            image_info.update_hash(dhash_144, SimilarAlgorithm.dHash, len(dhash_144))
+            image_info.update_hash(dhash_256, SimilarAlgorithm.dHash, len(dhash_256))
+
+            results_image_info.append(image_info)
+
+        return results_image_info
 
     def is_image_exist(self, image_path: str, comic_path: str):
         """检查漫画路径在数据库中是否已存在"""

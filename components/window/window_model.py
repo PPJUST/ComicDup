@@ -3,6 +3,7 @@ from typing import List
 from common.class_comic import ComicInfo, ImageInfo
 from common.class_config import TYPES_HASH_ALGORITHM
 from common.function_db_comic_info import DBComicInfo
+from common.function_db_image_info import DBImageInfo
 
 
 class WindowModel:
@@ -12,6 +13,7 @@ class WindowModel:
         super().__init__()
         # 连接数据库
         self.db_comic_info = DBComicInfo()
+        self.db_image_info = DBImageInfo()
 
     def save_comic_info_to_db(self, comic_infos: List[ComicInfo]):
         """保存漫画信息到本地数据库中"""
@@ -33,9 +35,49 @@ class WindowModel:
 
     def save_image_info_to_db(self, image_infos: List[ImageInfo]):
         """保存图片信息到本地数据库中"""
-        # 备忘录
+        for image_info in image_infos:
+            self.db_image_info.add(image_info)
+
+    def get_hashs_from_image_infos(self, image_infos: List[ImageInfo], hash_type: TYPES_HASH_ALGORITHM,
+                                   hash_length: int):
+        """从图片信息类列表中读取图片hash值列表"""
+        hash_list = []
+        for image_info in image_infos:
+            hash_ = image_info.get_hash(hash_type, hash_length)
+            hash_list.append(hash_)
+
+        return hash_list
 
     def get_hash_from_image_info(self, image_info: ImageInfo, hash_type: TYPES_HASH_ALGORITHM, hash_length: int):
         """从图片信息类中读取图片hash值"""
         hash_ = image_info.get_hash(hash_type, hash_length)
         return hash_
+
+    def get_image_info_by_hash(self, hash_: str, hash_type: TYPES_HASH_ALGORITHM):
+        """根据hash值获取对应的图片信息类（列表）"""
+        # 由于一个hash值可能对应多个图片，因此返回一个列表
+        image_infos = self.db_image_info.get_image_info_by_hash(hash_, hash_type)
+        return image_infos
+
+    def get_comic_info_by_image_info(self, image_info: ImageInfo):
+        """根据图片信息类获取对应的漫画信息类"""
+        comic_path = image_info.comic_path_belong
+        comic_info = self.db_comic_info.get_comic_info_by_comic_path(comic_path)
+        return comic_info
+
+    def convert_hash_group_to_comic_info_group(self, hash_group: List[List[str]], hash_type: TYPES_HASH_ALGORITHM) -> \
+    List[List[ComicInfo]]:
+        """将hash值组列表转换为对应的漫画组列表"""
+        # hash组格式：[[hash1, hash2, hash3], [hash4, hash5, hash6]]
+        comic_group = []
+        for h_group in hash_group:
+            c_group = []
+            for hash_ in h_group:
+                image_infos = self.get_image_info_by_hash(hash_, hash_type)
+                for image_info in image_infos:
+                    comic_path = image_info.comic_path_belong
+                    comic_info = self.get_comic_info_by_image_info(image_info)
+                    c_group.append(comic_info)
+            comic_group.append(c_group)
+
+        return comic_group
