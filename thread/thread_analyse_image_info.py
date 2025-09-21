@@ -51,6 +51,7 @@ class ThreadAnalyseImageInfo(ThreadPattern):
         super().run()
         for index, image_path in enumerate(self.images, start=1):
             image_info = ImageInfo(image_path)
+            image_info.calc_hash(self.hash_type, self.hash_length)  # 计算指定hash值
             self.image_info_dict[image_path] = image_info
 
         # 结束后发送信号

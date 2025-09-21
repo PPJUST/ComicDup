@@ -21,7 +21,6 @@ class SearchListPresenter(QObject):
 
     def drop_files(self, files: list):
         """拖入文件"""
-        print(files)
         if isinstance(files, str):
             files = [files]
 

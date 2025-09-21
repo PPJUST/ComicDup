@@ -99,7 +99,6 @@ class WindowPresenter(QObject):
         """子线程-搜索漫画执行完毕"""
         # 提取漫画路径列表
         comics_path = self.thread_search_comic.get_comics_path()
-        print('漫画路径列表', comics_path)
         # 传递给 子线程-分析漫画信息
         self.start_thread_analyse_comic_info(comics_path)
 
@@ -112,7 +111,6 @@ class WindowPresenter(QObject):
         """子线程-分析漫画信息执行完毕"""
         # 提取漫画信息类字典
         comic_info_dict = self.thread_analyse_comic_info.get_comic_info_dict()
-        print('漫画信息类字典', comic_info_dict)
         # 保存到本地数据库中
         self.model.save_comic_info_to_db(comic_info_dict.values())
         # 提取指定数量的漫画内部图片路径
@@ -151,7 +149,6 @@ class WindowPresenter(QObject):
         # 将hash列表转换为对应的漫画信息类列表
         hash_type = self.thread_analyse_image_info.hash_type  # 提取的hash类型
         comic_info_groups = self.model.convert_hash_group_to_comic_info_group(similar_hash_groups, hash_type)
-        print('comic_info_groups', comic_info_groups)
         # 检查设置项，是否需要使用增强算法
         is_enhance_algorithm = self.widget_setting_algorithm.get_is_enhance_algorithm()
         enhance_algorithm = self.widget_setting_algorithm.get_enhance_algorithm()
@@ -197,7 +194,7 @@ class WindowPresenter(QObject):
         self.thread_compare_hash.set_hamming_distance(hamming_distance)
         # hash长度
         hash_length = self.widget_setting_algorithm.get_hash_length()
-        self.thread_analyse_image_info.set_hash_length(hash_algorithm)
+        self.thread_analyse_image_info.set_hash_length(hash_length)
 
         # 每本漫画提取的页数
         extract_pages = self.widget_setting_match.get_extract_pages()

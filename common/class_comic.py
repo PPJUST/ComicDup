@@ -1,8 +1,11 @@
 # 漫画相关的自定义类
+import math
 import os
 
 import lzytools.archive
 import lzytools.file
+import lzytools.image
+from PIL import Image
 
 from common import function_file, function_archive, function_cache
 from common.class_config import TYPES_HASH_ALGORITHM, SimilarAlgorithm
@@ -170,6 +173,35 @@ class ImageInfo:
             self.filesize = lzytools.file.get_size(self.image_path)
         elif isinstance(self.comic_filetype_belong, FileType.Archive):
             self.filesize = function_archive.get_filesize_inside(self.comic_path_belong, self.image_path)
+
+    def calc_hash(self, hash_type: TYPES_HASH_ALGORITHM, hash_length: int):
+        """计算图片hash值"""
+        hash_type_str = hash_type.text
+        hash_size = int(math.sqrt(hash_length))
+        # 创建ImageFile对象
+        image_pil = Image.open(self.image_path)
+        hash_dict = lzytools.image.calc_hash(image_pil, hash_type_str, hash_size)
+        if hash_dict['ahash']:
+            if len(hash_dict['ahash']) == 64:
+                self.aHash_64 = hash_dict['ahash']
+            elif len(hash_dict['ahash']) == 144:
+                self.aHash_144 = hash_dict['ahash']
+            elif len(hash_dict['ahash']) == 256:
+                self.aHash_256 = hash_dict['ahash']
+        elif hash_dict['phash']:
+            if len(hash_dict['phash']) == 64:
+                self.pHash_64 = hash_dict['phash']
+            elif len(hash_dict['phash']) == 144:
+                self.pHash_144 = hash_dict['phash']
+            elif len(hash_dict['phash']) == 256:
+                self.pHash_256 = hash_dict['phash']
+        elif hash_dict['dhash']:
+            if len(hash_dict['dhash']) == 64:
+                self.dHash_64 = hash_dict['dhash']
+            elif len(hash_dict['dhash']) == 144:
+                self.dHash_144 = hash_dict['dhash']
+            elif len(hash_dict['dhash']) == 256:
+                self.dHash_256 = hash_dict['dhash']
 
     def update_info_by_comic_info(self, comic_info: ComicInfo):
         """根据漫画信息类更新信息"""

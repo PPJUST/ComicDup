@@ -39,7 +39,6 @@ class SettingAlgorithmModel:
 
     def get_basic_algorithm_text(self) -> str:
         algorithms = self.get_basic_algorithm()
-        print(algorithms)
         return algorithms.text
 
     def set_basic_algorithm(self, algorithm: TYPES_HASH_ALGORITHM):

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'windowmhmmbh.ui'
+## Form generated from reading UI file 'windowfSYKkq.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.1
 ##
@@ -16,8 +16,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QFrame, QGroupBox, QHBoxLayout,
-    QMainWindow, QSizePolicy, QStackedWidget, QTabWidget,
-    QVBoxLayout, QWidget)
+    QMainWindow, QPushButton, QSizePolicy, QSpacerItem,
+    QStackedWidget, QTabWidget, QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -100,6 +100,20 @@ class Ui_MainWindow(object):
         self.page_2.setObjectName(u"page_2")
         self.verticalLayout_2 = QVBoxLayout(self.page_2)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.horizontalLayout_3 = QHBoxLayout()
+        self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
+        self.pushButton_back_to_search_list = QPushButton(self.page_2)
+        self.pushButton_back_to_search_list.setObjectName(u"pushButton_back_to_search_list")
+
+        self.horizontalLayout_3.addWidget(self.pushButton_back_to_search_list)
+
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_3.addItem(self.horizontalSpacer)
+
+
+        self.verticalLayout_2.addLayout(self.horizontalLayout_3)
+
         self.groupBox_runtime_info = QGroupBox(self.page_2)
         self.groupBox_runtime_info.setObjectName(u"groupBox_runtime_info")
         self.verticalLayout_8 = QVBoxLayout(self.groupBox_runtime_info)
@@ -107,6 +121,7 @@ class Ui_MainWindow(object):
 
         self.verticalLayout_2.addWidget(self.groupBox_runtime_info)
 
+        self.verticalLayout_2.setStretch(1, 1)
         self.stackedWidget.addWidget(self.page_2)
 
         self.horizontalLayout_2.addWidget(self.stackedWidget)
@@ -151,6 +166,7 @@ class Ui_MainWindow(object):
         self.groupBox_exec.setTitle(QCoreApplication.translate("MainWindow", u"\u529f\u80fd\u533a", None))
         self.groupBox_setting.setTitle(QCoreApplication.translate("MainWindow", u"\u8bbe\u7f6e\u9009\u9879", None))
         self.groupBox_search_list.setTitle(QCoreApplication.translate("MainWindow", u"\u68c0\u7d22\u8def\u5f84", None))
+        self.pushButton_back_to_search_list.setText(QCoreApplication.translate("MainWindow", u"\u8fd4\u56de\u81f3\u68c0\u7d22\u8def\u5f84\u9875", None))
         self.groupBox_runtime_info.setTitle(QCoreApplication.translate("MainWindow", u"\u8fd0\u884c\u4fe1\u606f", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_home), QCoreApplication.translate("MainWindow", u"\u4e3b\u9875", None))
         self.groupBox_result_filter.setTitle(QCoreApplication.translate("MainWindow", u"\u7b5b\u9009\u5668", None))
