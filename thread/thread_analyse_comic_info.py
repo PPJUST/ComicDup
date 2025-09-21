@@ -34,6 +34,7 @@ class ThreadAnalyseComicInfo(ThreadPattern):
 
     def run(self):
         super().run()
+        print('启动子线程 分析漫画信息')
         # 遍历列表，提取信息
         for index, comic in enumerate(self.comics, start=1):
             if self._is_stop:
@@ -43,4 +44,6 @@ class ThreadAnalyseComicInfo(ThreadPattern):
             self.comic_info_dict[comic] = comic_info
 
         # 结束后发送信号
+        print('提取的漫画信息', self.comic_info_dict)
+        print('结束子线程 分析漫画信息')
         self.finished()

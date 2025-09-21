@@ -63,6 +63,8 @@ class DBImageInfo:
     def add(self, image_info: ImageInfo):
         """添加/更新记录"""
         # 组合漫画路径与图片路径，用于处理压缩文件类漫画
+        print(image_info.image_path)
+        print(image_info.comic_path_belong)
         image_path = os.path.normpath(image_info.image_path)
         comic_path = os.path.normpath(image_info.comic_path_belong)
         fake_path = os.path.normpath(os.path.join(comic_path, os.path.basename(image_path)))
@@ -146,11 +148,15 @@ class DBImageInfo:
 
         self.cursor.execute(f'SELECT * FROM {TABLE_NAME} WHERE {key_hash} = "{hash_}"')
 
+        print(hash_type)
+        print(hash_length)
+        print(f'SELECT * FROM {TABLE_NAME} WHERE {key_hash} = "{hash_}"')
         # 获取列名
         columns = [desc[0] for desc in self.cursor.description]
 
         # 获取结果列表
         results = self.cursor.fetchall()
+        print(results)
 
         # 转换为图片信息类
         results_image_info: List[ImageInfo] = []

@@ -42,6 +42,7 @@ class ThreadCompareHash(ThreadPattern):
 
     def run(self):
         super().run()
+        print('开始子线程 对比图片hash')
         self.similar_hash_group = []
         match_hash_list = self.hash_list.copy()
         for hash_ in self.hash_list:
@@ -59,6 +60,8 @@ class ThreadCompareHash(ThreadPattern):
                 self.similar_hash_group.append(similar)
 
         # 结束后发送信号
+        print('获取的相似hash组', self.similar_hash_group)
+        print('结束子线程 对比图片hash')
         self.finished()
 
     @staticmethod

@@ -54,6 +54,7 @@ class ThreadSearchComic(ThreadPattern):
 
     def run(self):
         super().run()
+        print('开始子线程 搜索漫画')
         # 剔除搜索路径中包含的子路径
         search_list = lzytools.file.remove_subpaths(self.search_list)
 
@@ -108,4 +109,6 @@ class ThreadSearchComic(ThreadPattern):
         self.comics_path = natsort.os_sorted(list(comics_path))
 
         # 结束后发送信号
+        print('搜索到的漫画', self.comics_path)
+        print('结束子线程 搜索漫画')
         self.finished()

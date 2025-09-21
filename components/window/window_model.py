@@ -57,6 +57,9 @@ class WindowModel:
         """根据hash值获取对应的图片信息类（列表）"""
         # 由于一个hash值可能对应多个图片，因此返回一个列表
         image_infos = self.db_image_info.get_image_info_by_hash(hash_, hash_type)
+        print('将hash值转换为对应的图片')
+        print('hash值', hash_)
+        print('对应的图片', image_infos)
         return image_infos
 
     def get_comic_info_by_image_info(self, image_info: ImageInfo):
@@ -66,7 +69,7 @@ class WindowModel:
         return comic_info
 
     def convert_hash_group_to_comic_info_group(self, hash_group: List[List[str]], hash_type: TYPES_HASH_ALGORITHM) -> \
-    List[List[ComicInfo]]:
+            List[List[ComicInfo]]:
         """将hash值组列表转换为对应的漫画组列表"""
         # hash组格式：[[hash1, hash2, hash3], [hash4, hash5, hash6]]
         comic_group = []
@@ -80,4 +83,7 @@ class WindowModel:
                     c_group.append(comic_info)
             comic_group.append(c_group)
 
+        print('将hash值转换为对应的漫画')
+        print('hash值', hash_group)
+        print('对应的漫画', comic_group)
         return comic_group

@@ -49,10 +49,13 @@ class ThreadAnalyseImageInfo(ThreadPattern):
 
     def run(self):
         super().run()
+        print('启动子线程 分析图片信息')
         for index, image_path in enumerate(self.images, start=1):
             image_info = ImageInfo(image_path)
             image_info.calc_hash(self.hash_type, self.hash_length)  # 计算指定hash值
             self.image_info_dict[image_path] = image_info
 
         # 结束后发送信号
+        print('提取的图片信息', self.image_info_dict)
+        print('结束子线程 分析图片信息')
         self.finished()

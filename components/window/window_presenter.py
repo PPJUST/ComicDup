@@ -121,6 +121,7 @@ class WindowPresenter(QObject):
 
     def start_analyse_image_info(self, images_path: list):
         """启动子线程-分析图片信息"""
+        # 备忘录 有bug  需要传递漫画信息类
         self.thread_analyse_image_info.set_images(images_path)
         self.thread_analyse_image_info.start()
 
