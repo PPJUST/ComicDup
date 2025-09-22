@@ -111,18 +111,19 @@ class WindowPresenter(QObject):
         """子线程-分析漫画信息执行完毕"""
         # 提取漫画信息类字典
         comic_info_dict = self.thread_analyse_comic_info.get_comic_info_dict()
+        comic_info_list = list(comic_info_dict.values())
         # 保存到本地数据库中
         self.model.save_comic_info_to_db(comic_info_dict.values())
         # 提取指定数量的漫画内部图片路径
         extract_pages = self.widget_setting_match.get_extract_pages()  # 每本漫画提取的页数
         images_in_comic = self.model.get_images_from_comic_infos(comic_info_dict.values(), extract_pages)
         # 将提取的图片路径列表传递给 子线程-分析图片信息
-        self.start_analyse_image_info(images_in_comic)
+        self.start_analyse_image_info(images_in_comic, comic_info_list)
 
-    def start_analyse_image_info(self, images_path: list):
+    def start_analyse_image_info(self, images_path: list, comic_info_list: list):
         """启动子线程-分析图片信息"""
-        # 备忘录 有bug  需要传递漫画信息类
         self.thread_analyse_image_info.set_images(images_path)
+        self.thread_analyse_image_info.set_comic_info_list(comic_info_list)
         self.thread_analyse_image_info.start()
 
     def thread_analyse_image_info_finished(self):

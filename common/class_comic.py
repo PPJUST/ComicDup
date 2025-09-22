@@ -249,21 +249,21 @@ class ImageInfo:
 
     def get_hash(self, hash_type: TYPES_HASH_ALGORITHM, hash_length: int):
         """获取指定的hash值"""
-        if isinstance(hash_type, SimilarAlgorithm.aHash):
+        if isinstance(hash_type, SimilarAlgorithm.aHash) or hash_type == SimilarAlgorithm.aHash:
             if hash_length == 64:
                 return self.aHash_64
             elif hash_length == 144:
                 return self.aHash_144
             elif hash_length == 256:
                 return self.aHash_256
-        elif isinstance(hash_type, SimilarAlgorithm.pHash):
+        elif isinstance(hash_type, SimilarAlgorithm.pHash) or hash_type == SimilarAlgorithm.pHash:
             if hash_length == 64:
                 return self.pHash_64
             elif hash_length == 144:
                 return self.pHash_144
             elif hash_length == 256:
                 return self.pHash_256
-        elif isinstance(hash_type, SimilarAlgorithm.dHash):
+        elif isinstance(hash_type, SimilarAlgorithm.dHash) or hash_type == SimilarAlgorithm.dHash:
             if hash_length == 64:
                 return self.dHash_64
             elif hash_length == 144:

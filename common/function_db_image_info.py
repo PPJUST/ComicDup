@@ -63,8 +63,6 @@ class DBImageInfo:
     def add(self, image_info: ImageInfo):
         """添加/更新记录"""
         # 组合漫画路径与图片路径，用于处理压缩文件类漫画
-        print(image_info.image_path)
-        print(image_info.comic_path_belong)
         image_path = os.path.normpath(image_info.image_path)
         comic_path = os.path.normpath(image_info.comic_path_belong)
         fake_path = os.path.normpath(os.path.join(comic_path, os.path.basename(image_path)))
@@ -78,7 +76,7 @@ class DBImageInfo:
                             f'WHERE {KEY_FAKE_PATH} = "{fake_path}"')
 
         # 只更新存在的hash值
-        ahash_64 = image_info.get_hash(SimilarAlgorithm.aHash, 64)
+        ahash_64 = image_info.get_hash(SimilarAlgorithm.aHash(), 64)
         if ahash_64:
             self.cursor.execute(f'UPDATE {TABLE_NAME} SET {KEY_AHASH_64} = "{ahash_64}" '
                                 f'WHERE {KEY_FAKE_PATH} = "{fake_path}"')
@@ -121,7 +119,7 @@ class DBImageInfo:
                             f'WHERE {KEY_FAKE_PATH} = "{fake_path}"')
 
         self.cursor.execute(
-            f'UPDATE {TABLE_NAME} SET {KEY_COMIC_FILETYPE_BELONG} = "{image_info.comic_filetype_belong}" '
+            f'UPDATE {TABLE_NAME} SET {KEY_COMIC_FILETYPE_BELONG} = "{image_info.comic_filetype_belong.text}" '
             f'WHERE {KEY_FAKE_PATH} = "{fake_path}"')
 
         self.conn.commit()
@@ -148,15 +146,11 @@ class DBImageInfo:
 
         self.cursor.execute(f'SELECT * FROM {TABLE_NAME} WHERE {key_hash} = "{hash_}"')
 
-        print(hash_type)
-        print(hash_length)
-        print(f'SELECT * FROM {TABLE_NAME} WHERE {key_hash} = "{hash_}"')
         # 获取列名
         columns = [desc[0] for desc in self.cursor.description]
 
         # 获取结果列表
         results = self.cursor.fetchall()
-        print(results)
 
         # 转换为图片信息类
         results_image_info: List[ImageInfo] = []
@@ -181,23 +175,32 @@ class DBImageInfo:
             image_info.update_comic_filetype_belong(comic_filetype_belong)
             # hash值
             ahash_64 = result_dict[KEY_AHASH_64]
+            if ahash_64:
+                image_info.update_hash(ahash_64, SimilarAlgorithm.aHash, len(ahash_64))
             ahash_144 = result_dict[KEY_AHASH_144]
+            if ahash_144:
+                image_info.update_hash(ahash_144, SimilarAlgorithm.aHash, len(ahash_144))
             ahash_256 = result_dict[KEY_AHASH_256]
-            image_info.update_hash(ahash_64, SimilarAlgorithm.aHash, len(ahash_64))
-            image_info.update_hash(ahash_144, SimilarAlgorithm.aHash, len(ahash_144))
-            image_info.update_hash(ahash_256, SimilarAlgorithm.aHash, len(ahash_256))
+            if ahash_256:
+                image_info.update_hash(ahash_256, SimilarAlgorithm.aHash, len(ahash_256))
             phash_64 = result_dict[KEY_PHASH_64]
+            if phash_64:
+                image_info.update_hash(phash_64, SimilarAlgorithm.pHash, len(phash_64))
             phash_144 = result_dict[KEY_PHASH_144]
+            if phash_144:
+                image_info.update_hash(phash_144, SimilarAlgorithm.pHash, len(phash_144))
             phash_256 = result_dict[KEY_PHASH_256]
-            image_info.update_hash(phash_64, SimilarAlgorithm.pHash, len(phash_64))
-            image_info.update_hash(phash_144, SimilarAlgorithm.pHash, len(phash_144))
-            image_info.update_hash(phash_256, SimilarAlgorithm.pHash, len(phash_256))
+            if phash_256:
+                image_info.update_hash(phash_256, SimilarAlgorithm.pHash, len(phash_256))
             dhash_64 = result_dict[KEY_DHASH_64]
+            if dhash_64:
+                image_info.update_hash(dhash_64, SimilarAlgorithm.dHash, len(dhash_64))
             dhash_144 = result_dict[KEY_DHASH_144]
+            if dhash_144:
+                image_info.update_hash(dhash_144, SimilarAlgorithm.dHash, len(dhash_144))
             dhash_256 = result_dict[KEY_DHASH_256]
-            image_info.update_hash(dhash_64, SimilarAlgorithm.dHash, len(dhash_64))
-            image_info.update_hash(dhash_144, SimilarAlgorithm.dHash, len(dhash_144))
-            image_info.update_hash(dhash_256, SimilarAlgorithm.dHash, len(dhash_256))
+            if dhash_256:
+                image_info.update_hash(dhash_256, SimilarAlgorithm.dHash, len(dhash_256))
 
             results_image_info.append(image_info)
 

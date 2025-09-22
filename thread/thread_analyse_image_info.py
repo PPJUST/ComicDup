@@ -1,15 +1,16 @@
-# 子线程-计算图片hash
-from typing import Dict
+# 子线程-分析图片信息
+import os
+from typing import Dict, List
 
 import natsort
 
-from common.class_comic import ImageInfo
+from common.class_comic import ImageInfo, ComicInfo
 from common.class_config import SimilarAlgorithm, TYPES_HASH_ALGORITHM
 from thread.thread_pattern import ThreadPattern
 
 
 class ThreadAnalyseImageInfo(ThreadPattern):
-    """子线程-计算图片hash"""
+    """子线程-分析图片信息"""
 
     def __init__(self):
         super().__init__()
@@ -17,7 +18,9 @@ class ThreadAnalyseImageInfo(ThreadPattern):
         self.step_info = '计算图片hash'
 
         # 图片列表
-        self.images = []
+        self.images: list[str] = []
+        # 漫画信息类列表，用于提取相关数据
+        self.comic_info_list: List[ComicInfo] = []
         # 图片hash字典
         self.image_info_dict: Dict[str, ImageInfo] = dict()
 
@@ -34,6 +37,10 @@ class ThreadAnalyseImageInfo(ThreadPattern):
         """设置需要计算hash的图片列表"""
         self.images = natsort.os_sorted(images)
 
+    def set_comic_info_list(self, comic_info_list: list):
+        """设置图片所在的漫画信息类列表"""
+        self.comic_info_list = comic_info_list
+
     def set_hash_type(self, hash_type: TYPES_HASH_ALGORITHM):
         """设置需要计算的图片hash类型"""
         self.hash_type = hash_type
@@ -47,11 +54,23 @@ class ThreadAnalyseImageInfo(ThreadPattern):
         self.images.clear()
         self.image_info_dict.clear()
 
+    def get_corr_comic_info(self, image_path: str):
+        """获取图片对应的漫画信息类"""
+        image_path = os.path.normpath(image_path)
+        for comic_info in self.comic_info_list:
+            image_list = comic_info.get_page_paths()
+            if image_path in image_list:
+                return comic_info
+        return None
+
     def run(self):
         super().run()
         print('启动子线程 分析图片信息')
         for index, image_path in enumerate(self.images, start=1):
             image_info = ImageInfo(image_path)
+            # 将图片对应的漫画信息类传递给图片信息类，用于计算部分数据
+            comic_info = self.get_corr_comic_info(image_path)
+            image_info.update_info_by_comic_info(comic_info)
             image_info.calc_hash(self.hash_type, self.hash_length)  # 计算指定hash值
             self.image_info_dict[image_path] = image_info
 
