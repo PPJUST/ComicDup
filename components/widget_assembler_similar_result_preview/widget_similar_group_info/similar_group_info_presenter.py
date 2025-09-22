@@ -2,10 +2,13 @@ from typing import List
 
 from PySide6.QtCore import QObject
 
+from common.class_comic import ComicInfo
 from components.widget_assembler_similar_result_preview import widget_comic_info
 from components.widget_assembler_similar_result_preview.widget_comic_info import ComicInfoPresenter
-from components.widget_assembler_similar_result_preview.widget_similar_group_info.similar_group_info_model import SimilarGroupInfoModel
-from components.widget_assembler_similar_result_preview.widget_similar_group_info.similar_group_info_viewer import SimilarGroupInfoViewer
+from components.widget_assembler_similar_result_preview.widget_similar_group_info.similar_group_info_model import \
+    SimilarGroupInfoModel
+from components.widget_assembler_similar_result_preview.widget_similar_group_info.similar_group_info_viewer import \
+    SimilarGroupInfoViewer
 
 
 class SimilarGroupInfoPresenter(QObject):
@@ -16,7 +19,7 @@ class SimilarGroupInfoPresenter(QObject):
         self.viewer = viewer
         self.model = model
 
-        self.comics_path: List[str] = []  # 内部漫画项的路径
+        self.comic_info_list: List[ComicInfo] = []  # 内部漫画项的漫画信息类列表
         self.comics_presenter: List[ComicInfoPresenter] = []  # 内部漫画项的桥梁组件
 
     def set_group_index(self, index: int):
@@ -25,24 +28,23 @@ class SimilarGroupInfoPresenter(QObject):
 
     def set_item_count(self):
         """设置当前组内部项目的总数"""
-        self.viewer.set_item_count(len(self.comics_path))
+        self.viewer.set_item_count(len(self.comic_info_list))
 
     def set_group_sign(self, sign: str):
         """设置当前组的标记"""
         self.viewer.set_group_sign(sign)
 
-    def add_comics(self, comics_path: List[str]):
+    def add_comics(self, comic_info_list: List[ComicInfo]):
         """批量添加内部漫画信息项"""
-        for comic_path in comics_path:
-            self.add_comic(comic_path)
+        for comic_info in comic_info_list:
+            self.add_comic(comic_info)
 
-    def add_comic(self, comic_path: str):
-        """添加内部漫画信息项
-        :param comic_path:漫画路径"""
-        self.comics_path.append(comic_path)
+    def add_comic(self, comic_info: ComicInfo):
+        """添加内部漫画信息项"""
+        self.comic_info_list.append(comic_info)
 
         comic_info_presenter = widget_comic_info.get_presenter()
-        comic_info_presenter.set_comic(comic_path)
+        comic_info_presenter.set_comic_info(comic_info)
         self.comics_presenter.append(comic_info_presenter)
 
         widget = comic_info_presenter.get_viewer()

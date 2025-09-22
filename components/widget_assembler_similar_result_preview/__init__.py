@@ -5,6 +5,6 @@ from .assembler import AssemblerSimilarResultPreview
 from .widget_similar_result_preview import SimilarResultPreviewPresenter
 
 
-def get_presenter() ->  SimilarResultPreviewPresenter:
+def get_assembler() -> AssemblerSimilarResultPreview:
     _assembler = AssemblerSimilarResultPreview()
-    return _assembler.get_presenter()
+    return _assembler

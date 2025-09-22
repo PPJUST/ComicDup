@@ -11,6 +11,9 @@ class WindowViewer(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
+        # 绑定信号
+        self.ui.pushButton_back_to_search_list.clicked.connect(self.turn_page_search_list)
+
     def turn_page_search_list(self):
         """翻页到搜索目录页"""
         self.ui.stackedWidget.setCurrentIndex(0)

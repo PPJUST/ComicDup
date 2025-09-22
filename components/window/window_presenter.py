@@ -11,8 +11,11 @@
 8.如果需要使用增强算法，则将得到的漫画相似组列表传递给对应的子线程并执行，得到一个经过二次筛选的漫画相似组列表
 9.提取该漫画相似组列表，并显示在UI中
 """
+from typing import List
+
 from PySide6.QtCore import QObject
 
+from common.class_comic import ComicInfo
 from common.class_config import SimilarAlgorithm
 from components import widget_exec, widget_setting_algorithm, widget_setting_match, widget_setting_comic, \
     widget_search_list, widget_runtime_info, widget_similar_result_filter, widget_assembler_similar_result_preview
@@ -41,7 +44,8 @@ class WindowPresenter(QObject):
         self.widget_search_list = widget_search_list.get_presenter()
         self.widget_runtime_info = widget_runtime_info.get_presenter()
         self.widget_similar_result_filter = widget_similar_result_filter.get_presenter()
-        self.similar_result_preview = widget_assembler_similar_result_preview.get_presenter()
+        self.assembler_similar_result_preview = widget_assembler_similar_result_preview.get_assembler()
+        self.similar_result_preview = self.assembler_similar_result_preview.get_presenter()
 
         # 实例化子线程
         self.thread_search_comic = ThreadSearchComic()
@@ -151,6 +155,10 @@ class WindowPresenter(QObject):
         # 将hash列表转换为对应的漫画信息类列表
         hash_type = self.thread_analyse_image_info.hash_type  # 提取的hash类型
         comic_info_groups = self.model.convert_hash_group_to_comic_info_group(similar_hash_groups, hash_type)
+        print('显示结果漫画信息类列表', comic_info_groups)
+        # 显示匹配结果
+        self.show_similar_result(comic_info_groups)
+
         # 检查设置项，是否需要使用增强算法
         is_enhance_algorithm = self.widget_setting_algorithm.get_is_enhance_algorithm()
         enhance_algorithm = self.widget_setting_algorithm.get_enhance_algorithm()
@@ -164,6 +172,12 @@ class WindowPresenter(QObject):
         """启动子线程-对比图片ssim"""
         self.thread_compare_ssim.set_image_group(image_group)
         self.thread_compare_ssim.start()
+
+    def show_similar_result(self, comic_info_groups: List[List[ComicInfo]]):
+        """显示相似匹配结果"""
+        for comic_info_list in comic_info_groups:
+            self.assembler_similar_result_preview.add_similar_group(comic_info_list)
+        self.assembler_similar_result_preview.show_similar_result()
 
     """运行信息方法"""
 

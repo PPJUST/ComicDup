@@ -1,14 +1,15 @@
 from PySide6.QtCore import Signal, QSize
 from PySide6.QtWidgets import QWidget, QApplication, QListWidgetItem
 
-from components.widget_assembler_similar_result_preview.widget_similar_result_preview.res.ui_similar_result_preview import Ui_Form
+from components.widget_assembler_similar_result_preview.widget_similar_result_preview.res.ui_similar_result_preview import \
+    Ui_Form
 
 
 class SimilarResultPreviewViewer(QWidget):
     """相似匹配结果模块的界面组件"""
     PreviousPage = Signal(name='上一页')
     NextPage = Signal(name='下一页')
-    ChangeShowGroupCount = Signal(int, name='改变每页显示的组数')
+    ChangeShowGroupCount = Signal(str, name='改变每页显示的组数')
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -37,6 +38,7 @@ class SimilarResultPreviewViewer(QWidget):
     def get_show_group_count(self) -> int:
         """获取每页显示的组数"""
         return self.ui.comboBox_show_group_count.currentText()
+
 
 if __name__ == "__main__":
     app_ = QApplication()

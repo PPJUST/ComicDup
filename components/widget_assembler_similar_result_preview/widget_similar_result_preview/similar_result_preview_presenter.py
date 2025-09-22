@@ -49,7 +49,7 @@ class SimilarResultPreviewPresenter(QObject):
 
     def change_show_group_count(self, show_count: int):
         """修改一页显示的组数"""
-        self.show_group_count = show_count
+        self.show_group_count = int(show_count)
         self._calc_total_page()
 
     def _calc_total_page(self):
