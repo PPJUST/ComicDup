@@ -158,7 +158,7 @@ class DBComicInfo:
         preview_path = result_dict[KEY_PREVIEW_PATH]
         comic_info.update_preview_path(preview_path)
 
-        return ComicInfo(comic_path)
+        return comic_info
 
     def is_comic_exist(self, comic_path: str):
         """检查漫画路径在数据库中是否已存在"""

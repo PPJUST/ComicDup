@@ -1,5 +1,7 @@
 from typing import List
 
+import lzytools.common
+
 from common.class_comic import ComicInfo, ImageInfo
 from common.class_config import TYPES_HASH_ALGORITHM
 from common.function_db_comic_info import DBComicInfo
@@ -26,6 +28,7 @@ class WindowModel:
         for comic_info in comic_infos:
             images_inside.extend(self.get_images_from_comic_info(comic_info, extract_image_count))
 
+        images_inside = lzytools.common.dedup_list(images_inside)  # 去重
         return images_inside
 
     def get_images_from_comic_info(self, comic_info: ComicInfo, extract_image_count: int):
@@ -76,16 +79,19 @@ class WindowModel:
         print('将hash值转换为对应的漫画')
         for h_group in hash_group:
             print('hash组', h_group)
-            c_group = []
+            c_group_dict = dict()  # 设置为字典用于去重
             for hash_ in h_group:
                 image_infos = self.get_image_info_by_hash(hash_, hash_type)
                 for image_info in image_infos:
                     image_path = image_info.image_path
                     comic_path = image_info.comic_path_belong
                     comic_info = self.get_comic_info_by_image_info(image_info)
-                    print('转换的漫画路径',comic_path)
-                    c_group.append(comic_info)
-            comic_group.append(c_group)
+                    print('转换的漫画路径', comic_path)
+                    if comic_path not in c_group_dict:
+                        c_group_dict[comic_path] = comic_info
+            c_group = list(c_group_dict.values())
+            if len(c_group) >= 2:  # 仅在组内存在两项及以上时才能作为相似组
+                comic_group.append(c_group)
 
         print('完成将hash值转换为对应的漫画')
         return comic_group

@@ -14,10 +14,12 @@ from common import function_file, function_archive
 CACHE_PREVIEW_DIRPATH = 'cache/preview'
 CACHE_PREVIEW_MAX_COUNT = 100  # 单个文件夹内最多缓存的预览图数量
 
+
 def check_cache_exist(cache_dirpath):
     """检查缓存文件夹是否存在"""
     if not os.path.exists(cache_dirpath):
         os.makedirs(cache_dirpath)
+
 
 def save_preview_image_to_cache(origin_image_path: str, cache_dirpath: str = CACHE_PREVIEW_DIRPATH,
                                 height_zoom_out: int = 128):
@@ -33,14 +35,15 @@ def save_preview_image_to_cache(origin_image_path: str, cache_dirpath: str = CAC
     # 选择缓存的文件夹，选择未超过存储上限的文件夹
     dir_choose = ''
     cache_child_dirs = [os.path.normpath(os.path.join(cache_dirpath, i)) for i in os.listdir(cache_dirpath)]
-    for _dir in cache_child_dirs:
-        if len(os.listdir(_dir)) < CACHE_PREVIEW_MAX_COUNT:
-            dir_choose = _dir
-            break
+    if cache_child_dirs:
+        for _dir in cache_child_dirs:
+            if len(os.listdir(_dir)) < CACHE_PREVIEW_MAX_COUNT:
+                dir_choose = _dir
+                break
     if not dir_choose:  # 如果文件夹不存在，则新建
         dirtitle_choose = lzytools.common.create_random_string(16, uppercase=False)
-        dirpath_choose = os.path.normpath(os.path.join(cache_dirpath, dirtitle_choose))
-        os.mkdir(dirpath_choose)
+        dir_choose = os.path.normpath(os.path.join(cache_dirpath, dirtitle_choose))
+        os.mkdir(dir_choose)
     # 生成最终路径并保存
     preview_image_path = os.path.normpath(os.path.join(dir_choose, filename))
     save_path = function_file.save_preview_image(origin_image_path, preview_image_path, height_zoom_out)
@@ -69,8 +72,8 @@ def save_preview_image_in_archive_to_cache(archive: str, image_path_inside: str,
             break
     if not dir_choose:  # 如果文件夹不存在，则新建
         dirtitle_choose = lzytools.common.create_random_string(16, uppercase=False)
-        dirpath_choose = os.path.normpath(os.path.join(cache_dirpath, dirtitle_choose))
-        os.mkdir(dirpath_choose)
+        dir_choose = os.path.normpath(os.path.join(cache_dirpath, dirtitle_choose))
+        os.mkdir(dir_choose)
     # 生成最终路径并保存
     preview_image_path = os.path.normpath(os.path.join(dir_choose, filename))
     save_path = function_archive.save_preview_image(archive, image_path_inside, preview_image_path, height_zoom_out)

@@ -26,7 +26,7 @@ class SimilarResultPreviewViewer(QWidget):
         # 创建列表项
         list_item = QListWidgetItem()
         # 设置列表项的高度，以适应自定义widget
-        list_item.setSizeHint(QSize(0, 80))
+        list_item.setSizeHint(QSize(0, 250))
         # 将widget设置到列表项
         self.ui.listWidget_group.addItem(list_item)
         self.ui.listWidget_group.setItemWidget(list_item, similar_group_widget)

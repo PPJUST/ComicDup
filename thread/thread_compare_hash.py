@@ -46,7 +46,7 @@ class ThreadCompareHash(ThreadPattern):
         self.similar_hash_group = []
         match_hash_list = self.hash_list.copy()
         for hash_ in self.hash_list:
-            similar = [hash_]
+            similar = {hash_}  # 集合，用于去重
             match_hash_list.remove(hash_)
             zero_count = hash_.count('0')
             for hash_compare in match_hash_list:
@@ -55,9 +55,8 @@ class ThreadCompareHash(ThreadPattern):
                     break
                 distance = lzytools.image.calc_hash_hamming_distance(hash_, hash_compare)
                 if distance <= self.hamming_distance:
-                    similar.append(hash_compare)
-            if len(similar) >= 2:
-                self.similar_hash_group.append(similar)
+                    similar.add(hash_compare)
+            self.similar_hash_group.append(list(similar))
 
         # 结束后发送信号
         print('获取的相似hash组', self.similar_hash_group)
