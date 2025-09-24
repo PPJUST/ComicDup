@@ -1,6 +1,7 @@
 # 配置文件的方法
 import configparser
 import os
+from typing import List, Tuple
 
 from common.class_config import TYPES_HASH_ALGORITHM, SimilarAlgorithm, TYPES_ENHANCE_ALGORITHM
 
@@ -317,3 +318,32 @@ class SettingIsAllowOtherFiletypesInComic(_ModuleChildSettingSingleEnable):
 
     def __init__(self, config_file):
         super().__init__(config_file, section='IsAllowOtherFiletypesInComic', key='is_enable', default_value=False)
+
+
+class SettingSimilarResult(_ModuleChildSetting):
+    """相似项匹配结果"""
+
+    def __init__(self, config_file):
+        super().__init__(config_file)
+        # 结果形式：[(c1,c2),(c3,c4,...)...]
+        # 存储形式：元素之间用||间隔，元素内部用|间隔"
+        self.section = 'SimilarResult'
+        self.key = 'paths'
+        self._default_value: list = []
+        self._SPLIT_ITEM: str = '||'  # 列表元素之间的文本分隔符
+        self._SPLIT_LIST: str = '|'  # 内部元素内的路径的文本分隔符
+
+    def read(self) -> List[Tuple[str]]:
+        """读取设置项"""
+        value = self._read_key(self.section, self.key, self._default_value)
+        # 将读取的文本值转换为列表
+        if isinstance(value, str):
+            lst = [i.split('|') for i in value.split('||')]
+            return lst
+        else:
+            raise ValueError(self.section, self.key, '无效的设置项值')
+
+    def set(self, value: List[Tuple[str]]):
+        """设置设置项"""
+        value_str = '||'.join(['|'.join(i) for i in value])
+        self._set_value(self.section, self.key, value_str)

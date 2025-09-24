@@ -6,13 +6,17 @@
 超过上限后存储到下一个子文件夹中，以此类推
 """
 import os
+import pickle
+from typing import List
 
 import lzytools.common
 
 from common import function_file, function_archive
+from common.class_comic import ComicInfo
 
 CACHE_PREVIEW_DIRPATH = 'cache/preview'
 CACHE_PREVIEW_MAX_COUNT = 100  # 单个文件夹内最多缓存的预览图数量
+RESULT_FILE = 'cache/match_result.pkl'
 
 
 def check_cache_exist(cache_dirpath):
@@ -78,3 +82,16 @@ def save_preview_image_in_archive_to_cache(archive: str, image_path_inside: str,
     preview_image_path = os.path.normpath(os.path.join(dir_choose, filename))
     save_path = function_archive.save_preview_image(archive, image_path_inside, preview_image_path, height_zoom_out)
     return save_path
+
+
+def save_similar_result(comic_info_groups: List[List[ComicInfo]]):
+    """"保存相似匹配结果"""
+    with open(RESULT_FILE, 'wb') as file:
+        pickle.dump(comic_info_groups, file)
+
+
+def get_similar_result() -> List[List[ComicInfo]]:
+    """"获取相似匹配结果"""
+    with open(RESULT_FILE, 'wb') as file:
+        data = pickle.load(file)
+        return data

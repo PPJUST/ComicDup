@@ -15,6 +15,7 @@ from typing import List
 
 from PySide6.QtCore import QObject
 
+from common import function_cache
 from common.class_comic import ComicInfo
 from common.class_config import SimilarAlgorithm
 from components import widget_exec, widget_setting_algorithm, widget_setting_match, widget_setting_comic, \
@@ -156,6 +157,8 @@ class WindowPresenter(QObject):
         hash_type = self.thread_analyse_image_info.hash_type  # 提取的hash类型
         comic_info_groups = self.model.convert_hash_group_to_comic_info_group(similar_hash_groups, hash_type)
         print('显示结果漫画信息类列表', comic_info_groups)
+        # 保存到缓存
+        function_cache.save_similar_result(comic_info_groups)
         # 显示匹配结果
         self.show_similar_result(comic_info_groups)
 
