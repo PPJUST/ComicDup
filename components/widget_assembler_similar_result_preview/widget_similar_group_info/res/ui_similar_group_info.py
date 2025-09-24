@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'similar_group_infoxClccY.ui'
+## Form generated from reading UI file 'similar_group_infouKswkK.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.1
 ##
@@ -16,16 +16,20 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QHBoxLayout, QLabel, QScrollArea,
-    QSizePolicy, QToolButton, QVBoxLayout, QWidget)
+    QSizePolicy, QSpacerItem, QToolButton, QVBoxLayout,
+    QWidget)
 
 class Ui_Form(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        Form.resize(281, 220)
+        Form.resize(248, 168)
         self.verticalLayout = QVBoxLayout(Form)
+        self.verticalLayout.setSpacing(3)
         self.verticalLayout.setObjectName(u"verticalLayout")
+        self.verticalLayout.setContentsMargins(3, 3, 3, 3)
         self.horizontalLayout = QHBoxLayout()
+        self.horizontalLayout.setSpacing(3)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.toolButton_preview = QToolButton(Form)
         self.toolButton_preview.setObjectName(u"toolButton_preview")
@@ -72,6 +76,10 @@ class Ui_Form(object):
 
         self.horizontalLayout.addWidget(self.label_8)
 
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout.addItem(self.horizontalSpacer)
+
 
         self.verticalLayout.addLayout(self.horizontalLayout)
 
@@ -80,13 +88,16 @@ class Ui_Form(object):
         self.scrollArea_similar_group.setWidgetResizable(True)
         self.scrollAreaWidgetContents_similar_group = QWidget()
         self.scrollAreaWidgetContents_similar_group.setObjectName(u"scrollAreaWidgetContents_similar_group")
-        self.scrollAreaWidgetContents_similar_group.setGeometry(QRect(0, 0, 261, 171))
+        self.scrollAreaWidgetContents_similar_group.setGeometry(QRect(0, 0, 240, 134))
         self.horizontalLayout_2 = QHBoxLayout(self.scrollAreaWidgetContents_similar_group)
+        self.horizontalLayout_2.setSpacing(3)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.horizontalLayout_2.setContentsMargins(3, 3, 3, 3)
         self.scrollArea_similar_group.setWidget(self.scrollAreaWidgetContents_similar_group)
 
         self.verticalLayout.addWidget(self.scrollArea_similar_group)
 
+        self.verticalLayout.setStretch(1, 1)
 
         self.retranslateUi(Form)
 

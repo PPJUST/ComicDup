@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'windowfSYKkq.ui'
+## Form generated from reading UI file 'windowgKPKsY.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.1
 ##
@@ -23,31 +23,41 @@ class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
-        MainWindow.resize(800, 600)
+        MainWindow.resize(743, 547)
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.horizontalLayout = QHBoxLayout(self.centralwidget)
+        self.horizontalLayout.setSpacing(0)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.horizontalLayout.setContentsMargins(0, 0, 0, 0)
         self.tabWidget = QTabWidget(self.centralwidget)
         self.tabWidget.setObjectName(u"tabWidget")
         self.tab_home = QWidget()
         self.tab_home.setObjectName(u"tab_home")
         self.horizontalLayout_2 = QHBoxLayout(self.tab_home)
+        self.horizontalLayout_2.setSpacing(3)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.horizontalLayout_2.setContentsMargins(3, 3, 3, 3)
         self.verticalLayout_3 = QVBoxLayout()
+        self.verticalLayout_3.setSpacing(3)
         self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.groupBox_exec = QGroupBox(self.tab_home)
         self.groupBox_exec.setObjectName(u"groupBox_exec")
         self.verticalLayout_5 = QVBoxLayout(self.groupBox_exec)
+        self.verticalLayout_5.setSpacing(0)
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
+        self.verticalLayout_5.setContentsMargins(0, 0, 0, 0)
 
         self.verticalLayout_3.addWidget(self.groupBox_exec)
 
         self.groupBox_setting = QGroupBox(self.tab_home)
         self.groupBox_setting.setObjectName(u"groupBox_setting")
         self.verticalLayout_6 = QVBoxLayout(self.groupBox_setting)
+        self.verticalLayout_6.setSpacing(0)
         self.verticalLayout_6.setObjectName(u"verticalLayout_6")
+        self.verticalLayout_6.setContentsMargins(0, 0, 0, 0)
         self.verticalLayout_setting_1 = QVBoxLayout()
+        self.verticalLayout_setting_1.setSpacing(3)
         self.verticalLayout_setting_1.setObjectName(u"verticalLayout_setting_1")
 
         self.verticalLayout_6.addLayout(self.verticalLayout_setting_1)
@@ -60,6 +70,7 @@ class Ui_MainWindow(object):
         self.verticalLayout_6.addWidget(self.line)
 
         self.verticalLayout_setting_2 = QVBoxLayout()
+        self.verticalLayout_setting_2.setSpacing(3)
         self.verticalLayout_setting_2.setObjectName(u"verticalLayout_setting_2")
 
         self.verticalLayout_6.addLayout(self.verticalLayout_setting_2)
@@ -72,12 +83,17 @@ class Ui_MainWindow(object):
         self.verticalLayout_6.addWidget(self.line_2)
 
         self.verticalLayout_setting_3 = QVBoxLayout()
+        self.verticalLayout_setting_3.setSpacing(3)
         self.verticalLayout_setting_3.setObjectName(u"verticalLayout_setting_3")
 
         self.verticalLayout_6.addLayout(self.verticalLayout_setting_3)
 
 
         self.verticalLayout_3.addWidget(self.groupBox_setting)
+
+        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_3.addItem(self.verticalSpacer)
 
 
         self.horizontalLayout_2.addLayout(self.verticalLayout_3)
@@ -87,11 +103,15 @@ class Ui_MainWindow(object):
         self.page = QWidget()
         self.page.setObjectName(u"page")
         self.verticalLayout = QVBoxLayout(self.page)
+        self.verticalLayout.setSpacing(0)
         self.verticalLayout.setObjectName(u"verticalLayout")
+        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
         self.groupBox_search_list = QGroupBox(self.page)
         self.groupBox_search_list.setObjectName(u"groupBox_search_list")
         self.verticalLayout_7 = QVBoxLayout(self.groupBox_search_list)
+        self.verticalLayout_7.setSpacing(3)
         self.verticalLayout_7.setObjectName(u"verticalLayout_7")
+        self.verticalLayout_7.setContentsMargins(3, 3, 3, 3)
 
         self.verticalLayout.addWidget(self.groupBox_search_list)
 
@@ -99,8 +119,11 @@ class Ui_MainWindow(object):
         self.page_2 = QWidget()
         self.page_2.setObjectName(u"page_2")
         self.verticalLayout_2 = QVBoxLayout(self.page_2)
+        self.verticalLayout_2.setSpacing(3)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.verticalLayout_2.setContentsMargins(3, 3, 3, 3)
         self.horizontalLayout_3 = QHBoxLayout()
+        self.horizontalLayout_3.setSpacing(3)
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
         self.pushButton_back_to_search_list = QPushButton(self.page_2)
         self.pushButton_back_to_search_list.setObjectName(u"pushButton_back_to_search_list")
@@ -117,7 +140,9 @@ class Ui_MainWindow(object):
         self.groupBox_runtime_info = QGroupBox(self.page_2)
         self.groupBox_runtime_info.setObjectName(u"groupBox_runtime_info")
         self.verticalLayout_8 = QVBoxLayout(self.groupBox_runtime_info)
+        self.verticalLayout_8.setSpacing(3)
         self.verticalLayout_8.setObjectName(u"verticalLayout_8")
+        self.verticalLayout_8.setContentsMargins(3, 3, 3, 3)
 
         self.verticalLayout_2.addWidget(self.groupBox_runtime_info)
 
@@ -130,18 +155,24 @@ class Ui_MainWindow(object):
         self.tab_result = QWidget()
         self.tab_result.setObjectName(u"tab_result")
         self.verticalLayout_4 = QVBoxLayout(self.tab_result)
+        self.verticalLayout_4.setSpacing(3)
         self.verticalLayout_4.setObjectName(u"verticalLayout_4")
+        self.verticalLayout_4.setContentsMargins(3, 3, 3, 3)
         self.groupBox_result_filter = QGroupBox(self.tab_result)
         self.groupBox_result_filter.setObjectName(u"groupBox_result_filter")
         self.verticalLayout_9 = QVBoxLayout(self.groupBox_result_filter)
+        self.verticalLayout_9.setSpacing(3)
         self.verticalLayout_9.setObjectName(u"verticalLayout_9")
+        self.verticalLayout_9.setContentsMargins(3, 3, 3, 3)
 
         self.verticalLayout_4.addWidget(self.groupBox_result_filter)
 
         self.groupBox_result_preview = QGroupBox(self.tab_result)
         self.groupBox_result_preview.setObjectName(u"groupBox_result_preview")
         self.verticalLayout_10 = QVBoxLayout(self.groupBox_result_preview)
+        self.verticalLayout_10.setSpacing(3)
         self.verticalLayout_10.setObjectName(u"verticalLayout_10")
+        self.verticalLayout_10.setContentsMargins(3, 3, 3, 3)
 
         self.verticalLayout_4.addWidget(self.groupBox_result_preview)
 
@@ -162,7 +193,7 @@ class Ui_MainWindow(object):
     # setupUi
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"MainWindow", None))
+        MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"ComicDup", None))
         self.groupBox_exec.setTitle(QCoreApplication.translate("MainWindow", u"\u529f\u80fd\u533a", None))
         self.groupBox_setting.setTitle(QCoreApplication.translate("MainWindow", u"\u8bbe\u7f6e\u9009\u9879", None))
         self.groupBox_search_list.setTitle(QCoreApplication.translate("MainWindow", u"\u68c0\u7d22\u8def\u5f84", None))

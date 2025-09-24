@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'area_setting_matchFvTRNS.ui'
+## Form generated from reading UI file 'setting_matchaQQiFT.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.1
 ##
@@ -22,9 +22,11 @@ class Ui_Form(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        Form.resize(137, 120)
+        Form.resize(125, 99)
         self.verticalLayout = QVBoxLayout(Form)
+        self.verticalLayout.setSpacing(3)
         self.verticalLayout.setObjectName(u"verticalLayout")
+        self.verticalLayout.setContentsMargins(3, 3, 3, 3)
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
         self.label_3 = QLabel(Form)

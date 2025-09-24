@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'runtime_infovJGktZ.ui'
+## Form generated from reading UI file 'runtime_infoBGhhDI.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.1
 ##
@@ -24,24 +24,11 @@ class Ui_Form(object):
             Form.setObjectName(u"Form")
         Form.resize(406, 304)
         self.verticalLayout = QVBoxLayout(Form)
+        self.verticalLayout.setSpacing(3)
         self.verticalLayout.setObjectName(u"verticalLayout")
+        self.verticalLayout.setContentsMargins(3, 3, 3, 3)
         self.gridLayout = QGridLayout()
         self.gridLayout.setObjectName(u"gridLayout")
-        self.horizontalLayout = QHBoxLayout()
-        self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.label = QLabel(Form)
-        self.label.setObjectName(u"label")
-
-        self.horizontalLayout.addWidget(self.label)
-
-        self.label_runtime_total = QLabel(Form)
-        self.label_runtime_total.setObjectName(u"label_runtime_total")
-
-        self.horizontalLayout.addWidget(self.label_runtime_total)
-
-
-        self.gridLayout.addLayout(self.horizontalLayout, 0, 0, 1, 1)
-
         self.horizontalLayout_4 = QHBoxLayout()
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
         self.label_7 = QLabel(Form)
@@ -72,21 +59,6 @@ class Ui_Form(object):
 
         self.gridLayout.addLayout(self.horizontalLayout_4, 0, 1, 1, 1)
 
-        self.horizontalLayout_2 = QHBoxLayout()
-        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
-        self.label_3 = QLabel(Form)
-        self.label_3.setObjectName(u"label_3")
-
-        self.horizontalLayout_2.addWidget(self.label_3)
-
-        self.label_runtime_current = QLabel(Form)
-        self.label_runtime_current.setObjectName(u"label_runtime_current")
-
-        self.horizontalLayout_2.addWidget(self.label_runtime_current)
-
-
-        self.gridLayout.addLayout(self.horizontalLayout_2, 1, 0, 1, 1)
-
         self.horizontalLayout_3 = QHBoxLayout()
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
         self.label_5 = QLabel(Form)
@@ -102,6 +74,36 @@ class Ui_Form(object):
 
         self.gridLayout.addLayout(self.horizontalLayout_3, 1, 1, 1, 1)
 
+        self.horizontalLayout_2 = QHBoxLayout()
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.label_3 = QLabel(Form)
+        self.label_3.setObjectName(u"label_3")
+
+        self.horizontalLayout_2.addWidget(self.label_3)
+
+        self.label_runtime_current = QLabel(Form)
+        self.label_runtime_current.setObjectName(u"label_runtime_current")
+
+        self.horizontalLayout_2.addWidget(self.label_runtime_current)
+
+
+        self.gridLayout.addLayout(self.horizontalLayout_2, 1, 0, 1, 1)
+
+        self.horizontalLayout = QHBoxLayout()
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.label = QLabel(Form)
+        self.label.setObjectName(u"label")
+
+        self.horizontalLayout.addWidget(self.label)
+
+        self.label_runtime_total = QLabel(Form)
+        self.label_runtime_total.setObjectName(u"label_runtime_total")
+
+        self.horizontalLayout.addWidget(self.label_runtime_total)
+
+
+        self.gridLayout.addLayout(self.horizontalLayout, 0, 0, 1, 1)
+
 
         self.verticalLayout.addLayout(self.gridLayout)
 
@@ -110,6 +112,7 @@ class Ui_Form(object):
 
         self.verticalLayout.addWidget(self.textBrowser_runtime_info)
 
+        self.verticalLayout.setStretch(1, 1)
 
         self.retranslateUi(Form)
 
@@ -118,16 +121,16 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
-        self.label.setText(QCoreApplication.translate("Form", u"\u603b\u8017\u65f6\uff1a", None))
-        self.label_runtime_total.setText(QCoreApplication.translate("Form", u"0:00:00", None))
         self.label_7.setText(QCoreApplication.translate("Form", u"\u603b\u8fdb\u5ea6\uff1a", None))
         self.label_step_index.setText(QCoreApplication.translate("Form", u"-", None))
         self.label_4.setText(QCoreApplication.translate("Form", u"/", None))
         self.label_step_count.setText(QCoreApplication.translate("Form", u"-", None))
         self.label_step_title.setText(QCoreApplication.translate("Form", u"...", None))
-        self.label_3.setText(QCoreApplication.translate("Form", u"\u5f53\u524d\u8017\u65f6\uff1a", None))
-        self.label_runtime_current.setText(QCoreApplication.translate("Form", u"0:00:00", None))
         self.label_5.setText(QCoreApplication.translate("Form", u"\u5b50\u8fdb\u5ea6\uff1a", None))
         self.label_progress_current.setText(QCoreApplication.translate("Form", u"-/-", None))
+        self.label_3.setText(QCoreApplication.translate("Form", u"\u5f53\u524d\u8017\u65f6\uff1a", None))
+        self.label_runtime_current.setText(QCoreApplication.translate("Form", u"0:00:00", None))
+        self.label.setText(QCoreApplication.translate("Form", u"\u603b\u8017\u65f6\uff1a", None))
+        self.label_runtime_total.setText(QCoreApplication.translate("Form", u"0:00:00", None))
     # retranslateUi
 

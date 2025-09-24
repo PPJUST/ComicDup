@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'area_setting_comicHcnsxj.ui'
+## Form generated from reading UI file 'setting_comicvPelhb.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.1
 ##
@@ -22,9 +22,11 @@ class Ui_Form(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        Form.resize(221, 91)
+        Form.resize(209, 73)
         self.verticalLayout = QVBoxLayout(Form)
+        self.verticalLayout.setSpacing(3)
         self.verticalLayout.setObjectName(u"verticalLayout")
+        self.verticalLayout.setContentsMargins(3, 3, 3, 3)
         self.horizontalLayout_3 = QHBoxLayout()
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
         self.label_2 = QLabel(Form)
