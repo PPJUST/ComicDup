@@ -65,7 +65,8 @@ class WindowPresenter(QObject):
 
     def load_last_result(self):
         """加载上一次的匹配结果"""
-        pass  # 备忘录
+        match_result = function_cache.get_similar_result()
+        self.show_similar_result(match_result)
 
     def open_about(self):
         """打开程序说明"""

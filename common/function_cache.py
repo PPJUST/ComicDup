@@ -7,12 +7,10 @@
 """
 import os
 import pickle
-from typing import List
 
 import lzytools.common
 
 from common import function_file, function_archive
-from common.class_comic import ComicInfo
 
 CACHE_PREVIEW_DIRPATH = 'cache/preview'
 CACHE_PREVIEW_MAX_COUNT = 100  # 单个文件夹内最多缓存的预览图数量
@@ -84,14 +82,14 @@ def save_preview_image_in_archive_to_cache(archive: str, image_path_inside: str,
     return save_path
 
 
-def save_similar_result(comic_info_groups: List[List[ComicInfo]]):
+def save_similar_result(comic_info_groups):
     """"保存相似匹配结果"""
     with open(RESULT_FILE, 'wb') as file:
         pickle.dump(comic_info_groups, file)
 
 
-def get_similar_result() -> List[List[ComicInfo]]:
+def get_similar_result():
     """"获取相似匹配结果"""
-    with open(RESULT_FILE, 'wb') as file:
+    with open(RESULT_FILE, 'rb') as file:
         data = pickle.load(file)
         return data
