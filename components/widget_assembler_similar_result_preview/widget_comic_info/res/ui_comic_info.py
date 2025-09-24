@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'comic_infoRqklWy.ui'
+## Form generated from reading UI file 'comic_infoKjFvnm.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.1
 ##
@@ -36,6 +36,7 @@ class Ui_Form(object):
 
         self.label_filetitle = QLabel(Form)
         self.label_filetitle.setObjectName(u"label_filetitle")
+        self.label_filetitle.setWordWrap(True)
 
         self.horizontalLayout.addWidget(self.label_filetitle)
 
@@ -44,6 +45,7 @@ class Ui_Form(object):
 
         self.label_parent_dirpath = QLabel(Form)
         self.label_parent_dirpath.setObjectName(u"label_parent_dirpath")
+        self.label_parent_dirpath.setWordWrap(True)
 
         self.verticalLayout.addWidget(self.label_parent_dirpath)
 

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'similar_group_infouKswkK.ui'
+## Form generated from reading UI file 'similar_group_infoBdAhcO.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.1
 ##
@@ -90,7 +90,7 @@ class Ui_Form(object):
         self.scrollAreaWidgetContents_similar_group.setObjectName(u"scrollAreaWidgetContents_similar_group")
         self.scrollAreaWidgetContents_similar_group.setGeometry(QRect(0, 0, 240, 134))
         self.horizontalLayout_2 = QHBoxLayout(self.scrollAreaWidgetContents_similar_group)
-        self.horizontalLayout_2.setSpacing(3)
+        self.horizontalLayout_2.setSpacing(20)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.horizontalLayout_2.setContentsMargins(3, 3, 3, 3)
         self.scrollArea_similar_group.setWidget(self.scrollAreaWidgetContents_similar_group)

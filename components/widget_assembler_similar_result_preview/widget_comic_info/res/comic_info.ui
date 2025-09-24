@@ -43,6 +43,9 @@
        <property name="text">
         <string>filetitle</string>
        </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
     </layout>
@@ -51,6 +54,9 @@
     <widget class="QLabel" name="label_parent_dirpath">
      <property name="text">
       <string>parent dirpath</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
      </property>
     </widget>
    </item>

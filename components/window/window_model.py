@@ -68,30 +68,38 @@ class WindowModel:
     def get_comic_info_by_image_info(self, image_info: ImageInfo):
         """根据图片信息类获取对应的漫画信息类"""
         comic_path = image_info.comic_path_belong
+        return self.get_comic_info_by_comic_path(comic_path)
+
+    def get_comic_info_by_comic_path(self, comic_path: str):
+        """根据漫画路径获取对于的漫画信息类"""
         comic_info = self.db_comic_info.get_comic_info_by_comic_path(comic_path)
         return comic_info
 
-    def convert_hash_group_to_comic_info_group(self, hash_group: List[List[str]], hash_type: TYPES_HASH_ALGORITHM) -> \
-            List[List[ComicInfo]]:
+    def convert_hash_group_to_comic_info_group(self,
+                                               hash_group: List[List[str]],
+                                               hash_type: TYPES_HASH_ALGORITHM) -> List[List[ComicInfo]]:
         """将hash值组列表转换为对应的漫画组列表"""
         # hash组格式：[[hash1, hash2, hash3], [hash4, hash5, hash6]]
-        comic_group = []
-        print('将hash值转换为对应的漫画')
+        # 先转换为漫画路径格式
+        comic_path_group = []
         for h_group in hash_group:
-            print('hash组', h_group)
-            c_group_dict = dict()  # 设置为字典用于去重
+            p_group = set()
             for hash_ in h_group:
                 image_infos = self.get_image_info_by_hash(hash_, hash_type)
                 for image_info in image_infos:
-                    image_path = image_info.image_path
                     comic_path = image_info.comic_path_belong
-                    comic_info = self.get_comic_info_by_image_info(image_info)
-                    print('转换的漫画路径', comic_path)
-                    if comic_path not in c_group_dict:
-                        c_group_dict[comic_path] = comic_info
-            c_group = list(c_group_dict.values())
-            if len(c_group) >= 2:  # 仅在组内存在两项及以上时才能作为相似组
-                comic_group.append(c_group)
+                    p_group.add(comic_path)
+            if len(p_group) >= 2:
+                comic_path_group.append(list(p_group))
+        #  然后合并有交集的项目（用于整合组间相似项）
+        comic_path_group = lzytools.common.merge_intersection_item(comic_path_group)
+        # 最后转换为漫画信息类格式
+        comic_info_group = []
+        for cp_group in comic_path_group:
+            ci_group = []
+            for comic_path in cp_group:
+                comic_info = self.get_comic_info_by_comic_path(comic_path)
+                ci_group.append(comic_info)
+            comic_info_group.append(ci_group)
 
-        print('完成将hash值转换为对应的漫画')
-        return comic_group
+        return comic_info_group
