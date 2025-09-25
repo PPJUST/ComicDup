@@ -1,0 +1,3 @@
+ICON_OPEN = b''
+ICON_REFRESH = b''
+ICON_DELETE = b''

@@ -14,7 +14,8 @@ from common import function_file, function_archive
 
 CACHE_PREVIEW_DIRPATH = 'cache/preview'
 CACHE_PREVIEW_MAX_COUNT = 100  # 单个文件夹内最多缓存的预览图数量
-RESULT_FILE = 'cache/match_result.pkl'
+CACHE_RESULT_DIRPATH = 'cache'
+CACHE_RESULT_FILE = 'cache/match_result.pkl'
 
 
 def check_cache_exist(cache_dirpath):
@@ -84,12 +85,13 @@ def save_preview_image_in_archive_to_cache(archive: str, image_path_inside: str,
 
 def save_similar_result(comic_info_groups):
     """"保存相似匹配结果"""
-    with open(RESULT_FILE, 'wb') as file:
+    check_cache_exist(CACHE_RESULT_DIRPATH)
+    with open(CACHE_RESULT_FILE, 'wb') as file:
         pickle.dump(comic_info_groups, file)
 
 
-def get_similar_result():
-    """"获取相似匹配结果"""
-    with open(RESULT_FILE, 'rb') as file:
+def get_last_similar_result():
+    """"获取保存的上次相似匹配结果"""
+    with open(CACHE_RESULT_FILE, 'rb') as file:
         data = pickle.load(file)
         return data

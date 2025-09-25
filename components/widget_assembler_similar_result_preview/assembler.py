@@ -11,6 +11,7 @@ class AssemblerSimilarResultPreview:
     def get_presenter(self):
         """获取presenter"""
         return self.presenter
+
     def get_viewer(self):
         """获取viewer"""
         return self.presenter.get_viewer()
@@ -18,7 +19,6 @@ class AssemblerSimilarResultPreview:
     def show_similar_result(self):
         """显示相似结果"""
         self.presenter.show_group(1)
-
 
     def add_similar_group(self, comic_info_list: List[ComicInfo]):
         """添加相似信息组
@@ -29,3 +29,7 @@ class AssemblerSimilarResultPreview:
         similar_group_info_presenter.add_comics(comic_info_list)
         #  将相似组信息控件添加到主控件中
         self.presenter.add_group(similar_group_info_presenter)
+
+    def clear(self):
+        """清空结果"""
+        self.presenter.clear()

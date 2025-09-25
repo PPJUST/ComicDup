@@ -65,7 +65,7 @@ class WindowPresenter(QObject):
 
     def load_last_result(self):
         """加载上一次的匹配结果"""
-        match_result = function_cache.get_similar_result()
+        match_result = function_cache.get_last_similar_result()
         self.show_similar_result(match_result)
 
     def open_about(self):
@@ -179,6 +179,7 @@ class WindowPresenter(QObject):
 
     def show_similar_result(self, comic_info_groups: List[List[ComicInfo]]):
         """显示相似匹配结果"""
+        self.assembler_similar_result_preview.clear()
         for comic_info_list in comic_info_groups:
             self.assembler_similar_result_preview.add_similar_group(comic_info_list)
         self.assembler_similar_result_preview.show_similar_result()

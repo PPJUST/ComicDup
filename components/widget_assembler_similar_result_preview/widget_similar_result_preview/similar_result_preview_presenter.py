@@ -54,8 +54,16 @@ class SimilarResultPreviewPresenter(QObject):
 
     def _calc_total_page(self):
         """计算总页数（向上整除）"""
-        self.total_page = (len(self.widgets_similar_group_info) + self.show_group_count) // self.show_group_count  # 向上整除
+        self.total_page = (
+                                  len(self.widgets_similar_group_info) + self.show_group_count) // self.show_group_count  # 向上整除
 
     def get_viewer(self):
         """获取模块的Viewer"""
         return self.viewer
+
+    def clear(self):
+        """清空结果"""
+        self.viewer.clear()
+        self.widgets_similar_group_info.clear()
+        self.current_page = 1
+        self.total_page = 1
