@@ -53,12 +53,14 @@ class SearchListViewer(QWidget):
     def _choose_files(self):
         """弹出文件选择框"""
         paths = QFileDialog.getOpenFileNames(self, "选择文件", "", "All Files (*)")[0]
-        self.DropFiles.emit(paths)
+        if paths:
+            self.DropFiles.emit(paths)
 
     def _choose_folder(self):
         """弹出文件夹选择框"""
         paths = QFileDialog.getExistingDirectory(self, "选择文件夹", "")
-        self.DropFiles.emit(paths)
+        if paths:
+            self.DropFiles.emit(paths)
 
     def dropEvent(self, event):
         if event.mimeData().hasUrls():

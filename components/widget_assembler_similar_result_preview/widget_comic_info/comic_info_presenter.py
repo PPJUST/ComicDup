@@ -56,7 +56,7 @@ class ComicInfoPresenter(QObject):
             icon_base64 = ICON_ARCHIVE
         else:
             icon_base64 = ''
-        self.viewer.set_icon(icon_base64)
+        self.viewer.set_filetype_icon(icon_base64)
         # 按文件类型显示文件大小
         if isinstance(filetype, FileType.Folder):
             bytes_size = self.comic_info.filesize_bytes

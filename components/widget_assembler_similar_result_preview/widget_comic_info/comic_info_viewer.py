@@ -3,6 +3,8 @@ from PySide6.QtCore import Signal
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QWidget, QApplication
 
+from components.widget_assembler_similar_result_preview.widget_comic_info.res.icon_base64 import ICON_JUMP_TO, \
+    ICON_REFRESH, ICON_DELETE
 from components.widget_assembler_similar_result_preview.widget_comic_info.res.ui_comic_info import Ui_Form
 
 
@@ -22,7 +24,10 @@ class ComicInfoViewer(QWidget):
         self.ui.toolButton_refresh.clicked.connect(self.RefreshInfo)
         self.ui.toolButton_delete.clicked.connect(self.Delete)
 
-    def set_icon(self, icon_base64: str):
+        # 设置图标
+        self._set_icon()
+
+    def set_filetype_icon(self, icon_base64: str):
         """设置漫画的文件类型图标"""
         pixmap = lzytools._qt_pyside6.base64_to_pixmap(icon_base64)
         self.ui.label_icon.setPixmap(pixmap)
@@ -46,6 +51,12 @@ class ComicInfoViewer(QWidget):
     def set_preview(self, preview_path: str):
         """设置漫画的预览图片"""
         self.ui.label_preview.setPixmap(QPixmap(preview_path))
+
+    def _set_icon(self):
+        """设置图标"""
+        self.ui.toolButton_open_path.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_JUMP_TO))
+        self.ui.toolButton_refresh.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_REFRESH))
+        self.ui.toolButton_delete.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_DELETE))
 
 
 if __name__ == "__main__":

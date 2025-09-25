@@ -22,6 +22,10 @@ class WindowViewer(QMainWindow):
         """翻页到运行信息页"""
         self.ui.stackedWidget.setCurrentIndex(1)
 
+    def turn_page_match_result(self):
+        """翻页到结果预览页"""
+        self.ui.tabWidget.setCurrentIndex(1)
+
     def add_viewer_exec(self, widget):
         """添加功能区控件"""
         self.ui.groupBox_exec.layout().addWidget(widget)
