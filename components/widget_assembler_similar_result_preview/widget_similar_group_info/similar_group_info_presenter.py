@@ -3,6 +3,7 @@ from typing import List
 from PySide6.QtCore import QObject
 
 from common.class_comic import ComicInfo
+from components import widget_assembler_comics_preview
 from components.widget_assembler_similar_result_preview import widget_comic_info
 from components.widget_assembler_similar_result_preview.widget_comic_info import ComicInfoPresenter
 from components.widget_assembler_similar_result_preview.widget_similar_group_info.similar_group_info_model import \
@@ -21,6 +22,12 @@ class SimilarGroupInfoPresenter(QObject):
 
         self.comic_info_list: List[ComicInfo] = []  # 内部漫画项的漫画信息类列表
         self.comics_presenter: List[ComicInfoPresenter] = []  # 内部漫画项的桥梁组件
+
+        # 实例化预览控件
+        self.dialog_comics_preview = widget_assembler_comics_preview.get_assembler()
+
+        # 绑定信号
+        self.viewer.Preview.connect(self.preview_comics)
 
     def set_group_index(self, index: int):
         """设置当前组的编号"""
@@ -49,3 +56,10 @@ class SimilarGroupInfoPresenter(QObject):
 
         widget = comic_info_presenter.get_viewer()
         self.viewer.add_widget(widget)
+
+    def preview_comics(self):
+        """预览当前组内的所有漫画"""
+        for comic_info in self.comic_info_list:
+            self.dialog_comics_preview.add_comic(comic_info)
+
+        self.dialog_comics_preview.show()

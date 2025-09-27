@@ -16,17 +16,17 @@ class SimilarGroupPreviewPresenter(QObject):
         self.viewer = viewer
         self.model = model
 
-        self.widgets_comic =  []  # 显示的漫画控件列表
+        self.widgets_comic = []  # 显示的漫画控件列表
 
         # 绑定信号
         self._bind_signal()
 
-    def add_comic(self,comic_info:ComicInfo):
+    def add_comic(self, comic_info: ComicInfo):
         """显示漫画"""
-        self.widget_comic_preivew = widget_comic_preview.get_presenter()
-        self.widget_comic_preivew.set_comic(comic_info)
-        self.widgets_comic.append(self.widget_comic_preivew)
-        self.viewer.add_widget(self.widget_comic_preivew.get_viewer())
+        self.widget_comic_preview = widget_comic_preview.get_presenter()
+        self.widget_comic_preview.set_comic(comic_info)
+        self.widgets_comic.append(self.widget_comic_preview)
+        self.viewer.add_widget(self.widget_comic_preview.get_viewer())
 
     def turn_to_previous_page(self, page_count: int = 1):
         """全局翻页-转到上一页"""
@@ -47,6 +47,10 @@ class SimilarGroupPreviewPresenter(QObject):
     def clear(self):
         """清空页面"""
         pass
+
+    def get_viewer(self):
+        """获取viewer"""
+        return self.viewer
 
     def _bind_signal(self):
         """绑定信号"""
