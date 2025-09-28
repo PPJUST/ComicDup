@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'comic_previewcoVwdn.ui'
+## Form generated from reading UI file 'comic_previewYkviNh.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.8.1
+## Created by: Qt User Interface Compiler version 6.8.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -22,15 +22,16 @@ class Ui_Form(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        Form.resize(309, 209)
+        Form.resize(283, 212)
         self.verticalLayout_2 = QVBoxLayout(Form)
         self.verticalLayout_2.setSpacing(3)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.verticalLayout_2.setContentsMargins(3, 3, 3, 3)
-        self.label_preview = QLabel(Form)
-        self.label_preview.setObjectName(u"label_preview")
+        self.verticalLayout_preview = QVBoxLayout()
+        self.verticalLayout_preview.setSpacing(0)
+        self.verticalLayout_preview.setObjectName(u"verticalLayout_preview")
 
-        self.verticalLayout_2.addWidget(self.label_preview)
+        self.verticalLayout_2.addLayout(self.verticalLayout_preview)
 
         self.verticalLayout = QVBoxLayout()
         self.verticalLayout.setObjectName(u"verticalLayout")
@@ -122,7 +123,6 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
-        self.label_preview.setText(QCoreApplication.translate("Form", u"preview", None))
         self.label_icon.setText(QCoreApplication.translate("Form", u"icon", None))
         self.label_filesize.setText(QCoreApplication.translate("Form", u"filesize", None))
         self.label_filename.setText(QCoreApplication.translate("Form", u"filename", None))

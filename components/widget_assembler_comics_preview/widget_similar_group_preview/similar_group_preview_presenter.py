@@ -29,11 +29,11 @@ class SimilarGroupPreviewPresenter(QObject):
         self.viewer.add_widget(self.widget_comic_preview.get_viewer())
 
     def turn_to_previous_page(self, page_count: int = 1):
-        """全局翻页-转到上一页"""
+        """全局翻页-向前翻页"""
         pass
 
     def turn_to_next_page(self, page_count: int = 1):
-        """全局翻页-转到下一页"""
+        """全局翻页-向后翻页"""
         pass
 
     def reset_page_number(self):

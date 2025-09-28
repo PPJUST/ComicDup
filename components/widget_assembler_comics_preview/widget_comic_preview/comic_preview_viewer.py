@@ -1,6 +1,5 @@
 import lzytools._qt_pyside6
 from PySide6.QtCore import Signal
-from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import QWidget, QApplication
 
 from components.widget_assembler_comics_preview.widget_comic_preview.res.icon_base64 import ICON_ARCHIVE, ICON_FOLDER
@@ -19,9 +18,17 @@ class ComicPreviewViewer(QWidget):
         self.ui = Ui_Form()
         self.ui.setupUi(self)
 
+        # 添加自定义图像显示控件
+        self.label_image_preview = lzytools._qt_pyside6.LabelImageAutoSize()
+        self.ui.verticalLayout_preview.addWidget(self.label_image_preview)
+
+        # 绑定信号
+        self._bind_signal()
+
     def show_image(self, preview_path: str):
         """显示图像"""
-        self.ui.label_preview.setPixmap(QPixmap(preview_path))
+
+        self.label_image_preview.set_image(preview_path)
 
     def set_icon_archive(self):
         """设置文件类型图片为压缩文件"""
@@ -50,6 +57,13 @@ class ComicPreviewViewer(QWidget):
     def set_page_count(self, page_count: int):
         """设置页数"""
         self.ui.label_page_count.setText(str(page_count))
+
+    def _bind_signal(self):
+        """绑定信号"""
+        self.ui.toolButton_previous.clicked.connect(self.PreviousPage.emit)
+        self.ui.toolButton_next.clicked.connect(self.NextPage.emit)
+        self.ui.toolButton_open.clicked.connect(self.OpenPath.emit)
+        self.ui.toolButton_delete.clicked.connect(self.Delete.emit)
 
 
 if __name__ == "__main__":
