@@ -2,7 +2,8 @@ import lzytools._qt_pyside6
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget, QApplication
 
-from components.widget_assembler_comics_preview.widget_comic_preview.res.icon_base64 import ICON_ARCHIVE, ICON_FOLDER
+from components.widget_assembler_comics_preview.widget_comic_preview.res.icon_base64 import ICON_ARCHIVE, ICON_FOLDER, \
+    ICON_LEFT_ARROW, ICON_RIGHT_ARROW, ICON_JUMP_TO, ICON_DELETE
 from components.widget_assembler_comics_preview.widget_comic_preview.res.ui_comic_preview import Ui_Form
 
 
@@ -24,6 +25,9 @@ class ComicPreviewViewer(QWidget):
 
         # 绑定信号
         self._bind_signal()
+
+        # 设置图标
+        self._set_icon()
 
     def show_image(self, preview_path: str):
         """显示图像"""
@@ -63,6 +67,13 @@ class ComicPreviewViewer(QWidget):
         self.ui.toolButton_next.clicked.connect(self.NextPage.emit)
         self.ui.toolButton_open.clicked.connect(self.OpenPath.emit)
         self.ui.toolButton_delete.clicked.connect(self.Delete.emit)
+
+    def _set_icon(self):
+        """设置图标"""
+        self.ui.toolButton_previous.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_LEFT_ARROW))
+        self.ui.toolButton_next.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_RIGHT_ARROW))
+        self.ui.toolButton_open.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_JUMP_TO))
+        self.ui.toolButton_delete.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_DELETE))
 
 
 if __name__ == "__main__":
