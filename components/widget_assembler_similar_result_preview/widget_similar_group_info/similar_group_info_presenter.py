@@ -23,8 +23,6 @@ class SimilarGroupInfoPresenter(QObject):
         self.comic_info_list: List[ComicInfo] = []  # 内部漫画项的漫画信息类列表
         self.comics_presenter: List[ComicInfoPresenter] = []  # 内部漫画项的桥梁组件
 
-        # 实例化预览控件
-        self.dialog_comics_preview = widget_assembler_comics_preview.get_assembler()
 
         # 绑定信号
         self.viewer.Preview.connect(self.preview_comics)
@@ -59,7 +57,10 @@ class SimilarGroupInfoPresenter(QObject):
 
     def preview_comics(self):
         """预览当前组内的所有漫画"""
+        self.dialog_comics_preview = widget_assembler_comics_preview.get_assembler()
+
         for comic_info in self.comic_info_list:
             self.dialog_comics_preview.add_comic(comic_info)
 
-        self.dialog_comics_preview.show()
+        self.dialog_comics_preview.exec()
+        self.dialog_comics_preview.deleteLater()

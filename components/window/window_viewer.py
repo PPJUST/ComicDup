@@ -1,5 +1,7 @@
 from PySide6.QtWidgets import QApplication, QMainWindow
+from lzytools._qt_pyside6 import base64_to_pixmap
 
+from components.window.res.icon_base64 import ICON_LOGO
 from components.window.res.ui_window import Ui_MainWindow
 
 
@@ -13,6 +15,9 @@ class WindowViewer(QMainWindow):
 
         # 绑定信号
         self.ui.pushButton_back_to_search_list.clicked.connect(self.turn_page_search_list)
+
+        # 设置图标
+        self.setWindowIcon(base64_to_pixmap(ICON_LOGO))
 
     def turn_page_search_list(self):
         """翻页到搜索目录页"""
