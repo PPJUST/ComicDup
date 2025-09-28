@@ -1,7 +1,8 @@
-from PySide6.QtCore import QObject
+from PySide6.QtCore import QObject, Signal
 
 from common.class_comic import ComicInfo
 from components.widget_assembler_comics_preview import widget_comic_preview
+from components.widget_assembler_comics_preview.widget_comic_preview import ComicPreviewPresenter
 from components.widget_assembler_comics_preview.widget_similar_group_preview.similar_group_preview_model import \
     SimilarGroupPreviewModel
 from components.widget_assembler_comics_preview.widget_similar_group_preview.similar_group_preview_viewer import \
@@ -10,6 +11,7 @@ from components.widget_assembler_comics_preview.widget_similar_group_preview.sim
 
 class SimilarGroupPreviewPresenter(QObject):
     """相似组预览框架模块的桥梁组件"""
+    Quit = Signal(name='退出')
 
     def __init__(self, viewer: SimilarGroupPreviewViewer, model: SimilarGroupPreviewModel):
         super().__init__()
@@ -30,23 +32,31 @@ class SimilarGroupPreviewPresenter(QObject):
 
     def turn_to_previous_page(self, page_count: int = 1):
         """全局翻页-向前翻页"""
-        pass
+        for widget in self.widgets_comic:
+            widegt: ComicPreviewPresenter
+            widget.turn_to_previous_page(page_count)
 
     def turn_to_next_page(self, page_count: int = 1):
         """全局翻页-向后翻页"""
-        pass
+        for widget in self.widgets_comic:
+            widegt: ComicPreviewPresenter
+            widget.turn_to_next_page(page_count)
 
     def reset_page_number(self):
         """重置页码"""
-        pass
+        for widget in self.widgets_comic:
+            widegt: ComicPreviewPresenter
+            widget.reset_page()
 
     def quit(self):
         """退出"""
-        pass
+        self.clear()
+        self.Quit.emit()
 
     def clear(self):
         """清空页面"""
-        pass
+        self.widgets_comic.clear()
+        self.viewer.clear()
 
     def get_viewer(self):
         """获取viewer"""

@@ -78,6 +78,11 @@ class ComicPreviewPresenter(QObject):
                 self.page_index = len(self.page_paths)
         self.show_page(self.page_index)
 
+    def reset_page(self):
+        """重置页码"""
+        self.page_index = 1
+        self.show_page(self.page_index)
+
     def open_path(self):
         """打开漫画文件"""
         path = self.comic_info.filepath

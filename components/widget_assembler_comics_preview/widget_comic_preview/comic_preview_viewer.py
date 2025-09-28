@@ -27,7 +27,6 @@ class ComicPreviewViewer(QWidget):
 
     def show_image(self, preview_path: str):
         """显示图像"""
-
         self.label_image_preview.set_image(preview_path)
 
     def set_icon_archive(self):

@@ -15,6 +15,9 @@ class AssemblerDialogComicsPreview(QDialog):
         main_layout = QVBoxLayout(self)
         main_layout.addWidget(self.presenter.get_viewer())
 
+        # 绑定信号
+        self.presenter.Quit.connect(self.close)
+
     def get_presenter(self):
         """获取presenter"""
         return self.presenter

@@ -33,7 +33,22 @@ class SimilarGroupPreviewViewer(QWidget):
 
     def clear(self):
         """清空界面"""
-        self.ui.horizontalLayout_group.clear()
+        layout = self.ui.horizontalLayout_group
+
+        for i in reversed(range(layout.count())):
+            # 获取布局项目
+            item = layout.itemAt(i)
+
+            # 从项目中获取控件
+            widget = item.widget()
+
+            if widget:  # 确保它是一个控件，而不是另一个布局
+
+                # 从布局中移除控件
+                layout.removeWidget(widget)
+
+                # 从内存中删除
+                widget.deleteLater()
 
     def _set_icon(self):
         """设置图标"""
