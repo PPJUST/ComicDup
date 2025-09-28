@@ -4,6 +4,7 @@ from typing import Dict
 import natsort
 
 from common.class_comic import ComicInfo
+from common.class_runtime import TypeRuntimeInfo
 from thread.thread_pattern import ThreadPattern
 
 
@@ -34,16 +35,20 @@ class ThreadAnalyseComicInfo(ThreadPattern):
 
     def run(self):
         super().run()
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '开始分析漫画信息')
         print('启动子线程 分析漫画信息')
         # 遍历列表，提取信息
         for index, comic in enumerate(self.comics, start=1):
             if self._is_stop:
                 break
             self.SignalRate.emit(f'{index}/{len(self.comics)}')
+            self.SignalRuntimeInfo.emit(TypeRuntimeInfo.RateInfo, f'开始分析：{comic}')
             comic_info = ComicInfo(comic)
+            self.SignalRuntimeInfo.emit(TypeRuntimeInfo.RateInfo, f'完成分析：{comic}')
             self.comic_info_dict[comic] = comic_info
 
         # 结束后发送信号
         print('提取的漫画信息', self.comic_info_dict)
         print('结束子线程 分析漫画信息')
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '全部漫画信息完成分析')
         self.finished()

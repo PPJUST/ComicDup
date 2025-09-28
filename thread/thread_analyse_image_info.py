@@ -6,6 +6,7 @@ import natsort
 
 from common.class_comic import ImageInfo, ComicInfo
 from common.class_config import SimilarAlgorithm, TYPES_HASH_ALGORITHM
+from common.class_runtime import TypeRuntimeInfo
 from thread.thread_pattern import ThreadPattern
 
 
@@ -65,16 +66,23 @@ class ThreadAnalyseImageInfo(ThreadPattern):
 
     def run(self):
         super().run()
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '开始分析图片信息')
         print('启动子线程 分析图片信息')
         for index, image_path in enumerate(self.images, start=1):
+            if self._is_stop:
+                break
+            self.SignalRate.emit(f'{index}/{len(self.images)}')
+            self.SignalRuntimeInfo.emit(TypeRuntimeInfo.RateInfo, f'开始分析：{image_path}')
             image_info = ImageInfo(image_path)
             # 将图片对应的漫画信息类传递给图片信息类，用于计算部分数据
             comic_info = self.get_corr_comic_info(image_path)
             image_info.update_info_by_comic_info(comic_info)
             image_info.calc_hash(self.hash_type, self.hash_length)  # 计算指定hash值
+            self.SignalRuntimeInfo.emit(TypeRuntimeInfo.RateInfo, f'完成分析：{image_path}')
             self.image_info_dict[image_path] = image_info
 
         # 结束后发送信号
         print('提取的图片信息', self.image_info_dict)
         print('结束子线程 分析图片信息')
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '全部图片信息完成分析')
         self.finished()

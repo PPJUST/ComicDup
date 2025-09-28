@@ -18,6 +18,7 @@ from PySide6.QtCore import QObject
 from common import function_cache
 from common.class_comic import ComicInfo
 from common.class_config import SimilarAlgorithm
+from common.class_runtime import TYPE_RUNTIME_INFO
 from components import widget_exec, widget_setting_algorithm, widget_setting_match, widget_setting_comic, \
     widget_search_list, widget_runtime_info, widget_similar_result_filter, widget_assembler_similar_result_preview
 from components.window.window_model import WindowModel
@@ -199,6 +200,10 @@ class WindowPresenter(QObject):
         """更新运行信息-步骤内部进度"""
         self.widget_runtime_info.update_progress_current(rate)
 
+    def update_runtime_info_textline(self, info_type: TYPE_RUNTIME_INFO, text_info: str):
+        """更新运行信息-文本行信息"""
+        self.widget_runtime_info.update_textline(info_type, text_info)
+
     def _set_thread_setting(self):
         """将设置选项传参给子线程"""
         # 基础hash算法
@@ -261,6 +266,7 @@ class WindowPresenter(QObject):
         self.thread_search_comic.SignalIndex.connect(self.update_runtime_info_index)
         self.thread_search_comic.SignalInfo.connect(self.update_runtime_info_title)
         self.thread_search_comic.SignalRate.connect(self.update_runtime_info_rate)
+        self.thread_search_comic.SignalRuntimeInfo.connect(self.update_runtime_info_textline)
         self.thread_search_comic.SignalFinished.connect(self.thread_search_comic_finished)
         # self.thread_search_comic.SignalStopped.connect()
 
@@ -268,6 +274,7 @@ class WindowPresenter(QObject):
         self.thread_analyse_comic_info.SignalIndex.connect(self.update_runtime_info_index)
         self.thread_analyse_comic_info.SignalInfo.connect(self.update_runtime_info_title)
         self.thread_analyse_comic_info.SignalRate.connect(self.update_runtime_info_rate)
+        self.thread_analyse_comic_info.SignalRuntimeInfo.connect(self.update_runtime_info_textline)
         self.thread_analyse_comic_info.SignalFinished.connect(self.thread_analyse_comic_info_finished)
         # self.thread_analyse_comic_info.SignalStopped.connect()
 
@@ -275,6 +282,7 @@ class WindowPresenter(QObject):
         self.thread_analyse_image_info.SignalIndex.connect(self.update_runtime_info_index)
         self.thread_analyse_image_info.SignalInfo.connect(self.update_runtime_info_title)
         self.thread_analyse_image_info.SignalRate.connect(self.update_runtime_info_rate)
+        self.thread_analyse_image_info.SignalRuntimeInfo.connect(self.update_runtime_info_textline)
         self.thread_analyse_image_info.SignalFinished.connect(self.thread_analyse_image_info_finished)
         # self.thread_analyse_image_info.SignalStopped.connect()
 
@@ -282,6 +290,7 @@ class WindowPresenter(QObject):
         self.thread_compare_hash.SignalIndex.connect(self.update_runtime_info_index)
         self.thread_compare_hash.SignalInfo.connect(self.update_runtime_info_title)
         self.thread_compare_hash.SignalRate.connect(self.update_runtime_info_rate)
+        self.thread_compare_hash.SignalRuntimeInfo.connect(self.update_runtime_info_textline)
         self.thread_compare_hash.SignalFinished.connect(self.thread_compare_hash_finished)
         # self.thread_compare_hash.SignalStopped.connect()
 
@@ -289,5 +298,6 @@ class WindowPresenter(QObject):
         self.thread_compare_ssim.SignalIndex.connect(self.update_runtime_info_index)
         self.thread_compare_ssim.SignalInfo.connect(self.update_runtime_info_title)
         self.thread_compare_ssim.SignalRate.connect(self.update_runtime_info_rate)
+        self.thread_compare_ssim.SignalRuntimeInfo.connect(self.update_runtime_info_textline)
         # self.thread_compare_ssim.SignalFinished.connect()
         # self.thread_compare_ssim.SignalStopped.connect()

@@ -1,4 +1,5 @@
 # 子线程模板
+
 from PySide6.QtCore import QThread, Signal
 
 
@@ -8,6 +9,7 @@ class ThreadPattern(QThread):
     SignalIndex = Signal(int, name='索引')
     SignalInfo = Signal(str, name='信息')
     SignalRate = Signal(str, name='进度')
+    SignalRuntimeInfo = Signal(object, str, name='运行信息')
     SignalFinished = Signal(name='线程执行完毕')
     SignalStopped = Signal(name='线程终止执行')
 

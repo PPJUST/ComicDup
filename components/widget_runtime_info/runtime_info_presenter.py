@@ -1,5 +1,6 @@
 from PySide6.QtCore import QObject
 
+from common.class_runtime import TYPE_RUNTIME_INFO
 from components.widget_runtime_info.runtime_info_model import RuntimeInfoModel
 from components.widget_runtime_info.runtime_info_viewer import RuntimeInfoViewer
 
@@ -37,3 +38,9 @@ class RuntimeInfoPresenter(QObject):
         self.viewer.update_progress_current(progress)
 
     """文本框方法"""
+
+    def update_textline(self, info_type: TYPE_RUNTIME_INFO, text_info: str):
+        """更新文本行信息"""
+        text_type = info_type.text
+        textline = f'{text_type}{text_info}'
+        self.viewer.append_textline(textline)

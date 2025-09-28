@@ -6,6 +6,7 @@ import lzytools.file
 import natsort
 
 from common import function_file, function_archive
+from common.class_runtime import TypeRuntimeInfo
 from thread.thread_pattern import ThreadPattern
 
 
@@ -54,12 +55,15 @@ class ThreadSearchComic(ThreadPattern):
 
     def run(self):
         super().run()
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '开始搜索漫画')
         print('开始子线程 搜索漫画')
         # 剔除搜索路径中包含的子路径
         search_list = lzytools.file.remove_subpaths(self.search_list)
 
         # 提取搜索列表中的所有文件路径
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.RateInfo, '提取文件路径中')
         files_in_search_list = lzytools.file.get_files_in_paths(search_list)
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.RateInfo, '完成文件路径提取')
 
         # 将提取的文件按父目录写入一个字典
         dir_dict = dict()
@@ -72,7 +76,9 @@ class ThreadSearchComic(ThreadPattern):
         # 筛选符合条件的漫画
         comics_path = set()
         # 搜索文件夹类漫画
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.RateInfo, '搜索文件夹类漫画')
         for dir_, files in dir_dict.items():
+            self.SignalRuntimeInfo.emit(TypeRuntimeInfo.RateInfo, f'检查文件夹：{dir_}')
             if not os.path.exists(dir_):
                 continue
             # 如果文件夹中存在子文件夹，则不视为漫画
@@ -87,12 +93,16 @@ class ThreadSearchComic(ThreadPattern):
             if not self.is_allow_other_filetypes and len(images) != len(files):
                 continue
             comics_path.add(dir_)
+            self.SignalRuntimeInfo.emit(TypeRuntimeInfo.RateInfo, f'识别为文件夹类漫画：{dir_}')
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.RateInfo, '文件夹类漫画搜索完成')
 
         # 搜索压缩文件类漫画
         if self.is_check_archive:
+            self.SignalRuntimeInfo.emit(TypeRuntimeInfo.RateInfo, '搜索压缩文件类漫画')
             # 提取文件列表中的压缩文件
             archives = [i for i in files_in_search_list if function_archive.is_archive_by_filename(i)]
             for archive in archives:
+                self.SignalRuntimeInfo.emit(TypeRuntimeInfo.RateInfo, f'检查压缩文件：{archive}')
                 if not os.path.exists(archive):
                     continue
                 # 提取压缩文件中的所有图片
@@ -104,6 +114,8 @@ class ThreadSearchComic(ThreadPattern):
                 # if not self.is_allow_other_filetypes and len(images) != len(files):
                 #     continue
                 comics_path.add(archive)
+                self.SignalRuntimeInfo.emit(TypeRuntimeInfo.RateInfo, f'识别为文件夹类漫画：{archive}')
+            self.SignalRuntimeInfo.emit(TypeRuntimeInfo.RateInfo, '压缩文件类漫画搜索完成')
 
         # 赋值变量
         self.comics_path = natsort.os_sorted(list(comics_path))
@@ -111,4 +123,5 @@ class ThreadSearchComic(ThreadPattern):
         # 结束后发送信号
         print('搜索到的漫画', self.comics_path)
         print('结束子线程 搜索漫画')
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '完成漫画搜索')
         self.finished()

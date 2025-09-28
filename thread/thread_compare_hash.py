@@ -3,6 +3,7 @@ from typing import List
 
 import lzytools.image
 
+from common.class_runtime import TypeRuntimeInfo
 from thread.thread_pattern import ThreadPattern
 
 
@@ -42,10 +43,14 @@ class ThreadCompareHash(ThreadPattern):
 
     def run(self):
         super().run()
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '开始对比图片相似度')
         print('开始子线程 对比图片hash')
         self.similar_hash_group = []
         match_hash_list = self.hash_list.copy()
-        for hash_ in self.hash_list:
+        for index, hash_ in enumerate(self.hash_list, start=1):
+            if self._is_stop:
+                break
+            self.SignalRate.emit(f'{index}/{len(self.hash_list)}')
             similar = {hash_}  # 集合，用于去重
             match_hash_list.remove(hash_)
             zero_count = hash_.count('0')
@@ -61,6 +66,7 @@ class ThreadCompareHash(ThreadPattern):
         # 结束后发送信号
         print('获取的相似hash组', self.similar_hash_group)
         print('结束子线程 对比图片hash')
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '全部图片对比完成')
         self.finished()
 
     @staticmethod

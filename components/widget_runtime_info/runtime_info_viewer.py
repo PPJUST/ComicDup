@@ -37,6 +37,10 @@ class RuntimeInfoViewer(QWidget):
 
     """文本框方法"""
 
+    def append_textline(self, text_info: str):
+        """向文本框中添加文本行"""
+        self.ui.textBrowser_runtime_info.append(text_info)
+
 
 if __name__ == "__main__":
     app_ = QApplication()
