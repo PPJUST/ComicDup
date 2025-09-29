@@ -1,15 +1,18 @@
 from typing import List
 
 import lzytools.common
+from PySide6.QtCore import Signal, QObject
 
 from common.class_comic import ComicInfo, ImageInfo
 from common.class_config import TYPES_HASH_ALGORITHM
+from common.class_runtime import TypeRuntimeInfo
 from common.function_db_comic_info import DBComicInfo
 from common.function_db_image_info import DBImageInfo
 
 
-class WindowModel:
+class WindowModel(QObject):
     """主窗口的模型组件"""
+    SignalRuntimeInfo = Signal(object, str, name='运行信息')
 
     def __init__(self, ):
         super().__init__()
@@ -19,8 +22,10 @@ class WindowModel:
 
     def save_comic_info_to_db(self, comic_infos: List[ComicInfo]):
         """保存漫画信息到本地数据库中"""
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '正在保存漫画信息到本地数据库')
         for comic_info in comic_infos:
             self.db_comic_info.add(comic_info)
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '完成保存漫画信息到本地数据库')
 
     def get_images_from_comic_infos(self, comic_infos: List[ComicInfo], extract_image_count: int):
         """提取漫画信息类列表中指定数量的内部图片路径"""
@@ -38,8 +43,10 @@ class WindowModel:
 
     def save_image_info_to_db(self, image_infos: List[ImageInfo]):
         """保存图片信息到本地数据库中"""
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '正在保存图片信息到本地数据库')
         for image_info in image_infos:
             self.db_image_info.add(image_info)
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '完成保存图片信息到本地数据库')
 
     def get_hashs_from_image_infos(self, image_infos: List[ImageInfo], hash_type: TYPES_HASH_ALGORITHM,
                                    hash_length: int):
@@ -58,8 +65,12 @@ class WindowModel:
 
     def get_image_info_by_hash(self, hash_: str, hash_type: TYPES_HASH_ALGORITHM):
         """根据hash值获取对应的图片信息类（列表）"""
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '将图片hash值转换为对应的图片路径')
         # 由于一个hash值可能对应多个图片，因此返回一个列表
         image_infos = self.db_image_info.get_image_info_by_hash(hash_, hash_type)
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.RateInfo, f'需要转换的hash值：{hash_}')
+        for _image_info in image_infos:
+            self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, f'转换的图片路径：{_image_info.image_path}')
         print('将hash值转换为对应的图片')
         print('hash值', hash_)
         print('对应的图片', [i.image_path for i in image_infos])
@@ -67,7 +78,10 @@ class WindowModel:
 
     def get_comic_info_by_image_info(self, image_info: ImageInfo):
         """根据图片信息类获取对应的漫画信息类"""
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '将图片路径转换为对应的漫画路径')
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.RateInfo, f'需要转换的图片路径：{image_info.image_path}')
         comic_path = image_info.comic_path_belong
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, f'转换的漫画路径：{comic_path}')
         return self.get_comic_info_by_comic_path(comic_path)
 
     def get_comic_info_by_comic_path(self, comic_path: str):
@@ -79,6 +93,7 @@ class WindowModel:
                                                hash_group: List[List[str]],
                                                hash_type: TYPES_HASH_ALGORITHM) -> List[List[ComicInfo]]:
         """将hash值组列表转换为对应的漫画组列表"""
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '将hash值相似组转换为对应的漫画路径组')
         # hash组格式：[[hash1, hash2, hash3], [hash4, hash5, hash6]]
         # 先转换为漫画路径格式
         comic_path_group = []
@@ -91,8 +106,11 @@ class WindowModel:
                     p_group.add(comic_path)
             if len(p_group) >= 2:
                 comic_path_group.append(list(p_group))
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, f'共完成{len(comic_path_group)}组的转换')
         #  然后合并有交集的项目（用于整合组间相似项）
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, f'合并有交集的相似组')
         comic_path_group = lzytools.common.merge_intersection_item(comic_path_group)
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, f'合并为{len(comic_path_group)}个组')
         # 最后转换为漫画信息类格式
         comic_info_group = []
         for cp_group in comic_path_group:

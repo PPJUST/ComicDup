@@ -61,9 +61,9 @@ class ThreadSearchComic(ThreadPattern):
         search_list = lzytools.file.remove_subpaths(self.search_list)
 
         # 提取搜索列表中的所有文件路径
-        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.RateInfo, '提取文件路径中')
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.RateInfo, '正在提取文件路径')
         files_in_search_list = lzytools.file.get_files_in_paths(search_list)
-        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.RateInfo, '完成文件路径提取')
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.RateInfo, '完成提取文件路径')
 
         # 将提取的文件按父目录写入一个字典
         dir_dict = dict()
@@ -124,4 +124,5 @@ class ThreadSearchComic(ThreadPattern):
         print('搜索到的漫画', self.comics_path)
         print('结束子线程 搜索漫画')
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '完成漫画搜索')
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, f'共搜索到{len(self.comics_path)}本漫画')
         self.finished()

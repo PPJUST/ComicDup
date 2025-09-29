@@ -67,6 +67,7 @@ class ThreadCompareHash(ThreadPattern):
         print('获取的相似hash组', self.similar_hash_group)
         print('结束子线程 对比图片hash')
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '全部图片对比完成')
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, f'共匹配到{len(self.similar_hash_group)}组相似组')
         self.finished()
 
     @staticmethod

@@ -51,4 +51,5 @@ class ThreadAnalyseComicInfo(ThreadPattern):
         print('提取的漫画信息', self.comic_info_dict)
         print('结束子线程 分析漫画信息')
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '全部漫画信息完成分析')
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, f'共完成分析{len(self.comic_info_dict)}本漫画')
         self.finished()

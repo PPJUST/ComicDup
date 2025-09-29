@@ -85,4 +85,5 @@ class ThreadAnalyseImageInfo(ThreadPattern):
         print('提取的图片信息', self.image_info_dict)
         print('结束子线程 分析图片信息')
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '全部图片信息完成分析')
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, f'共完成分析{len(self.image_info_dict)}张图片')
         self.finished()

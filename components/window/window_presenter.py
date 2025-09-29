@@ -13,12 +13,12 @@
 """
 from typing import List
 
-from PySide6.QtCore import QObject
+from PySide6.QtCore import QObject, Signal
 
 from common import function_cache
 from common.class_comic import ComicInfo
 from common.class_config import SimilarAlgorithm
-from common.class_runtime import TYPE_RUNTIME_INFO
+from common.class_runtime import TYPE_RUNTIME_INFO, TypeRuntimeInfo
 from components import widget_exec, widget_setting_algorithm, widget_setting_match, widget_setting_comic, \
     widget_search_list, widget_runtime_info, widget_similar_result_filter, widget_assembler_similar_result_preview
 from components.window.window_model import WindowModel
@@ -32,6 +32,7 @@ from thread.thread_search_comic import ThreadSearchComic
 
 class WindowPresenter(QObject):
     """主窗口的桥梁组件"""
+    SignalRuntimeInfo = Signal(object, str, name='运行信息')
 
     def __init__(self, viewer: WindowViewer, model: WindowModel):
         super().__init__()
@@ -66,8 +67,10 @@ class WindowPresenter(QObject):
 
     def load_last_result(self):
         """加载上一次的匹配结果"""
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '正在加载上次的匹配结果')
         match_result = function_cache.get_last_similar_result()
         self.show_similar_result(match_result)
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '完成加载上次的匹配结果')
 
     def open_about(self):
         """打开程序说明"""
@@ -75,6 +78,8 @@ class WindowPresenter(QObject):
 
     def start(self):
         """执行查重"""
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '执行查找重复项')
+
         # 切换到运行信息页
         self.viewer.turn_page_running_info()
 
@@ -89,6 +94,7 @@ class WindowPresenter(QObject):
 
     def stop(self):
         """停止查重"""
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning, '停止查找重复项')
         self.thread_search_comic.set_stop()
         self.thread_analyse_comic_info.set_stop()
         self.thread_analyse_image_info.set_stop()
@@ -160,7 +166,9 @@ class WindowPresenter(QObject):
         comic_info_groups = self.model.convert_hash_group_to_comic_info_group(similar_hash_groups, hash_type)
         print('显示结果漫画信息类列表', comic_info_groups)
         # 保存到缓存
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '正在保存相似匹配结果到本地缓存')
         function_cache.save_similar_result(comic_info_groups)
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '完成保存相似匹配结果到本地缓存')
         # 显示匹配结果
         self.show_similar_result(comic_info_groups)
 
@@ -180,6 +188,7 @@ class WindowPresenter(QObject):
 
     def show_similar_result(self, comic_info_groups: List[List[ComicInfo]]):
         """显示相似匹配结果"""
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '显示相似匹配结果')
         self.assembler_similar_result_preview.clear()
         for comic_info_list in comic_info_groups:
             self.assembler_similar_result_preview.add_similar_group(comic_info_list)
@@ -259,6 +268,8 @@ class WindowPresenter(QObject):
         self.widget_exec.Stop.connect(self.stop)
         self.widget_exec.LoadLastResult.connect(self.load_last_result)
         self.widget_exec.OpenAbout.connect(self.open_about)
+
+        self.SignalRuntimeInfo.connect(self.update_runtime_info_textline)
 
     def _bind_thread_signal(self):
         """绑定子线程信号"""

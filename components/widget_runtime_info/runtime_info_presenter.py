@@ -41,6 +41,8 @@ class RuntimeInfoPresenter(QObject):
 
     def update_textline(self, info_type: TYPE_RUNTIME_INFO, text_info: str):
         """更新文本行信息"""
-        text_type = info_type.text
-        textline = f'{text_type}{text_info}'
-        self.viewer.append_textline(textline)
+        # 转换为富文本
+        content = (f"<p><span style='color:{info_type.color}; font-size: {info_type.font_size}px'>"
+                   f"{info_type.text}{text_info}"
+                   f"</font></p>")
+        self.viewer.append_textline(content)
