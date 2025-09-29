@@ -2,6 +2,7 @@ import lzytools._qt_pyside6
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget, QApplication
 
+from common.class_sign import TYPE_SIGN_STATUS
 from components.widget_assembler_similar_result_preview import widget_comic_info
 from components.widget_assembler_similar_result_preview.widget_similar_group_info.res.icon_base64 import ICON_ZOOM_IN
 from components.widget_assembler_similar_result_preview.widget_similar_group_info.res.ui_similar_group_info import Ui_Form
@@ -28,9 +29,10 @@ class SimilarGroupInfoViewer(QWidget):
         """设置当前组内部项目的总数"""
         self.ui.label_item_count.setText(str(count))
 
-    def set_group_sign(self, sign: str):
+    def set_group_sign(self, sign: TYPE_SIGN_STATUS):
         """设置当前组的标记"""
-        self.ui.label_sign.setText(sign)
+        sign_str= sign.text
+        self.ui.label_sign.setText(sign_str)
 
     def add_widget(self, widget: QWidget):
         """添加漫画项控件"""

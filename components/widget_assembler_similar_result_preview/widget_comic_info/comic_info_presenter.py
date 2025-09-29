@@ -1,5 +1,6 @@
 import os
 
+import lzytools.file
 from PySide6.QtCore import QObject
 
 from common import function_file
@@ -39,7 +40,8 @@ class ComicInfoPresenter(QObject):
 
     def delete_comic(self):
         """删除漫画"""
-        # 备忘录
+        path = self.comic_info.filepath
+        lzytools.file.delete(path, send_to_trash=True)
 
     def _show_comic_info(self):
         """在viewer上显示漫画信息"""
