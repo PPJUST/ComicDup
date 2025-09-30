@@ -148,17 +148,22 @@ class ComicInfo:
     def _calc_fingerprint(self):
         """计算文件指纹"""
         if isinstance(self.filetype, FileType.Folder) or self.filetype == FileType.Folder:
+            """2025.09.30 文件指纹计算hash过于影响速度，弃用
             # xxhash，文件夹类为内部所有文件的hash算法整合
             inside_paths = natsort.os_sorted(self.page_paths)
             self.fingerprint_xxhash = lzytools.file.calc_xxhash_from_files(inside_paths)
+            """
             # 文件大小
             self.fingerprint_filesize = self.filesize_bytes
             # 内部文件路径
+            inside_paths = natsort.os_sorted(self.page_paths)
             inside_paths = [i.replace(self.filepath, '') for i in inside_paths]  # 转换为相对路径
             self.fingerprint_inside_paths = '|'.join(inside_paths)
         elif isinstance(self.filetype, FileType.Archive) or self.filetype == FileType.Archive:
+            """2025.09.30 文件指纹计算hash过于影响速度，弃用
             # xxhash，压缩文件类为压缩文件的hash
             self.fingerprint_xxhash = lzytools.file.calc_xxhash_from_file(self.filepath)
+            """
             # 文件大小
             self.fingerprint_filesize = self.filesize_bytes
             # 压缩文件内部文件路径

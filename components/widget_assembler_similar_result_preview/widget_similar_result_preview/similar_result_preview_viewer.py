@@ -39,6 +39,10 @@ class SimilarResultPreviewViewer(QWidget):
         """获取每页显示的组数"""
         return self.ui.comboBox_show_group_count.currentText()
 
+    def set_total_page(self, total_page: int):
+        """设置总页数"""
+        self.ui.label_total_page.setText(str(total_page))
+
 
 if __name__ == "__main__":
     app_ = QApplication()

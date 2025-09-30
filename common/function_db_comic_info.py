@@ -18,7 +18,7 @@ KEY_MODIFIED_TIME = 'modified_time'  # 文件修改时间（自纪元以来的�
 KEY_PAGE_PATHS = 'page_paths'  # 内部文件路径
 KEY_PAGE_COUNT = 'page_count'  # 页数
 KEY_PREVIEW_PATH = 'preview_path'  # 预览小图本地路径
-KEY_FINGERPRINT_XXHASH = 'fingerprint_xxhash'  # 文件指纹 hash值
+KEY_FINGERPRINT_XXHASH = 'fingerprint_xxhash(deprecated)'  # 文件指纹 hash值（2025.09.30 过于影响速度，弃用）
 KEY_FINGERPRINT_FILESIZE = 'fingerprint_filesize'  # 文件指纹 文件大小
 KEY_FINGERPRINT_INSIDE_PATHS = 'fingerprint_inside_paths'  # 文件指纹 内部文件路径（升序排序，|间隔）
 
@@ -114,8 +114,8 @@ class DBComicInfo:
         self.cursor.execute(f'UPDATE {TABLE_NAME} SET {KEY_PREVIEW_PATH} = "{comic_info.preview_path}" '
                             f'WHERE {KEY_FILEPATH} = "{comic_path}"')
 
-        self.cursor.execute(f'UPDATE {TABLE_NAME} SET {KEY_FINGERPRINT_XXHASH} = "{comic_info.fingerprint_xxhash}" '
-                            f'WHERE {KEY_FILEPATH} = "{comic_path}"')
+        # self.cursor.execute(f'UPDATE {TABLE_NAME} SET {KEY_FINGERPRINT_XXHASH} = "{comic_info.fingerprint_xxhash}" '
+        #                     f'WHERE {KEY_FILEPATH} = "{comic_path}"')
 
         self.cursor.execute(f'UPDATE {TABLE_NAME} SET {KEY_FINGERPRINT_FILESIZE} = "{comic_info.fingerprint_filesize}" '
                             f'WHERE {KEY_FILEPATH} = "{comic_path}"')
@@ -175,8 +175,8 @@ class DBComicInfo:
         preview_path = result_dict[KEY_PREVIEW_PATH]
         comic_info.update_preview_path(preview_path)
         # 文件指纹 xxhash
-        fingerprint_xxhash = result_dict[KEY_FINGERPRINT_XXHASH]
-        comic_info.update_fingerprint_xxhash(fingerprint_xxhash)
+        # fingerprint_xxhash = result_dict[KEY_FINGERPRINT_XXHASH]
+        # comic_info.update_fingerprint_xxhash(fingerprint_xxhash)
         # 文件指纹 文件大小
         fingerprint_filesize = result_dict[KEY_FINGERPRINT_FILESIZE]
         comic_info.update_fingerprint_filesize(fingerprint_filesize)

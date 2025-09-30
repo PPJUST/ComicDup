@@ -43,9 +43,19 @@ class SimilarResultPreviewPresenter(QObject):
 
     def previous_page(self):
         """上一页"""
+        if self.current_page == 1:
+            pass
+        else:
+            self.current_page += 1
+            self.show_group(self.current_page)
 
     def next_page(self):
         """下一页"""
+        if self.current_page == self.total_page:
+            pass
+        else:
+            self.current_page -= 1
+            self.show_group(self.current_page)
 
     def change_show_group_count(self, show_count: int):
         """修改一页显示的组数"""
@@ -56,6 +66,8 @@ class SimilarResultPreviewPresenter(QObject):
         """计算总页数（向上整除）"""
         self.total_page = (len(self.widgets_similar_group_info) +
                            self.show_group_count) // self.show_group_count  # 向上整除
+
+        self.viewer.set_total_page(self.total_page)
 
     def get_group_count(self):
         """获取组数"""
