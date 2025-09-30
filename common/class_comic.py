@@ -5,6 +5,7 @@ import os
 import lzytools.archive
 import lzytools.file
 import lzytools.image
+import natsort
 from PIL import Image
 
 from common import function_file, function_archive, function_cache
@@ -68,6 +69,14 @@ class ComicInfo:
         # 预览小图本地路径
         self.preview_path: str = None
 
+        # 文件指纹
+        # 文件指纹 hash值（xxhash，如果是压缩文件类，则为压缩文件的hash，如果是文件夹类，则为其内部所有文件的hash算法整合）
+        self.fingerprint_xxhash: str = None
+        # 文件指纹 文件大小
+        self.fingerprint_filesize: int = None
+        # 文件指纹 内部文件路径（升序排序，|间隔）
+        self.fingerprint_inside_paths: str = None
+
         # 提取需要的信息（数据库模式时，直接由数据库类赋值）
         if not db_model:
             # 文件大小
@@ -91,6 +100,9 @@ class ComicInfo:
             elif isinstance(self.filetype, FileType.Archive):
                 self._analyse_archive_pages()
                 self._analyse_archive_size_extracted()
+
+        # 计算文件指纹
+        self._calc_fingerprint()
 
     def get_page_paths(self):
         """获取漫画页路径列表"""
@@ -120,6 +132,38 @@ class ComicInfo:
     def update_preview_path(self, preview_path: str):
         """更新漫画预览小图路径"""
         self.preview_path = preview_path
+
+    def update_fingerprint_xxhash(self, xxhash: str):
+        """更新文件指纹 xxhash"""
+        self.fingerprint_xxhash = xxhash
+
+    def update_fingerprint_filesize(self, filesize: int):
+        """更新文件指纹 文件大小"""
+        self.fingerprint_filesize = filesize
+
+    def update_fingerprint_inside_paths(self, inside_paths: str):
+        """更新文件指纹 内部文件路径"""
+        self.fingerprint_inside_paths = inside_paths
+
+    def _calc_fingerprint(self):
+        """计算文件指纹"""
+        if isinstance(self.filetype, FileType.Folder) or self.filetype == FileType.Folder:
+            # xxhash，文件夹类为内部所有文件的hash算法整合
+            inside_paths = natsort.os_sorted(self.page_paths)
+            self.fingerprint_xxhash = lzytools.file.calc_xxhash_from_files(inside_paths)
+            # 文件大小
+            self.fingerprint_filesize = self.filesize_bytes
+            # 内部文件路径
+            inside_paths = [i.replace(self.filepath, '') for i in inside_paths]  # 转换为相对路径
+            self.fingerprint_inside_paths = '|'.join(inside_paths)
+        elif isinstance(self.filetype, FileType.Archive) or self.filetype == FileType.Archive:
+            # xxhash，压缩文件类为压缩文件的hash
+            self.fingerprint_xxhash = lzytools.file.calc_xxhash_from_file(self.filepath)
+            # 文件大小
+            self.fingerprint_filesize = self.filesize_bytes
+            # 压缩文件内部文件路径
+            inside_paths = self.page_paths
+            self.fingerprint_inside_paths = '|'.join(inside_paths)
 
     def _analyse_folder_pages(self):
         """分析文件夹类漫画页"""

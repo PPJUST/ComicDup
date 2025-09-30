@@ -110,7 +110,7 @@ class WindowModel(QObject):
         #  然后合并有交集的项目（用于整合组间相似项）
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, f'合并有交集的相似组')
         comic_path_group = lzytools.common.merge_intersection_item(comic_path_group)
-        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, f'合并为{len(comic_path_group)}个组')
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, f'合并为{len(comic_path_group)}组')
         # 最后转换为漫画信息类格式
         comic_info_group = []
         for cp_group in comic_path_group:

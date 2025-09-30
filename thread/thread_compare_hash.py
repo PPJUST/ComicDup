@@ -61,6 +61,7 @@ class ThreadCompareHash(ThreadPattern):
                 distance = lzytools.image.calc_hash_hamming_distance(hash_, hash_compare)
                 if distance <= self.hamming_distance:
                     similar.add(hash_compare)
+            # 即使只有其自身，仍旧写入相似组，因为可能存在漫画的复制品，导致hash值相同
             self.similar_hash_group.append(list(similar))
 
         # 结束后发送信号

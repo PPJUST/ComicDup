@@ -64,6 +64,8 @@ class WindowPresenter(QObject):
         self._bind_signal()
         # 绑定子线程信号
         self._bind_thread_signal()
+        # 绑定model信号
+        self.model.SignalRuntimeInfo.connect(self.update_runtime_info_textline)
 
     def load_last_result(self):
         """加载上一次的匹配结果"""
