@@ -4,7 +4,7 @@ class TypeRuntimeInfo:
     class StepInfo:
         """步骤运行信息（开始、结束等）"""
         text = 'StepInfo: '
-        color = 'SpringGreen'
+        color = 'ForestGreen'
         font_size = 16
 
     class RateInfo:
@@ -16,13 +16,13 @@ class TypeRuntimeInfo:
     class Notice:
         """重要提示信息（匹配成功等））"""
         text = 'Notice: '
-        color = 'Aqua'
+        color = 'RoyalBlue'
         font_size = 14
 
     class Warning:
         """错误信息（处理失败等））"""
         text = 'Warning: '
-        color = 'Gold'
+        color = 'DarkRed'
         font_size = 14
 
 

@@ -22,6 +22,8 @@ class WindowModel(QObject):
 
     def save_comic_info_to_db(self, comic_infos: List[ComicInfo]):
         """保存漫画信息到本地数据库中"""
+        # 在保存漫画信息前，考虑已存在于数据库中的项目，具体逻辑参考流程图
+        # 备忘录
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '正在保存漫画信息到本地数据库')
         for comic_info in comic_infos:
             self.db_comic_info.add(comic_info)

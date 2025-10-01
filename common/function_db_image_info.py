@@ -21,7 +21,8 @@ KEY_DHASH_64 = 'dHash_64'  # 差异哈希（64位）
 KEY_DHASH_144 = 'dHash_144'  # 差异哈希（144位）
 KEY_DHASH_256 = 'dHash_256'  # 差异哈希（256位）
 KEY_COMIC_PATH_BELONG = 'comic_path_belong'  # 图片所属漫画的路径
-KEY_COMIC_FILETYPE_BELONG = 'comic_filetype_belong'  # # 图片所属漫画的文件类型
+KEY_COMIC_FILETYPE_BELONG = 'comic_filetype_belong'  # 图片所属漫画的文件类型
+KEY_COMIC_FINGERPRINT_BELONG = 'comic_fingerprint_belong'  # 图片所属漫画的文件指纹
 
 
 class DBImageInfo:
@@ -53,7 +54,8 @@ class DBImageInfo:
                            f'{KEY_DHASH_144} TEXT,'  # 差异哈希（144位）
                            f'{KEY_DHASH_256} TEXT,'  # 差异哈希（256位）
                            f'{KEY_COMIC_PATH_BELONG} TEXT,'  # 图片所属漫画的路径
-                           f'{KEY_COMIC_FILETYPE_BELONG} TEXT'  # 图片所属漫画的文件类型
+                           f'{KEY_COMIC_FILETYPE_BELONG} TEXT,'  # 图片所属漫画的文件类型
+                           f'{KEY_COMIC_FINGERPRINT_BELONG} TEXT'
                            f')')
 
             conn.commit()
@@ -122,6 +124,10 @@ class DBImageInfo:
             f'UPDATE {TABLE_NAME} SET {KEY_COMIC_FILETYPE_BELONG} = "{image_info.comic_filetype_belong.text}" '
             f'WHERE {KEY_FAKE_PATH} = "{fake_path}"')
 
+        self.cursor.execute(
+            f'UPDATE {TABLE_NAME} SET {KEY_COMIC_FINGERPRINT_BELONG} = "{image_info.comic_fingerprint_belong}" '
+            f'WHERE {KEY_FAKE_PATH} = "{fake_path}"')
+
         self.conn.commit()
 
     def delete(self, image_path: str, comic_path: str):
@@ -171,8 +177,10 @@ class DBImageInfo:
                 comic_filetype_belong = FileType.File()
             else:
                 raise Exception('漫画文件类型错误')
+            comic_fingerprint_belong = result_dict[KEY_COMIC_FINGERPRINT_BELONG]
             image_info.update_comic_path_belong(comic_path_belong)
             image_info.update_comic_filetype_belong(comic_filetype_belong)
+            image_info.update_comic_fingerprint_belong(comic_fingerprint_belong)
             # hash值
             ahash_64 = result_dict[KEY_AHASH_64]
             if ahash_64:

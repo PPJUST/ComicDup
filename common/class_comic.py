@@ -69,13 +69,8 @@ class ComicInfo:
         # 预览小图本地路径
         self.preview_path: str = None
 
-        # 文件指纹
-        # 文件指纹 hash值（xxhash，如果是压缩文件类，则为压缩文件的hash，如果是文件夹类，则为其内部所有文件的hash算法整合）
-        self.fingerprint_xxhash: str = None
-        # 文件指纹 文件大小
-        self.fingerprint_filesize: int = None
-        # 文件指纹 内部文件路径（升序排序，|间隔）
-        self.fingerprint_inside_paths: str = None
+        # 文件指纹（格式为文件大小bytes+内部文件路径，以|间隔）
+        self.fingerprint: str = None
 
         # 提取需要的信息（数据库模式时，直接由数据库类赋值）
         if not db_model:
@@ -133,42 +128,29 @@ class ComicInfo:
         """更新漫画预览小图路径"""
         self.preview_path = preview_path
 
-    def update_fingerprint_xxhash(self, xxhash: str):
-        """更新文件指纹 xxhash"""
-        self.fingerprint_xxhash = xxhash
-
-    def update_fingerprint_filesize(self, filesize: int):
-        """更新文件指纹 文件大小"""
-        self.fingerprint_filesize = filesize
-
-    def update_fingerprint_inside_paths(self, inside_paths: str):
-        """更新文件指纹 内部文件路径"""
-        self.fingerprint_inside_paths = inside_paths
+    def update_fingerprint(self, fingerprint: str):
+        """更新文件指纹"""
+        self.fingerprint = fingerprint
 
     def _calc_fingerprint(self):
         """计算文件指纹"""
         if isinstance(self.filetype, FileType.Folder) or self.filetype == FileType.Folder:
-            """2025.09.30 文件指纹计算hash过于影响速度，弃用
-            # xxhash，文件夹类为内部所有文件的hash算法整合
-            inside_paths = natsort.os_sorted(self.page_paths)
-            self.fingerprint_xxhash = lzytools.file.calc_xxhash_from_files(inside_paths)
-            """
             # 文件大小
-            self.fingerprint_filesize = self.filesize_bytes
+            filesize = self.filesize_bytes
             # 内部文件路径
-            inside_paths = natsort.os_sorted(self.page_paths)
-            inside_paths = [i.replace(self.filepath, '') for i in inside_paths]  # 转换为相对路径
-            self.fingerprint_inside_paths = '|'.join(inside_paths)
+            inside_paths_abs = natsort.os_sorted(self.page_paths)
+            inside_paths_rel = [i.replace(self.filepath, '') for i in inside_paths_abs]  # 转换为相对路径
+            inside_path_str = '|'.join(inside_paths_rel)
+            # 整合为一个指纹
+            self.fingerprint = f'{filesize}|{inside_path_str}'
         elif isinstance(self.filetype, FileType.Archive) or self.filetype == FileType.Archive:
-            """2025.09.30 文件指纹计算hash过于影响速度，弃用
-            # xxhash，压缩文件类为压缩文件的hash
-            self.fingerprint_xxhash = lzytools.file.calc_xxhash_from_file(self.filepath)
-            """
             # 文件大小
-            self.fingerprint_filesize = self.filesize_bytes
+            filesize = self.filesize_bytes
             # 压缩文件内部文件路径
             inside_paths = self.page_paths
-            self.fingerprint_inside_paths = '|'.join(inside_paths)
+            inside_path_str = '|'.join(inside_paths)
+            # 整合为一个指纹
+            self.fingerprint = f'{filesize}|{inside_path_str}'
 
     def _analyse_folder_pages(self):
         """分析文件夹类漫画页"""
@@ -215,6 +197,8 @@ class ImageInfo:
         self.comic_path_belong: str = ''
         # 图片所属漫画的文件类型
         self.comic_filetype_belong: FileTypes = None
+        # 图片所属漫画的文件指纹
+        self.comic_fingerprint_belong: str = ''
 
     def calc_filesize(self):
         """计算图片文件大小"""
@@ -256,11 +240,11 @@ class ImageInfo:
         """根据漫画信息类更新信息"""
         self.comic_path_belong = comic_info.filepath
         self.comic_filetype_belong = comic_info.filetype
+        self.comic_fingerprint_belong = comic_info.fingerprint
         self.calc_filesize()
 
     def is_useful(self):
         """检查图片是否有效"""
-        # 所属漫画为文件夹类时
         if isinstance(self.comic_filetype_belong, FileType.Folder):
             if os.path.exists(self.image_path):
                 filesize_latest = lzytools.file.get_size(self.image_path)
@@ -335,3 +319,7 @@ class ImageInfo:
     def update_comic_filetype_belong(self, comic_filetype: FileTypes):
         """更新图片所属漫画的文件类型"""
         self.comic_filetype_belong = comic_filetype
+
+    def update_comic_fingerprint_belong(self, comic_fingerprint: str):
+        """更新图片所属漫画的指纹"""
+        self.comic_fingerprint_belong = comic_fingerprint

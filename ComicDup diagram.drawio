@@ -1,0 +1,196 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/28.1.2 Chrome/138.0.7204.243 Electron/37.4.0 Safari/537.36" version="28.1.2">
+  <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
+    <mxGraphModel dx="1009" dy="785" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="WIyWlLk6GJQsqaUBKTNV-0" />
+        <mxCell id="WIyWlLk6GJQsqaUBKTNV-1" parent="WIyWlLk6GJQsqaUBKTNV-0" />
+        <mxCell id="tWnnWPvNeCrNgLK-_x34-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="tWnnWPvNeCrNgLK-_x34-3" target="qhQkMXtEbdWV5kRE9jzH-14">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tWnnWPvNeCrNgLK-_x34-3" value="" style="shape=process;whiteSpace=wrap;html=1;backgroundOutline=1;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
+          <mxGeometry x="520" y="460" width="560" height="680" as="geometry" />
+        </mxCell>
+        <mxCell id="qhQkMXtEbdWV5kRE9jzH-9" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="qhQkMXtEbdWV5kRE9jzH-2" target="qhQkMXtEbdWV5kRE9jzH-6" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qhQkMXtEbdWV5kRE9jzH-2" value="开始" style="ellipse;whiteSpace=wrap;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="280" y="240" width="120" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="qhQkMXtEbdWV5kRE9jzH-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="qhQkMXtEbdWV5kRE9jzH-6" target="qhQkMXtEbdWV5kRE9jzH-10" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qhQkMXtEbdWV5kRE9jzH-6" value="搜索漫画" style="rounded=0;whiteSpace=wrap;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="280" y="360" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="qhQkMXtEbdWV5kRE9jzH-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="qhQkMXtEbdWV5kRE9jzH-7" target="qhQkMXtEbdWV5kRE9jzH-6" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qhQkMXtEbdWV5kRE9jzH-7" value="检索路径" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="480" y="360" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="qhQkMXtEbdWV5kRE9jzH-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="qhQkMXtEbdWV5kRE9jzH-10" target="qhQkMXtEbdWV5kRE9jzH-11" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qhQkMXtEbdWV5kRE9jzH-10" value="符合条件的漫画的列表" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="280" y="480" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="tWnnWPvNeCrNgLK-_x34-8" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="qhQkMXtEbdWV5kRE9jzH-11" target="tWnnWPvNeCrNgLK-_x34-3">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qhQkMXtEbdWV5kRE9jzH-11" value="分析漫画信息" style="rounded=0;whiteSpace=wrap;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="280" y="600" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="qhQkMXtEbdWV5kRE9jzH-12" value="漫画信息列表" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="600" y="920" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="qhQkMXtEbdWV5kRE9jzH-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="qhQkMXtEbdWV5kRE9jzH-14" target="qhQkMXtEbdWV5kRE9jzH-15" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qhQkMXtEbdWV5kRE9jzH-14" value="提取每个漫画内n张图片" style="rounded=0;whiteSpace=wrap;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="280" y="960" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="qhQkMXtEbdWV5kRE9jzH-22" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="qhQkMXtEbdWV5kRE9jzH-15" target="qhQkMXtEbdWV5kRE9jzH-21" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qhQkMXtEbdWV5kRE9jzH-15" value="图片列表" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="280" y="1080" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="qhQkMXtEbdWV5kRE9jzH-34" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="qhQkMXtEbdWV5kRE9jzH-21" target="qhQkMXtEbdWV5kRE9jzH-23" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qhQkMXtEbdWV5kRE9jzH-21" value="分析图片信息" style="rounded=0;whiteSpace=wrap;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="280" y="1200" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="qhQkMXtEbdWV5kRE9jzH-26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="qhQkMXtEbdWV5kRE9jzH-23" target="qhQkMXtEbdWV5kRE9jzH-25" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qhQkMXtEbdWV5kRE9jzH-35" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="qhQkMXtEbdWV5kRE9jzH-23" target="qhQkMXtEbdWV5kRE9jzH-27" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qhQkMXtEbdWV5kRE9jzH-23" value="图片信息列表" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="280" y="1320" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="gnpyvry0cEYxUPqbaqTe-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="qhQkMXtEbdWV5kRE9jzH-25" target="gnpyvry0cEYxUPqbaqTe-1" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qhQkMXtEbdWV5kRE9jzH-25" value="保存至本地数据库" style="rounded=0;whiteSpace=wrap;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="480" y="1320" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="qhQkMXtEbdWV5kRE9jzH-36" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="qhQkMXtEbdWV5kRE9jzH-27" target="qhQkMXtEbdWV5kRE9jzH-28" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qhQkMXtEbdWV5kRE9jzH-27" value="提取图片信息列表中的hash值" style="rounded=0;whiteSpace=wrap;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="280" y="1440" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="qhQkMXtEbdWV5kRE9jzH-37" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="qhQkMXtEbdWV5kRE9jzH-28" target="qhQkMXtEbdWV5kRE9jzH-29" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qhQkMXtEbdWV5kRE9jzH-28" value="图片hash值列表" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="280" y="1560" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="qhQkMXtEbdWV5kRE9jzH-38" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="qhQkMXtEbdWV5kRE9jzH-29" target="qhQkMXtEbdWV5kRE9jzH-30" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qhQkMXtEbdWV5kRE9jzH-29" value="对比图片hash值，匹配相似hash" style="rounded=0;whiteSpace=wrap;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="280" y="1680" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="qhQkMXtEbdWV5kRE9jzH-39" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="qhQkMXtEbdWV5kRE9jzH-30" target="qhQkMXtEbdWV5kRE9jzH-32" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qhQkMXtEbdWV5kRE9jzH-30" value="相似hash组的列表" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="280" y="1800" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="qhQkMXtEbdWV5kRE9jzH-31" value="在UI中显示相似组" style="rounded=0;whiteSpace=wrap;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="280" y="2160" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="qhQkMXtEbdWV5kRE9jzH-40" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="qhQkMXtEbdWV5kRE9jzH-32" target="qhQkMXtEbdWV5kRE9jzH-33" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qhQkMXtEbdWV5kRE9jzH-32" value="将hash值转换为对应的漫画" style="rounded=0;whiteSpace=wrap;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="280" y="1920" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="qhQkMXtEbdWV5kRE9jzH-41" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="qhQkMXtEbdWV5kRE9jzH-33" target="qhQkMXtEbdWV5kRE9jzH-31" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="qhQkMXtEbdWV5kRE9jzH-33" value="相似漫画组的列表" style="shape=parallelogram;perimeter=parallelogramPerimeter;whiteSpace=wrap;html=1;fixedSize=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="280" y="2040" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="gnpyvry0cEYxUPqbaqTe-1" value="图片信息数据库" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="680" y="1310" width="60" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="gnpyvry0cEYxUPqbaqTe-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="gnpyvry0cEYxUPqbaqTe-8" target="gnpyvry0cEYxUPqbaqTe-10" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="gnpyvry0cEYxUPqbaqTe-8" value="计算漫画信息及其指纹" style="rounded=0;whiteSpace=wrap;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="600" y="480" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="gnpyvry0cEYxUPqbaqTe-18" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="gnpyvry0cEYxUPqbaqTe-10" target="gnpyvry0cEYxUPqbaqTe-17" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="gnpyvry0cEYxUPqbaqTe-19" value="是" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="gnpyvry0cEYxUPqbaqTe-18" vertex="1" connectable="0">
+          <mxGeometry x="-0.2" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="gnpyvry0cEYxUPqbaqTe-20" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="gnpyvry0cEYxUPqbaqTe-10" target="gnpyvry0cEYxUPqbaqTe-16" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="gnpyvry0cEYxUPqbaqTe-21" value="否" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="gnpyvry0cEYxUPqbaqTe-20" vertex="1" connectable="0">
+          <mxGeometry x="-0.1667" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="gnpyvry0cEYxUPqbaqTe-10" value="是否已&lt;span style=&quot;background-color: transparent; color: light-dark(rgb(0, 0, 0), rgb(255, 255, 255));&quot;&gt;存在于漫画信息数据库中&lt;/span&gt;" style="rhombus;whiteSpace=wrap;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="620" y="560" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="gnpyvry0cEYxUPqbaqTe-28" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="gnpyvry0cEYxUPqbaqTe-16" target="gnpyvry0cEYxUPqbaqTe-27" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="gnpyvry0cEYxUPqbaqTe-16" value="保存至漫画信息数据库" style="rounded=0;whiteSpace=wrap;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="760" y="570" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="gnpyvry0cEYxUPqbaqTe-24" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="gnpyvry0cEYxUPqbaqTe-17" target="gnpyvry0cEYxUPqbaqTe-22" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="gnpyvry0cEYxUPqbaqTe-25" value="是" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="gnpyvry0cEYxUPqbaqTe-24" vertex="1" connectable="0">
+          <mxGeometry x="-0.35" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="gnpyvry0cEYxUPqbaqTe-31" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="gnpyvry0cEYxUPqbaqTe-17" target="gnpyvry0cEYxUPqbaqTe-30" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="gnpyvry0cEYxUPqbaqTe-17" value="漫画信息数据库中对应项的路径是否已经发生改变" style="rhombus;whiteSpace=wrap;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="620" y="680" width="80" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="gnpyvry0cEYxUPqbaqTe-26" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="gnpyvry0cEYxUPqbaqTe-22" target="gnpyvry0cEYxUPqbaqTe-23" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="gnpyvry0cEYxUPqbaqTe-34" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="gnpyvry0cEYxUPqbaqTe-22" target="gnpyvry0cEYxUPqbaqTe-27" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="tWnnWPvNeCrNgLK-_x34-5" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="WIyWlLk6GJQsqaUBKTNV-1" source="gnpyvry0cEYxUPqbaqTe-22" target="qhQkMXtEbdWV5kRE9jzH-12">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="gnpyvry0cEYxUPqbaqTe-22" value="更新漫画信息数据库中对应的路径" style="rounded=0;whiteSpace=wrap;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="600" y="800" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="gnpyvry0cEYxUPqbaqTe-33" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" source="gnpyvry0cEYxUPqbaqTe-23" target="gnpyvry0cEYxUPqbaqTe-32" edge="1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="gnpyvry0cEYxUPqbaqTe-23" value="更新图片信息数据库中对应的路径" style="rounded=0;whiteSpace=wrap;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="890" y="880" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="gnpyvry0cEYxUPqbaqTe-27" value="漫画信息数据库" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="920" y="680" width="60" height="80" as="geometry" />
+        </mxCell>
+        <mxCell id="gnpyvry0cEYxUPqbaqTe-30" value="不进行处理" style="rounded=0;whiteSpace=wrap;html=1;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="760" y="690" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="gnpyvry0cEYxUPqbaqTe-32" value="图片信息数据库" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=15;" parent="WIyWlLk6GJQsqaUBKTNV-1" vertex="1">
+          <mxGeometry x="920" y="1000" width="60" height="80" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

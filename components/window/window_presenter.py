@@ -39,6 +39,8 @@ class WindowPresenter(QObject):
         self.viewer = viewer
         self.model = model
 
+        self.is_stop = False  # 是否停止
+
         # 实例化控件
         self.widget_exec = widget_exec.get_presenter()
         self.widget_setting_algorithm = widget_setting_algorithm.get_presenter()
@@ -92,10 +94,12 @@ class WindowPresenter(QObject):
         search_paths = self.widget_search_list.get_paths()
 
         # 传参给子线程，并启动
+        self.is_stop = False
         self.start_search_comic(search_paths)
 
     def stop(self):
         """停止查重"""
+        self.is_stop = True
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning, '停止查找重复项')
         self.thread_search_comic.set_stop()
         self.thread_analyse_comic_info.set_stop()
@@ -107,95 +111,105 @@ class WindowPresenter(QObject):
 
     def start_search_comic(self, search_paths: list):
         """启动子线程-搜索漫画"""
-        self.thread_search_comic.set_search_list(search_paths)
-        self.thread_search_comic.start()
+        if not self.is_stop:
+            self.thread_search_comic.set_search_list(search_paths)
+            self.thread_search_comic.start()
 
     def thread_search_comic_finished(self):
         """子线程-搜索漫画执行完毕"""
-        # 提取漫画路径列表
-        comics_path = self.thread_search_comic.get_comics_path()
-        # 传递给 子线程-分析漫画信息
-        self.start_thread_analyse_comic_info(comics_path)
+        if not self.is_stop:
+            # 提取漫画路径列表
+            comics_path = self.thread_search_comic.get_comics_path()
+            # 传递给 子线程-分析漫画信息
+            self.start_thread_analyse_comic_info(comics_path)
 
     def start_thread_analyse_comic_info(self, comics_path: list):
         """启动子线程-分析漫画信息"""
-        self.thread_analyse_comic_info.set_comics(comics_path)
-        self.thread_analyse_comic_info.start()
+        if not self.is_stop:
+            self.thread_analyse_comic_info.set_comics(comics_path)
+            self.thread_analyse_comic_info.start()
 
     def thread_analyse_comic_info_finished(self):
         """子线程-分析漫画信息执行完毕"""
-        # 提取漫画信息类字典
-        comic_info_dict = self.thread_analyse_comic_info.get_comic_info_dict()
-        comic_info_list = list(comic_info_dict.values())
-        # 保存到本地数据库中
-        self.model.save_comic_info_to_db(comic_info_dict.values())
-        # 提取指定数量的漫画内部图片路径
-        extract_pages = self.widget_setting_match.get_extract_pages()  # 每本漫画提取的页数
-        images_in_comic = self.model.get_images_from_comic_infos(comic_info_dict.values(), extract_pages)
-        # 将提取的图片路径列表传递给 子线程-分析图片信息
-        self.start_analyse_image_info(images_in_comic, comic_info_list)
+        if not self.is_stop:
+            # 提取漫画信息类字典
+            comic_info_dict = self.thread_analyse_comic_info.get_comic_info_dict()
+            comic_info_list = list(comic_info_dict.values())
+            # 保存到本地数据库中
+            self.model.save_comic_info_to_db(comic_info_dict.values())
+            # 提取指定数量的漫画内部图片路径
+            extract_pages = self.widget_setting_match.get_extract_pages()  # 每本漫画提取的页数
+            images_in_comic = self.model.get_images_from_comic_infos(comic_info_dict.values(), extract_pages)
+            # 将提取的图片路径列表传递给 子线程-分析图片信息
+            self.start_analyse_image_info(images_in_comic, comic_info_list)
 
     def start_analyse_image_info(self, images_path: list, comic_info_list: list):
         """启动子线程-分析图片信息"""
-        self.thread_analyse_image_info.set_images(images_path)
-        self.thread_analyse_image_info.set_comic_info_list(comic_info_list)
-        self.thread_analyse_image_info.start()
+        if not self.is_stop:
+            self.thread_analyse_image_info.set_images(images_path)
+            self.thread_analyse_image_info.set_comic_info_list(comic_info_list)
+            self.thread_analyse_image_info.start()
 
     def thread_analyse_image_info_finished(self):
         """子线程-分析图片信息执行完毕"""
-        # 提取图片信息字典
-        image_info_dict = self.thread_analyse_image_info.get_image_info_dict()
-        # 保存到本地数据库中
-        self.model.save_image_info_to_db(image_info_dict.values())
-        # 提取图片信息中的hash值
-        hash_algorithm = self.widget_setting_algorithm.get_base_algorithm()  # hash算法
-        hash_length = self.widget_setting_algorithm.get_hash_length()  # hash长度
-        hash_list = self.model.get_hashs_from_image_infos(image_info_dict.values(), hash_algorithm, hash_length)
-        # 将提取的hash值列表传递给 子线程-对比图片hash
-        self.start_thread_compare_hash(hash_list)
+        if not self.is_stop:
+            # 提取图片信息字典
+            image_info_dict = self.thread_analyse_image_info.get_image_info_dict()
+            # 保存到本地数据库中
+            self.model.save_image_info_to_db(image_info_dict.values())
+            # 提取图片信息中的hash值
+            hash_algorithm = self.widget_setting_algorithm.get_base_algorithm()  # hash算法
+            hash_length = self.widget_setting_algorithm.get_hash_length()  # hash长度
+            hash_list = self.model.get_hashs_from_image_infos(image_info_dict.values(), hash_algorithm, hash_length)
+            # 将提取的hash值列表传递给 子线程-对比图片hash
+            self.start_thread_compare_hash(hash_list)
 
     def start_thread_compare_hash(self, hash_list: list):
         """启动子线程-对比图片hash"""
-        self.thread_compare_hash.set_hash_list(hash_list)
-        self.thread_compare_hash.start()
+        if not self.is_stop:
+            self.thread_compare_hash.set_hash_list(hash_list)
+            self.thread_compare_hash.start()
 
     def thread_compare_hash_finished(self):
         """子线程-对比图片hash执行完毕"""
-        # 提取相似hash组列表
-        similar_hash_groups = self.thread_compare_hash.get_similar_hash_group()
-        # 将hash列表转换为对应的漫画信息类列表
-        hash_type = self.thread_analyse_image_info.hash_type  # 提取的hash类型
-        comic_info_groups = self.model.convert_hash_group_to_comic_info_group(similar_hash_groups, hash_type)
-        print('显示结果漫画信息类列表', comic_info_groups)
-        # 保存到缓存
-        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '正在保存相似匹配结果到本地缓存')
-        function_cache.save_similar_result(comic_info_groups)
-        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '完成保存相似匹配结果到本地缓存')
-        # 显示匹配结果
-        self.show_similar_result(comic_info_groups)
+        if not self.is_stop:
+            # 提取相似hash组列表
+            similar_hash_groups = self.thread_compare_hash.get_similar_hash_group()
+            # 将hash列表转换为对应的漫画信息类列表
+            hash_type = self.thread_analyse_image_info.hash_type  # 提取的hash类型
+            comic_info_groups = self.model.convert_hash_group_to_comic_info_group(similar_hash_groups, hash_type)
+            print('显示结果漫画信息类列表', comic_info_groups)
+            # 保存到缓存
+            self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '正在保存相似匹配结果到本地缓存')
+            function_cache.save_similar_result(comic_info_groups)
+            self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '完成保存相似匹配结果到本地缓存')
+            # 显示匹配结果
+            self.show_similar_result(comic_info_groups)
 
-        # 检查设置项，是否需要使用增强算法
-        is_enhance_algorithm = self.widget_setting_algorithm.get_is_enhance_algorithm()
-        enhance_algorithm = self.widget_setting_algorithm.get_enhance_algorithm()
-        if is_enhance_algorithm:
-            if isinstance(enhance_algorithm, SimilarAlgorithm.SSIM):
-                pass  # 备忘录
-            elif isinstance(enhance_algorithm, SimilarAlgorithm.ORB):
-                pass  # 备忘录
+            # 检查设置项，是否需要使用增强算法
+            is_enhance_algorithm = self.widget_setting_algorithm.get_is_enhance_algorithm()
+            enhance_algorithm = self.widget_setting_algorithm.get_enhance_algorithm()
+            if is_enhance_algorithm:
+                if isinstance(enhance_algorithm, SimilarAlgorithm.SSIM):
+                    pass  # 备忘录
+                elif isinstance(enhance_algorithm, SimilarAlgorithm.ORB):
+                    pass  # 备忘录
 
     def start_thread_compare_ssim(self, image_group: list):
         """启动子线程-对比图片ssim"""
-        self.thread_compare_ssim.set_image_group(image_group)
-        self.thread_compare_ssim.start()
+        if not self.is_stop:
+            self.thread_compare_ssim.set_image_group(image_group)
+            self.thread_compare_ssim.start()
 
     def show_similar_result(self, comic_info_groups: List[List[ComicInfo]]):
         """显示相似匹配结果"""
-        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '显示相似匹配结果')
-        self.assembler_similar_result_preview.clear()
-        for comic_info_list in comic_info_groups:
-            self.assembler_similar_result_preview.add_similar_group(comic_info_list)
-        self.assembler_similar_result_preview.show_similar_result()
-        self.viewer.turn_page_match_result()
+        if not self.is_stop:
+            self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '显示相似匹配结果')
+            self.assembler_similar_result_preview.clear()
+            for comic_info_list in comic_info_groups:
+                self.assembler_similar_result_preview.add_similar_group(comic_info_list)
+            self.assembler_similar_result_preview.show_similar_result()
+            self.viewer.turn_page_match_result()
 
     """运行信息方法"""
 

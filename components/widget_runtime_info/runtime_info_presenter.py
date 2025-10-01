@@ -1,3 +1,5 @@
+import time
+
 from PySide6.QtCore import QObject
 
 from common.class_runtime import TYPE_RUNTIME_INFO
@@ -41,8 +43,12 @@ class RuntimeInfoPresenter(QObject):
 
     def update_textline(self, info_type: TYPE_RUNTIME_INFO, text_info: str):
         """更新文本行信息"""
+        # 提取时间戳
+        time_str = time.strftime("%H:%M:%S", time.localtime())
         # 转换为富文本
-        content = (f"<p><span style='color:{info_type.color}; font-size: {info_type.font_size}px'>"
-                   f"{info_type.text}{text_info}"
-                   f"</font></p>")
+        content = (f"<p>"
+                   f"<span style='color: black; font-size: 12px'>{time_str}</span> "  # 时间戳为黑色
+                   f"<span style='color: {info_type.color}; font-size: 12px'>{text_info}</span>"  # 文本信息为设定的颜色
+                   f"</p>")
+
         self.viewer.append_textline(content)
