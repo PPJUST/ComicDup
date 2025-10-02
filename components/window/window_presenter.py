@@ -40,6 +40,7 @@ class WindowPresenter(QObject):
         self.model = model
 
         self.is_stop = False  # 是否停止
+        self._comic_paths_search = []  # 检索漫画列表
 
         # 实例化控件
         self.widget_exec = widget_exec.get_presenter()
@@ -120,6 +121,7 @@ class WindowPresenter(QObject):
         if not self.is_stop:
             # 提取漫画路径列表
             comics_path = self.thread_search_comic.get_comics_path()
+            self._comic_paths_search = comics_path  # 赋值给变量，用于后续使用
             # 传递给 子线程-分析漫画信息
             self.start_thread_analyse_comic_info(comics_path)
 
@@ -179,12 +181,15 @@ class WindowPresenter(QObject):
             hash_type = self.widget_setting_algorithm.get_base_algorithm()  # 提取的hash类型
             comic_info_groups = self.model.convert_hash_group_to_comic_info_group(similar_hash_groups, hash_type)
             print('显示结果漫画信息类列表', comic_info_groups)
+            # 对转换的漫画信息类列表进行处理（由于hash转换时是根据数据库数据，可能存在多余或失效路径，需要进行一次筛选）
+            comic_info_groups_filter = self.model.filter_comic_info_group(comic_info_groups,
+                                                                          comic_path_search_list=self._comic_paths_search)
             # 保存到缓存
             self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '正在保存相似匹配结果到本地缓存')
-            function_cache.save_similar_result(comic_info_groups)
+            function_cache.save_similar_result(comic_info_groups_filter)
             self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '完成保存相似匹配结果到本地缓存')
             # 显示匹配结果
-            self.show_similar_result(comic_info_groups)
+            self.show_similar_result(comic_info_groups_filter)
 
             # 检查设置项，是否需要使用增强算法
             is_enhance_algorithm = self.widget_setting_algorithm.get_is_enhance_algorithm()

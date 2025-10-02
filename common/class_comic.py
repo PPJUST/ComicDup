@@ -103,6 +103,15 @@ class ComicInfo:
         """获取漫画页路径列表"""
         return self.page_paths
 
+    def save_preview_image(self):
+        """保存预览小图到缓存目录（手动调用）"""
+        if isinstance(self.filetype, FileType.Folder):
+            self.preview_path = function_cache.save_preview_image_to_cache(self.page_paths[0])
+        elif isinstance(self.filetype, FileType.Archive):
+            self.preview_path = function_cache.save_preview_image_in_archive_to_cache(archive=self.filepath,
+                                                                                      image_path_inside=self.page_paths[
+                                                                                          0])
+
     def update_filesize(self, filesize_bytes: int):
         """更新文件大小（字节）"""
         self.filesize_bytes = filesize_bytes
@@ -156,15 +165,11 @@ class ComicInfo:
         """分析文件夹类漫画页"""
         self.page_paths = function_file.get_images_in_folder(self.filepath)
         self.page_count = len(self.page_paths)
-        self.preview_path = function_cache.save_preview_image_to_cache(self.page_paths[0])  # 保存预览小图
 
     def _analyse_archive_pages(self):
         """分析压缩文件类漫画页"""
         self.page_paths = function_archive.get_images_in_archive(self.filepath)
         self.page_count = len(self.page_paths)
-        # 保存预览小图
-        self.preview_path = function_cache.save_preview_image_in_archive_to_cache(archive=self.filepath,
-                                                                                  image_path_inside=self.page_paths[0])
 
     def _analyse_archive_size_extracted(self):
         """分析压缩文件类漫画大小（解压后的）"""

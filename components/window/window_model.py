@@ -1,3 +1,4 @@
+import os
 from typing import List
 
 import lzytools.common
@@ -25,13 +26,14 @@ class WindowModel(QObject):
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '正在保存漫画信息到本地数据库')
         for comic_info in comic_infos:
             # 在保存漫画信息前，考虑已存在于数据库中的项目，具体逻辑参考流程图
-            is_comic_exist = self.db_comic_info.is_comic_exist(comic_info.filepath, comic_info.fingerprint)
-            if not is_comic_exist:  # 不存在则新增
+            is_comic_exist_db = self.db_comic_info.is_comic_exist(comic_info.filepath, comic_info.fingerprint)
+            if not is_comic_exist_db:  # 不存在则新增
                 self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, f'保存{comic_info.filename}到数据库')
+                comic_info.save_preview_image()  # 新增前保存预览图
                 self.db_comic_info.add(comic_info)
             else:
-                is_comic_moved = self.db_comic_info.is_comic_moved(comic_info.fingerprint, comic_info.filepath)
-                if not is_comic_moved:  # 已存在且未移动则跳过
+                is_comic_moved_db = self.db_comic_info.is_comic_moved(comic_info.fingerprint, comic_info.filepath)
+                if not is_comic_moved_db:  # 已存在且未移动则跳过
                     self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, f'{comic_info.filename}已存在于数据库，跳过')
                     continue
                 else:  # 已存在且已移动，则更新漫画信息数据库和图片信息数据库
@@ -138,3 +140,22 @@ class WindowModel(QObject):
             comic_info_group.append(ci_group)
 
         return comic_info_group
+
+    def filter_comic_info_group(self, comic_info_group: List[List[ComicInfo]], comic_path_search_list: List[str]):
+        """对转换的漫画信息类列表进行处理（由于hash转换时是根据数据库数据，可能存在多余或失效路径，需要进行一次筛选）"""
+        # 剔除不在检索漫画范围内的项目以及路径失效的项目
+        # 漫画组格式：[[ComicInfo1,ComicInfo2,ComicInfo3], [ComicInfo4,ComicInfo5,ComicInfo6]]
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, f'对相似组进行有效性筛选')
+        comic_info_group_filter = []
+        for group in comic_info_group:
+            group: List[ComicInfo]
+            group_filter = []
+            for comic_info in group:
+                path = comic_info.filepath
+                if path in comic_path_search_list and os.path.exists(path):
+                    group_filter.append(comic_info)
+            if len(group_filter) >= 2:
+                comic_info_group_filter.append(group_filter)
+
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, f'完成相似组有效性筛选')
+        return comic_info_group_filter
