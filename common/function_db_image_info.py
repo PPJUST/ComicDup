@@ -130,6 +130,23 @@ class DBImageInfo:
 
         self.conn.commit()
 
+    def update_belong_comic_moved(self, comic_fingerprint: str, old_comic_path: str, new_comic_path: str):
+        """更新数据库中已移动路径的漫画对应的图片路径，更新其最新路径"""
+        # 先检查新的漫画路径是否已经存在且文件指纹不同，如果符合则删除
+        db_fingerprints_new_path = self.get_belong_comic_fingerprint_by_belong_comic_path(new_comic_path)
+        for fingerprint in db_fingerprints_new_path:
+            if fingerprint != comic_fingerprint:
+                # 路径外的引号必须使用“双引号，防止字符串自动转换引号导致出错（Windows文件名可以带'而不能带"）
+                self.cursor.execute(f'''DELETE FROM {TABLE_NAME} 
+                WHERE {KEY_COMIC_PATH_BELONG} = "{new_comic_path}" 
+                AND {KEY_COMIC_FINGERPRINT_BELONG} = "{fingerprint}"''')
+
+        self.cursor.execute(f'UPDATE {TABLE_NAME} SET {KEY_COMIC_PATH_BELONG} = "{new_comic_path}" '
+                            f'WHERE {KEY_COMIC_PATH_BELONG} = "{old_comic_path}" '
+                            f'AND {KEY_COMIC_FINGERPRINT_BELONG} = "{comic_fingerprint}"')
+
+        self.conn.commit()
+
     def delete(self, image_path: str, comic_path: str):
         """删除记录"""
         fake_path = os.path.normpath(os.path.join(comic_path, os.path.basename(image_path)))
@@ -213,6 +230,34 @@ class DBImageInfo:
             results_image_info.append(image_info)
 
         return results_image_info
+
+    def get_fake_path_by_belong_comic(self, comic_path: str, comic_fingerprint: str):
+        """根据所属漫画信息获取主键虚拟路径"""
+        self.cursor.execute(f'SELECT {KEY_FAKE_PATH} FROM {TABLE_NAME} '
+                            f'WHERE {KEY_COMIC_PATH_BELONG} = "{comic_path}" '
+                            f'AND {KEY_COMIC_FINGERPRINT_BELONG} = "{comic_fingerprint}"')
+        result = self.cursor.fetchall()
+        paths = [item[0] for item in result]
+        paths = list(set(paths))
+        return paths
+
+    def get_belong_comic_path_by_belong_comic_fingerprint(self, comic_fingerprint: str):
+        """根据所属漫画的指纹获取数据库中对应的漫画路径"""
+        self.cursor.execute(f'SELECT {KEY_COMIC_PATH_BELONG} FROM {TABLE_NAME} '
+                            f'WHERE{KEY_COMIC_FINGERPRINT_BELONG} = "{comic_fingerprint}"')
+        result = self.cursor.fetchall()
+        paths = [item[0] for item in result]
+        paths = list(set(paths))
+        return paths
+
+    def get_belong_comic_fingerprint_by_belong_comic_path(self, comic_path: str):
+        """根据所属漫画的路径获取数据库中对应的指纹"""
+        self.cursor.execute(f'SELECT {KEY_COMIC_PATH_BELONG} FROM {TABLE_NAME} '
+                            f'WHERE {KEY_COMIC_PATH_BELONG} = "{comic_path}"')
+        result = self.cursor.fetchall()
+        fingerprints = [item[0] for item in result]
+        fingerprints = list(set(fingerprints))
+        return fingerprints
 
     def is_image_exist(self, image_path: str, comic_path: str):
         """检查漫画路径在数据库中是否已存在"""

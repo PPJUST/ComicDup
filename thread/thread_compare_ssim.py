@@ -25,7 +25,9 @@ class ThreadCompareSSIM(ThreadPattern):
 
     def get_similar_image_group(self):
         """获取相似图片组列表"""
-        return self.similar_image_group
+        similar_image_group = self.similar_image_group
+        self.clear()
+        return similar_image_group
 
     def set_image_group(self, image_group: list):
         """需要匹配的图片组列表"""
@@ -37,8 +39,8 @@ class ThreadCompareSSIM(ThreadPattern):
 
     def clear(self):
         """清空数据"""
-        self.image_group.clear()
-        self.similar_image_group.clear()
+        self.image_group = []
+        self.similar_image_group = []
 
     def run(self):
         super().run()

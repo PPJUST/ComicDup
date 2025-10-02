@@ -115,6 +115,20 @@ class DBComicInfo:
 
         self.conn.commit()
 
+    def update_comic_moved(self, comic_info: ComicInfo):
+        """更新数据库中已移动路径的漫画，更新其最新路径（仅更新数据库中的第一个匹配项）"""
+        # 提取漫画数据库中文件指纹对应的路径
+        comic_paths_db = self.get_comic_paths_by_fingerprint(comic_info.fingerprint)
+        # 更新首个不存在路径的数据，并删除该失效项
+        comic_path_deleted = ''  # 被删除的漫画路径
+        for path in comic_paths_db:
+            if not os.path.exists(path):
+                comic_path_deleted = path
+                self.delete(path)
+                self.add(comic_info)
+                break
+        return comic_path_deleted
+
     def delete(self, comic_path: str):
         """删除记录"""
         comic_path = os.path.normpath(comic_path)
@@ -169,10 +183,54 @@ class DBComicInfo:
 
         return comic_info
 
-    def is_comic_exist(self, comic_path: str):
+    def get_comic_paths_by_fingerprint(self, fingerprint: str):
+        """根据文件指纹获取所有漫画路径"""
+        self.cursor.execute(f'SELECT {KEY_FILEPATH} FROM {TABLE_NAME} WHERE {KEY_FINGERPRINT} = "{fingerprint}"')
+        result = self.cursor.fetchall()
+        paths = [item[0] for item in result]
+        paths = list(set(paths))
+        return paths
+
+    def is_comic_exist(self, comic_path: str, comic_fingerprint: str):
+        """检查漫画在数据库中是否已存在
+        同时使用路径和文件指纹判断"""
+        comic_path = os.path.normpath(comic_path)
+        self.cursor.execute(f'SELECT 1 FROM {TABLE_NAME} WHERE {KEY_FILEPATH} = "{comic_path}"')
+        self.cursor.execute(f'SELECT 1 FROM {TABLE_NAME} '
+                            f'WHERE {KEY_FILEPATH} = "{comic_path}" '
+                            f'AND {KEY_FINGERPRINT} = "{comic_fingerprint}"')
+        result = self.cursor.fetchone()
+        print('检查漫画在数据库中是否已存在', comic_path,result)
+        if result:
+            return True
+        else:
+            return False
+
+    def is_comic_moved(self, comic_fingerprint: str, comic_path: str):
+        """检查已存在的漫画指纹，其对应的漫画路径是否已移动
+        根据传入的漫画路径进行判断"""
+        comic_path = os.path.normpath(comic_path)
+        # 获取数据库中指纹对应的漫画路径列表
+        comic_paths_in_db = self.get_comic_paths_by_fingerprint(comic_fingerprint)
+        # 与传入路径匹配
+        is_path_exist = not comic_path in comic_paths_in_db
+
+        print('检查已存在的漫画指纹，其对应的漫画路径是否已移动',comic_path, is_path_exist)
+        return is_path_exist
+
+    def is_comic_path_exist(self, comic_path: str):
         """检查漫画路径在数据库中是否已存在"""
         comic_path = os.path.normpath(comic_path)
         self.cursor.execute(f'SELECT 1 FROM {TABLE_NAME} WHERE {KEY_FILEPATH} = "{comic_path}"')
+        result = self.cursor.fetchone()
+        if result:
+            return True
+        else:
+            return False
+
+    def is_comic_exist_by_fingerprint(self, comic_fingerprint: str):
+        """检查漫画指纹在数据库中是否已存在"""
+        self.cursor.execute(f'SELECT 1 FROM {TABLE_NAME} WHERE {KEY_FINGERPRINT} = "{comic_fingerprint}"')
         result = self.cursor.fetchone()
         if result:
             return True

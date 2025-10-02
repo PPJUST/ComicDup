@@ -32,7 +32,9 @@ class ThreadAnalyseImageInfo(ThreadPattern):
 
     def get_image_info_dict(self):
         """获取图片信息字典"""
-        return self.image_info_dict
+        image_info_dict = self.image_info_dict
+        self.clear()
+        return image_info_dict
 
     def set_images(self, images: list):
         """设置需要计算hash的图片列表"""
@@ -52,8 +54,9 @@ class ThreadAnalyseImageInfo(ThreadPattern):
 
     def clear(self):
         """清空数据"""
-        self.images.clear()
-        self.image_info_dict.clear()
+        self.images = []
+        self.comic_info_list = []
+        self.image_info_dict = dict()
 
     def get_corr_comic_info(self, image_path: str):
         """获取图片对应的漫画信息类"""

@@ -22,11 +22,26 @@ class WindowModel(QObject):
 
     def save_comic_info_to_db(self, comic_infos: List[ComicInfo]):
         """保存漫画信息到本地数据库中"""
-        # 在保存漫画信息前，考虑已存在于数据库中的项目，具体逻辑参考流程图
-        # 备忘录
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '正在保存漫画信息到本地数据库')
         for comic_info in comic_infos:
-            self.db_comic_info.add(comic_info)
+            # 在保存漫画信息前，考虑已存在于数据库中的项目，具体逻辑参考流程图
+            is_comic_exist = self.db_comic_info.is_comic_exist(comic_info.filepath, comic_info.fingerprint)
+            if not is_comic_exist:  # 不存在则新增
+                self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, f'保存{comic_info.filename}到数据库')
+                self.db_comic_info.add(comic_info)
+            else:
+                is_comic_moved = self.db_comic_info.is_comic_moved(comic_info.fingerprint, comic_info.filepath)
+                if not is_comic_moved:  # 已存在且未移动则跳过
+                    self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, f'{comic_info.filename}已存在于数据库，跳过')
+                    continue
+                else:  # 已存在且已移动，则更新漫画信息数据库和图片信息数据库
+                    self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, f'{comic_info.filename}数据新于数据库，更新')
+                    comic_path_deleted = self.db_comic_info.update_comic_moved(comic_info)
+                    if comic_path_deleted:
+                        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, f'更新图片数据库中对应的漫画数据')
+                        self.db_image_info.update_belong_comic_moved(comic_info.fingerprint,
+                                                                     old_comic_path=comic_path_deleted,
+                                                                     new_comic_path=comic_info.filepath)
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '完成保存漫画信息到本地数据库')
 
     def get_images_from_comic_infos(self, comic_infos: List[ComicInfo], extract_image_count: int):
@@ -50,8 +65,8 @@ class WindowModel(QObject):
             self.db_image_info.add(image_info)
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '完成保存图片信息到本地数据库')
 
-    def get_hashs_from_image_infos(self, image_infos: List[ImageInfo], hash_type: TYPES_HASH_ALGORITHM,
-                                   hash_length: int):
+    def get_hash_list_from_image_infos(self, image_infos: List[ImageInfo], hash_type: TYPES_HASH_ALGORITHM,
+                                       hash_length: int):
         """从图片信息类列表中读取图片hash值列表"""
         hash_list = []
         for image_info in image_infos:

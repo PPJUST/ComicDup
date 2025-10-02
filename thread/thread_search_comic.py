@@ -30,7 +30,9 @@ class ThreadSearchComic(ThreadPattern):
 
     def get_comics_path(self):
         """获取搜索到的漫画清单"""
-        return self.comics_path
+        comics_path = self.comics_path
+        self.clear()
+        return comics_path
 
     def set_search_list(self, paths: list):
         """设置需要搜索的路径"""
@@ -50,8 +52,8 @@ class ThreadSearchComic(ThreadPattern):
 
     def clear(self):
         """清空数据"""
-        self.search_list.clear()
-        self.comics_path.clear()
+        self.search_list = []
+        self.comics_path = []
 
     def run(self):
         super().run()

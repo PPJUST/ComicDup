@@ -23,15 +23,17 @@ class ThreadAnalyseComicInfo(ThreadPattern):
 
     def get_comic_info_dict(self):
         """获取漫画信息类字典"""
-        return self.comic_info_dict
+        comic_info_dict = self.comic_info_dict
+        self.clear()
+        return comic_info_dict
 
     def set_comics(self, comics: list):
         self.comics = natsort.os_sorted(comics)
 
     def clear(self):
         """清空数据"""
-        self.comics.clear()
-        self.comic_info_dict.clear()
+        self.comics = []
+        self.comic_info_dict = dict()
 
     def run(self):
         super().run()

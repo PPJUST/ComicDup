@@ -160,7 +160,7 @@ class WindowPresenter(QObject):
             # 提取图片信息中的hash值
             hash_algorithm = self.widget_setting_algorithm.get_base_algorithm()  # hash算法
             hash_length = self.widget_setting_algorithm.get_hash_length()  # hash长度
-            hash_list = self.model.get_hashs_from_image_infos(image_info_dict.values(), hash_algorithm, hash_length)
+            hash_list = self.model.get_hash_list_from_image_infos(image_info_dict.values(), hash_algorithm, hash_length)
             # 将提取的hash值列表传递给 子线程-对比图片hash
             self.start_thread_compare_hash(hash_list)
 
@@ -176,7 +176,7 @@ class WindowPresenter(QObject):
             # 提取相似hash组列表
             similar_hash_groups = self.thread_compare_hash.get_similar_hash_group()
             # 将hash列表转换为对应的漫画信息类列表
-            hash_type = self.thread_analyse_image_info.hash_type  # 提取的hash类型
+            hash_type = self.widget_setting_algorithm.get_base_algorithm()  # 提取的hash类型
             comic_info_groups = self.model.convert_hash_group_to_comic_info_group(similar_hash_groups, hash_type)
             print('显示结果漫画信息类列表', comic_info_groups)
             # 保存到缓存

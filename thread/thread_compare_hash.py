@@ -25,7 +25,9 @@ class ThreadCompareHash(ThreadPattern):
 
     def get_similar_hash_group(self):
         """获取相似hash组列表"""
-        return self.similar_hash_group
+        similar_hash_group = self.similar_hash_group
+        self.clear()
+        return similar_hash_group
 
     def set_hash_list(self, hash_list: list):
         """设置需要匹配的hash值列表"""
@@ -38,8 +40,8 @@ class ThreadCompareHash(ThreadPattern):
 
     def clear(self):
         """清空数据"""
-        self.hash_list.clear()
-        self.similar_hash_group.clear()
+        self.hash_list = []
+        self.similar_hash_group = []
 
     def run(self):
         super().run()

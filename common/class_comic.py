@@ -254,7 +254,7 @@ class ImageInfo:
                 filesize_latest = function_archive.get_filesize_inside(self.comic_path_belong, self.image_path)
                 return filesize_latest == self.filesize
 
-        return None
+        return False
 
     def update_hash(self, hash_: str, hash_type: TYPES_HASH_ALGORITHM, hash_length: int):
         """更新hash值"""
