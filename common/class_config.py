@@ -43,8 +43,36 @@ class HashLength:
         value = 256
 
 
+class FileType:
+    """文件类型"""
+
+    class File:
+        """文件"""
+        text = '文件'
+
+    class Folder:
+        """文件夹"""
+        text = '文件夹'
+
+    class Archive:
+        """压缩文件"""
+        text = '压缩文件'
+
+    class Unknown:
+        """未知类型"""
+        text = '未知类型'
+
+    class Error:
+        """错误"""
+        text = '错误'
+
+
 TYPES_HASH_ALGORITHM = (SimilarAlgorithm.aHash, SimilarAlgorithm.pHash, SimilarAlgorithm.dHash)
 ITEMS_HASH_ALGORITHM = (SimilarAlgorithm.aHash.text, SimilarAlgorithm.pHash.text, SimilarAlgorithm.dHash.text)
+
 TYPES_ENHANCE_ALGORITHM = (SimilarAlgorithm.SSIM, SimilarAlgorithm.ORB)
 ITEMS_ENHANCE_ALGORITHM = (SimilarAlgorithm.SSIM.text, SimilarAlgorithm.ORB.text)
+
 ITEMS_HASH_LENGTH = (HashLength._64.text, HashLength._144.text, HashLength._256.text)
+
+FileTypes = (FileType.File, FileType.Folder, FileType.Archive, FileType.Unknown)

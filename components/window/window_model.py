@@ -4,8 +4,9 @@ from typing import List
 import lzytools.common
 from PySide6.QtCore import Signal, QObject
 
-from common.class_comic import ComicInfo, ImageInfo
+from common.class_comic import ComicInfo
 from common.class_config import TYPES_HASH_ALGORITHM
+from common.class_image import ImageInfo
 from common.class_runtime import TypeRuntimeInfo
 from common.function_db_comic_info import DBComicInfo
 from common.function_db_image_info import DBImageInfo

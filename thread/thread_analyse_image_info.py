@@ -4,7 +4,8 @@ from typing import Dict, List
 
 import natsort
 
-from common.class_comic import ImageInfo, ComicInfo
+from common.class_comic import ComicInfo
+from common.class_image import ImageInfo
 from common.class_config import SimilarAlgorithm, TYPES_HASH_ALGORITHM
 from common.class_runtime import TypeRuntimeInfo
 from thread.thread_pattern import ThreadPattern

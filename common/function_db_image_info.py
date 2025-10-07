@@ -3,8 +3,8 @@ import os
 import sqlite3
 from typing import List
 
-from common.class_comic import ImageInfo, FileType
-from common.class_config import SimilarAlgorithm, TYPES_HASH_ALGORITHM
+from common.class_config import SimilarAlgorithm, TYPES_HASH_ALGORITHM, FileType
+from common.class_image import ImageInfo
 
 DB_FILEPATH = 'DBImageInfo.db3'
 TABLE_NAME = 'ImageInfo'

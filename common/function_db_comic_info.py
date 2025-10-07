@@ -3,7 +3,8 @@ import os
 import sqlite3
 from typing import Union
 
-from common.class_comic import ComicInfo, FileType
+from common.class_comic import ComicInfo
+from common.class_config import FileType
 
 DB_FILEPATH = 'DBComicInfo.db3'
 TABLE_NAME = 'ComicInfo'
@@ -200,7 +201,7 @@ class DBComicInfo:
                             f'WHERE {KEY_FILEPATH} = "{comic_path}" '
                             f'AND {KEY_FINGERPRINT} = "{comic_fingerprint}"')
         result = self.cursor.fetchone()
-        print('检查漫画在数据库中是否已存在', comic_path,result)
+        print('检查漫画在数据库中是否已存在', comic_path, result)
         if result:
             return True
         else:
@@ -215,7 +216,7 @@ class DBComicInfo:
         # 与传入路径匹配
         is_path_exist = not comic_path in comic_paths_in_db
 
-        print('检查已存在的漫画指纹，其对应的漫画路径是否已移动',comic_path, is_path_exist)
+        print('检查已存在的漫画指纹，其对应的漫画路径是否已移动', comic_path, is_path_exist)
         return is_path_exist
 
     def is_comic_path_exist(self, comic_path: str):

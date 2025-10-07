@@ -5,7 +5,8 @@ from PySide6.QtCore import QObject
 from PySide6.QtWidgets import QMessageBox
 
 from common import function_file
-from common.class_comic import ComicInfo, FileType
+from common.class_comic import ComicInfo
+from common.class_config import FileType
 from components.widget_assembler_comics_preview.widget_comic_preview.comic_preview_model import ComicPreviewModel
 from components.widget_assembler_comics_preview.widget_comic_preview.comic_preview_viewer import ComicPreviewViewer
 
