@@ -70,13 +70,6 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="label_8">
-       <property name="text">
-        <string>MB</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <spacer name="horizontalSpacer_3">
        <property name="orientation">
         <enum>Qt::Orientation::Horizontal</enum>

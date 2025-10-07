@@ -51,7 +51,7 @@ class SimilarResultPreviewViewer(QWidget):
         """设置漫画数统计"""
         self.ui.label_comic_count.setText(str(comic_count))
 
-    def set_filesize_count(self, filesize_count: int):
+    def set_filesize_count(self, filesize_count: str):
         """设置文件大小统计"""
         self.ui.label_size_count.setText(str(filesize_count))
 

@@ -226,8 +226,7 @@ class WindowPresenter(QObject):
         if not self.is_stop:
             self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '显示相似匹配结果')
             self.assembler_similar_result_preview.clear()
-            for comic_info_list in comic_info_groups:
-                self.assembler_similar_result_preview.add_similar_group(comic_info_list)
+            self.assembler_similar_result_preview.set_groups(comic_info_groups)
             self.assembler_similar_result_preview.show_similar_result()
             self.viewer.turn_page_match_result()
 

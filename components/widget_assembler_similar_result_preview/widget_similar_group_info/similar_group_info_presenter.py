@@ -24,7 +24,6 @@ class SimilarGroupInfoPresenter(QObject):
         self.comic_info_list: List[ComicInfo] = []  # 内部漫画项的漫画信息类列表
         self.comics_presenter: List[ComicInfoPresenter] = []  # 内部漫画项的桥梁组件
 
-
         # 绑定信号
         self.viewer.Preview.connect(self.preview_comics)
 
@@ -68,3 +67,7 @@ class SimilarGroupInfoPresenter(QObject):
 
         self.dialog_comics_preview.exec()
         self.dialog_comics_preview.deleteLater()
+
+    def get_viewer(self):
+        """获取模块的Viewer"""
+        return self.viewer
