@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'comic_infoKjFvnm.ui'
+## Form generated from reading UI file 'comic_infoMXMtKV.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.1
 ##
@@ -16,13 +16,13 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QHBoxLayout, QLabel, QSizePolicy,
-    QToolButton, QVBoxLayout, QWidget)
+    QSpacerItem, QToolButton, QVBoxLayout, QWidget)
 
 class Ui_Form(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        Form.resize(202, 200)
+        Form.resize(202, 212)
         self.verticalLayout = QVBoxLayout(Form)
         self.verticalLayout.setSpacing(3)
         self.verticalLayout.setObjectName(u"verticalLayout")
@@ -74,10 +74,25 @@ class Ui_Form(object):
 
         self.verticalLayout.addLayout(self.horizontalLayout_3)
 
+        self.horizontalLayout_5 = QHBoxLayout()
+        self.horizontalLayout_5.setSpacing(0)
+        self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_5.addItem(self.horizontalSpacer)
+
         self.label_preview = QLabel(Form)
         self.label_preview.setObjectName(u"label_preview")
 
-        self.verticalLayout.addWidget(self.label_preview)
+        self.horizontalLayout_5.addWidget(self.label_preview)
+
+        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_5.addItem(self.horizontalSpacer_2)
+
+        self.horizontalLayout_5.setStretch(1, 1)
+
+        self.verticalLayout.addLayout(self.horizontalLayout_5)
 
         self.horizontalLayout_4 = QHBoxLayout()
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
@@ -99,7 +114,6 @@ class Ui_Form(object):
 
         self.verticalLayout.addLayout(self.horizontalLayout_4)
 
-        self.verticalLayout.setStretch(3, 1)
 
         self.retranslateUi(Form)
 

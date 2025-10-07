@@ -2,6 +2,7 @@ import os
 
 import lzytools.file
 from PySide6.QtCore import QObject
+from PySide6.QtWidgets import QMessageBox
 
 from common import function_file
 from common.class_comic import ComicInfo, FileType
@@ -20,9 +21,14 @@ class ComicPreviewPresenter(QObject):
         self.comic_info: ComicInfo = None
         self.page_paths = []  # 页面列表
         self.page_index = 1  # 当前页码（从1开始）
+        self.is_reconfirm_before_delete = True  # 删除前是否需要再次确认
 
         # 绑定信号
         self._bind_signal()
+
+    def is_reconfirm_before_delete(self, is_reconfirm: bool):
+        """设置是否删除前再次确认"""
+        self.is_reconfirm_before_delete = is_reconfirm
 
     def set_comic(self, comic_info: ComicInfo):
         """设置需要显示的漫画"""
@@ -89,9 +95,23 @@ class ComicPreviewPresenter(QObject):
         os.startfile(path)
 
     def delete_comic(self):
-        """删除漫画文件"""
-        path = self.comic_info.filepath
-        lzytools.file.delete(path, send_to_trash=True)
+        """删除文件"""
+        is_delete = True
+        if self.is_reconfirm_before_delete:
+            reply = QMessageBox.question(
+                self.viewer,
+                '确认删除',
+                '是否删除本地漫画（到回收站）',
+                QMessageBox.Yes | QMessageBox.No,  # 提供“是”和“否”两个按钮
+                QMessageBox.No  # 默认聚焦在“否”按钮上
+            )
+
+            if reply == QMessageBox.No:
+                is_delete = False
+
+        if is_delete:
+            path = self.comic_info.filepath
+            lzytools.file.delete(path, send_to_trash=True)
 
     def get_viewer(self):
         """获取viewer"""

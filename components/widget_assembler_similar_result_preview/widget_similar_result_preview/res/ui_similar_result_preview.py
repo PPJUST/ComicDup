@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'similar_result_previewpygbQz.ui'
+## Form generated from reading UI file 'similar_result_previewFaSkhS.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.1
 ##
@@ -31,6 +31,36 @@ class Ui_Form(object):
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setSpacing(3)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.label_group_count = QLabel(Form)
+        self.label_group_count.setObjectName(u"label_group_count")
+
+        self.horizontalLayout.addWidget(self.label_group_count)
+
+        self.label_4 = QLabel(Form)
+        self.label_4.setObjectName(u"label_4")
+
+        self.horizontalLayout.addWidget(self.label_4)
+
+        self.label_comic_count = QLabel(Form)
+        self.label_comic_count.setObjectName(u"label_comic_count")
+
+        self.horizontalLayout.addWidget(self.label_comic_count)
+
+        self.label_6 = QLabel(Form)
+        self.label_6.setObjectName(u"label_6")
+
+        self.horizontalLayout.addWidget(self.label_6)
+
+        self.label_size_count = QLabel(Form)
+        self.label_size_count.setObjectName(u"label_size_count")
+
+        self.horizontalLayout.addWidget(self.label_size_count)
+
+        self.label_8 = QLabel(Form)
+        self.label_8.setObjectName(u"label_8")
+
+        self.horizontalLayout.addWidget(self.label_8)
+
         self.horizontalSpacer_3 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout.addItem(self.horizontalSpacer_3)
@@ -113,6 +143,12 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
+        self.label_group_count.setText(QCoreApplication.translate("Form", u"n", None))
+        self.label_4.setText(QCoreApplication.translate("Form", u"\u7ec4", None))
+        self.label_comic_count.setText(QCoreApplication.translate("Form", u"n", None))
+        self.label_6.setText(QCoreApplication.translate("Form", u"\u9879", None))
+        self.label_size_count.setText(QCoreApplication.translate("Form", u"n", None))
+        self.label_8.setText(QCoreApplication.translate("Form", u"MB", None))
         self.pushButton_previous_page.setText(QCoreApplication.translate("Form", u"\u4e0a\u4e00\u9875", None))
         self.pushButton_next_page.setText(QCoreApplication.translate("Form", u"\u4e0b\u4e00\u9875", None))
         self.label.setText(QCoreApplication.translate("Form", u"\u6bcf\u9875\u663e\u793a\u7ec4\u6570", None))

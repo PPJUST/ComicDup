@@ -83,6 +83,12 @@ class WindowPresenter(QObject):
 
     def start(self):
         """执行查重"""
+        # 获取需要检索的路径
+        search_paths = self.widget_search_list.get_paths()
+        if not search_paths:
+            self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning, '未选择需要检索的目录')
+            return
+
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '执行查找重复项')
 
         # 切换到运行信息页
@@ -90,9 +96,6 @@ class WindowPresenter(QObject):
 
         # 将设置项传递给子线程
         self._set_thread_setting()
-
-        # 获取需要检索的路径
-        search_paths = self.widget_search_list.get_paths()
 
         # 传参给子线程，并启动
         self.is_stop = False
@@ -121,6 +124,9 @@ class WindowPresenter(QObject):
         if not self.is_stop:
             # 提取漫画路径列表
             comics_path = self.thread_search_comic.get_comics_path()
+            if not comics_path:
+                self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning, '未找到任何漫画')
+                return
             self._comic_paths_search = comics_path  # 赋值给变量，用于后续使用
             # 传递给 子线程-分析漫画信息
             self.start_thread_analyse_comic_info(comics_path)
@@ -137,6 +143,9 @@ class WindowPresenter(QObject):
             # 提取漫画信息类字典
             comic_info_dict = self.thread_analyse_comic_info.get_comic_info_dict()
             comic_info_list = list(comic_info_dict.values())
+            if not comic_info_list:
+                self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning, '未找到任何漫画')
+                return
             # 保存到本地数据库中
             self.model.save_comic_info_to_db(comic_info_dict.values())
             # 提取指定数量的漫画内部图片路径
@@ -157,6 +166,9 @@ class WindowPresenter(QObject):
         if not self.is_stop:
             # 提取图片信息字典
             image_info_dict = self.thread_analyse_image_info.get_image_info_dict()
+            if not image_info_dict:
+                self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning, '未找到任何图片')
+                return
             # 保存到本地数据库中
             self.model.save_image_info_to_db(image_info_dict.values())
             # 提取图片信息中的hash值
@@ -177,6 +189,9 @@ class WindowPresenter(QObject):
         if not self.is_stop:
             # 提取相似hash组列表
             similar_hash_groups = self.thread_compare_hash.get_similar_hash_group()
+            if not similar_hash_groups:
+                self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning, '未找到任何相似图片')
+                return
             # 将hash列表转换为对应的漫画信息类列表
             hash_type = self.widget_setting_algorithm.get_base_algorithm()  # 提取的hash类型
             comic_info_groups = self.model.convert_hash_group_to_comic_info_group(similar_hash_groups, hash_type)

@@ -3,7 +3,7 @@ import os
 import lzytools._qt_pyside6
 import lzytools.archive
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QTableWidget, QTableWidgetItem, QPushButton
+from PySide6.QtWidgets import QTableWidget, QTableWidgetItem, QPushButton, QHeaderView
 
 from common.class_comic import FileType
 from components.widget_search_list.res.icon_base64 import ICON_ARCHIVE, ICON_FOLDER, ICON_WARNING
@@ -20,6 +20,11 @@ class TableWidgetFilelist(QTableWidget):
         self.setHorizontalHeaderLabels(['', '类型', '文件名', '文件路径'])
         # 隐藏行号
         self.verticalHeader().setVisible(False)
+        # 设置列宽
+        self.horizontalHeader().setSectionResizeMode(0, QHeaderView.ResizeToContents)
+        self.horizontalHeader().setSectionResizeMode(1, QHeaderView.ResizeToContents)
+        self.horizontalHeader().setSectionResizeMode(2, QHeaderView.Stretch)
+        self.horizontalHeader().setSectionResizeMode(3, QHeaderView.Stretch)
 
     def get_paths(self):
         """获取所有文件路径"""
@@ -34,7 +39,7 @@ class TableWidgetFilelist(QTableWidget):
         row = self.rowCount()
         self.insertRow(row)
 
-        # 第二列：删除按钮
+        # 第一列：删除按钮
         button_delete = QPushButton("X")
         button_delete.setStyleSheet("""
             background-color: transparent;
@@ -63,12 +68,14 @@ class TableWidgetFilelist(QTableWidget):
         item_filetitle = QTableWidgetItem()
         item_filetitle.setText(os.path.basename(filepath))
         item_filetitle.setFlags(item_filetitle.flags() & ~Qt.ItemIsEditable)  # 设置不可编辑
+        item_filetitle.setToolTip(filepath)
         self.setItem(row, 2, item_filetitle)
 
         # 第四列：文件路径
         item_filepath = QTableWidgetItem()
         item_filepath.setText(filepath)
         item_filepath.setFlags(item_filepath.flags() & ~Qt.ItemIsEditable)  # 设置不可编辑
+        item_filepath.setToolTip(filepath)
         self.setItem(row, 3, item_filepath)
 
     def remove_row(self, row):

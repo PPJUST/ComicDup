@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>202</width>
-    <height>200</height>
+    <height>212</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,1,0">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0">
    <property name="spacing">
     <number>3</number>
    </property>
@@ -90,11 +90,44 @@
     </layout>
    </item>
    <item>
-    <widget class="QLabel" name="label_preview">
-     <property name="text">
-      <string>preview</string>
+    <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="0,1,0">
+     <property name="spacing">
+      <number>0</number>
      </property>
-    </widget>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_preview">
+       <property name="text">
+        <string>preview</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Orientation::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_4">

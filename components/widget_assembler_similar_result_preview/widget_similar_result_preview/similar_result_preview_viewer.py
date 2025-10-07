@@ -43,6 +43,18 @@ class SimilarResultPreviewViewer(QWidget):
         """设置总页数"""
         self.ui.label_total_page.setText(str(total_page))
 
+    def set_group_count(self, group_count: int):
+        """设置组数统计"""
+        self.ui.label_group_count.setText(str(group_count))
+
+    def set_comic_count(self, comic_count: int):
+        """设置漫画数统计"""
+        self.ui.label_comic_count.setText(str(comic_count))
+
+    def set_filesize_count(self, filesize_count: int):
+        """设置文件大小统计"""
+        self.ui.label_size_count.setText(str(filesize_count))
+
 
 if __name__ == "__main__":
     app_ = QApplication()
