@@ -2,7 +2,7 @@ from typing import List
 
 from PySide6.QtCore import QObject
 
-from common.class_comic import ComicInfo
+from common.class_comic import ComicInfoBase
 from common.class_sign import SignStatus, TYPE_SIGN_STATUS
 from components import widget_assembler_comics_preview
 from components.widget_assembler_similar_result_preview import widget_comic_info
@@ -21,7 +21,7 @@ class SimilarGroupInfoPresenter(QObject):
         self.viewer = viewer
         self.model = model
 
-        self.comic_info_list: List[ComicInfo] = []  # 内部漫画项的漫画信息类列表
+        self.comic_info_list: List[ComicInfoBase] = []  # 内部漫画项的漫画信息类列表
         self.comics_presenter: List[ComicInfoPresenter] = []  # 内部漫画项的桥梁组件
 
         # 绑定信号
@@ -39,7 +39,7 @@ class SimilarGroupInfoPresenter(QObject):
         """设置当前组的标记"""
         self.viewer.set_group_sign(sign)
 
-    def add_comics(self, comic_info_list: List[ComicInfo]):
+    def add_comics(self, comic_info_list: List[ComicInfoBase]):
         """批量添加内部漫画信息项"""
         for comic_info in comic_info_list:
             self.add_comic(comic_info)
@@ -47,7 +47,7 @@ class SimilarGroupInfoPresenter(QObject):
         self.set_item_count()
         self.set_group_sign(SignStatus.Pending)
 
-    def add_comic(self, comic_info: ComicInfo):
+    def add_comic(self, comic_info: ComicInfoBase):
         """添加内部漫画信息项"""
         self.comic_info_list.append(comic_info)
 

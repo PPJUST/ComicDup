@@ -1,6 +1,6 @@
 from PySide6.QtWidgets import QDialog, QVBoxLayout
 
-from common.class_comic import ComicInfo
+from common.class_comic import ComicInfoBase
 from components.widget_assembler_comics_preview import widget_similar_group_preview
 
 
@@ -26,7 +26,7 @@ class AssemblerDialogComicsPreview(QDialog):
         """获取viewer"""
         return self.presenter.get_viewer()
 
-    def add_comic(self, comic_info: ComicInfo):
+    def add_comic(self, comic_info: ComicInfoBase):
         """添加漫画"""
         self.presenter.add_comic(comic_info)
 

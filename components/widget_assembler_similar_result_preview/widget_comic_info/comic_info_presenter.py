@@ -5,7 +5,7 @@ from PySide6.QtCore import QObject
 from PySide6.QtWidgets import QMessageBox
 
 from common import function_file
-from common.class_comic import ComicInfo
+from common.class_comic import ComicInfoBase
 from common.class_config import FileType
 from components.widget_assembler_similar_result_preview.widget_comic_info.comic_info_model import ComicInfoModel
 from components.widget_assembler_similar_result_preview.widget_comic_info.comic_info_viewer import ComicInfoViewer
@@ -20,7 +20,7 @@ class ComicInfoPresenter(QObject):
         self.viewer = viewer
         self.model = model
 
-        self.comic_info: ComicInfo = None  # 显示的漫画的漫画信息类
+        self.comic_info: ComicInfoBase = None  # 显示的漫画的漫画信息类
         self.is_reconfirm_before_delete = True  # 删除前是否需要再次确认
 
         # 绑定信号
@@ -32,7 +32,7 @@ class ComicInfoPresenter(QObject):
         """设置是否删除前再次确认"""
         self.is_reconfirm_before_delete = is_reconfirm
 
-    def set_comic_info(self, comic_info: ComicInfo):
+    def set_comic_info(self, comic_info: ComicInfoBase):
         """设置需要显示的漫画的漫画信息类"""
         self.comic_info = comic_info
         self._show_comic_info()
@@ -41,7 +41,7 @@ class ComicInfoPresenter(QObject):
         """打开路径"""
         os.startfile(self.comic_info.filepath)
 
-    def refresh_info(self, comic_info: ComicInfo):
+    def refresh_info(self, comic_info: ComicInfoBase):
         """刷新信息"""
         self.set_comic_info(comic_info)
 
@@ -86,7 +86,7 @@ class ComicInfoPresenter(QObject):
         if isinstance(filetype, FileType.Folder):
             bytes_size = self.comic_info.filesize_bytes
         elif isinstance(filetype, FileType.Archive):
-            bytes_size = self.comic_info.filesize_bytes_extracted
+            bytes_size = self.comic_info.filesize_bytes
         else:
             bytes_size = 0
         size_str = function_file.format_bytes_size(bytes_size)

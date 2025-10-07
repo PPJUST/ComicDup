@@ -4,7 +4,7 @@ import sqlite3
 from typing import List
 
 from common.class_config import SimilarAlgorithm, TYPES_HASH_ALGORITHM, FileType
-from common.class_image import ImageInfo
+from common.class_image import ImageInfoBase, ImageInfoFolder, ImageInfoArchive
 
 DB_FILEPATH = 'DBImageInfo.db3'
 TABLE_NAME = 'ImageInfo'
@@ -20,9 +20,9 @@ KEY_PHASH_256 = 'pHash_256'  # 感知哈希（256位）
 KEY_DHASH_64 = 'dHash_64'  # 差异哈希（64位）
 KEY_DHASH_144 = 'dHash_144'  # 差异哈希（144位）
 KEY_DHASH_256 = 'dHash_256'  # 差异哈希（256位）
-KEY_COMIC_PATH_BELONG = 'comic_path_belong'  # 图片所属漫画的路径
-KEY_COMIC_FILETYPE_BELONG = 'comic_filetype_belong'  # 图片所属漫画的文件类型
-KEY_COMIC_FINGERPRINT_BELONG = 'comic_fingerprint_belong'  # 图片所属漫画的文件指纹
+KEY_BELONG_COMIC_PATH = 'belong_comic_path'  # 图片所属漫画的路径
+KEY_BELONG_COMIC_FILETYPE = 'belong_comic_filetype'  # 图片所属漫画的文件类型
+KEY_BELONG_COMIC_FINGERPRINT = 'belong_comic_fingerprint'  # 图片所属漫画的文件指纹
 
 
 class DBImageInfo:
@@ -53,20 +53,20 @@ class DBImageInfo:
                            f'{KEY_DHASH_64} TEXT,'  # 差异哈希（64位）
                            f'{KEY_DHASH_144} TEXT,'  # 差异哈希（144位）
                            f'{KEY_DHASH_256} TEXT,'  # 差异哈希（256位）
-                           f'{KEY_COMIC_PATH_BELONG} TEXT,'  # 图片所属漫画的路径
-                           f'{KEY_COMIC_FILETYPE_BELONG} TEXT,'  # 图片所属漫画的文件类型
-                           f'{KEY_COMIC_FINGERPRINT_BELONG} TEXT'
+                           f'{KEY_BELONG_COMIC_PATH} TEXT,'  # 图片所属漫画的路径
+                           f'{KEY_BELONG_COMIC_FILETYPE} TEXT,'  # 图片所属漫画的文件类型
+                           f'{KEY_BELONG_COMIC_FINGERPRINT} TEXT'
                            f')')
 
             conn.commit()
             cursor.close()
             conn.close()
 
-    def add(self, image_info: ImageInfo):
+    def add(self, image_info: ImageInfoBase):
         """添加/更新记录"""
         # 组合漫画路径与图片路径，用于处理压缩文件类漫画
         image_path = os.path.normpath(image_info.image_path)
-        comic_path = os.path.normpath(image_info.comic_path_belong)
+        comic_path = os.path.normpath(image_info.belong_comic_path)
         fake_path = os.path.normpath(os.path.join(comic_path, os.path.basename(image_path)))
 
         self.cursor.execute(f'INSERT OR IGNORE INTO {TABLE_NAME} ({KEY_FAKE_PATH}) VALUES ("{fake_path}")')
@@ -117,15 +117,15 @@ class DBImageInfo:
             self.cursor.execute(f'UPDATE {TABLE_NAME} SET {KEY_DHASH_256} = "{dhash_256}" '
                                 f'WHERE {KEY_FAKE_PATH} = "{fake_path}"')
 
-        self.cursor.execute(f'UPDATE {TABLE_NAME} SET {KEY_COMIC_PATH_BELONG} = "{image_info.comic_path_belong}" '
+        self.cursor.execute(f'UPDATE {TABLE_NAME} SET {KEY_BELONG_COMIC_PATH} = "{image_info.belong_comic_path}" '
                             f'WHERE {KEY_FAKE_PATH} = "{fake_path}"')
 
         self.cursor.execute(
-            f'UPDATE {TABLE_NAME} SET {KEY_COMIC_FILETYPE_BELONG} = "{image_info.comic_filetype_belong.text}" '
+            f'UPDATE {TABLE_NAME} SET {KEY_BELONG_COMIC_FILETYPE} = "{image_info.belong_comic_filetype.text}" '
             f'WHERE {KEY_FAKE_PATH} = "{fake_path}"')
 
         self.cursor.execute(
-            f'UPDATE {TABLE_NAME} SET {KEY_COMIC_FINGERPRINT_BELONG} = "{image_info.comic_fingerprint_belong}" '
+            f'UPDATE {TABLE_NAME} SET {KEY_BELONG_COMIC_FINGERPRINT} = "{image_info.belong_comic_fingerprint}" '
             f'WHERE {KEY_FAKE_PATH} = "{fake_path}"')
 
         self.conn.commit()
@@ -138,12 +138,12 @@ class DBImageInfo:
             if fingerprint != comic_fingerprint:
                 # 路径外的引号必须使用“双引号，防止字符串自动转换引号导致出错（Windows文件名可以带'而不能带"）
                 self.cursor.execute(f'''DELETE FROM {TABLE_NAME} 
-                WHERE {KEY_COMIC_PATH_BELONG} = "{new_comic_path}" 
-                AND {KEY_COMIC_FINGERPRINT_BELONG} = "{fingerprint}"''')
+                WHERE {KEY_BELONG_COMIC_PATH} = "{new_comic_path}" 
+                AND {KEY_BELONG_COMIC_FINGERPRINT} = "{fingerprint}"''')
 
-        self.cursor.execute(f'UPDATE {TABLE_NAME} SET {KEY_COMIC_PATH_BELONG} = "{new_comic_path}" '
-                            f'WHERE {KEY_COMIC_PATH_BELONG} = "{old_comic_path}" '
-                            f'AND {KEY_COMIC_FINGERPRINT_BELONG} = "{comic_fingerprint}"')
+        self.cursor.execute(f'UPDATE {TABLE_NAME} SET {KEY_BELONG_COMIC_PATH} = "{new_comic_path}" '
+                            f'WHERE {KEY_BELONG_COMIC_PATH} = "{old_comic_path}" '
+                            f'AND {KEY_BELONG_COMIC_FINGERPRINT} = "{comic_fingerprint}"')
 
         self.conn.commit()
 
@@ -155,7 +155,7 @@ class DBImageInfo:
         self.cursor.execute(f'''DELETE FROM {TABLE_NAME} WHERE {KEY_FAKE_PATH} = "{fake_path}"''')
         self.conn.commit()
 
-    def get_image_info_by_hash(self, hash_: str, hash_type: TYPES_HASH_ALGORITHM) -> List[ImageInfo]:
+    def get_image_info_by_hash(self, hash_: str, hash_type: TYPES_HASH_ALGORITHM) -> List[ImageInfoBase]:
         """根据hash值获取图片信息类"""
         hash_length = len(hash_)
         if isinstance(hash_type, SimilarAlgorithm.aHash):
@@ -176,28 +176,29 @@ class DBImageInfo:
         results = self.cursor.fetchall()
 
         # 转换为图片信息类
-        results_image_info: List[ImageInfo] = []
+        results_image_info: List[ImageInfoBase] = []
         for result in results:
             result_dict = dict(zip(columns, result))  # 先转为键名-键值的字典格式
-            image_info = ImageInfo(image_path=result_dict[KEY_FILEPATH])
+
+            #  提取图片所属漫画的类型，并生成漫画信息类实例
+            belong_comic_filetype_str = result_dict[KEY_BELONG_COMIC_FILETYPE]
+            if belong_comic_filetype_str == FileType.Folder.text:
+                image_info = ImageInfoFolder(image_path=result_dict[KEY_FILEPATH])
+            elif belong_comic_filetype_str == FileType.Archive.text:
+                image_info = ImageInfoArchive(image_path=result_dict[KEY_FILEPATH])
+            else:
+                raise Exception('漫画文件类型错误')
+
             # 图片大小
             filesize = result_dict[KEY_FILESIZE_BYTES]
             image_info.update_filesize(filesize)
+
             # 图片所属
-            comic_path_belong = result_dict[KEY_COMIC_PATH_BELONG]
-            comic_filetype_belong_str = result_dict[KEY_COMIC_FILETYPE_BELONG]
-            if comic_filetype_belong_str == FileType.Folder.text:
-                comic_filetype_belong = FileType.Folder()
-            elif comic_filetype_belong_str == FileType.Archive.text:
-                comic_filetype_belong = FileType.Archive()
-            elif comic_filetype_belong_str == FileType.File.text:
-                comic_filetype_belong = FileType.File()
-            else:
-                raise Exception('漫画文件类型错误')
-            comic_fingerprint_belong = result_dict[KEY_COMIC_FINGERPRINT_BELONG]
-            image_info.update_comic_path_belong(comic_path_belong)
-            image_info.update_comic_filetype_belong(comic_filetype_belong)
-            image_info.update_comic_fingerprint_belong(comic_fingerprint_belong)
+            belong_comic_path = result_dict[KEY_BELONG_COMIC_PATH]
+            image_info.update_belong_comic_path(belong_comic_path)
+            belong_comic_fingerprint = result_dict[KEY_BELONG_COMIC_FINGERPRINT]
+            image_info.update_belong_comic_fingerprint(belong_comic_fingerprint)
+
             # hash值
             ahash_64 = result_dict[KEY_AHASH_64]
             if ahash_64:
@@ -234,8 +235,8 @@ class DBImageInfo:
     def get_fake_path_by_belong_comic(self, comic_path: str, comic_fingerprint: str):
         """根据所属漫画信息获取主键虚拟路径"""
         self.cursor.execute(f'SELECT {KEY_FAKE_PATH} FROM {TABLE_NAME} '
-                            f'WHERE {KEY_COMIC_PATH_BELONG} = "{comic_path}" '
-                            f'AND {KEY_COMIC_FINGERPRINT_BELONG} = "{comic_fingerprint}"')
+                            f'WHERE {KEY_BELONG_COMIC_PATH} = "{comic_path}" '
+                            f'AND {KEY_BELONG_COMIC_FINGERPRINT} = "{comic_fingerprint}"')
         result = self.cursor.fetchall()
         paths = [item[0] for item in result]
         paths = list(set(paths))
@@ -243,8 +244,8 @@ class DBImageInfo:
 
     def get_belong_comic_path_by_belong_comic_fingerprint(self, comic_fingerprint: str):
         """根据所属漫画的指纹获取数据库中对应的漫画路径"""
-        self.cursor.execute(f'SELECT {KEY_COMIC_PATH_BELONG} FROM {TABLE_NAME} '
-                            f'WHERE{KEY_COMIC_FINGERPRINT_BELONG} = "{comic_fingerprint}"')
+        self.cursor.execute(f'SELECT {KEY_BELONG_COMIC_PATH} FROM {TABLE_NAME} '
+                            f'WHERE{KEY_BELONG_COMIC_FINGERPRINT} = "{comic_fingerprint}"')
         result = self.cursor.fetchall()
         paths = [item[0] for item in result]
         paths = list(set(paths))
@@ -252,8 +253,8 @@ class DBImageInfo:
 
     def get_belong_comic_fingerprint_by_belong_comic_path(self, comic_path: str):
         """根据所属漫画的路径获取数据库中对应的指纹"""
-        self.cursor.execute(f'SELECT {KEY_COMIC_PATH_BELONG} FROM {TABLE_NAME} '
-                            f'WHERE {KEY_COMIC_PATH_BELONG} = "{comic_path}"')
+        self.cursor.execute(f'SELECT {KEY_BELONG_COMIC_PATH} FROM {TABLE_NAME} '
+                            f'WHERE {KEY_BELONG_COMIC_PATH} = "{comic_path}"')
         result = self.cursor.fetchall()
         fingerprints = [item[0] for item in result]
         fingerprints = list(set(fingerprints))

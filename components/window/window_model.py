@@ -4,9 +4,9 @@ from typing import List
 import lzytools.common
 from PySide6.QtCore import Signal, QObject
 
-from common.class_comic import ComicInfo
+from common.class_comic import ComicInfoBase
 from common.class_config import TYPES_HASH_ALGORITHM
-from common.class_image import ImageInfo
+from common.class_image import ImageInfoBase
 from common.class_runtime import TypeRuntimeInfo
 from common.function_db_comic_info import DBComicInfo
 from common.function_db_image_info import DBImageInfo
@@ -22,7 +22,7 @@ class WindowModel(QObject):
         self.db_comic_info = DBComicInfo()
         self.db_image_info = DBImageInfo()
 
-    def save_comic_info_to_db(self, comic_infos: List[ComicInfo]):
+    def save_comic_info_to_db(self, comic_infos: List[ComicInfoBase]):
         """保存漫画信息到本地数据库中"""
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '正在保存漫画信息到本地数据库')
         for comic_info in comic_infos:
@@ -47,28 +47,14 @@ class WindowModel(QObject):
                                                                      new_comic_path=comic_info.filepath)
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '完成保存漫画信息到本地数据库')
 
-    def get_images_from_comic_infos(self, comic_infos: List[ComicInfo], extract_image_count: int):
-        """提取漫画信息类列表中指定数量的内部图片路径"""
-        images_inside = []
-        for comic_info in comic_infos:
-            images_inside.extend(self.get_images_from_comic_info(comic_info, extract_image_count))
-
-        images_inside = lzytools.common.dedup_list(images_inside)  # 去重
-        return images_inside
-
-    def get_images_from_comic_info(self, comic_info: ComicInfo, extract_image_count: int):
-        """提取漫画信息类中指定数量的内部图片路径"""
-        images_inside = comic_info.get_page_paths()
-        return images_inside[:extract_image_count]
-
-    def save_image_info_to_db(self, image_infos: List[ImageInfo]):
+    def save_image_info_to_db(self, image_infos: List[ImageInfoBase]):
         """保存图片信息到本地数据库中"""
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '正在保存图片信息到本地数据库')
         for image_info in image_infos:
             self.db_image_info.add(image_info)
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '完成保存图片信息到本地数据库')
 
-    def get_hash_list_from_image_infos(self, image_infos: List[ImageInfo], hash_type: TYPES_HASH_ALGORITHM,
+    def get_hash_list_from_image_infos(self, image_infos: List[ImageInfoBase], hash_type: TYPES_HASH_ALGORITHM,
                                        hash_length: int):
         """从图片信息类列表中读取图片hash值列表"""
         hash_list = []
@@ -78,7 +64,7 @@ class WindowModel(QObject):
 
         return hash_list
 
-    def get_hash_from_image_info(self, image_info: ImageInfo, hash_type: TYPES_HASH_ALGORITHM, hash_length: int):
+    def get_hash_from_image_info(self, image_info: ImageInfoBase, hash_type: TYPES_HASH_ALGORITHM, hash_length: int):
         """从图片信息类中读取图片hash值"""
         hash_ = image_info.get_hash(hash_type, hash_length)
         return hash_
@@ -96,11 +82,11 @@ class WindowModel(QObject):
         print('对应的图片', [i.image_path for i in image_infos])
         return image_infos
 
-    def get_comic_info_by_image_info(self, image_info: ImageInfo):
+    def get_comic_info_by_image_info(self, image_info: ImageInfoBase):
         """根据图片信息类获取对应的漫画信息类"""
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '将图片路径转换为对应的漫画路径')
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.RateInfo, f'需要转换的图片路径：{image_info.image_path}')
-        comic_path = image_info.comic_path_belong
+        comic_path = image_info.belong_comic_path
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, f'转换的漫画路径：{comic_path}')
         return self.get_comic_info_by_comic_path(comic_path)
 
@@ -111,7 +97,7 @@ class WindowModel(QObject):
 
     def convert_hash_group_to_comic_info_group(self,
                                                hash_group: List[List[str]],
-                                               hash_type: TYPES_HASH_ALGORITHM) -> List[List[ComicInfo]]:
+                                               hash_type: TYPES_HASH_ALGORITHM) -> List[List[ComicInfoBase]]:
         """将hash值组列表转换为对应的漫画组列表"""
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '将hash值相似组转换为对应的漫画路径组')
         # hash组格式：[[hash1, hash2, hash3], [hash4, hash5, hash6]]
@@ -122,7 +108,7 @@ class WindowModel(QObject):
             for hash_ in h_group:
                 image_infos = self.get_image_info_by_hash(hash_, hash_type)
                 for image_info in image_infos:
-                    comic_path = image_info.comic_path_belong
+                    comic_path = image_info.belong_comic_path
                     p_group.add(comic_path)
             if len(p_group) >= 2:
                 comic_path_group.append(list(p_group))
@@ -142,14 +128,14 @@ class WindowModel(QObject):
 
         return comic_info_group
 
-    def filter_comic_info_group(self, comic_info_group: List[List[ComicInfo]], comic_path_search_list: List[str]):
+    def filter_comic_info_group(self, comic_info_group: List[List[ComicInfoBase]], comic_path_search_list: List[str]):
         """对转换的漫画信息类列表进行处理（由于hash转换时是根据数据库数据，可能存在多余或失效路径，需要进行一次筛选）"""
         # 剔除不在检索漫画范围内的项目以及路径失效的项目
         # 漫画组格式：[[ComicInfo1,ComicInfo2,ComicInfo3], [ComicInfo4,ComicInfo5,ComicInfo6]]
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, f'对相似组进行有效性筛选')
         comic_info_group_filter = []
         for group in comic_info_group:
-            group: List[ComicInfo]
+            group: List[ComicInfoBase]
             group_filter = []
             for comic_info in group:
                 path = comic_info.filepath

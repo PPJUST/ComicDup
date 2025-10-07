@@ -105,7 +105,8 @@ class TableWidgetFilelist(QTableWidget):
                 button_delete.clicked.disconnect()
                 button_delete.clicked.connect(lambda checked, r=row: self.remove_row(r))
 
-    def check_filetype(self, filepath):
+    @staticmethod
+    def check_filetype(filepath):
         """检查文件类型，仅识别文件夹/压缩文件"""
         if not os.path.exists(filepath):
             return FileType.Error()

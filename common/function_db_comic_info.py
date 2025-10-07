@@ -3,7 +3,7 @@ import os
 import sqlite3
 from typing import Union
 
-from common.class_comic import ComicInfo
+from common.class_comic import ComicInfoBase, FolderComicInfo, ArchiveComicInfo
 from common.class_config import FileType
 
 DB_FILEPATH = 'DBComicInfo.db3'
@@ -13,7 +13,7 @@ KEY_FILENAME = 'filename'  # 文件名（含扩展名）
 KEY_FILETITLE = 'filetitle'  # 文件标题（不含扩展名）
 KEY_PARENT_DIRPATH = 'parent_dirpath'  # 文件父级路径
 KEY_FILESIZE_BYTES = 'filesize_bytes'  # 文件大小（字节）
-KEY_FILESIZE_BYTES_EXTRACTED = 'filesize_bytes_extracted'  # 文件真实大小（字节）
+KEY_EXTRACTED_FILESIZE_BYTES = 'extracted_filesize_bytes'  # 解压后的文件大小，压缩文件类漫画使用（字节）
 KEY_FILETYPE = 'filetype'  # 文件类型
 KEY_MODIFIED_TIME = 'modified_time'  # 文件修改时间（自纪元以来的秒数）
 KEY_PAGE_PATHS = 'page_paths'  # 内部文件路径
@@ -56,7 +56,7 @@ class DBComicInfo:
                            f'{KEY_FILETITLE} TEXT,'  # 文件标题（不含扩展名）
                            f'{KEY_PARENT_DIRPATH} TEXT,'  # 文件父级路径
                            f'{KEY_FILESIZE_BYTES} INTEGER,'  # 文件大小（字节）
-                           f'{KEY_FILESIZE_BYTES_EXTRACTED} INTEGER,'  # 文件真实大小（字节）
+                           f'{KEY_EXTRACTED_FILESIZE_BYTES} INTEGER,'  # 文件真实大小（字节）
                            f'{KEY_FILETYPE} TEXT,'  # 文件类型
                            f'{KEY_MODIFIED_TIME} REAL,'  # 文件修改时间（自纪元以来的秒数）
                            f'{KEY_PAGE_PATHS} TEXT,'  # 内部文件路径
@@ -69,7 +69,7 @@ class DBComicInfo:
             cursor.close()
             conn.close()
 
-    def add(self, comic_info: ComicInfo):
+    def add(self, comic_info: ComicInfoBase):
         """添加/更新记录"""
         comic_path = os.path.normpath(comic_info.filepath)
 
@@ -88,7 +88,7 @@ class DBComicInfo:
                             f'WHERE {KEY_FILEPATH} = "{comic_path}"')
 
         self.cursor.execute(
-            f'UPDATE {TABLE_NAME} SET {KEY_FILESIZE_BYTES_EXTRACTED} = "{comic_info.filesize_bytes_extracted}" '
+            f'UPDATE {TABLE_NAME} SET {KEY_EXTRACTED_FILESIZE_BYTES} = "{comic_info.get_extracted_filesize_bytes()}" '
             f'WHERE {KEY_FILEPATH} = "{comic_path}"')
 
         filetype = comic_info.filetype
@@ -116,7 +116,7 @@ class DBComicInfo:
 
         self.conn.commit()
 
-    def update_comic_moved(self, comic_info: ComicInfo):
+    def update_comic_moved(self, comic_info: ComicInfoBase):
         """更新数据库中已移动路径的漫画，更新其最新路径（仅更新数据库中的第一个匹配项）"""
         # 提取漫画数据库中文件指纹对应的路径
         comic_paths_db = self.get_comic_paths_by_fingerprint(comic_info.fingerprint)
@@ -152,23 +152,24 @@ class DBComicInfo:
 
         # 转换为漫画信息类
         result_dict = dict(zip(columns, result))  # 先转为键名-键值的字典格式
-        comic_info = ComicInfo(comic_path, db_model=True)
-        # 文件大小
-        filesize_bytes = result_dict[KEY_FILESIZE_BYTES]
-        filesize_bytes_extracted = result_dict[KEY_FILESIZE_BYTES_EXTRACTED]
-        comic_info.update_filesize(filesize_bytes)
-        comic_info.update_filesize_extracted(filesize_bytes_extracted)
-        # 文件类型
+
+        # 提取漫画文件类型，生成漫画信息类实例
         filetype_str = result_dict[KEY_FILETYPE]
         if filetype_str == FileType.Folder.text:
             filetype_class = FileType.Folder()
+            comic_info = FolderComicInfo(comic_path, db_model=True)
         elif filetype_str == FileType.Archive.text:
             filetype_class = FileType.Archive()
-        elif filetype_str == FileType.File.text:
-            filetype_class = FileType.File()
+            comic_info = ArchiveComicInfo(comic_path, db_model=True)
         else:
             raise Exception('漫画文件类型错误')
-        comic_info.update_filetype(filetype_class)
+
+        # 文件大小
+        filesize_bytes = result_dict[KEY_FILESIZE_BYTES]
+        comic_info.update_filesize(filesize_bytes)
+        if isinstance(filetype_class, FileType.Archive) or filetype_class == FileType.Archive:
+            extracted_filesize_bytes = result_dict[KEY_EXTRACTED_FILESIZE_BYTES]
+            comic_info.update_extracted_filesize_bytes(extracted_filesize_bytes)
         # 文件修改时间
         modified_time = result_dict[KEY_MODIFIED_TIME]
         comic_info.update_modified_time(modified_time)

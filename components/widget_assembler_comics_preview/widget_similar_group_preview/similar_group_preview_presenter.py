@@ -1,6 +1,6 @@
 from PySide6.QtCore import QObject, Signal
 
-from common.class_comic import ComicInfo
+from common.class_comic import ComicInfoBase
 from components.widget_assembler_comics_preview import widget_comic_preview
 from components.widget_assembler_comics_preview.widget_comic_preview import ComicPreviewPresenter
 from components.widget_assembler_comics_preview.widget_similar_group_preview.similar_group_preview_model import \
@@ -23,7 +23,7 @@ class SimilarGroupPreviewPresenter(QObject):
         # 绑定信号
         self._bind_signal()
 
-    def add_comic(self, comic_info: ComicInfo):
+    def add_comic(self, comic_info: ComicInfoBase):
         """显示漫画"""
         self.widget_comic_preview = widget_comic_preview.get_presenter()
         self.widget_comic_preview.set_comic(comic_info)
@@ -33,19 +33,19 @@ class SimilarGroupPreviewPresenter(QObject):
     def turn_to_previous_page(self, page_count: int = 1):
         """全局翻页-向前翻页"""
         for widget in self.widgets_comic:
-            widegt: ComicPreviewPresenter
+            widget: ComicPreviewPresenter
             widget.turn_to_previous_page(page_count)
 
     def turn_to_next_page(self, page_count: int = 1):
         """全局翻页-向后翻页"""
         for widget in self.widgets_comic:
-            widegt: ComicPreviewPresenter
+            widget: ComicPreviewPresenter
             widget.turn_to_next_page(page_count)
 
     def reset_page_number(self):
         """重置页码"""
         for widget in self.widgets_comic:
-            widegt: ComicPreviewPresenter
+            widget: ComicPreviewPresenter
             widget.reset_page()
 
     def quit(self):

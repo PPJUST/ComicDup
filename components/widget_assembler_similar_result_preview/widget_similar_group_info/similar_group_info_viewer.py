@@ -3,9 +3,9 @@ from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget, QApplication
 
 from common.class_sign import TYPE_SIGN_STATUS
-from components.widget_assembler_similar_result_preview import widget_comic_info
 from components.widget_assembler_similar_result_preview.widget_similar_group_info.res.icon_base64 import ICON_ZOOM_IN
-from components.widget_assembler_similar_result_preview.widget_similar_group_info.res.ui_similar_group_info import Ui_Form
+from components.widget_assembler_similar_result_preview.widget_similar_group_info.res.ui_similar_group_info import \
+    Ui_Form
 
 
 class SimilarGroupInfoViewer(QWidget):
@@ -31,14 +31,13 @@ class SimilarGroupInfoViewer(QWidget):
 
     def set_group_sign(self, sign: TYPE_SIGN_STATUS):
         """设置当前组的标记"""
-        sign_str= sign.text
+        sign_str = sign.text
         self.ui.label_sign.setText(sign_str)
 
     def add_widget(self, widget: QWidget):
         """添加漫画项控件"""
         layout = self.ui.scrollAreaWidgetContents_similar_group.layout()
         layout.addWidget(widget)
-
 
 
 if __name__ == "__main__":

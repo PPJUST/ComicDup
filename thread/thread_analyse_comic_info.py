@@ -1,9 +1,10 @@
 # 子线程-分析漫画信息
+import os
 from typing import Dict
 
 import natsort
 
-from common.class_comic import ComicInfo
+from common.class_comic import ComicInfoBase, FolderComicInfo, ArchiveComicInfo
 from common.class_runtime import TypeRuntimeInfo
 from thread.thread_pattern import ThreadPattern
 
@@ -19,7 +20,7 @@ class ThreadAnalyseComicInfo(ThreadPattern):
         # 漫画列表
         self.comics = []
         # 漫画信息字典
-        self.comic_info_dict: Dict[str, ComicInfo] = dict()
+        self.comic_info_dict: Dict[str, ComicInfoBase] = dict()
 
     def get_comic_info_dict(self):
         """获取漫画信息类字典"""
@@ -45,7 +46,13 @@ class ThreadAnalyseComicInfo(ThreadPattern):
                 break
             self.SignalRate.emit(f'{index}/{len(self.comics)}')
             self.SignalRuntimeInfo.emit(TypeRuntimeInfo.RateInfo, f'开始分析：{comic}')
-            comic_info = ComicInfo(comic)
+            # 根据不同漫画类型，实例化不同的漫画信息类
+            if os.path.isdir(comic):
+                comic_info = FolderComicInfo(comic)
+            elif os.path.isfile(comic):
+                comic_info = ArchiveComicInfo(comic)
+            else:
+                raise Exception(f'{comic} 类型错误')
             self.SignalRuntimeInfo.emit(TypeRuntimeInfo.RateInfo, f'完成分析：{comic}')
             self.comic_info_dict[comic] = comic_info
 

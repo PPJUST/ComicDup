@@ -5,7 +5,7 @@ from PySide6.QtCore import QObject
 from PySide6.QtWidgets import QMessageBox
 
 from common import function_file
-from common.class_comic import ComicInfo
+from common.class_comic import ComicInfoBase
 from common.class_config import FileType
 from components.widget_assembler_comics_preview.widget_comic_preview.comic_preview_model import ComicPreviewModel
 from components.widget_assembler_comics_preview.widget_comic_preview.comic_preview_viewer import ComicPreviewViewer
@@ -19,7 +19,7 @@ class ComicPreviewPresenter(QObject):
         self.viewer = viewer
         self.model = model
 
-        self.comic_info: ComicInfo = None
+        self.comic_info: ComicInfoBase = None
         self.page_paths = []  # 页面列表
         self.page_index = 1  # 当前页码（从1开始）
         self.is_reconfirm_before_delete = True  # 删除前是否需要再次确认
@@ -31,7 +31,7 @@ class ComicPreviewPresenter(QObject):
         """设置是否删除前再次确认"""
         self.is_reconfirm_before_delete = is_reconfirm
 
-    def set_comic(self, comic_info: ComicInfo):
+    def set_comic(self, comic_info: ComicInfoBase):
         """设置需要显示的漫画"""
         self.comic_info = comic_info
         self.page_paths = self.comic_info.get_page_paths()
@@ -45,7 +45,7 @@ class ComicPreviewPresenter(QObject):
         elif isinstance(filetype, FileType.Archive) or filetype == FileType.Archive:
             self.viewer.set_icon_archive()
         # 文件大小
-        filesize = self.comic_info.filesize_bytes_extracted
+        filesize = self.comic_info.filesize_bytes
         filesize_str = function_file.format_bytes_size(filesize)
         self.viewer.set_filesize(filesize_str)
         # 文件名

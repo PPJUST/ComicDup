@@ -1,17 +1,20 @@
+import io
 import math
 import os
+from abc import ABC, abstractmethod
 
+import lzytools.archive
 import lzytools.file
 import lzytools.image
-from PIL import Image
+from PIL import Image, ImageFile
 
 from common import function_archive
-from common.class_comic import ComicInfo
-from common.class_config import TYPES_HASH_ALGORITHM, SimilarAlgorithm, FileType, FileTypes
+from common.class_comic import ComicInfoBase
+from common.class_config import TYPES_HASH_ALGORITHM, SimilarAlgorithm, FileTypes
 
 
-class ImageInfo:
-    """图片信息类"""
+class ImageInfoBase(ABC):
+    """图片信息基类"""
 
     def __init__(self, image_path: str):
         # 图片路径
@@ -33,26 +36,26 @@ class ImageInfo:
         self.dHash_256: str = ''
 
         # 图片所属漫画的路径
-        self.comic_path_belong: str = ''
+        self.belong_comic_path: str = ''
         # 图片所属漫画的文件类型
-        self.comic_filetype_belong: FileTypes = None
+        self.belong_comic_filetype: FileTypes = None
         # 图片所属漫画的文件指纹
-        self.comic_fingerprint_belong: str = ''
+        self.belong_comic_fingerprint: str = ''
 
+        # 虚拟路径（漫画路径+图片相对路径）
+        self.faker_path: str = ''
+
+    @abstractmethod
     def calc_filesize(self):
         """计算图片文件大小"""
-        if isinstance(self.comic_filetype_belong, FileType.Folder):
-            self.filesize = lzytools.file.get_size(self.image_path)
-        elif isinstance(self.comic_filetype_belong, FileType.Archive):
-            self.filesize = function_archive.get_filesize_inside(self.comic_path_belong, self.image_path)
 
+    @abstractmethod
     def calc_hash(self, hash_type: TYPES_HASH_ALGORITHM, hash_length: int):
         """计算图片hash值"""
-        hash_type_str = hash_type.text
-        hash_size = int(math.sqrt(hash_length))
-        # 创建ImageFile对象
-        image_pil = Image.open(self.image_path)
-        hash_dict = lzytools.image.calc_hash(image_pil, hash_type_str, hash_size)
+
+    def _calc_hash(self, image_pil: ImageFile, hash_type: str, hash_size: int):
+        """计算ImageFile图片对象的指定hash值"""
+        hash_dict = lzytools.image.calc_hash(image_pil, hash_type, hash_size)
         if hash_dict['ahash']:
             if len(hash_dict['ahash']) == 64:
                 self.aHash_64 = hash_dict['ahash']
@@ -75,25 +78,21 @@ class ImageInfo:
             elif len(hash_dict['dhash']) == 256:
                 self.dHash_256 = hash_dict['dhash']
 
-    def update_info_by_comic_info(self, comic_info: ComicInfo):
+    def update_info_by_comic_info(self, comic_info: ComicInfoBase):
         """根据漫画信息类更新信息"""
-        self.comic_path_belong = comic_info.filepath
-        self.comic_filetype_belong = comic_info.filetype
-        self.comic_fingerprint_belong = comic_info.fingerprint
+        self.belong_comic_path = comic_info.filepath
+        self.belong_comic_filetype = comic_info.filetype
+        self.belong_comic_fingerprint = comic_info.fingerprint
         self.calc_filesize()
+        self.calc_faker_path()
 
+    @abstractmethod
+    def calc_faker_path(self):
+        """计算虚拟路径"""
+
+    @abstractmethod
     def is_useful(self):
         """检查图片是否有效"""
-        if isinstance(self.comic_filetype_belong, FileType.Folder):
-            if os.path.exists(self.image_path):
-                filesize_latest = lzytools.file.get_size(self.image_path)
-                return filesize_latest == self.filesize
-        elif isinstance(self.comic_filetype_belong, FileType.Archive):
-            if os.path.exists(self.comic_path_belong):
-                filesize_latest = function_archive.get_filesize_inside(self.comic_path_belong, self.image_path)
-                return filesize_latest == self.filesize
-
-        return False
 
     def update_hash(self, hash_: str, hash_type: TYPES_HASH_ALGORITHM, hash_length: int):
         """更新hash值"""
@@ -151,14 +150,90 @@ class ImageInfo:
         """更新图片大小"""
         self.filesize = filesize
 
-    def update_comic_path_belong(self, comic_path: str):
+    def update_belong_comic_path(self, comic_path: str):
         """更新图片所属漫画的路径"""
-        self.comic_path_belong = comic_path
+        self.belong_comic_path = comic_path
 
-    def update_comic_filetype_belong(self, comic_filetype: FileTypes):
+    def update_belong_comic_filetype(self, comic_filetype: FileTypes):
         """更新图片所属漫画的文件类型"""
-        self.comic_filetype_belong = comic_filetype
+        self.belong_comic_filetype = comic_filetype
 
-    def update_comic_fingerprint_belong(self, comic_fingerprint: str):
+    def update_belong_comic_fingerprint(self, comic_fingerprint: str):
         """更新图片所属漫画的指纹"""
-        self.comic_fingerprint_belong = comic_fingerprint
+        self.belong_comic_fingerprint = comic_fingerprint
+
+    def update_faker_path(self, faker_path: str):
+        """更新虚拟路径"""
+        self.faker_path = faker_path
+
+
+class ImageInfoFolder(ImageInfoBase):
+    """文件夹类漫画的图片信息类"""
+
+    def __init__(self, image_path: str):
+        super().__init__(image_path)
+
+    def calc_filesize(self):
+        super().calc_filesize()
+        self.filesize = lzytools.file.get_size(self.image_path)
+
+    def calc_hash(self, hash_type: TYPES_HASH_ALGORITHM, hash_length: int):
+        super().calc_hash(hash_type, hash_length)
+        # 提取参数
+        hash_type_str = hash_type.text
+        hash_size = int(math.sqrt(hash_length))
+
+        # 创建ImageFile对象
+        image_pil = Image.open(self.image_path)
+
+        self._calc_hash(image_pil, hash_type_str, hash_size)
+
+    def is_useful(self):
+        super().is_useful()
+        if os.path.exists(self.image_path):
+            filesize_latest = lzytools.file.get_size(self.image_path)
+            return filesize_latest == self.filesize
+
+        return False
+
+    def calc_faker_path(self):
+        super().calc_faker_path()
+        self.faker_path = self.image_path
+
+
+class ImageInfoArchive(ImageInfoBase):
+    """压缩文件类漫画的图片信息类"""
+
+    def __init__(self, image_path: str):
+        super().__init__(image_path)
+
+    def calc_filesize(self):
+        super().calc_filesize()
+        self.filesize = function_archive.get_filesize_inside(self.belong_comic_path, self.image_path)
+
+    def calc_hash(self, hash_type: TYPES_HASH_ALGORITHM, hash_length: int):
+        super().calc_hash(hash_type, hash_length)
+        # 提取参数
+        hash_type_str = hash_type.text
+        hash_size = int(math.sqrt(hash_length))
+
+        # 读取压缩文件中的图片
+        image_bytes = lzytools.archive.read_image(self.belong_comic_path, self.image_path)
+        # 将bytes读取到内存流中
+        bytes_io = io.BytesIO(image_bytes)
+        #  使用 PIL 打开内存流，创建ImageFile对象
+        image_pil = Image.open(bytes_io)
+
+        self._calc_hash(image_pil, hash_type_str, hash_size)
+
+    def is_useful(self):
+        super().is_useful()
+        if os.path.exists(self.belong_comic_path):
+            filesize_latest = function_archive.get_filesize_inside(self.belong_comic_path, self.image_path)
+            return filesize_latest == self.filesize
+
+        return False
+
+    def calc_faker_path(self):
+        super().calc_faker_path()
+        self.faker_path = os.path.normpath(os.path.join(self.belong_comic_path, self.image_path))

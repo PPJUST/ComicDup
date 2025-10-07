@@ -3,7 +3,7 @@ from typing import List
 from PySide6.QtCore import QObject
 
 from common import function_file
-from common.class_comic import ComicInfo
+from common.class_comic import ComicInfoBase
 from components.widget_assembler_similar_result_preview import widget_similar_group_info
 from components.widget_assembler_similar_result_preview.widget_similar_group_info import SimilarGroupInfoPresenter
 from components.widget_assembler_similar_result_preview.widget_similar_result_preview.similar_result_preview_model import \
@@ -20,7 +20,7 @@ class SimilarResultPreviewPresenter(QObject):
         self.viewer = viewer
         self.model = model
 
-        self.comic_info_groups: List[List[ComicInfo]] = []  # 相似组列表
+        self.comic_info_groups: List[List[ComicInfoBase]] = []  # 相似组列表
         self.comic_widgets_showed: List[SimilarGroupInfoPresenter] = []  # 显示的相似组控件
         self.current_page = 1  # 当前页数
         self.total_page = 1  # 总页数
@@ -31,7 +31,7 @@ class SimilarResultPreviewPresenter(QObject):
         self.viewer.PreviousPage.connect(self.previous_page)
         self.viewer.ChangeShowGroupCount.connect(self.change_show_group_count)
 
-    def set_groups(self, comic_info_list_list: List[List[ComicInfo]]):
+    def set_groups(self, comic_info_list_list: List[List[ComicInfoBase]]):
         """设置相似组列表"""
         self.comic_info_groups = comic_info_list_list
         self._calc_total_page()
@@ -44,7 +44,7 @@ class SimilarResultPreviewPresenter(QObject):
         index_start = (show_page - 1) * self.show_group_count
         index_end = index_start + self.show_group_count
         for index, group in enumerate(self.comic_info_groups[index_start:index_end], start=1):
-            group: List[ComicInfo]
+            group: List[ComicInfoBase]
             # 实例化单本漫画的控件类
             similar_group_info_presenter = widget_similar_group_info.get_presenter()
             # 向控件中添加漫画信息（路径交由控件内部处理，不需要实例化漫画信息控件）

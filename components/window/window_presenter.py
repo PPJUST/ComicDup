@@ -16,7 +16,7 @@ from typing import List
 from PySide6.QtCore import QObject, Signal
 
 from common import function_cache
-from common.class_comic import ComicInfo
+from common.class_comic import ComicInfoBase
 from common.class_config import SimilarAlgorithm
 from common.class_runtime import TYPE_RUNTIME_INFO, TypeRuntimeInfo
 from components import widget_exec, widget_setting_algorithm, widget_setting_match, widget_setting_comic, \
@@ -148,16 +148,12 @@ class WindowPresenter(QObject):
                 return
             # 保存到本地数据库中
             self.model.save_comic_info_to_db(comic_info_dict.values())
-            # 提取指定数量的漫画内部图片路径
-            extract_pages = self.widget_setting_match.get_extract_pages()  # 每本漫画提取的页数
-            images_in_comic = self.model.get_images_from_comic_infos(comic_info_dict.values(), extract_pages)
-            # 将提取的图片路径列表传递给 子线程-分析图片信息
-            self.start_analyse_image_info(images_in_comic, comic_info_list)
+            # 将提取的漫画信息列表传递给 子线程-分析图片信息
+            self.start_analyse_image_info(comic_info_list)
 
-    def start_analyse_image_info(self, images_path: list, comic_info_list: list):
+    def start_analyse_image_info(self, comic_info_list: list):
         """启动子线程-分析图片信息"""
         if not self.is_stop:
-            self.thread_analyse_image_info.set_images(images_path)
             self.thread_analyse_image_info.set_comic_info_list(comic_info_list)
             self.thread_analyse_image_info.start()
 
@@ -221,7 +217,7 @@ class WindowPresenter(QObject):
             self.thread_compare_ssim.set_image_group(image_group)
             self.thread_compare_ssim.start()
 
-    def show_similar_result(self, comic_info_groups: List[List[ComicInfo]]):
+    def show_similar_result(self, comic_info_groups: List[List[ComicInfoBase]]):
         """显示相似匹配结果"""
         if not self.is_stop:
             self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '显示相似匹配结果')
@@ -269,6 +265,7 @@ class WindowPresenter(QObject):
 
         # 每本漫画提取的页数
         extract_pages = self.widget_setting_match.get_extract_pages()
+        self.thread_analyse_image_info.set_extract_pages(extract_pages)
         # 是否匹配缓存
         is_match_cache = self.widget_setting_match.get_is_match_cache()
         # 是否仅匹配相似文件名
