@@ -25,7 +25,7 @@ class SimilarGroupInfoPresenter(QObject):
         self.comics_presenter: List[ComicInfoPresenter] = []  # 内部漫画项的桥梁组件
 
         # 绑定信号
-        self.viewer.Preview.connect(self.preview_comics)
+        self.viewer.Preview.connect(self.preview)
 
     def set_group_index(self, index: int):
         """设置当前组的编号"""
@@ -58,7 +58,7 @@ class SimilarGroupInfoPresenter(QObject):
         widget = comic_info_presenter.get_viewer()
         self.viewer.add_widget(widget)
 
-    def preview_comics(self):
+    def preview(self):
         """预览当前组内的所有漫画"""
         self.dialog_comics_preview = widget_assembler_comics_preview.get_assembler()
 

@@ -5,6 +5,7 @@ from PySide6.QtCore import QObject
 from common import function_file
 from common.class_comic import ComicInfo
 from components.widget_assembler_similar_result_preview import widget_similar_group_info
+from components.widget_assembler_similar_result_preview.widget_similar_group_info import SimilarGroupInfoPresenter
 from components.widget_assembler_similar_result_preview.widget_similar_result_preview.similar_result_preview_model import \
     SimilarResultPreviewModel
 from components.widget_assembler_similar_result_preview.widget_similar_result_preview.similar_result_preview_viewer import \
@@ -20,6 +21,7 @@ class SimilarResultPreviewPresenter(QObject):
         self.model = model
 
         self.comic_info_groups: List[List[ComicInfo]] = []  # 相似组列表
+        self.comic_widgets_showed: List[SimilarGroupInfoPresenter] = []  # 显示的相似组控件
         self.current_page = 1  # 当前页数
         self.total_page = 1  # 总页数
         self.show_group_count = 5  # 一页显示的组数
@@ -50,6 +52,8 @@ class SimilarResultPreviewPresenter(QObject):
             # 设置编号
             index_page = (show_page - 1) * self.show_group_count + index
             similar_group_info_presenter.set_group_index(index_page)
+            # 添加控件到变量中
+            self.comic_widgets_showed.append(similar_group_info_presenter)
             # 添加控件到视图中
             viewer = similar_group_info_presenter.get_viewer()
             self.viewer.add_similar_group(viewer)
@@ -74,8 +78,6 @@ class SimilarResultPreviewPresenter(QObject):
         """修改一页显示的组数"""
         self.show_group_count = int(show_count)
         self._calc_total_page()
-
-
 
     def get_group_count(self):
         """获取组数"""
@@ -110,6 +112,7 @@ class SimilarResultPreviewPresenter(QObject):
         self.comic_info_groups.clear()
         self.current_page = 1
         self.total_page = 1
+
     def _calc_total_page(self):
         """计算总页数（向上整除）"""
         self.total_page = (len(self.comic_info_groups) +
