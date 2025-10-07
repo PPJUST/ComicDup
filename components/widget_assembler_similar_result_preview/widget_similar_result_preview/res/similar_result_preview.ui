@@ -35,9 +35,16 @@
       <number>3</number>
      </property>
      <item>
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>共</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QLabel" name="label_group_count">
        <property name="text">
-        <string>n</string>
+        <string>0</string>
        </property>
       </widget>
      </item>
@@ -51,7 +58,7 @@
      <item>
       <widget class="QLabel" name="label_comic_count">
        <property name="text">
-        <string>n</string>
+        <string>0</string>
        </property>
       </widget>
      </item>
@@ -65,7 +72,7 @@
      <item>
       <widget class="QLabel" name="label_size_count">
        <property name="text">
-        <string>n</string>
+        <string/>
        </property>
       </widget>
      </item>

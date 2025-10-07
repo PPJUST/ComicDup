@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'similar_result_previewDNvUes.ui'
+## Form generated from reading UI file 'similar_result_previewgqeyLN.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.1
 ##
@@ -31,6 +31,11 @@ class Ui_Form(object):
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setSpacing(3)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.label_3 = QLabel(Form)
+        self.label_3.setObjectName(u"label_3")
+
+        self.horizontalLayout.addWidget(self.label_3)
+
         self.label_group_count = QLabel(Form)
         self.label_group_count.setObjectName(u"label_group_count")
 
@@ -138,11 +143,12 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
-        self.label_group_count.setText(QCoreApplication.translate("Form", u"n", None))
+        self.label_3.setText(QCoreApplication.translate("Form", u"\u5171", None))
+        self.label_group_count.setText(QCoreApplication.translate("Form", u"0", None))
         self.label_4.setText(QCoreApplication.translate("Form", u"\u7ec4", None))
-        self.label_comic_count.setText(QCoreApplication.translate("Form", u"n", None))
+        self.label_comic_count.setText(QCoreApplication.translate("Form", u"0", None))
         self.label_6.setText(QCoreApplication.translate("Form", u"\u9879", None))
-        self.label_size_count.setText(QCoreApplication.translate("Form", u"n", None))
+        self.label_size_count.setText("")
         self.pushButton_previous_page.setText(QCoreApplication.translate("Form", u"\u4e0a\u4e00\u9875", None))
         self.pushButton_next_page.setText(QCoreApplication.translate("Form", u"\u4e0b\u4e00\u9875", None))
         self.label.setText(QCoreApplication.translate("Form", u"\u6bcf\u9875\u663e\u793a\u7ec4\u6570", None))

@@ -113,6 +113,8 @@ class ComicPreviewPresenter(QObject):
             path = self.comic_info.filepath
             lzytools.file.delete(path, send_to_trash=True)
 
+        # 备忘录 删除后更新信息和变量
+
     def get_viewer(self):
         """获取viewer"""
         return self.viewer

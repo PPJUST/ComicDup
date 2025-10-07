@@ -63,6 +63,8 @@ class ComicInfoPresenter(QObject):
             path = self.comic_info.filepath
             lzytools.file.delete(path, send_to_trash=True)
 
+        # 备忘录 删除后更新信息和变量
+
     def _show_comic_info(self):
         """在viewer上显示漫画信息"""
         filetype = self.comic_info.filetype

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'comic_infoMXMtKV.ui'
+## Form generated from reading UI file 'comic_infoFSRxPG.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.1
 ##
@@ -22,9 +22,9 @@ class Ui_Form(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        Form.resize(202, 212)
+        Form.resize(286, 254)
         self.verticalLayout = QVBoxLayout(Form)
-        self.verticalLayout.setSpacing(3)
+        self.verticalLayout.setSpacing(6)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.verticalLayout.setContentsMargins(3, 3, 3, 3)
         self.horizontalLayout = QHBoxLayout()
@@ -95,7 +95,12 @@ class Ui_Form(object):
         self.verticalLayout.addLayout(self.horizontalLayout_5)
 
         self.horizontalLayout_4 = QHBoxLayout()
+        self.horizontalLayout_4.setSpacing(24)
         self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
+        self.horizontalSpacer_3 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_4.addItem(self.horizontalSpacer_3)
+
         self.toolButton_open_path = QToolButton(Form)
         self.toolButton_open_path.setObjectName(u"toolButton_open_path")
 
@@ -111,9 +116,14 @@ class Ui_Form(object):
 
         self.horizontalLayout_4.addWidget(self.toolButton_delete)
 
+        self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_4.addItem(self.horizontalSpacer_4)
+
 
         self.verticalLayout.addLayout(self.horizontalLayout_4)
 
+        self.verticalLayout.setStretch(3, 1)
 
         self.retranslateUi(Form)
 
