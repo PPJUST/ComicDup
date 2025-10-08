@@ -2,7 +2,7 @@ import os
 
 import lzytools.archive
 import lzytools.file
-from PySide6.QtCore import QObject
+from PySide6.QtCore import QObject, Signal
 from PySide6.QtWidgets import QMessageBox
 
 from common import function_file
@@ -14,6 +14,7 @@ from components.widget_assembler_comics_preview.widget_comic_preview.comic_previ
 
 class ComicPreviewPresenter(QObject):
     """漫画预览模块的桥梁组件"""
+    ComicDeleted = Signal(name='删除漫画')
 
     def __init__(self, viewer: ComicPreviewViewer, model: ComicPreviewModel):
         super().__init__()
@@ -122,8 +123,7 @@ class ComicPreviewPresenter(QObject):
         if is_delete:
             path = self.comic_info.filepath
             lzytools.file.delete(path, send_to_trash=True)
-
-        # 备忘录 删除后更新信息和变量
+            self.ComicDeleted.emit()
 
     def get_viewer(self):
         """获取viewer"""

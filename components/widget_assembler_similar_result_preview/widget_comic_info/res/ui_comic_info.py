@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'comic_infoFSRxPG.ui'
+## Form generated from reading UI file 'comic_infoPpdxPF.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.1
 ##
@@ -22,7 +22,7 @@ class Ui_Form(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        Form.resize(286, 254)
+        Form.resize(286, 234)
         self.verticalLayout = QVBoxLayout(Form)
         self.verticalLayout.setSpacing(6)
         self.verticalLayout.setObjectName(u"verticalLayout")
@@ -40,6 +40,7 @@ class Ui_Form(object):
 
         self.horizontalLayout.addWidget(self.label_filetitle)
 
+        self.horizontalLayout.setStretch(1, 1)
 
         self.verticalLayout.addLayout(self.horizontalLayout)
 
@@ -70,6 +71,10 @@ class Ui_Form(object):
         self.label_filesize.setObjectName(u"label_filesize")
 
         self.horizontalLayout_3.addWidget(self.label_filesize)
+
+        self.horizontalSpacer_5 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_3.addItem(self.horizontalSpacer_5)
 
 
         self.verticalLayout.addLayout(self.horizontalLayout_3)

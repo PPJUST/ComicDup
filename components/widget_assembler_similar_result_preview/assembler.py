@@ -5,6 +5,8 @@ from components.widget_assembler_similar_result_preview import widget_similar_re
 
 
 class AssemblerSimilarResultPreview:
+    """相似匹配结果预览器组装器"""
+
     def __init__(self):
         self.presenter = widget_similar_result_preview.get_presenter()
 

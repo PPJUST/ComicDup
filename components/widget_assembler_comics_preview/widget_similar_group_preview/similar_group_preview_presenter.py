@@ -12,6 +12,7 @@ from components.widget_assembler_comics_preview.widget_similar_group_preview.sim
 class SimilarGroupPreviewPresenter(QObject):
     """相似组预览框架模块的桥梁组件"""
     Quit = Signal(name='退出')
+    ComicDeleted = Signal(object, name='删除漫画对应的漫画信息类')
 
     def __init__(self, viewer: SimilarGroupPreviewViewer, model: SimilarGroupPreviewModel):
         super().__init__()
@@ -29,6 +30,7 @@ class SimilarGroupPreviewPresenter(QObject):
         self.widget_comic_preview = widget_comic_preview.get_presenter()
         self.widget_comic_preview.set_comic(comic_info)
         self.widget_comic_preview.set_is_reconfirm_before_delete(self.is_reconfirm_before_delete)
+        self.widget_comic_preview.ComicDeleted.connect(self.comic_deleted)
         self.widgets_comic.append(self.widget_comic_preview)
         self.viewer.add_widget(self.widget_comic_preview.get_viewer())
 
@@ -57,6 +59,19 @@ class SimilarGroupPreviewPresenter(QObject):
         for widget in self.widgets_comic:
             widget: ComicPreviewPresenter
             widget.reset_page()
+
+    def comic_deleted(self):
+        """漫画被删除后的操作"""
+        widget_presenter: ComicPreviewPresenter = self.sender()
+        deleted_comic_info = widget_presenter.comic_info
+        # 删除ui中显示的viewer
+        viewer = widget_presenter.get_viewer()
+        self.viewer.remove_widget(viewer)
+        # 删除存储的presenter
+        self.widgets_comic.remove(widget_presenter)
+        widget_presenter.deleteLater()
+        # 发送信号
+        self.ComicDeleted.emit(deleted_comic_info)
 
     def quit(self):
         """退出"""

@@ -1,6 +1,7 @@
 import lzytools._qt_pyside6
 from PySide6.QtCore import Signal
-from PySide6.QtWidgets import QWidget, QApplication
+from PySide6.QtGui import QMouseEvent, Qt
+from PySide6.QtWidgets import QWidget, QApplication, QMessageBox
 
 from common.class_sign import TYPE_SIGN_STATUS
 from components.widget_assembler_similar_result_preview.widget_similar_group_info.res.icon_base64 import ICON_ZOOM_IN
@@ -38,6 +39,19 @@ class SimilarGroupInfoViewer(QWidget):
         """添加漫画项控件"""
         layout = self.ui.scrollAreaWidgetContents_similar_group.layout()
         layout.addWidget(widget)
+
+    def remove_widget(self, widget: QWidget):
+        """删除漫画项控件"""
+        layout = self.ui.scrollAreaWidgetContents_similar_group.layout()
+        layout.removeWidget(widget)
+        widget.deleteLater()
+
+    def mouseDoubleClickEvent(self, event: QMouseEvent):
+        if event.button() == Qt.LeftButton:
+            self.Preview.emit()
+            event.accept()
+        else:
+            super().mouseDoubleClickEvent(event)
 
 
 if __name__ == "__main__":

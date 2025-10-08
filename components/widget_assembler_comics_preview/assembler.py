@@ -1,3 +1,4 @@
+from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QDialog, QVBoxLayout
 
 from common.class_comic import ComicInfoBase
@@ -5,6 +6,9 @@ from components.widget_assembler_comics_preview import widget_similar_group_prev
 
 
 class AssemblerDialogComicsPreview(QDialog):
+    """预览相似组内漫画的dialog组装器"""
+    ComicDeleted = Signal(object, name='删除漫画对应的漫画信息类')
+
     def __init__(self):
         super().__init__()
         self.setWindowTitle('漫画预览器')
@@ -17,6 +21,7 @@ class AssemblerDialogComicsPreview(QDialog):
 
         # 绑定信号
         self.presenter.Quit.connect(self.close)
+        self.presenter.ComicDeleted.connect(self.ComicDeleted.emit)
 
     def get_presenter(self):
         """获取presenter"""

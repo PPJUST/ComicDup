@@ -1,7 +1,7 @@
 import os
 
 import lzytools.file
-from PySide6.QtCore import QObject
+from PySide6.QtCore import QObject, Signal
 from PySide6.QtWidgets import QMessageBox
 
 from common import function_file
@@ -14,6 +14,7 @@ from components.widget_search_list.res.icon_base64 import ICON_FOLDER, ICON_ARCH
 
 class ComicInfoPresenter(QObject):
     """单个漫画信息模块的桥梁组件"""
+    ComicDeleted = Signal(name='删除漫画')
 
     def __init__(self, viewer: ComicInfoViewer, model: ComicInfoModel):
         super().__init__()
@@ -27,6 +28,14 @@ class ComicInfoPresenter(QObject):
         self.viewer.OpenPath.connect(self.open_path)
         self.viewer.RefreshInfo.connect(self.refresh_info)
         self.viewer.Delete.connect(self.delete_comic)
+
+    def get_comic_path(self):
+        """获取漫画路径"""
+        return self.comic_info.filepath
+
+    def get_comic_info(self):
+        """获取漫画信息类"""
+        return self.comic_info
 
     def set_is_reconfirm_before_delete(self, is_reconfirm: bool):
         """设置是否删除前再次确认"""
@@ -63,8 +72,7 @@ class ComicInfoPresenter(QObject):
         if is_delete:
             path = self.comic_info.filepath
             lzytools.file.delete(path, send_to_trash=True)
-
-        # 备忘录 删除后更新信息和变量
+            self.ComicDeleted.emit()
 
     def _show_comic_info(self):
         """在viewer上显示漫画信息"""

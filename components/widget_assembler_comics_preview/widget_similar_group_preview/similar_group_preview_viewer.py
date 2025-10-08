@@ -31,6 +31,12 @@ class SimilarGroupPreviewViewer(QWidget):
         """显示一个控件"""
         self.ui.horizontalLayout_group.addWidget(widget)
 
+    def remove_widget(self, widget: QWidget):
+        """删除漫画项控件"""
+        layout = self.ui.horizontalLayout_group.layout()
+        layout.removeWidget(widget)
+        widget.deleteLater()
+
     def clear(self):
         """清空界面"""
         layout = self.ui.horizontalLayout_group

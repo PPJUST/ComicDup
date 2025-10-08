@@ -28,6 +28,7 @@ class SimilarGroupInfoPresenter(QObject):
 
         # 绑定信号
         self.viewer.Preview.connect(self.preview)
+        self.dialog_comics_preview.ComicDeleted.connect(self.dialog_comic_deleted)
 
     def set_group_index(self, index: int):
         """设置当前组的编号"""
@@ -55,6 +56,7 @@ class SimilarGroupInfoPresenter(QObject):
 
         comic_info_presenter = widget_comic_info.get_presenter()
         comic_info_presenter.set_comic_info(comic_info)
+        comic_info_presenter.ComicDeleted.connect(self.comic_deleted)
         self.comics_presenter.append(comic_info_presenter)
 
         widget = comic_info_presenter.get_viewer()
@@ -75,6 +77,52 @@ class SimilarGroupInfoPresenter(QObject):
             widget.set_is_reconfirm_before_delete(is_reconfirm)
 
         self.dialog_comics_preview.set_is_reconfirm_before_delete(is_reconfirm)
+
+    def comic_deleted(self):
+        """漫画被删除后的操作"""
+        widget_presenter: ComicInfoPresenter = self.sender()
+        # 删除存储的漫画信息类
+        deleted_comic_info = widget_presenter.get_comic_info()
+        self.comic_info_list.remove(deleted_comic_info)
+        # 删除ui中显示的viewer
+        viewer = widget_presenter.get_viewer()
+        self.viewer.remove_widget(viewer)
+        # 删除存储的presenter
+        self.comics_presenter.remove(widget_presenter)
+        widget_presenter.deleteLater()
+        # 更新标记
+        self._update_group_sign()
+
+    def dialog_comic_deleted(self, deleted_comic_info: ComicInfoBase):
+        """预览器中的漫画被删除后的操作"""
+        # 检索控件，找到漫画信息类对应的控件
+        widget_presenter_delete = None
+        for presenter in self.comics_presenter:
+            if presenter.get_comic_info() == deleted_comic_info:
+                widget_presenter_delete = presenter
+                break
+        if widget_presenter_delete:
+            # 删除存储的漫画信息类
+            deleted_comic_info = widget_presenter_delete.get_comic_info()
+            self.comic_info_list.remove(deleted_comic_info)
+            # 删除ui中显示的viewer
+            viewer = widget_presenter_delete.get_viewer()
+            self.viewer.remove_widget(viewer)
+            # 删除存储的presenter
+            self.comics_presenter.remove(widget_presenter_delete)
+            widget_presenter_delete.deleteLater()
+            # 更新标记
+            self._update_group_sign()
+        else:
+            raise RuntimeError('未找到对应的控件')
+
+    def _update_group_sign(self):
+        """更新当前组的标记"""
+        item_count = len(self.comic_info_list)
+        if item_count <= 1:
+            self.set_group_sign(SignStatus.Completed)
+        else:
+            self.set_group_sign(SignStatus.Partial)
 
     def get_viewer(self):
         """获取模块的Viewer"""
