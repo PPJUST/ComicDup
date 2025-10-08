@@ -1,5 +1,6 @@
 import os
 
+import lzytools.archive
 import lzytools.file
 from PySide6.QtCore import QObject
 from PySide6.QtWidgets import QMessageBox
@@ -27,7 +28,7 @@ class ComicPreviewPresenter(QObject):
         # 绑定信号
         self._bind_signal()
 
-    def is_reconfirm_before_delete(self, is_reconfirm: bool):
+    def set_is_reconfirm_before_delete(self, is_reconfirm: bool):
         """设置是否删除前再次确认"""
         self.is_reconfirm_before_delete = is_reconfirm
 
@@ -62,8 +63,16 @@ class ComicPreviewPresenter(QObject):
     def show_page(self, page_index: int):
         """显示指定页的图像
         :param page_index:从1开始计数的页码"""
-        image_path = self.page_paths[page_index - 1]
-        self.viewer.show_image(image_path)
+        # 文件夹类漫画
+        if isinstance(self.comic_info.filetype, FileType.Folder) or self.comic_info.filetype == FileType.Folder:
+            image_path = self.page_paths[page_index - 1]
+            self.viewer.show_image(image_path)
+        # 压缩文件类漫画
+        elif isinstance(self.comic_info.filetype, FileType.Archive) or self.comic_info.filetype == FileType.Archive:
+            archive_path = self.comic_info.filepath
+            inside_image_path = self.page_paths[page_index - 1]
+            image_bytes = lzytools.archive.read_image(archive_path, inside_image_path)
+            self.viewer.show_bytes_image(image_bytes)
 
     def turn_to_previous_page(self, page_count: int = 1):
         """向前翻页"""

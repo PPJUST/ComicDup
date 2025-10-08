@@ -19,6 +19,7 @@ class SimilarGroupPreviewPresenter(QObject):
         self.model = model
 
         self.widgets_comic = []  # 显示的漫画控件列表
+        self.is_reconfirm_before_delete = True  # 删除前是否需要再次确认（在此模块单独存储一次，用于创建子模块时进行赋值）
 
         # 绑定信号
         self._bind_signal()
@@ -27,6 +28,7 @@ class SimilarGroupPreviewPresenter(QObject):
         """显示漫画"""
         self.widget_comic_preview = widget_comic_preview.get_presenter()
         self.widget_comic_preview.set_comic(comic_info)
+        self.widget_comic_preview.set_is_reconfirm_before_delete(self.is_reconfirm_before_delete)
         self.widgets_comic.append(self.widget_comic_preview)
         self.viewer.add_widget(self.widget_comic_preview.get_viewer())
 
@@ -41,6 +43,14 @@ class SimilarGroupPreviewPresenter(QObject):
         for widget in self.widgets_comic:
             widget: ComicPreviewPresenter
             widget.turn_to_next_page(page_count)
+
+    def set_is_reconfirm_before_delete(self, is_reconfirm: bool):
+        """设置是否删除前再次确认"""
+        self.is_reconfirm_before_delete = is_reconfirm
+
+        for widget in self.widgets_comic:
+            widget: ComicPreviewPresenter
+            widget.set_is_reconfirm_before_delete(is_reconfirm)
 
     def reset_page_number(self):
         """重置页码"""

@@ -2,6 +2,7 @@ import os
 from typing import List
 
 import lzytools.common
+import natsort
 from PySide6.QtCore import Signal, QObject
 
 from common.class_comic import ComicInfoBase
@@ -142,6 +143,7 @@ class WindowModel(QObject):
                 if path in comic_path_search_list and os.path.exists(path):
                     group_filter.append(comic_info)
             if len(group_filter) >= 2:
+                group_filter = natsort.os_sorted(group_filter)  # 进行一次路径排序，便于后续显示
                 comic_info_group_filter.append(group_filter)
 
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, f'完成相似组有效性筛选')

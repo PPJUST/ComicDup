@@ -301,6 +301,9 @@ class WindowPresenter(QObject):
         self.widget_exec.LoadLastResult.connect(self.load_last_result)
         self.widget_exec.OpenAbout.connect(self.open_about)
 
+        self.widget_similar_result_filter.ReconfirmDelete.connect(
+            self.assembler_similar_result_preview.set_is_reconfirm_before_delete)
+
         self.SignalRuntimeInfo.connect(self.update_runtime_info_textline)
 
     def _bind_thread_signal(self):

@@ -30,6 +30,10 @@ class AssemblerDialogComicsPreview(QDialog):
         """添加漫画"""
         self.presenter.add_comic(comic_info)
 
+    def set_is_reconfirm_before_delete(self, is_reconfirm: bool):
+        """设置是否删除前再次确认"""
+        self.presenter.set_is_reconfirm_before_delete(is_reconfirm)
+
     def clear(self):
         """清空结果"""
         self.presenter.clear()

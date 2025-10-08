@@ -79,6 +79,12 @@ class SimilarResultPreviewPresenter(QObject):
         self.show_group_count = int(show_count)
         self._calc_total_page()
 
+    def set_is_reconfirm_before_delete(self, is_reconfirm: bool):
+        """设置是否删除前再次确认"""
+        for widget in self.comic_widgets_showed:
+            widget: SimilarGroupInfoPresenter
+            widget.set_is_reconfirm_before_delete(is_reconfirm)
+
     def get_group_count(self):
         """获取组数"""
         return len(self.comic_info_groups)
@@ -115,7 +121,5 @@ class SimilarResultPreviewPresenter(QObject):
 
     def _calc_total_page(self):
         """计算总页数（向上整除）"""
-        self.total_page = (len(self.comic_info_groups) +
-                           self.show_group_count) // self.show_group_count  # 向上整除
-
+        self.total_page = (len(self.comic_info_groups) + self.show_group_count) // self.show_group_count  # 向上整除
         self.viewer.set_total_page(self.total_page)

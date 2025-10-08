@@ -28,7 +28,7 @@ class ComicInfoPresenter(QObject):
         self.viewer.RefreshInfo.connect(self.refresh_info)
         self.viewer.Delete.connect(self.delete_comic)
 
-    def is_reconfirm_before_delete(self, is_reconfirm: bool):
+    def set_is_reconfirm_before_delete(self, is_reconfirm: bool):
         """设置是否删除前再次确认"""
         self.is_reconfirm_before_delete = is_reconfirm
 

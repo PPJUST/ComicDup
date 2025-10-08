@@ -33,6 +33,10 @@ class ComicPreviewViewer(QWidget):
         """显示图像"""
         self.label_image_preview.set_image(preview_path)
 
+    def show_bytes_image(self, data: bytes):
+        """显示bytes图像"""
+        self.label_image_preview.set_bytes_image(data)
+
     def set_icon_archive(self):
         """设置文件类型图片为压缩文件"""
         self.ui.label_icon.setPixmap(lzytools._qt_pyside6.base64_to_pixmap(ICON_ARCHIVE))

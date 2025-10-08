@@ -5,6 +5,7 @@ from PySide6.QtCore import QObject
 from common.class_comic import ComicInfoBase
 from common.class_sign import SignStatus, TYPE_SIGN_STATUS
 from components import widget_assembler_comics_preview
+from components.widget_assembler_comics_preview import AssemblerDialogComicsPreview
 from components.widget_assembler_similar_result_preview import widget_comic_info
 from components.widget_assembler_similar_result_preview.widget_comic_info import ComicInfoPresenter
 from components.widget_assembler_similar_result_preview.widget_similar_group_info.similar_group_info_model import \
@@ -23,6 +24,7 @@ class SimilarGroupInfoPresenter(QObject):
 
         self.comic_info_list: List[ComicInfoBase] = []  # 内部漫画项的漫画信息类列表
         self.comics_presenter: List[ComicInfoPresenter] = []  # 内部漫画项的桥梁组件
+        self.dialog_comics_preview: AssemblerDialogComicsPreview = widget_assembler_comics_preview.get_assembler()  # 预览漫画的dialog
 
         # 绑定信号
         self.viewer.Preview.connect(self.preview)
@@ -60,13 +62,19 @@ class SimilarGroupInfoPresenter(QObject):
 
     def preview(self):
         """预览当前组内的所有漫画"""
-        self.dialog_comics_preview = widget_assembler_comics_preview.get_assembler()
-
         for comic_info in self.comic_info_list:
             self.dialog_comics_preview.add_comic(comic_info)
 
         self.dialog_comics_preview.exec()
-        self.dialog_comics_preview.deleteLater()
+        self.dialog_comics_preview.clear()
+
+    def set_is_reconfirm_before_delete(self, is_reconfirm: bool):
+        """设置是否删除前再次确认"""
+        for widget in self.comics_presenter:
+            widget: ComicInfoPresenter
+            widget.set_is_reconfirm_before_delete(is_reconfirm)
+
+        self.dialog_comics_preview.set_is_reconfirm_before_delete(is_reconfirm)
 
     def get_viewer(self):
         """获取模块的Viewer"""
