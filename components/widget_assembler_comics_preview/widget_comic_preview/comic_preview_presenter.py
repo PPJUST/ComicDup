@@ -84,6 +84,7 @@ class ComicPreviewPresenter(QObject):
             if self.page_index < 1:
                 self.page_index = 1
         self.show_page(self.page_index)
+        self.viewer.set_current_page(self.page_index)
 
     def turn_to_next_page(self, page_count: int = 1):
         """向后翻页"""
@@ -94,11 +95,13 @@ class ComicPreviewPresenter(QObject):
             if self.page_index > len(self.page_paths):
                 self.page_index = len(self.page_paths)
         self.show_page(self.page_index)
+        self.viewer.set_current_page(self.page_index)
 
     def reset_page(self):
         """重置页码"""
         self.page_index = 1
         self.show_page(self.page_index)
+        self.viewer.set_current_page(self.page_index)
 
     def open_path(self):
         """打开漫画文件"""
