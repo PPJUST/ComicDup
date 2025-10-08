@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'execQFVwlL.ui'
+## Form generated from reading UI file 'execYXROEy.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.1
 ##
@@ -57,7 +57,7 @@ class Ui_Form(object):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
         self.pushButton_start.setText(QCoreApplication.translate("Form", u"\u5f00\u59cb\u67e5\u91cd", None))
         self.pushButton_stop.setText(QCoreApplication.translate("Form", u"\u505c\u6b62\u67e5\u91cd", None))
-        self.pushButton_load_last_result.setText(QCoreApplication.translate("Form", u"\u52a0\u8f7d\u4e0a\u6b21\u7ed3\u679c", None))
+        self.pushButton_load_last_result.setText(QCoreApplication.translate("Form", u"\u52a0\u8f7d\u5386\u53f2\u8bb0\u5f55", None))
         self.pushButton_info.setText(QCoreApplication.translate("Form", u"\u7a0b\u5e8f\u8bf4\u660e", None))
     # retranslateUi
 

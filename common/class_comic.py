@@ -8,7 +8,7 @@ import lzytools.file
 import lzytools.image
 import natsort
 
-from common import function_file, function_archive, function_cache
+from common import function_file, function_archive, function_cache_preview
 from common.class_config import FileType, FileTypes
 
 
@@ -118,7 +118,7 @@ class FolderComicInfo(ComicInfoBase):
     def save_preview_image(self):
         super().save_preview_image()
         first_image = self.page_paths[0]
-        self.preview_path = function_cache.save_preview_image_to_cache(first_image)
+        self.preview_path = function_cache_preview.save_preview_image_to_cache(first_image)
 
     def get_extracted_filesize_bytes(self):
         """获取解压后的文件大小（字节）"""
@@ -154,8 +154,8 @@ class ArchiveComicInfo(ComicInfoBase):
     def save_preview_image(self):
         super().save_preview_image()
         first_image = self.page_paths[0]
-        self.preview_path = function_cache.save_preview_image_in_archive_to_cache(archive=self.filepath,
-                                                                                  image_path_inside=first_image)
+        self.preview_path = function_cache_preview.save_preview_image_in_archive_to_cache(archive=self.filepath,
+                                                                                          image_path_inside=first_image)
 
     def update_extracted_filesize_bytes(self, filesize_bytes: int):
         """更新解压后的文件大小（字节）"""

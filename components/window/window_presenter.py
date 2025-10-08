@@ -15,12 +15,13 @@ from typing import List
 
 from PySide6.QtCore import QObject, Signal
 
-from common import function_cache
+from common import function_cache_result
 from common.class_comic import ComicInfoBase
 from common.class_config import SimilarAlgorithm
 from common.class_runtime import TYPE_RUNTIME_INFO, TypeRuntimeInfo
 from components import widget_exec, widget_setting_algorithm, widget_setting_match, widget_setting_comic, \
-    widget_search_list, widget_runtime_info, widget_similar_result_filter, widget_assembler_similar_result_preview
+    widget_search_list, widget_runtime_info, widget_similar_result_filter, widget_assembler_similar_result_preview, \
+    dialog_match_result_cache
 from components.window.window_model import WindowModel
 from components.window.window_viewer import WindowViewer
 from thread.thread_analyse_comic_info import ThreadAnalyseComicInfo
@@ -52,6 +53,8 @@ class WindowPresenter(QObject):
         self.widget_similar_result_filter = widget_similar_result_filter.get_presenter()
         self.assembler_similar_result_preview = widget_assembler_similar_result_preview.get_assembler()
         self.similar_result_preview = self.assembler_similar_result_preview.get_presenter()
+        self.presenter_match_result_cache = dialog_match_result_cache.get_presenter()
+        self.dialog_match_result_cache = self.presenter_match_result_cache.get_viewer()
 
         # 实例化子线程
         self.thread_search_comic = ThreadSearchComic()
@@ -70,12 +73,15 @@ class WindowPresenter(QObject):
         # 绑定model信号
         self.model.SignalRuntimeInfo.connect(self.update_runtime_info_textline)
 
-    def load_last_result(self):
-        """加载上一次的匹配结果"""
-        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '正在加载上次的匹配结果')
-        match_result = function_cache.get_last_similar_result()
+    def open_dialog_match_result_cache(self):
+        """打开历史记录dialog"""
+        self.dialog_match_result_cache.exec()
+
+    def load_last_result(self,match_result: List[List[ComicInfoBase]]):
+        """加载匹配结果"""
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '正在加载历史匹配结果')
         self.show_similar_result(match_result)
-        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '完成加载上次的匹配结果')
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '完成加载历史匹配结果')
 
     def open_about(self):
         """打开程序说明"""
@@ -197,7 +203,7 @@ class WindowPresenter(QObject):
                                                                           comic_path_search_list=self._comic_paths_search)
             # 保存到缓存
             self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '正在保存相似匹配结果到本地缓存')
-            function_cache.save_similar_result(comic_info_groups_filter)
+            function_cache_result.save_match_result(comic_info_groups_filter)
             self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '完成保存相似匹配结果到本地缓存')
             # 显示匹配结果
             self.show_similar_result(comic_info_groups_filter)
@@ -298,13 +304,15 @@ class WindowPresenter(QObject):
         """绑定信号"""
         self.widget_exec.Start.connect(self.start)
         self.widget_exec.Stop.connect(self.stop)
-        self.widget_exec.LoadLastResult.connect(self.load_last_result)
+        self.widget_exec.LoadLastResult.connect(self.open_dialog_match_result_cache)
         self.widget_exec.OpenAbout.connect(self.open_about)
 
         self.widget_similar_result_filter.ReconfirmDelete.connect(
             self.assembler_similar_result_preview.set_is_reconfirm_before_delete)
 
         self.SignalRuntimeInfo.connect(self.update_runtime_info_textline)
+
+        self.presenter_match_result_cache.Restore.connect(self.load_last_result)
 
     def _bind_thread_signal(self):
         """绑定子线程信号"""
