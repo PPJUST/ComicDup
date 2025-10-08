@@ -30,6 +30,9 @@ class MatchResultCacheModel:
 
     def save_match_result(self, data):
         """保存匹配结果"""
+        if not data:
+            return
+
         # 检查文件数量，超过上限则删除最旧的
         cache_filenames = self.get_cache_filenames()
         if len(cache_filenames) >= MAX_COUNT:

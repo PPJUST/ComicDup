@@ -15,7 +15,6 @@ from typing import List
 
 from PySide6.QtCore import QObject, Signal
 
-from common import function_cache_result
 from common.class_comic import ComicInfoBase
 from common.class_config import SimilarAlgorithm
 from common.class_runtime import TYPE_RUNTIME_INFO, TypeRuntimeInfo
@@ -77,7 +76,7 @@ class WindowPresenter(QObject):
         """打开历史记录dialog"""
         self.dialog_match_result_cache.exec()
 
-    def load_last_result(self,match_result: List[List[ComicInfoBase]]):
+    def load_last_result(self, match_result: List[List[ComicInfoBase]]):
         """加载匹配结果"""
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '正在加载历史匹配结果')
         self.show_similar_result(match_result)
@@ -203,7 +202,7 @@ class WindowPresenter(QObject):
                                                                           comic_path_search_list=self._comic_paths_search)
             # 保存到缓存
             self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '正在保存相似匹配结果到本地缓存')
-            function_cache_result.save_match_result(comic_info_groups_filter)
+            self.presenter_match_result_cache.save_match_result(comic_info_groups_filter)
             self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '完成保存相似匹配结果到本地缓存')
             # 显示匹配结果
             self.show_similar_result(comic_info_groups_filter)
