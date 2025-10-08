@@ -39,9 +39,15 @@ class SimilarResultPreviewViewer(QWidget):
         """获取每页显示的组数"""
         return self.ui.comboBox_show_group_count.currentText()
 
+    def set_current_page(self, current_page: int):
+        """设置当前页数"""
+        self.ui.label_current_page.setText(str(current_page))
+        self._auto_set_previous_next_button_enabled()
+
     def set_total_page(self, total_page: int):
         """设置总页数"""
         self.ui.label_total_page.setText(str(total_page))
+        self._auto_set_previous_next_button_enabled()
 
     def set_group_count(self, group_count: int):
         """设置组数统计"""
@@ -54,6 +60,24 @@ class SimilarResultPreviewViewer(QWidget):
     def set_filesize_count(self, filesize_count: str):
         """设置文件大小统计"""
         self.ui.label_size_count.setText(str(filesize_count))
+
+    def _auto_set_previous_next_button_enabled(self):
+        """自动设置上一页下一页按钮是否可用"""
+        current_page = int(self.ui.label_current_page.text())
+        total_page = int(self.ui.label_total_page.text())
+        if total_page == 1:
+            self.ui.pushButton_previous_page.setEnabled(False)
+            self.ui.pushButton_next_page.setEnabled(False)
+        else:
+            if current_page == 1:
+                self.ui.pushButton_previous_page.setEnabled(False)
+                self.ui.pushButton_next_page.setEnabled(True)
+            elif current_page == total_page:
+                self.ui.pushButton_previous_page.setEnabled(True)
+                self.ui.pushButton_next_page.setEnabled(False)
+            else:
+                self.ui.pushButton_previous_page.setEnabled(True)
+                self.ui.pushButton_next_page.setEnabled(True)
 
 
 if __name__ == "__main__":

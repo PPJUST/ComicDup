@@ -64,6 +64,7 @@ class SimilarResultPreviewPresenter(QObject):
             pass
         else:
             self.current_page -= 1
+            self.viewer.set_current_page(self.current_page)
             self.show_page(self.current_page)
 
     def next_page(self):
@@ -72,12 +73,16 @@ class SimilarResultPreviewPresenter(QObject):
             pass
         else:
             self.current_page += 1
+            self.viewer.set_current_page(self.current_page)
             self.show_page(self.current_page)
 
     def change_show_group_count(self, show_count: int):
         """修改一页显示的组数"""
         self.show_group_count = int(show_count)
+        # 更新组数
         self._calc_total_page()
+        # 重新显示第一页
+        self.show_page(1)
 
     def set_is_reconfirm_before_delete(self, is_reconfirm: bool):
         """设置是否删除前再次确认"""
@@ -121,5 +126,5 @@ class SimilarResultPreviewPresenter(QObject):
 
     def _calc_total_page(self):
         """计算总页数（向上整除）"""
-        self.total_page = (len(self.comic_info_groups) + self.show_group_count) // self.show_group_count  # 向上整除
+        self.total_page = (len(self.comic_info_groups) - 1 + self.show_group_count) // self.show_group_count  # 向上整除
         self.viewer.set_total_page(self.total_page)
