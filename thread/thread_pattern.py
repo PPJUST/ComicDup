@@ -17,7 +17,13 @@ class ThreadPattern(QThread):
         super().__init__(parent)
         self._is_stop = False  # 终止判断
         self.step_index = 1  # 步骤索引
-        self.step_info = ''  # 步骤每次
+        self.step_info = ''  # 步骤名称
+
+        self.max_workers = 1  # 线程数量
+
+    def set_max_workers(self, max_workers: int):
+        """设置线程数量"""
+        self.max_workers = max_workers
 
     def set_stop(self):
         self._is_stop = True

@@ -277,6 +277,11 @@ class WindowPresenter(QObject):
         is_match_similar_filename = self.widget_setting_match.get_is_match_similar_filename()
         # 线程数
         thread_count = self.widget_setting_match.get_thread_count()
+        self.thread_analyse_comic_info.set_max_workers(thread_count)
+        self.thread_analyse_image_info.set_max_workers(thread_count)
+        self.thread_compare_hash.set_max_workers(thread_count)
+        self.thread_compare_ssim.set_max_workers(thread_count)
+        self.thread_search_comic.set_max_workers(thread_count)
 
         # 漫画页数下限
         pages_lower_limit = self.widget_setting_comic.get_pages_lower_limit()

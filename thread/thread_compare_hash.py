@@ -1,4 +1,5 @@
 # 子线程-对比图片hash
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import List
 
 import lzytools.image
@@ -46,35 +47,67 @@ class ThreadCompareHash(ThreadPattern):
     def run(self):
         super().run()
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '开始对比图片相似度')
-        print('开始子线程 对比图片hash')
-        self.similar_hash_group = []
-        match_hash_list = self.hash_list.copy()
-        for index, hash_ in enumerate(self.hash_list, start=1):
-            if self._is_stop:
-                break
-            self.SignalRate.emit(f'{index}/{len(self.hash_list)}')
-            similar = {hash_}  # 集合，用于去重
-            match_hash_list.remove(hash_)
-            zero_count = hash_.count('0')
-            for hash_compare in match_hash_list:
-                # 在计算两个hash值的汉明距离时，如果其0的计数差异大于阈值的1/2时，两个hash值的汉明距离不可能再低于阈值
-                if abs(zero_count - hash_compare.count('0')) > self.hamming_distance / 2:
-                    break
-                distance = lzytools.image.calc_hash_hamming_distance(hash_, hash_compare)
-                if distance <= self.hamming_distance:
-                    similar.add(hash_compare)
-            # 即使只有其自身，仍旧写入相似组，因为可能存在漫画的复制品，导致hash值相同
-            self.similar_hash_group.append(list(similar))
+        print(f'启动线程池 对比图片hash，线程数量：{self.max_workers}')
 
-        # 结束后发送信号
-        print('获取的相似hash组', self.similar_hash_group)
-        print('结束子线程 对比图片hash')
-        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '全部图片对比完成')
-        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, f'共匹配到{len(self.similar_hash_group)}组相似组')
-        self.finished()
+        total = len(self.hash_list)
+        if total == 0:
+            self._finish_compare()
+            return
+
+        # 使用线程池进行并发处理
+        completed_count = 0
+        match_hash_list = self.hash_list.copy()
+        with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
+            # 提交所有任务
+            futures = {executor.submit(self._compare, hash_, match_hash_list.copy()): hash_ for hash_ in self.hash_list}
+
+            # 处理完成的任务
+            for future in as_completed(futures):
+                if self._is_stop:
+                    executor.shutdown(wait=False, cancel_futures=True)
+                    break
+
+                hash_ = futures[future]
+                try:
+                    similar_group = future.result()
+                    # 即使只有其自身，仍旧写入相似组，因为可能存在漫画的复制品，导致hash值相同
+                    self.similar_hash_group.append(similar_group)
+                    completed_count += 1
+                    self.SignalRate.emit(f'{completed_count}/{total}')
+                except Exception as e:
+                    self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning, f'对比{hash_}失败：{str(e)}')
+
+            self._finish_compare()
 
     @staticmethod
     def sort_hash(hash_list: list):
         """排序hash列表"""
         # 按hash值中0的个数对其进行排序，在计算两个hash值的汉明距离时，如果其0的计数差异大于阈值的1/2时，两个hash值的汉明距离不可能再低于阈值
         return sorted(hash_list, key=lambda x: x.count('0'))
+
+    def _finish_compare(self):
+        """完成对比后的处理"""
+        print('获取的相似hash组', self.similar_hash_group)
+        print('结束线程池 对比图片hash')
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '全部图片对比完成')
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, f'共匹配到{len(self.similar_hash_group)}组相似组')
+        self.finished()
+
+    def _compare(self, hash_: str, match_hash_list: List[str]):
+        """对比单个hash值与其他hash值的相似度"""
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.RateInfo, f'开始对比：{hash_}')
+        similar = {hash_}  # 集合，用于去重
+        if hash_ in match_hash_list:
+            match_hash_list.remove(hash_)
+
+        zero_count = hash_.count('0')
+        for hash_compare in match_hash_list:
+            # 提前过滤不可能相似的hash值
+            # 在计算两个hash值的汉明距离时，如果其0的计数差异大于阈值的1/2时，两个hash值的汉明距离不可能再低于阈值
+            if abs(zero_count - hash_compare.count('0')) > self.hamming_distance / 2:
+                continue
+            distance = lzytools.image.calc_hash_hamming_distance(hash_, hash_compare)
+            if distance <= self.hamming_distance:
+                similar.add(hash_compare)
+
+        return list(similar)

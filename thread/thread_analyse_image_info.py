@@ -1,5 +1,6 @@
 # 子线程-分析图片信息
 import os
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import Dict, List
 
 from common.class_comic import ComicInfoBase
@@ -68,36 +69,75 @@ class ThreadAnalyseImageInfo(ThreadPattern):
     def run(self):
         super().run()
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '开始分析图片信息')
-        print('启动子线程 分析图片信息')
-        _count = 0
-        for index, comic_info in enumerate(self.comic_info_list, start=1):
-            if self._is_stop:
-                break
-            self.SignalRate.emit(f'{index}/{len(self.comic_info_list)}')
-            self.SignalRuntimeInfo.emit(TypeRuntimeInfo.RateInfo, f'开始分析漫画中的图片信息：{comic_info.filepath}')
-            # 根据不同的漫画类型，实例化不同的图片信息类
-            comic_filetype = comic_info.filetype
-            images_inside = comic_info.get_page_paths()
-            images_extract = images_inside[:self.extract_pages]
-            for image in images_extract:
-                _count += 1
-                if isinstance(comic_filetype, FileType.Folder):
-                    image_info = ImageInfoFolder(image)
-                elif isinstance(comic_filetype, FileType.Archive):
-                    image_info = ImageInfoArchive(image)
-                else:
-                    raise Exception('未知的漫画类型')
-                # 将图片对应的漫画信息类传递给图片信息类，更新部分数据
-                image_info.update_info_by_comic_info(comic_info)
-                image_info.calc_hash(self.hash_type, self.hash_length)  # 计算指定hash值
-                # 保存到变量时，使用虚拟路径，防止压缩文件的相对文件名导致的重复值
-                faker_path = image_info.faker_path
-                self.image_info_dict[faker_path] = image_info
-            self.SignalRuntimeInfo.emit(TypeRuntimeInfo.RateInfo, f'完成分析漫画中的图片信息：{comic_info.filepath}')
+        print(f'启动线程池 分析图片信息，线程数量：{self.max_workers}')
 
-        # 结束后发送信号
+        total_comics = len(self.comic_info_list)
+        if total_comics == 0:
+            self._finish_analyse(0)
+            return
+
+        # 使用线程池进行并发处理
+        completed_count = 0
+        total_images = 0
+        with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
+            # 提交所有漫画的图片分析任务
+            futures = {executor.submit(self._analyse, comic_info): comic_info for comic_info in
+                       self.comic_info_list}
+
+            # 处理完成的任务
+            for future in as_completed(futures):
+                if self._is_stop:
+                    executor.shutdown(wait=False, cancel_futures=True)
+                    break
+
+                comic_info = futures[future]
+                try:
+                    # 获取该漫画分析出的图片信息
+                    image_info_list = future.result()
+                    total_images += len(image_info_list)
+                    # 加入到结果字典
+                    for image_info in image_info_list:
+                        # 保存到字典时，使用虚拟路径，防止压缩文件的相对文件名导致的重复值
+                        faker_path = image_info.faker_path
+                        self.image_info_dict[faker_path] = image_info
+
+                    completed_count += 1
+                    self.SignalRate.emit(f'{completed_count}/{total_comics}')
+                except Exception as e:
+                    self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning,
+                                                f'分析漫画{comic_info.filepath}的图片失败：{str(e)}')
+
+            self._finish_analyse(total_images)
+
+    def _finish_analyse(self, total_images: int):
+        """完成分析后的处理"""
         print('提取的图片信息', self.image_info_dict)
-        print('结束子线程 分析图片信息')
+        print('结束线程池 分析图片信息')
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '全部图片信息完成分析')
-        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, f'共完成分析{_count}张图片')
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, f'共完成分析{total_images}张图片')
         self.finished()
+
+    def _analyse(self, comic_info: ComicInfoBase):
+        """分析单本漫画中的图片信息（供线程池调用）"""
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.RateInfo, f'开始分析漫画中的图片信息：{comic_info.filepath}')
+
+        image_info_list = []
+        comic_filetype = comic_info.filetype
+        images_inside = comic_info.get_page_paths()
+        images_extract = images_inside[:self.extract_pages]
+
+        for image in images_extract:
+            # 根据漫画类型实例化对应的图片信息类
+            if isinstance(comic_filetype, FileType.Folder):
+                image_info = ImageInfoFolder(image)
+            elif isinstance(comic_filetype, FileType.Archive):
+                image_info = ImageInfoArchive(image)
+            else:
+                raise Exception(f'未知的漫画类型：{type(comic_filetype)}')
+
+            # 更新图片信息并计算hash
+            image_info.update_info_by_comic_info(comic_info)
+            image_info.calc_hash(self.hash_type, self.hash_length)
+            image_info_list.append(image_info)
+
+        return image_info_list
