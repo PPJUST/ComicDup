@@ -65,6 +65,10 @@ class ComicInfoBase(ABC):
     def save_preview_image(self):
         """保存预览小图到缓存目录（手动调用，防止自动分析漫画信息时重复创建预览图）"""
 
+    def fix_preview_path(self):
+        """修复预览图（会更新预览图变量）"""
+        self.save_preview_image()
+
     """数据库模式使用的手动更新信息的方法"""
 
     def update_filesize(self, filesize_bytes: int):

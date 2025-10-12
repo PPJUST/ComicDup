@@ -89,6 +89,10 @@ class ComicInfoPresenter(QObject):
         self.viewer.set_filetitle(self.comic_info.filetitle)
         self.viewer.set_parent_dirpath(self.comic_info.parent_dirpath)
         self.viewer.set_page_count(self.comic_info.page_count)
+        print('预览图路径', self.comic_info.preview_path)
+        if not os.path.exists(self.comic_info.preview_path):
+            print('修复预览图', self.comic_info.filetitle)
+            self.comic_info.fix_preview_path()
         self.viewer.set_preview(self.comic_info.preview_path)
         # 按文件类型显示icon
         if isinstance(filetype, FileType.Folder):

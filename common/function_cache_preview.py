@@ -31,8 +31,8 @@ def save_preview_image_to_cache(origin_image_path: str, cache_dirpath: str = CAC
     # 检查缓存文件夹是否存在
     check_cache_exist(cache_dirpath)
     # 生成随机文件名
-    filetitle_random = lzytools.common.create_random_string(16, uppercase=False)
-    filename = f'{filetitle_random}.jpg'
+    random_filetitle = lzytools.common.create_random_string(16, uppercase=False)
+    filename = f'{random_filetitle}.jpg'
     # 选择缓存的文件夹，选择未超过存储上限的文件夹
     dir_choose = ''
     cache_child_dirs = [os.path.normpath(os.path.join(cache_dirpath, i)) for i in os.listdir(cache_dirpath)]
@@ -62,8 +62,8 @@ def save_preview_image_in_archive_to_cache(archive: str, image_path_inside: str,
     # 检查缓存文件夹是否存在
     check_cache_exist(cache_dirpath)
     # 生成随机文件名
-    filetitle_random = lzytools.common.create_random_string(16, uppercase=False)
-    filename = f'{filetitle_random}.jpg'
+    random_filetitle = lzytools.common.create_random_string(16, uppercase=False)
+    filename = f'{random_filetitle}.jpg'
     # 选择缓存的文件夹，选择未超过存储上限的文件夹
     dir_choose = ''
     cache_child_dirs = [os.path.normpath(os.path.join(cache_dirpath, i)) for i in os.listdir(cache_dirpath)]
