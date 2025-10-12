@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'similar_result_filterRucOYG.ui'
+## Form generated from reading UI file 'similar_result_filterQwsoix.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.1
 ##
@@ -15,19 +15,19 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QCheckBox, QFrame, QHBoxLayout,
-    QPushButton, QSizePolicy, QSpacerItem, QVBoxLayout,
-    QWidget)
+from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QFrame,
+    QHBoxLayout, QLabel, QPushButton, QSizePolicy,
+    QSpacerItem, QVBoxLayout, QWidget)
 
 class Ui_Form(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        Form.resize(521, 60)
-        self.horizontalLayout = QHBoxLayout(Form)
-        self.horizontalLayout.setSpacing(3)
-        self.horizontalLayout.setObjectName(u"horizontalLayout")
-        self.horizontalLayout.setContentsMargins(3, 3, 3, 3)
+        Form.resize(534, 60)
+        self.horizontalLayout_2 = QHBoxLayout(Form)
+        self.horizontalLayout_2.setSpacing(3)
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.horizontalLayout_2.setContentsMargins(3, 3, 3, 3)
         self.pushButton_refresh_result = QPushButton(Form)
         self.pushButton_refresh_result.setObjectName(u"pushButton_refresh_result")
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
@@ -36,9 +36,10 @@ class Ui_Form(object):
         sizePolicy.setHeightForWidth(self.pushButton_refresh_result.sizePolicy().hasHeightForWidth())
         self.pushButton_refresh_result.setSizePolicy(sizePolicy)
 
-        self.horizontalLayout.addWidget(self.pushButton_refresh_result)
+        self.horizontalLayout_2.addWidget(self.pushButton_refresh_result)
 
         self.verticalLayout = QVBoxLayout()
+        self.verticalLayout.setSpacing(3)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.pushButton_filter_same_items = QPushButton(Form)
         self.pushButton_filter_same_items.setObjectName(u"pushButton_filter_same_items")
@@ -51,24 +52,58 @@ class Ui_Form(object):
         self.verticalLayout.addWidget(self.pushButton_exclude_diff_pages)
 
 
-        self.horizontalLayout.addLayout(self.verticalLayout)
+        self.horizontalLayout_2.addLayout(self.verticalLayout)
 
         self.line = QFrame(Form)
         self.line.setObjectName(u"line")
         self.line.setFrameShape(QFrame.Shape.VLine)
         self.line.setFrameShadow(QFrame.Shadow.Sunken)
 
-        self.horizontalLayout.addWidget(self.line)
+        self.horizontalLayout_2.addWidget(self.line)
+
+        self.verticalLayout_2 = QVBoxLayout()
+        self.verticalLayout_2.setSpacing(3)
+        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.label = QLabel(Form)
+        self.label.setObjectName(u"label")
+
+        self.verticalLayout_2.addWidget(self.label)
+
+        self.horizontalLayout = QHBoxLayout()
+        self.horizontalLayout.setSpacing(3)
+        self.horizontalLayout.setObjectName(u"horizontalLayout")
+        self.comboBox_sort_key = QComboBox(Form)
+        self.comboBox_sort_key.setObjectName(u"comboBox_sort_key")
+
+        self.horizontalLayout.addWidget(self.comboBox_sort_key)
+
+        self.comboBox_sort_direction = QComboBox(Form)
+        self.comboBox_sort_direction.setObjectName(u"comboBox_sort_direction")
+
+        self.horizontalLayout.addWidget(self.comboBox_sort_direction)
+
+
+        self.verticalLayout_2.addLayout(self.horizontalLayout)
+
+
+        self.horizontalLayout_2.addLayout(self.verticalLayout_2)
+
+        self.line_2 = QFrame(Form)
+        self.line_2.setObjectName(u"line_2")
+        self.line_2.setFrameShape(QFrame.Shape.VLine)
+        self.line_2.setFrameShadow(QFrame.Shadow.Sunken)
+
+        self.horizontalLayout_2.addWidget(self.line_2)
 
         self.checkBox_reconfirm_before_delete = QCheckBox(Form)
         self.checkBox_reconfirm_before_delete.setObjectName(u"checkBox_reconfirm_before_delete")
         self.checkBox_reconfirm_before_delete.setChecked(True)
 
-        self.horizontalLayout.addWidget(self.checkBox_reconfirm_before_delete)
+        self.horizontalLayout_2.addWidget(self.checkBox_reconfirm_before_delete)
 
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.horizontalLayout.addItem(self.horizontalSpacer)
+        self.horizontalLayout_2.addItem(self.horizontalSpacer)
 
 
         self.retranslateUi(Form)
@@ -81,6 +116,7 @@ class Ui_Form(object):
         self.pushButton_refresh_result.setText(QCoreApplication.translate("Form", u"\u91cd\u7f6e\u7ed3\u679c", None))
         self.pushButton_filter_same_items.setText(QCoreApplication.translate("Form", u"\u4ec5\u663e\u793a100%\u76f8\u540c\u9879", None))
         self.pushButton_exclude_diff_pages.setText(QCoreApplication.translate("Form", u"\u5254\u9664\u9875\u6570\u5dee\u5f02\u8fc7\u5927\u9879", None))
+        self.label.setText(QCoreApplication.translate("Form", u"\u7ec4\u5185\u6392\u5e8f\u89c4\u5219", None))
         self.checkBox_reconfirm_before_delete.setText(QCoreApplication.translate("Form", u"\u5220\u9664\u6f2b\u753b\u524d\u9700\u518d\u6b21\u786e\u8ba4", None))
     # retranslateUi
 

@@ -4,6 +4,7 @@ import sys
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import QApplication
 
+from common import function_cache_preview, function_cache_result
 from components import window
 
 
@@ -40,6 +41,13 @@ def set_working_directory_to_exe_path():
     print(f'设置工作路径为{exe_parent}')
 
 
+def check_cache_exist():
+    """检查缓存文件夹是否存在"""
+    function_cache_preview.check_cache_exist()
+    function_cache_result.check_cache_exist()
+
+
 if __name__ == "__main__":
     set_working_directory_to_exe_path()
+    check_cache_exist()
     load_app()

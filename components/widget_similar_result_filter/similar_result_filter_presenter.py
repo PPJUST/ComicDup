@@ -10,6 +10,8 @@ class SimilarResultFilterPresenter(QObject):
     FilterSameItems = Signal(name='筛选器 仅显示页数、文件大小相同项')
     FilterExcludeDiffPages = Signal(name='筛选器 剔除页数差异过大项')
     ReconfirmDelete = Signal(bool, name='删除前再次确认')
+    ChangeSortKey = Signal(str, name='排序键值改变')
+    ChangeSortDirection = Signal(str, name='排序方向改变')
 
     def __init__(self, viewer: SimilarResultFilterViewer, model: SimilarResultFilterModel):
         super().__init__()
@@ -21,3 +23,5 @@ class SimilarResultFilterPresenter(QObject):
         self.viewer.FilterExcludeDiffPages.connect(self.FilterExcludeDiffPages.emit)
         self.viewer.RefreshResult.connect(self.RefreshResult.emit)
         self.viewer.ReconfirmDelete.connect(self.ReconfirmDelete.emit)
+        self.viewer.ChangeSortKey.connect(self.ChangeSortKey.emit)
+        self.viewer.ChangeSortDirection.connect(self.ChangeSortDirection.emit)

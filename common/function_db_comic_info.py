@@ -199,8 +199,8 @@ class DBComicInfo:
     def is_comic_exist(self, comic_path: str, comic_fingerprint: str):
         """检查漫画在数据库中是否已存在
         同时使用路径和文件指纹判断"""
+        # 备忘录 传入多个 同时检查 一个一个查太慢了
         comic_path = os.path.normpath(comic_path)
-        self.cursor.execute(f'SELECT 1 FROM {TABLE_NAME} WHERE {KEY_FILEPATH} = "{comic_path}"')
         self.cursor.execute(f'SELECT 1 FROM {TABLE_NAME} '
                             f'WHERE {KEY_FILEPATH} = "{comic_path}" '
                             f'AND {KEY_FINGERPRINT} = "{comic_fingerprint}"')

@@ -3,7 +3,7 @@ from typing import Union
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget, QApplication
 
-from common.class_config import ITEMS_HASH_ALGORITHM, ITEMS_HASH_LENGTH, ITEMS_ENHANCE_ALGORITHM
+from common.class_config import TEXT_HASH_ALGORITHM, TEXT_HASH_LENGTH, TEXT_ENHANCE_ALGORITHM
 from components.widget_setting_algorithm.res.ui_setting_algorithm import Ui_Form
 
 
@@ -52,13 +52,13 @@ class SettingAlgorithmViewer(QWidget):
     def _load_setting(self):
         """加载初始设置"""
         # 基础算法
-        self.ui.comboBox_basic_algorithm.addItems(ITEMS_HASH_ALGORITHM)
+        self.ui.comboBox_basic_algorithm.addItems(TEXT_HASH_ALGORITHM)
         # 增强算法
-        self.ui.comboBox_enhance_algorithm.addItems(ITEMS_ENHANCE_ALGORITHM)
+        self.ui.comboBox_enhance_algorithm.addItems(TEXT_ENHANCE_ALGORITHM)
         # 相似度阈值
         pass
         # Hash长度
-        self.ui.comboBox_hash_length.addItems(ITEMS_HASH_LENGTH)
+        self.ui.comboBox_hash_length.addItems(TEXT_HASH_LENGTH)
 
     def _bind_signal(self):
         """绑定信号"""

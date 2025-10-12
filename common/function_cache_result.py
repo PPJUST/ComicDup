@@ -9,10 +9,12 @@ from common.class_comic import ComicInfoBase
 CACHE_MATCH_RESULT_FOLDER = 'cache/'
 CACHE_MATCH_RESULT_FILE_EXTENSION = '.pkl'
 
-def check_cache_exist(cache_dirpath):
+
+def check_cache_exist(cache_dirpath: str = CACHE_MATCH_RESULT_FOLDER):
     """检查缓存文件夹是否存在"""
     if not os.path.exists(cache_dirpath):
         os.makedirs(cache_dirpath)
+
 
 def save_match_result(data: List[List[ComicInfoBase]]):
     """保存匹配结果"""

@@ -16,7 +16,7 @@ CACHE_PREVIEW_DIRPATH = 'cache/preview'
 CACHE_PREVIEW_MAX_COUNT = 100  # 单个文件夹内最多缓存的预览图数量
 
 
-def check_cache_exist(cache_dirpath):
+def check_cache_exist(cache_dirpath: str = CACHE_PREVIEW_DIRPATH):
     """检查缓存文件夹是否存在"""
     if not os.path.exists(cache_dirpath):
         os.makedirs(cache_dirpath)
