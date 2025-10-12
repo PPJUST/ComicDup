@@ -4,6 +4,7 @@ from PySide6.QtCore import QObject
 
 from common import function_file
 from common.class_comic import ComicInfoBase
+from common.class_order import ORDER_KEYS, ORDER_DIRECTIONS
 from components.widget_assembler_similar_result_preview import widget_similar_group_info
 from components.widget_assembler_similar_result_preview.widget_similar_group_info import SimilarGroupInfoPresenter
 from components.widget_assembler_similar_result_preview.widget_similar_result_preview.similar_result_preview_model import \
@@ -75,6 +76,17 @@ class SimilarResultPreviewPresenter(QObject):
             self.current_page += 1
             self.viewer.set_current_page(self.current_page)
             self.show_page(self.current_page)
+
+    def sort_groups_item(self, sort_key: ORDER_KEYS, sort_direction: ORDER_DIRECTIONS):
+        """排序相似组内元素"""
+        comic_info_groups_sorted = []
+        for group in self.comic_info_groups:
+            group: List[ComicInfoBase]
+            group_sorted = self.model.sort_item(group, sort_key, sort_direction)
+            comic_info_groups_sorted.append(group_sorted)
+
+        self.set_groups(comic_info_groups_sorted)
+        self.reload()
 
     def reload(self):
         """重新加载"""

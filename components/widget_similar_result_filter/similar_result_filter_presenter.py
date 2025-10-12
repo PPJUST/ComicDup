@@ -25,3 +25,11 @@ class SimilarResultFilterPresenter(QObject):
         self.viewer.ReconfirmDelete.connect(self.ReconfirmDelete.emit)
         self.viewer.ChangeSortKey.connect(self.ChangeSortKey.emit)
         self.viewer.ChangeSortDirection.connect(self.ChangeSortDirection.emit)
+
+    def get_order_key(self):
+        """获取排序键"""
+        return self.viewer.get_order_key()
+
+    def get_order_direction(self):
+        """获取排序方向"""
+        return self.viewer.get_order_direction()

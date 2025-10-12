@@ -15,6 +15,10 @@ class OrderKey:
         """页数"""
         text = '页数'
 
+    class ImagePixel:
+        """图片像素"""
+        text = '图片像素'
+
     class Filename:
         """文件名"""
         text = '文件名'
@@ -40,7 +44,8 @@ class OrderDirection:
         text = '正序'
 
 
-ORDER_KEYS = [OrderKey.Filesize, OrderKey.FileTime, OrderKey.Pages, OrderKey.Filename, OrderKey.FileTag,
+ORDER_KEYS = [OrderKey.Filesize, OrderKey.FileTime, OrderKey.Pages, OrderKey.ImagePixel, OrderKey.Filename,
+              OrderKey.FileTag,
               OrderKey.ParentDirpath]
 ORDER_KEYS_TEXT = [key.text for key in ORDER_KEYS]
 

@@ -1,6 +1,7 @@
 from typing import List
 
 from common.class_comic import ComicInfoBase
+from common.class_order import ORDER_KEYS, ORDER_DIRECTIONS
 from components.widget_assembler_similar_result_preview import widget_similar_result_preview
 
 
@@ -21,6 +22,10 @@ class AssemblerSimilarResultPreview:
     def show_similar_result(self):
         """显示相似结果"""
         self.presenter.show_page(1)
+
+    def sort_groups_item(self, sort_key: ORDER_KEYS, sort_direction: ORDER_DIRECTIONS):
+        """排序相似组内元素"""
+        self.presenter.sort_groups_item(sort_key, sort_direction)
 
     def reload(self):
         """重新加载"""

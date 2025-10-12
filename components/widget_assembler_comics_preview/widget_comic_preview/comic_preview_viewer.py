@@ -1,6 +1,6 @@
 import lzytools._qt_pyside6
-from PySide6.QtCore import Signal
-from PySide6.QtWidgets import QWidget, QApplication
+from PySide6.QtCore import Signal, Qt
+from PySide6.QtWidgets import QWidget, QApplication, QLabel
 
 from components.widget_assembler_comics_preview.widget_comic_preview.res.icon_base64 import ICON_ARCHIVE, ICON_FOLDER, \
     ICON_LEFT_ARROW, ICON_RIGHT_ARROW, ICON_JUMP_TO, ICON_DELETE
@@ -23,6 +23,13 @@ class ComicPreviewViewer(QWidget):
         self.label_image_preview = lzytools._qt_pyside6.LabelImageAutoSize()
         self.ui.verticalLayout_preview.addWidget(self.label_image_preview)
 
+        # 添加一个悬浮于左上角的label，用于显示图片信息
+        self.label_floating = QLabel(self)
+        self.label_floating.setGeometry(5, 5, 150, 20)
+        self.label_floating.setWindowFlags(Qt.WindowType.SubWindow)
+        self.label_floating.setStyleSheet("color: blue")
+        self.label_floating.show()
+
         # 绑定信号
         self._bind_signal()
 
@@ -32,6 +39,7 @@ class ComicPreviewViewer(QWidget):
     def show_image(self, preview_path: str):
         """显示图像"""
         self.label_image_preview.set_image(preview_path)
+        self._show_image_info()
 
     def show_bytes_image(self, data: bytes):
         """显示bytes图像"""
@@ -64,6 +72,13 @@ class ComicPreviewViewer(QWidget):
     def set_page_count(self, page_count: int):
         """设置页数"""
         self.ui.label_page_count.setText(str(page_count))
+
+    def _show_image_info(self):
+        """显示当前图片的信息"""
+        width = self.label_image_preview.pixmap().size().width()
+        height = self.label_image_preview.pixmap().size().height()
+        image_size = f'{width} x {height}'
+        self.label_floating.setText(f'{image_size}')
 
     def _bind_signal(self):
         """绑定信号"""

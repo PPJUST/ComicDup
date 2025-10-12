@@ -284,6 +284,12 @@ class WindowPresenter(QObject):
         """更新运行信息-文本行信息"""
         self.widget_runtime_info.update_textline(info_type, text_info)
 
+    def order_similar_result(self):
+        """排序相似匹配结果"""
+        order_key = self.widget_similar_result_filter.get_order_key()
+        order_direction = self.widget_similar_result_filter.get_order_direction()
+        self.assembler_similar_result_preview.sort_groups_item(order_key, order_direction)
+
     def _set_thread_setting(self):
         """将设置选项传参给子线程"""
         # 基础hash算法
@@ -365,6 +371,9 @@ class WindowPresenter(QObject):
         self.presenter_match_result_cache.Restore.connect(self.load_last_result)
 
         self.widget_similar_result_filter.RefreshResult.connect(self.assembler_similar_result_preview.reload)
+
+        self.widget_similar_result_filter.ChangeSortKey.connect(self.order_similar_result)
+        self.widget_similar_result_filter.ChangeSortDirection.connect(self.order_similar_result)
 
     def _bind_thread_signal(self):
         """绑定子线程信号"""

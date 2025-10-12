@@ -68,11 +68,12 @@ class FileType:
 
 
 TYPES_HASH_ALGORITHM = (SimilarAlgorithm.aHash, SimilarAlgorithm.pHash, SimilarAlgorithm.dHash)
-TEXT_HASH_ALGORITHM = (SimilarAlgorithm.aHash.text, SimilarAlgorithm.pHash.text, SimilarAlgorithm.dHash.text)
+TEXT_HASH_ALGORITHM = (i.text for i in TYPES_HASH_ALGORITHM)
 
 TYPES_ENHANCE_ALGORITHM = (SimilarAlgorithm.SSIM, SimilarAlgorithm.ORB)
-TEXT_ENHANCE_ALGORITHM = (SimilarAlgorithm.SSIM.text, SimilarAlgorithm.ORB.text)
+TEXT_ENHANCE_ALGORITHM = (i.text for i in TYPES_ENHANCE_ALGORITHM)
 
-TEXT_HASH_LENGTH = (HashLength._64.text, HashLength._144.text, HashLength._256.text)
+TYPES_HASH_LENGTH = (HashLength._64, HashLength._144, HashLength._256)
+TEXT_HASH_LENGTH = (i.text for i in TYPES_HASH_LENGTH)
 
 FileTypes = (FileType.File, FileType.Folder, FileType.Archive, FileType.Unknown)
