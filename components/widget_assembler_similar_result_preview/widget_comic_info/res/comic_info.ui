@@ -72,7 +72,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="label">
+        <widget class="QLabel" name="label_ye">
          <property name="text">
           <string>页</string>
          </property>

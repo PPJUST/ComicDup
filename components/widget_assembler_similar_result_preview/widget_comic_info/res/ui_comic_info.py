@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'comic_infoPpdxPF.ui'
+## Form generated from reading UI file 'comic_infotvBBqy.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.1
 ##
@@ -59,10 +59,10 @@ class Ui_Form(object):
 
         self.horizontalLayout_2.addWidget(self.label_page_count)
 
-        self.label = QLabel(Form)
-        self.label.setObjectName(u"label")
+        self.label_ye = QLabel(Form)
+        self.label_ye.setObjectName(u"label_ye")
 
-        self.horizontalLayout_2.addWidget(self.label)
+        self.horizontalLayout_2.addWidget(self.label_ye)
 
 
         self.horizontalLayout_3.addLayout(self.horizontalLayout_2)
@@ -141,7 +141,7 @@ class Ui_Form(object):
         self.label_filetitle.setText(QCoreApplication.translate("Form", u"filetitle", None))
         self.label_parent_dirpath.setText(QCoreApplication.translate("Form", u"parent dirpath", None))
         self.label_page_count.setText(QCoreApplication.translate("Form", u"page count", None))
-        self.label.setText(QCoreApplication.translate("Form", u"\u9875", None))
+        self.label_ye.setText(QCoreApplication.translate("Form", u"\u9875", None))
         self.label_filesize.setText(QCoreApplication.translate("Form", u"filesize", None))
         self.label_preview.setText(QCoreApplication.translate("Form", u"preview", None))
         self.toolButton_open_path.setText(QCoreApplication.translate("Form", u"open path", None))

@@ -59,6 +59,15 @@ class ComicInfoViewer(QFrame):
         """设置漫画的预览图片"""
         self.ui.label_preview.setPixmap(QPixmap(preview_path))
 
+    def highlight_pages(self):
+        """高亮显示页数"""
+        self.ui.label_page_count.setStyleSheet("color: blue")
+        self.ui.label_ye.setStyleSheet("color: blue")
+
+    def highlight_filesize(self):
+        """高亮显示文件大小"""
+        self.ui.label_filesize.setStyleSheet("color: blue")
+
     def _set_icon(self):
         """设置图标"""
         self.ui.toolButton_open_path.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_JUMP_TO))

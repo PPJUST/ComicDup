@@ -58,6 +58,8 @@ class SimilarGroupInfoPresenter(QObject):
 
         self.set_item_count()
         self.set_item_size()
+        self.highlight_comic_pages()
+        self.highlight_comic_filesize()
         self.set_group_sign(SignStatus.Pending)
 
     def add_comic(self, comic_info: ComicInfoBase):
@@ -125,6 +127,38 @@ class SimilarGroupInfoPresenter(QObject):
             self._update_group_sign()
         else:
             raise RuntimeError('未找到对应的控件')
+
+    def highlight_comic_pages(self):
+        """高亮页数最多的漫画的文本"""
+        max_pages = 0
+        # 获取最大页数
+        for widget_presenter in self.comics_presenter:
+            comic_info = widget_presenter.get_comic_info()
+            pages = comic_info.page_count
+            if pages > max_pages:
+                max_pages = pages
+        # 高亮最大页数
+        for widget_presenter in self.comics_presenter:
+            comic_info = widget_presenter.get_comic_info()
+            pages = comic_info.page_count
+            if pages == max_pages:
+                widget_presenter.highlight_pages()
+
+    def highlight_comic_filesize(self):
+        """高亮文件大小最大的漫画的文本"""
+        max_filesize = 0
+        # 获取最大文件大小
+        for widget_presenter in self.comics_presenter:
+            comic_info = widget_presenter.get_comic_info()
+            filesize = comic_info.filesize_bytes
+            if filesize > max_filesize:
+                max_filesize = filesize
+        # 高亮最大文件大小
+        for widget_presenter in self.comics_presenter:
+            comic_info = widget_presenter.get_comic_info()
+            filesize = comic_info.filesize_bytes
+            if filesize == max_filesize:
+                widget_presenter.highlight_filesize()
 
     def _update_group_sign(self):
         """更新当前组的标记"""

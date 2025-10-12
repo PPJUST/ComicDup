@@ -74,6 +74,14 @@ class ComicInfoPresenter(QObject):
             lzytools.file.delete(path, send_to_trash=True)
             self.ComicDeleted.emit()
 
+    def highlight_pages(self):
+        """高亮显示页数"""
+        self.viewer.highlight_pages()
+
+    def highlight_filesize(self):
+        """高亮显示文件大小"""
+        self.viewer.highlight_filesize()
+
     def _show_comic_info(self):
         """在viewer上显示漫画信息"""
         filetype = self.comic_info.filetype
