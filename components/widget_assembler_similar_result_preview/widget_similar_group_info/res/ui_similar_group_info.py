@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'similar_group_infoBdAhcO.ui'
+## Form generated from reading UI file 'similar_group_infoyzLafK.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.1
 ##
@@ -23,7 +23,7 @@ class Ui_Form(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        Form.resize(248, 168)
+        Form.resize(304, 168)
         self.verticalLayout = QVBoxLayout(Form)
         self.verticalLayout.setSpacing(3)
         self.verticalLayout.setObjectName(u"verticalLayout")
@@ -61,6 +61,11 @@ class Ui_Form(object):
 
         self.horizontalLayout.addWidget(self.label_5)
 
+        self.label_size_count = QLabel(Form)
+        self.label_size_count.setObjectName(u"label_size_count")
+
+        self.horizontalLayout.addWidget(self.label_size_count)
+
         self.label_6 = QLabel(Form)
         self.label_6.setObjectName(u"label_6")
 
@@ -88,7 +93,7 @@ class Ui_Form(object):
         self.scrollArea_similar_group.setWidgetResizable(True)
         self.scrollAreaWidgetContents_similar_group = QWidget()
         self.scrollAreaWidgetContents_similar_group.setObjectName(u"scrollAreaWidgetContents_similar_group")
-        self.scrollAreaWidgetContents_similar_group.setGeometry(QRect(0, 0, 240, 134))
+        self.scrollAreaWidgetContents_similar_group.setGeometry(QRect(0, 0, 296, 134))
         self.horizontalLayout_2 = QHBoxLayout(self.scrollAreaWidgetContents_similar_group)
         self.horizontalLayout_2.setSpacing(20)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
@@ -112,6 +117,7 @@ class Ui_Form(object):
         self.label_3.setText(QCoreApplication.translate("Form", u"-", None))
         self.label_item_count.setText(QCoreApplication.translate("Form", u"item count", None))
         self.label_5.setText(QCoreApplication.translate("Form", u"\u9879", None))
+        self.label_size_count.setText("")
         self.label_6.setText(QCoreApplication.translate("Form", u"[", None))
         self.label_sign.setText(QCoreApplication.translate("Form", u"sign", None))
         self.label_8.setText(QCoreApplication.translate("Form", u"]", None))

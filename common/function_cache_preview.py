@@ -8,6 +8,7 @@
 import os
 
 import lzytools.common
+import lzytools.file
 
 from common import function_file, function_archive
 
@@ -78,3 +79,18 @@ def save_preview_image_in_archive_to_cache(archive: str, image_path_inside: str,
     preview_image_path = os.path.normpath(os.path.join(dir_choose, filename))
     save_path = function_archive.save_preview_image(archive, image_path_inside, preview_image_path, height_zoom_out)
     return save_path
+
+
+def get_preview_image_count(cache_dirpath: str = CACHE_PREVIEW_DIRPATH) -> int:
+    """统计缓存的预览图数量"""
+    count = 0
+    cache_child_dirs = [os.path.normpath(os.path.join(cache_dirpath, i)) for i in os.listdir(cache_dirpath)]
+    for _dir in cache_child_dirs:
+        count += len(os.listdir(_dir))
+    return count
+
+
+def get_preview_size(cache_dirpath: str = CACHE_PREVIEW_DIRPATH) -> int:
+    """统计缓存预览图文件夹的文件大小"""
+    filesize = lzytools.file.get_size(cache_dirpath)
+    return filesize

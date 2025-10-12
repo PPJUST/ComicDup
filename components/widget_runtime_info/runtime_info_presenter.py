@@ -43,11 +43,11 @@ class RuntimeInfoPresenter(QObject):
 
     def _update_runtime_total(self, runtime: float):
         """更新任务运行总耗时"""
-        self.viewer.update_runtime_total(lzytools.common.convert_time(runtime))
+        self.viewer.update_runtime_total(lzytools.common.convert_time_hms(runtime))
 
     def _update_runtime_current(self, runtime: float):
         """更新任务运行当前步骤耗时"""
-        self.viewer.update_runtime_current(lzytools.common.convert_time(runtime))
+        self.viewer.update_runtime_current(lzytools.common.convert_time_hms(runtime))
 
     def update_step_index(self, index: int):
         """更新当前步骤索引"""

@@ -5,8 +5,10 @@ import lzytools.common
 import natsort
 from PySide6.QtCore import Signal, QObject
 
+from common import function_cache_preview, function_file
 from common.class_comic import ComicInfoBase
 from common.class_config import TYPES_HASH_ALGORITHM
+from common.class_count_info import CountInfo
 from common.class_image import ImageInfoBase
 from common.class_runtime import TypeRuntimeInfo
 from common.function_db_comic_info import DBComicInfo
@@ -148,3 +150,41 @@ class WindowModel(QObject):
 
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, f'完成相似组有效性筛选')
         return comic_info_group_filter
+
+    def get_comic_db_count_info(self) -> CountInfo:
+        """获取漫画数据库统计信息"""
+        item_count = self.db_comic_info.get_info_item_count()
+        filesize = self.db_comic_info.get_info_db_size()
+        update_time = self.db_comic_info.get_info_update_time()
+
+        info_count = CountInfo()
+        info_count.set_item_count(item_count)
+        info_count.set_size_count(filesize)
+        info_count.set_update_time(update_time)
+
+        return info_count
+
+    def get_image_db_count_info(self) -> CountInfo:
+        """获取图片数据库统计信息"""
+        item_count = self.db_image_info.get_info_item_count()
+        filesize = self.db_image_info.get_info_db_size()
+        update_time = self.db_image_info.get_info_update_time()
+
+        info_count = CountInfo()
+        info_count.set_item_count(item_count)
+        info_count.set_size_count(filesize)
+        info_count.set_update_time(update_time)
+
+        return info_count
+
+    def get_preview_image_count_info(self) -> CountInfo:
+        """获取预览图缓存的统计信息"""
+        item_count = function_cache_preview.get_preview_image_count()
+        filesize_bytes = function_cache_preview.get_preview_size()
+        filesize_str = function_file.format_bytes_size(filesize_bytes)
+
+        info_count = CountInfo()
+        info_count.set_item_count(item_count)
+        info_count.set_size_count(filesize_str)
+
+        return info_count

@@ -2,6 +2,7 @@ from typing import List
 
 from PySide6.QtCore import QObject
 
+from common import function_file
 from common.class_comic import ComicInfoBase
 from common.class_sign import SignStatus, TYPE_SIGN_STATUS
 from components import widget_assembler_comics_preview
@@ -38,6 +39,14 @@ class SimilarGroupInfoPresenter(QObject):
         """设置当前组内部项目的总数"""
         self.viewer.set_item_count(len(self.comic_info_list))
 
+    def set_item_size(self):
+        """设置当前组内部项目的文件大小统计"""
+        size_bytes = 0
+        for comic_info in self.comic_info_list:
+            size_bytes += comic_info.filesize_bytes
+        size = function_file.format_bytes_size(size_bytes)
+        self.viewer.set_item_size(size)
+
     def set_group_sign(self, sign: TYPE_SIGN_STATUS):
         """设置当前组的标记"""
         self.viewer.set_group_sign(sign)
@@ -48,6 +57,7 @@ class SimilarGroupInfoPresenter(QObject):
             self.add_comic(comic_info)
 
         self.set_item_count()
+        self.set_item_size()
         self.set_group_sign(SignStatus.Pending)
 
     def add_comic(self, comic_info: ComicInfoBase):

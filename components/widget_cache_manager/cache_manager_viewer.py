@@ -1,6 +1,7 @@
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget, QApplication
 
+from common.class_count_info import CountInfo
 from components.widget_cache_manager.res.ui_cache_manager import Ui_Form
 
 
@@ -19,37 +20,27 @@ class CacheManagerViewer(QWidget):
         # 绑定信号
         self._bind_signal()
 
-    def set_comic_cache_info_item_count(self, count: int):
-        """设置漫画数据库存储项目数"""
-        self.ui.label_comic_count.setText(count)
+        self.ui.pushButton_refresh.setEnabled(False)  # 备忘录
+        self.ui.pushButton_cache_match.setEnabled(False)  # 备忘录
+        self.ui.pushButton_delete_useless.setEnabled(False)  # 备忘录
+        self.ui.pushButton_clear.setEnabled(False)  # 备忘录
 
-    def set_comic_cache_info_size(self, size: str):
-        """设置漫画数据库文件大小"""
-        self.ui.label_comic_size.setText(size)
+    def set_comic_cache_count_info(self, count_info: CountInfo):
+        """设置漫画数据库信息"""
+        self.ui.label_comic_count.setText(str(count_info.get_item_count()))
+        self.ui.label_comic_size.setText(str(count_info.get_size_count()))
+        self.ui.label_comic_update.setText(str(count_info.get_update_time()))
 
-    def set_comic_cache_info_last_update_time(self, time: str):
-        """设置漫画数据库最后更新时间"""
-        self.ui.label_comic_update.setText(time)
+    def set_image_cache_count_info(self, count_info: CountInfo):
+        """设置图片数据库信息"""
+        self.ui.label_image_count.setText(str(count_info.get_item_count()))
+        self.ui.label_image_size.setText(str(count_info.get_size_count()))
+        self.ui.label_image_update.setText(str(count_info.get_update_time()))
 
-    def set_image_cache_info_item_count(self, count: int):
-        """设置图片数据库存储项目数"""
-        self.ui.label_image_count.setText(count)
-
-    def set_image_cache_info_size(self, size: str):
-        """设置图片数据库文件大小"""
-        self.ui.label_image_size.setText(size)
-
-    def set_image_cache_info_last_update_time(self, time: str):
-        """设置图片数据库最后更新时间"""
-        self.ui.label_image_update.setText(time)
-
-    def set_preview_cache_info_item_count(self, count: int):
-        """设置预览图缓存存储图片数量"""
-        self.ui.label_preview_count.setText(count)
-
-    def set_preview_cache_info_size(self, size: str):
-        """设置预览图缓存存储图片总大小"""
-        self.ui.label_preview_size.setText(size)
+    def set_preview_cache_count_info(self, count_info: CountInfo):
+        """设置预览图信息"""
+        self.ui.label_preview_count.setText(str(count_info.get_item_count()))
+        self.ui.label_preview_size.setText(str(count_info.get_size_count()))
 
     def _bind_signal(self):
         """绑定信号"""

@@ -3,6 +3,9 @@ import os
 import sqlite3
 from typing import List
 
+import lzytools.common
+
+from common import function_file
 from common.class_config import SimilarAlgorithm, TYPES_HASH_ALGORITHM, FileType
 from common.class_image import ImageInfoBase, ImageInfoFolder, ImageInfoArchive
 
@@ -30,8 +33,8 @@ class DBImageInfo:
     主键为图片路径"""
 
     def __init__(self, db_file: str = DB_FILEPATH):
-        self.check_exist()
-
+        self.db_filepath = db_file
+        self.check_exist(db_file)
         self.conn = sqlite3.connect(db_file)
         self.cursor = self.conn.cursor()
 
@@ -270,3 +273,21 @@ class DBImageInfo:
             return True
         else:
             return False
+
+    def get_info_item_count(self) -> int:
+        """统计数据库中记录的图片数量"""
+        self.cursor.execute(f'SELECT COUNT(*) FROM {TABLE_NAME}')
+        result = self.cursor.fetchone()
+        return result[0]
+
+    def get_info_db_size(self) -> str:
+        """获取数据库文件大小"""
+        size_bytes = os.path.getsize(self.db_filepath)
+        size = function_file.format_bytes_size(size_bytes)
+        return size
+
+    def get_info_update_time(self) -> str:
+        """获取数据库文件最后修改时间"""
+        modified_time = os.path.getmtime(self.db_filepath)
+        modified_time_str = lzytools.common.convert_time_ymd(modified_time)
+        return modified_time_str

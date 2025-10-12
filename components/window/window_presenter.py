@@ -66,6 +66,9 @@ class WindowPresenter(QObject):
         # 初始化viewer
         self._init_viewer()
 
+        # 更新缓存统计信息
+        self._update_cache_info()
+
         # 绑定控件信号
         self._bind_signal()
         # 绑定子线程信号
@@ -228,6 +231,8 @@ class WindowPresenter(QObject):
             self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '正在保存相似匹配结果到本地缓存')
             self.presenter_match_result_cache.save_match_result(comic_info_groups_filter)
             self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '完成保存相似匹配结果到本地缓存')
+            # 更新缓存统计信息
+            self._update_cache_info()
             # 显示匹配结果
             self.show_similar_result(comic_info_groups_filter)
 
@@ -322,6 +327,16 @@ class WindowPresenter(QObject):
         # 是否允许其他文件类型
         is_allow_other_filetypes = self.widget_setting_comic.get_is_allow_other_filetypes()
         self.thread_search_comic.set_is_allow_other_filetypes(is_allow_other_filetypes)
+
+    def _update_cache_info(self):
+        """更新缓存统计信息"""
+        comic_count_info = self.model.get_comic_db_count_info()
+        image_count_info = self.model.get_image_db_count_info()
+        preview_image_info = self.model.get_preview_image_count_info()
+
+        self.widget_cache_manager.set_comic_cache_count_info(comic_count_info)
+        self.widget_cache_manager.set_image_cache_count_info(image_count_info)
+        self.widget_cache_manager.set_preview_cache_count_info(preview_image_info)
 
     def _init_viewer(self):
         """设置viewer"""

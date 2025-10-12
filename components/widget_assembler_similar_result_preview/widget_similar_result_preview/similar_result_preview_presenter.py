@@ -120,7 +120,7 @@ class SimilarResultPreviewPresenter(QObject):
         filesize_str = function_file.format_bytes_size(filesize_count_bytes)  # 规范文件大小表示
 
         self.viewer.set_group_count(groups_count)
-        self.viewer.set_comic_count(items_count)
+        self.viewer.set_item_count(items_count)
         self.viewer.set_filesize_count(filesize_str)
 
     def clear(self):

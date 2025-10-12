@@ -1,7 +1,7 @@
 import lzytools._qt_pyside6
 from PySide6.QtCore import Signal
 from PySide6.QtGui import QMouseEvent, Qt
-from PySide6.QtWidgets import QWidget, QApplication, QMessageBox
+from PySide6.QtWidgets import QWidget, QApplication
 
 from common.class_sign import TYPE_SIGN_STATUS
 from components.widget_assembler_similar_result_preview.widget_similar_group_info.res.icon_base64 import ICON_ZOOM_IN
@@ -29,6 +29,10 @@ class SimilarGroupInfoViewer(QWidget):
     def set_item_count(self, count: int):
         """设置当前组内部项目的总数"""
         self.ui.label_item_count.setText(str(count))
+
+    def set_item_size(self, size: str):
+        """设置当前组内部项目的文件大小统计"""
+        self.ui.label_size_count.setText(size)
 
     def set_group_sign(self, sign: TYPE_SIGN_STATUS):
         """设置当前组的标记"""
