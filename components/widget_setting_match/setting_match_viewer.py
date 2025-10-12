@@ -24,6 +24,9 @@ class SettingMatchViewer(QWidget):
         # 绑定信号
         self._bind_signal()
 
+        self.ui.checkBox_match_cache.setEnabled(False)  # 备忘录
+        self.ui.checkBox_match_similar_filename.setEnabled(False)  # 备忘录
+
     def set_extract_pages(self, count: int):
         """设置提取页数"""
         self.ui.spinBox_extract_pages.setValue(count)

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'windowgKPKsY.ui'
+## Form generated from reading UI file 'windowAHVNyZ.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.1
 ##
@@ -90,6 +90,15 @@ class Ui_MainWindow(object):
 
 
         self.verticalLayout_3.addWidget(self.groupBox_setting)
+
+        self.groupBox_cache = QGroupBox(self.tab_home)
+        self.groupBox_cache.setObjectName(u"groupBox_cache")
+        self.verticalLayout_11 = QVBoxLayout(self.groupBox_cache)
+        self.verticalLayout_11.setSpacing(0)
+        self.verticalLayout_11.setObjectName(u"verticalLayout_11")
+        self.verticalLayout_11.setContentsMargins(0, 0, 0, 0)
+
+        self.verticalLayout_3.addWidget(self.groupBox_cache)
 
         self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
@@ -196,6 +205,7 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"ComicDup", None))
         self.groupBox_exec.setTitle(QCoreApplication.translate("MainWindow", u"\u529f\u80fd\u533a", None))
         self.groupBox_setting.setTitle(QCoreApplication.translate("MainWindow", u"\u8bbe\u7f6e\u9009\u9879", None))
+        self.groupBox_cache.setTitle(QCoreApplication.translate("MainWindow", u"\u7f13\u5b58\u7ba1\u7406", None))
         self.groupBox_search_list.setTitle(QCoreApplication.translate("MainWindow", u"\u68c0\u7d22\u8def\u5f84", None))
         self.pushButton_back_to_search_list.setText(QCoreApplication.translate("MainWindow", u"\u8fd4\u56de\u81f3\u68c0\u7d22\u8def\u5f84\u9875", None))
         self.groupBox_runtime_info.setTitle(QCoreApplication.translate("MainWindow", u"\u8fd0\u884c\u4fe1\u606f", None))

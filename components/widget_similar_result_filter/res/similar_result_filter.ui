@@ -47,7 +47,7 @@
      <item>
       <widget class="QPushButton" name="pushButton_filter_same_items">
        <property name="text">
-        <string>仅显示页数、文件大小相同项</string>
+        <string>仅显示100%相同项</string>
        </property>
       </widget>
      </item>

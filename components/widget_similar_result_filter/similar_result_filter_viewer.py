@@ -22,6 +22,9 @@ class SimilarResultFilterViewer(QWidget):
         self.ui.pushButton_exclude_diff_pages.clicked.connect(self.FilterExcludeDiffPages.emit)
         self.ui.checkBox_reconfirm_before_delete.stateChanged.connect(self.ReconfirmDelete.emit)
 
+        self.ui.pushButton_filter_same_items.setEnabled(False)
+        self.ui.pushButton_exclude_diff_pages.setEnabled(False)
+
 
 if __name__ == "__main__":
     app_ = QApplication()

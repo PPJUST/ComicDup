@@ -56,7 +56,7 @@
          <number>3</number>
         </property>
         <item>
-         <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,0">
+         <layout class="QVBoxLayout" name="verticalLayout_3" stretch="0,0,0,0">
           <property name="spacing">
            <number>3</number>
           </property>
@@ -140,6 +140,30 @@
                </property>
               </layout>
              </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="groupBox_cache">
+            <property name="title">
+             <string>缓存管理</string>
+            </property>
+            <layout class="QVBoxLayout" name="verticalLayout_11">
+             <property name="spacing">
+              <number>0</number>
+             </property>
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
             </layout>
            </widget>
           </item>

@@ -1,14 +1,14 @@
 import lzytools._qt_pyside6
 from PySide6.QtCore import Signal
 from PySide6.QtGui import QPixmap
-from PySide6.QtWidgets import QWidget, QApplication
+from PySide6.QtWidgets import QApplication, QFrame
 
 from components.widget_assembler_similar_result_preview.widget_comic_info.res.icon_base64 import ICON_JUMP_TO, \
     ICON_REFRESH, ICON_DELETE
 from components.widget_assembler_similar_result_preview.widget_comic_info.res.ui_comic_info import Ui_Form
 
 
-class ComicInfoViewer(QWidget):
+class ComicInfoViewer(QFrame):
     """单个漫画信息模块的界面组件"""
     OpenPath = Signal(name='打开文件路径')
     RefreshInfo = Signal(name='刷新漫画信息')
@@ -29,7 +29,10 @@ class ComicInfoViewer(QWidget):
 
         # 设置ui
         self.ui.label_preview.setFixedSize(90, 128)
-        self.setFixedWidth(150)
+        self.setFrameShape(QFrame.Shape.Box)
+        self.setFrameShadow(QFrame.Shadow.Plain)
+        self.setLineWidth(1)
+        self.ui.label_filetitle.setStyleSheet("font-weight: bold")
 
     def set_filetype_icon(self, icon_base64: str):
         """设置漫画的文件类型图标"""

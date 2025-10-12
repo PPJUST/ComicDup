@@ -22,6 +22,10 @@ class AssemblerSimilarResultPreview:
         """显示相似结果"""
         self.presenter.show_page(1)
 
+    def reload(self):
+        """重新加载"""
+        self.presenter.reload()
+
     def set_groups(self, comic_info_list_list: List[List[ComicInfoBase]]):
         """设置相似组列表"""
         self.presenter.set_groups(comic_info_list_list)

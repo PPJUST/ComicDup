@@ -26,6 +26,9 @@ class SettingAlgorithmViewer(QWidget):
         # 绑定信号
         self._bind_signal()
 
+        self.ui.checkBox_enhance_algorithm.setEnabled(False)  # 备忘录
+        self.ui.comboBox_enhance_algorithm.setEnabled(False)  # 备忘录
+
     def set_basic_algorithm(self, algorithm: str):
         """设置基础算法"""
         self.ui.comboBox_basic_algorithm.setCurrentText(algorithm)

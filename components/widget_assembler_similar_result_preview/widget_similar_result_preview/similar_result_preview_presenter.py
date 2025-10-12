@@ -76,6 +76,12 @@ class SimilarResultPreviewPresenter(QObject):
             self.viewer.set_current_page(self.current_page)
             self.show_page(self.current_page)
 
+    def reload(self):
+        """重新加载"""
+        self.current_page = 1
+        self.viewer.set_current_page(self.current_page)
+        self.show_page(self.current_page)
+
     def change_show_group_count(self, show_count: int):
         """修改一页显示的组数"""
         self.show_group_count = int(show_count)
