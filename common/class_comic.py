@@ -67,7 +67,17 @@ class ComicInfoBase(ABC):
 
     def fix_preview_path(self):
         """修复预览图（会更新预览图变量）"""
+        # 获取无效的预览图路径
+        useless_preview_path = self.preview_path
+        # 生成新的预览图
         self.save_preview_image()
+        # 将新生成的预览图改名为原预览图文件名
+        dirpath = os.path.dirname(useless_preview_path)
+        if not os.path.exists(dirpath):
+            os.mkdir(dirpath)  # 原预览图文件夹不存在时，需要创建，否则改名时会报错
+        os.rename(self.preview_path, useless_preview_path)
+        # 重新赋值
+        self.preview_path = useless_preview_path
 
     """数据库模式使用的手动更新信息的方法"""
 
