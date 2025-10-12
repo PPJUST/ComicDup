@@ -20,7 +20,7 @@ from common.class_config import SimilarAlgorithm
 from common.class_runtime import TYPE_RUNTIME_INFO, TypeRuntimeInfo
 from components import widget_exec, widget_setting_algorithm, widget_setting_match, widget_setting_comic, \
     widget_search_list, widget_runtime_info, widget_similar_result_filter, widget_assembler_similar_result_preview, \
-    dialog_match_result_cache
+    dialog_match_result_cache, widget_cache_manager
 from components.window.window_model import WindowModel
 from components.window.window_viewer import WindowViewer
 from thread.thread_analyse_comic_info import ThreadAnalyseComicInfo
@@ -54,6 +54,7 @@ class WindowPresenter(QObject):
         self.similar_result_preview = self.assembler_similar_result_preview.get_presenter()
         self.presenter_match_result_cache = dialog_match_result_cache.get_presenter()
         self.dialog_match_result_cache = self.presenter_match_result_cache.get_viewer()
+        self.widget_cache_manager = widget_cache_manager.get_presenter()
 
         # 实例化子线程
         self.thread_search_comic = ThreadSearchComic()
@@ -332,6 +333,7 @@ class WindowPresenter(QObject):
         self.viewer.add_viewer_runtime_info(self.widget_runtime_info.viewer)
         self.viewer.add_viewer_result_filter(self.widget_similar_result_filter.viewer)
         self.viewer.add_viewer_result_preview(self.similar_result_preview.viewer)
+        self.viewer.add_viewer_cache_manager(self.widget_cache_manager.viewer)
 
     def _bind_signal(self):
         """绑定信号"""

@@ -63,6 +63,10 @@ class WindowViewer(QMainWindow):
         """添加相似结果预览控件"""
         self.ui.groupBox_result_preview.layout().addWidget(widget)
 
+    def add_viewer_cache_manager(self, widget):
+        """添加缓存管理器控件"""
+        self.ui.groupBox_cache.layout().addWidget(widget)
+
 
 if __name__ == "__main__":
     app_ = QApplication()
