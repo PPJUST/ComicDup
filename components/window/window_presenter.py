@@ -280,6 +280,20 @@ class WindowPresenter(QObject):
 
         self.widget_runtime_info.stop_time()
 
+    """缓存内部匹配方法"""
+
+    def self_match_comic_db(self):
+        """漫画数据库项目自我匹配"""
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '开始漫画数据库内部匹配')
+        # 手动勾选匹配选项-匹配缓存数据
+        self.widget_setting_match.set_is_match_cache(True)
+        # 提取图片信息中的hash值
+        hash_algorithm = self.widget_setting_algorithm.get_base_algorithm()  # hash算法
+        hash_length = self.widget_setting_algorithm.get_hash_length()  # hash长度
+        hash_list = self.model.get_hashs(hash_algorithm, hash_length)
+        # 启动子线程-对比图片hash
+        self.start_thread_compare_hash(hash_list)
+
     """运行信息方法"""
 
     def update_runtime_info_index(self, index: int):
@@ -382,17 +396,17 @@ class WindowPresenter(QObject):
         self.widget_exec.LoadLastResult.connect(self.open_dialog_match_result_cache)
         self.widget_exec.OpenAbout.connect(self.open_about)
 
-        self.widget_similar_result_filter.ReconfirmDelete.connect(
-            self.assembler_similar_result_preview.set_is_reconfirm_before_delete)
-
         self.SignalRuntimeInfo.connect(self.update_runtime_info_textline)
 
         self.presenter_match_result_cache.Restore.connect(self.load_last_result)
 
+        self.widget_similar_result_filter.ReconfirmDelete.connect(
+            self.assembler_similar_result_preview.set_is_reconfirm_before_delete)
         self.widget_similar_result_filter.RefreshResult.connect(self.assembler_similar_result_preview.reload)
-
         self.widget_similar_result_filter.ChangeSortKey.connect(self.order_similar_result)
         self.widget_similar_result_filter.ChangeSortDirection.connect(self.order_similar_result)
+
+        self.widget_cache_manager.MatchCache.connect(self.self_match_comic_db)
 
     def _bind_thread_signal(self):
         """绑定子线程信号"""

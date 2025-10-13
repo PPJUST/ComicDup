@@ -1,5 +1,5 @@
 import lzytools.file
-from PySide6.QtCore import QObject
+from PySide6.QtCore import QObject, Signal
 
 from common import function_cache_preview
 from common.class_count_info import CountInfo
@@ -12,6 +12,7 @@ from thread.thread_refresh_comic_db import ThreadRefreshComicDB
 
 class CacheManagerPresenter(QObject):
     """缓存管理器模块的桥梁组件"""
+    MatchCache = Signal(name="缓存内部匹配")
 
     def __init__(self, viewer: CacheManagerViewer, model: CacheManagerModel):
         super().__init__()
@@ -89,7 +90,7 @@ class CacheManagerPresenter(QObject):
 
     def match_cache(self):
         """缓存内部匹配"""
-        # 备忘录
+        self.MatchCache.emit()
 
     def _bind_signal(self):
         """绑定信号"""
