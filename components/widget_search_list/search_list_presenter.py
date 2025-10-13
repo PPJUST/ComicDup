@@ -1,3 +1,4 @@
+import natsort
 from PySide6.QtCore import QObject
 
 from components.widget_search_list.search_list_model import SearchListModel
@@ -17,7 +18,13 @@ class SearchListPresenter(QObject):
 
     def get_paths(self):
         """获取所有文件路径"""
-        return self.viewer.get_paths()
+        paths = self.viewer.get_paths()
+        # 去重
+        paths = list(set(paths))
+        # 排序
+        paths = natsort.os_sorted(paths)
+
+        return paths
 
     def drop_files(self, files: list):
         """拖入文件"""

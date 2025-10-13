@@ -67,6 +67,10 @@ class WindowModel(QObject):
 
         return hash_list
 
+    def get_hashs(self, hash_algorithm: TYPES_HASH_ALGORITHM, hash_length: int) -> List[str]:
+        """获取所有图片的hash值"""
+        return self.db_image_info.get_hashs(hash_algorithm, hash_length)
+
     def get_hash_from_image_info(self, image_info: ImageInfoBase, hash_type: TYPES_HASH_ALGORITHM, hash_length: int):
         """从图片信息类中读取图片hash值"""
         hash_ = image_info.get_hash(hash_type, hash_length)
@@ -131,9 +135,8 @@ class WindowModel(QObject):
 
         return comic_info_group
 
-    def filter_comic_info_group(self, comic_info_group: List[List[ComicInfoBase]], comic_path_search_list: List[str]):
-        """对转换的漫画信息类列表进行处理（由于hash转换时是根据数据库数据，可能存在多余或失效路径，需要进行一次筛选）"""
-        # 剔除不在检索漫画范围内的项目以及路径失效的项目
+    def filter_comic_info_group_is_exist(self, comic_info_group: List[List[ComicInfoBase]]):
+        """筛选漫画信息类列表，剔除已经不存在的项目"""
         # 漫画组格式：[[ComicInfo1,ComicInfo2,ComicInfo3], [ComicInfo4,ComicInfo5,ComicInfo6]]
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, f'对相似组进行有效性筛选')
         comic_info_group_filter = []
@@ -142,13 +145,33 @@ class WindowModel(QObject):
             group_filter = []
             for comic_info in group:
                 path = comic_info.filepath
-                if path in comic_path_search_list and os.path.exists(path):
+                if os.path.exists(path):
                     group_filter.append(comic_info)
             if len(group_filter) >= 2:
                 group_filter = natsort.os_sorted(group_filter)  # 进行一次路径排序，便于后续显示
                 comic_info_group_filter.append(group_filter)
 
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, f'完成相似组有效性筛选')
+        return comic_info_group_filter
+
+    def filter_comic_info_group_is_in_search_list(self, comic_info_group: List[List[ComicInfoBase]],
+                                                  comic_path_search_list: List[str]):
+        """筛选漫画信息类列表，剔除不在搜索列表中的项目"""
+        # 漫画组格式：[[ComicInfo1,ComicInfo2,ComicInfo3], [ComicInfo4,ComicInfo5,ComicInfo6]]
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, f'对相似组进行相关性筛选')
+        comic_info_group_filter = []
+        for group in comic_info_group:
+            group: List[ComicInfoBase]
+            group_filter = []
+            for comic_info in group:
+                path = comic_info.filepath
+                if path in comic_path_search_list:
+                    group_filter.append(comic_info)
+            if len(group_filter) >= 2:
+                group_filter = natsort.os_sorted(group_filter)  # 进行一次路径排序，便于后续显示
+                comic_info_group_filter.append(group_filter)
+
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, f'完成相似组相关性筛选')
         return comic_info_group_filter
 
     def get_comic_db_count_info(self) -> CountInfo:

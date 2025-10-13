@@ -200,7 +200,13 @@ class WindowPresenter(QObject):
             # 提取图片信息中的hash值
             hash_algorithm = self.widget_setting_algorithm.get_base_algorithm()  # hash算法
             hash_length = self.widget_setting_algorithm.get_hash_length()  # hash长度
-            hash_list = self.model.get_hash_list_from_image_infos(image_info_dict.values(), hash_algorithm, hash_length)
+            # 检查匹配选项-是否匹配缓存数据
+            is_match_cache = self.widget_setting_match.get_is_match_cache()
+            if is_match_cache:  # 如果选中了匹配缓存数据，则从漫画信息数据库中提取出所有的项目并以此进行相似匹配（不会计算缺失的hash值）
+                hash_list = self.model.get_hashs(hash_algorithm, hash_length)
+            else:  # 否则仅匹配本次提取到的图片信息
+                hash_list = self.model.get_hash_list_from_image_infos(image_info_dict.values(), hash_algorithm,
+                                                                      hash_length)
             # 将提取的hash值列表传递给 子线程-对比图片hash
             self.start_thread_compare_hash(hash_list)
         else:
@@ -227,9 +233,14 @@ class WindowPresenter(QObject):
             hash_type = self.widget_setting_algorithm.get_base_algorithm()  # 提取的hash类型
             comic_info_groups = self.model.convert_hash_group_to_comic_info_group(similar_hash_groups, hash_type)
             print('显示结果漫画信息类列表', comic_info_groups)
-            # 对转换的漫画信息类列表进行处理（由于hash转换时是根据数据库数据，可能存在多余或失效路径，需要进行一次筛选）
-            comic_info_groups_filter = self.model.filter_comic_info_group(comic_info_groups,
-                                                                          comic_path_search_list=self._comic_paths_search)
+            # 对转换的漫画信息类列表进行处理
+            # 检查漫画是否存在，剔除已经不存在的项目
+            comic_info_groups_filter = self.model.filter_comic_info_group_is_exist(comic_info_groups)
+            # 检查匹配选项-是否匹配缓存数据
+            is_match_cache = self.widget_setting_match.get_is_match_cache()
+            if not is_match_cache:  # 如果未选择匹配缓存数据，则剔除相似组中不在本次搜索目录中的漫画项目（由于hash转换是根据数据库数据，可能存在多余的路径）
+                comic_info_groups_filter = self.model.filter_comic_info_group_is_in_search_list(comic_info_groups,
+                                                                                                comic_path_search_list=self._comic_paths_search)
             # 保存到缓存
             self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '正在保存相似匹配结果到本地缓存')
             self.presenter_match_result_cache.save_match_result(comic_info_groups_filter)

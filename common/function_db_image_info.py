@@ -278,6 +278,26 @@ class DBImageInfo:
         fingerprints = list(set(fingerprints))
         return fingerprints
 
+    def get_hashs(self, hash_algorithm: TYPES_HASH_ALGORITHM, hash_length: int) -> List[str]:
+        """获取所有图片的hash值"""
+        if isinstance(hash_algorithm, SimilarAlgorithm.aHash):
+            key_hash = KEY_AHASH_64.replace('64', str(hash_length))
+        elif isinstance(hash_algorithm, SimilarAlgorithm.pHash):
+            key_hash = KEY_PHASH_64.replace('64', str(hash_length))
+        elif isinstance(hash_algorithm, SimilarAlgorithm.dHash):
+            key_hash = KEY_DHASH_64.replace('64', str(hash_length))
+        else:
+            raise Exception('未知的hash类型')
+
+        self.cursor.execute(f'SELECT {key_hash} FROM {TABLE_NAME}')
+        results = self.cursor.fetchall()
+
+        hashs = []
+        for result in results:
+            if result[0]:
+                hashs.append(result[0])
+        return hashs
+
     def is_image_exist(self, image_path: str, comic_path: str):
         """检查漫画路径在数据库中是否已存在"""
         fake_path = os.path.normpath(os.path.join(comic_path, os.path.basename(image_path)))
