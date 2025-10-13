@@ -66,6 +66,9 @@ class WindowPresenter(QObject):
         # 初始化viewer
         self._init_viewer()
 
+        # 初始化子控件
+        self._init_widget()
+
         # 更新缓存统计信息
         self._update_cache_info()
 
@@ -355,6 +358,11 @@ class WindowPresenter(QObject):
         self.viewer.add_viewer_result_filter(self.widget_similar_result_filter.viewer)
         self.viewer.add_viewer_result_preview(self.similar_result_preview.viewer)
         self.viewer.add_viewer_cache_manager(self.widget_cache_manager.viewer)
+
+    def _init_widget(self):
+        """初始化子控件"""
+        self.widget_cache_manager.set_comic_db(self.model.db_comic_info)
+        self.widget_cache_manager.set_image_db(self.model.db_image_info)
 
     def _bind_signal(self):
         """绑定信号"""

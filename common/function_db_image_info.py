@@ -158,6 +158,21 @@ class DBImageInfo:
         self.cursor.execute(f'''DELETE FROM {TABLE_NAME} WHERE {KEY_FAKE_PATH} = "{fake_path}"''')
         self.conn.commit()
 
+    def delete_useless_items(self):
+        """删除无效的项目"""
+        # 提取所有图片路径以及对应的漫画路径、类型
+        self.cursor.execute(
+            f'SELECT {KEY_FILEPATH}, {KEY_BELONG_COMIC_PATH}, {KEY_BELONG_COMIC_FILETYPE} FROM {TABLE_NAME}')
+        # 组合为一个字典
+        image_infos = {path[0]: (path[1], path[2]) for path in self.cursor.fetchall()}
+        for image_path, (comic_path, comic_filetype) in image_infos.items():
+            if comic_filetype == FileType.Folder.text:
+                if not os.path.exists(image_path):
+                    self.delete(image_path, comic_path)
+            elif comic_filetype == FileType.Archive.text:
+                if not os.path.exists(comic_path):
+                    self.delete(image_path, comic_path)
+
     def get_image_info_by_hash(self, hash_: str, hash_type: TYPES_HASH_ALGORITHM) -> List[ImageInfoBase]:
         """根据hash值获取图片信息类"""
         hash_length = len(hash_)
@@ -291,3 +306,9 @@ class DBImageInfo:
         modified_time = os.path.getmtime(self.db_filepath)
         modified_time_str = lzytools.common.convert_time_ymd(modified_time)
         return modified_time_str
+
+    def clear(self):
+        """清空数据库"""
+        print('清空数据库')
+        self.cursor.execute(f"DELETE FROM {TABLE_NAME};")
+        self.conn.commit()

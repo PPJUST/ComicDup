@@ -119,6 +119,59 @@ class DBComicInfo:
 
         self.conn.commit()
 
+    def refresh(self, comic_info: ComicInfoBase):
+        """刷新数据库项目"""
+        # 该方法在使用刷新数据库功能时使用，类似于上面的add方法，但是需要手动通过文件指纹判断漫画是否有变动
+        comic_path = os.path.normpath(comic_info.filepath)
+
+        self.cursor.execute(f'SELECT {KEY_FINGERPRINT} FROM {TABLE_NAME} WHERE {KEY_FILEPATH} = "{comic_path}"')
+        old_fingerprint = self.cursor.fetchone()[0]
+        if old_fingerprint == comic_info.fingerprint:
+            return
+        else:
+            comic_info.save_preview_image()  # 刷新方法并不会生成新的预览图，所以需要手动调用
+
+            self.cursor.execute(f'UPDATE {TABLE_NAME} SET {KEY_FILENAME} = "{comic_info.filename}" '
+                                f'WHERE {KEY_FILEPATH} = "{comic_path}"')
+
+            self.cursor.execute(f'UPDATE {TABLE_NAME} SET {KEY_FILETITLE} = "{comic_info.filetitle}" '
+                                f'WHERE {KEY_FILEPATH} = "{comic_path}"')
+
+            self.cursor.execute(f'UPDATE {TABLE_NAME} SET {KEY_PARENT_DIRPATH} = "{comic_info.parent_dirpath}" '
+                                f'WHERE {KEY_FILEPATH} = "{comic_path}"')
+
+            self.cursor.execute(f'UPDATE {TABLE_NAME} SET {KEY_FILESIZE_BYTES} = "{comic_info.filesize_bytes}" '
+                                f'WHERE {KEY_FILEPATH} = "{comic_path}"')
+
+            self.cursor.execute(
+                f'UPDATE {TABLE_NAME} SET {KEY_EXTRACTED_FILESIZE_BYTES} = "{comic_info.get_extracted_filesize_bytes()}" '
+                f'WHERE {KEY_FILEPATH} = "{comic_path}"')
+
+            filetype = comic_info.filetype
+            filetype_str = filetype.text
+            self.cursor.execute(f'UPDATE {TABLE_NAME} SET {KEY_FILETYPE} = "{filetype_str}" '
+                                f'WHERE {KEY_FILEPATH} = "{comic_path}"')
+
+            self.cursor.execute(f'UPDATE {TABLE_NAME} SET {KEY_MODIFIED_TIME} = "{comic_info.modified_time}" '
+                                f'WHERE {KEY_FILEPATH} = "{comic_path}"')
+
+            # 内部文件路径进行特殊处理
+            paths = comic_info.page_paths
+            str_paths = convert_list_to_str(paths)
+            self.cursor.execute(f'UPDATE {TABLE_NAME} SET {KEY_PAGE_PATHS} = "{str_paths}" '
+                                f'WHERE {KEY_FILEPATH} = "{comic_path}"')
+
+            self.cursor.execute(f'UPDATE {TABLE_NAME} SET {KEY_PAGE_COUNT} = "{comic_info.page_count}" '
+                                f'WHERE {KEY_FILEPATH} = "{comic_path}"')
+
+            self.cursor.execute(f'UPDATE {TABLE_NAME} SET {KEY_PREVIEW_PATH} = "{comic_info.preview_path}" '
+                                f'WHERE {KEY_FILEPATH} = "{comic_path}"')
+
+            self.cursor.execute(f'UPDATE {TABLE_NAME} SET {KEY_FINGERPRINT} = "{comic_info.fingerprint}" '
+                                f'WHERE {KEY_FILEPATH} = "{comic_path}"')
+
+            self.conn.commit()
+
     def update_comic_moved(self, comic_info: ComicInfoBase):
         """更新数据库中已移动路径的漫画，更新其最新路径（仅更新数据库中的第一个匹配项）"""
         # 提取漫画数据库中文件指纹对应的路径
@@ -140,6 +193,20 @@ class DBComicInfo:
         # 路径外的引号必须使用“双引号，防止字符串自动转换引号导致出错（Windows文件名可以带'而不能带"）
         self.cursor.execute(f'''DELETE FROM {TABLE_NAME} WHERE {KEY_FILEPATH} = "{comic_path}"''')
         self.conn.commit()
+
+    def delete_useless_items(self):
+        """删除无效的项目"""
+        self.cursor.execute(f'SELECT {KEY_FILEPATH} FROM {TABLE_NAME}')
+        comic_paths = [path[0] for path in self.cursor.fetchall()]
+        for path in comic_paths:
+            if not os.path.exists(path):
+                self.delete(path)
+
+    def get_comic_paths(self) -> list:
+        """获取存储的所有漫画路径"""
+        self.cursor.execute(f'SELECT {KEY_FILEPATH} FROM {TABLE_NAME}')
+        comic_paths = [path[0] for path in self.cursor.fetchall()]
+        return comic_paths
 
     def get_comic_info_by_comic_path(self, comic_path: str):
         """根据漫画文件路径获取漫画信息类"""
@@ -191,6 +258,14 @@ class DBComicInfo:
     def get_comic_paths_by_fingerprint(self, fingerprint: str):
         """根据文件指纹获取所有漫画路径"""
         self.cursor.execute(f'SELECT {KEY_FILEPATH} FROM {TABLE_NAME} WHERE {KEY_FINGERPRINT} = "{fingerprint}"')
+        result = self.cursor.fetchall()
+        paths = [item[0] for item in result]
+        paths = list(set(paths))
+        return paths
+
+    def get_preview_paths(self):
+        """获取所有预览图路径"""
+        self.cursor.execute(f'SELECT {KEY_PREVIEW_PATH} FROM {TABLE_NAME}')
         result = self.cursor.fetchall()
         paths = [item[0] for item in result]
         paths = list(set(paths))
@@ -259,3 +334,9 @@ class DBComicInfo:
         modified_time = os.path.getmtime(self.db_filepath)
         modified_time_str = lzytools.common.convert_time_ymd(modified_time)
         return modified_time_str
+
+    def clear(self):
+        """清空数据库"""
+        print('清空数据库')
+        self.cursor.execute(f"DELETE FROM {TABLE_NAME};")
+        self.conn.commit()

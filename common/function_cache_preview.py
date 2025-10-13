@@ -22,6 +22,12 @@ def check_cache_exist(cache_dirpath: str = CACHE_PREVIEW_DIRPATH):
         os.makedirs(cache_dirpath)
 
 
+def clear_cache(cache_dirpath: str = CACHE_PREVIEW_DIRPATH):
+    """清空缓存"""
+    if os.path.exists(cache_dirpath):
+        lzytools.file.delete(cache_dirpath, send_to_trash=True)  # 备忘录 调试阶段，仅删除到回收站而不是直接删除
+
+
 def save_preview_image_to_cache(origin_image_path: str, cache_dirpath: str = CACHE_PREVIEW_DIRPATH,
                                 height_zoom_out: int = 128):
     """保存指定图片的预览小图
@@ -88,6 +94,15 @@ def get_preview_image_count(cache_dirpath: str = CACHE_PREVIEW_DIRPATH) -> int:
     for _dir in cache_child_dirs:
         count += len(os.listdir(_dir))
     return count
+
+
+def get_preview_image_paths(cache_dirpath: str = CACHE_PREVIEW_DIRPATH) -> list:
+    """获取缓存的预览图路径"""
+    paths = []
+    cache_child_dirs = [os.path.normpath(os.path.join(cache_dirpath, i)) for i in os.listdir(cache_dirpath)]
+    for _dir in cache_child_dirs:
+        paths.extend([os.path.normpath(os.path.join(_dir, i)) for i in os.listdir(_dir)])
+    return paths
 
 
 def get_preview_size(cache_dirpath: str = CACHE_PREVIEW_DIRPATH) -> int:

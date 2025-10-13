@@ -20,10 +20,7 @@ class CacheManagerViewer(QWidget):
         # 绑定信号
         self._bind_signal()
 
-        self.ui.pushButton_refresh.setEnabled(False)  # 备忘录
         self.ui.pushButton_cache_match.setEnabled(False)  # 备忘录
-        self.ui.pushButton_delete_useless.setEnabled(False)  # 备忘录
-        self.ui.pushButton_clear.setEnabled(False)  # 备忘录
 
     def set_comic_cache_count_info(self, count_info: CountInfo):
         """设置漫画数据库信息"""
