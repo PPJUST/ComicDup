@@ -100,6 +100,11 @@ class ThreadCompareHash(ThreadPattern):
         if hash_ in match_hash_list:
             match_hash_list.remove(hash_)
 
+        # 统计hash中0和1个个数，剔除纯色图片（占比大于90%）
+        zero_count = hash_.count('0')
+        if zero_count / len(hash_) > 0.9 or zero_count / len(hash_) < 0.1:
+            return list(similar)
+
         zero_count = hash_.count('0')
         for hash_compare in match_hash_list:
             # 提前过滤不可能相似的hash值

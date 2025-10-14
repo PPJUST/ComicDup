@@ -29,6 +29,7 @@ class ComicInfoViewer(QFrame):
 
         # 设置ui
         self.ui.label_preview.setFixedSize(90, 128)
+        self.setMinimumWidth(250)
         self.setFrameShape(QFrame.Shape.Box)
         self.setFrameShadow(QFrame.Shadow.Plain)
         self.setLineWidth(1)
