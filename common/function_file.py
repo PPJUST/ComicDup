@@ -3,6 +3,8 @@ import os
 import natsort
 from PIL import Image
 
+Image.MAX_IMAGE_PIXELS = None  # 解除pillow库的图片最大尺寸限制
+
 
 def is_image_by_filename(filepath: str):
     """通过文件名判断文件是否为图片"""
