@@ -9,7 +9,7 @@ import lzytools.image
 import natsort
 
 from common import function_file, function_archive, function_cache_preview
-from common.class_config import FileType, FileTypes
+from common.class_config import FileType
 
 
 class ComicInfoBase(ABC):
@@ -28,7 +28,7 @@ class ComicInfoBase(ABC):
         # 文件名（含扩展名）
         self.filename: str = os.path.basename(self.filepath)
         # 文件标题（不含扩展名）
-        self.filetitle: str = os.path.splitext(self.filename)[0]
+        self.filetitle: str = None
         # 文件父级路径
         self.parent_dirpath: str = os.path.dirname(self.filepath)
         # 文件大小（字节）
@@ -85,9 +85,9 @@ class ComicInfoBase(ABC):
         """更新文件大小（字节）"""
         self.filesize_bytes = filesize_bytes
 
-    def update_filetype(self, filetype: FileTypes):
-        """更新文件类型"""
-        self.filetype = filetype
+    def update_filetitle(self, filetitle: str):
+        """更新文件标题"""
+        self.filetitle = filetitle
 
     def update_modified_time(self, modified_time: float):
         """更新文件修改时间"""
@@ -115,11 +115,17 @@ class ComicInfoBase(ABC):
         self.filesize_bytes = lzytools.file.get_size(self.filepath)
         # 文件修改时间
         self.modified_time = os.path.getmtime(self.filepath)
+        # 文件标题
+        self._update_filetitle()
 
     @abstractmethod
     def _calc_fingerprint(self):
         """计算文件指纹
         文件指纹的格式为：文件大小bytes+内部文件路径，以|间隔"""
+
+    @abstractmethod
+    def _update_filetitle(self):
+        """更新文件标题"""
 
 
 class FolderComicInfo(ComicInfoBase):
@@ -153,6 +159,10 @@ class FolderComicInfo(ComicInfoBase):
         inside_path_str = '|'.join(inside_paths_rel)
         # 整合为一个指纹
         self.fingerprint = f'{filesize}|{inside_path_str}'
+
+    def _update_filetitle(self):
+        super()._update_filetitle()
+        self.filetitle = self.filename
 
 
 class ArchiveComicInfo(ComicInfoBase):
@@ -197,3 +207,7 @@ class ArchiveComicInfo(ComicInfoBase):
         inside_path_str = '|'.join(inside_paths)
         # 整合为一个指纹
         self.fingerprint = f'{filesize}|{inside_path_str}'
+
+    def _update_filetitle(self):
+        super()._update_filetitle()
+        self.filetitle = lzytools.archive.get_filetitle(self.filename)

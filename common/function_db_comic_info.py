@@ -252,6 +252,9 @@ class DBComicInfo:
         # 文件指纹
         fingerprint = result_dict[KEY_FINGERPRINT]
         comic_info.update_fingerprint(fingerprint)
+        # 文件标题
+        filetitle = result_dict[KEY_FILETITLE]
+        comic_info.update_filetitle(filetitle)
 
         return comic_info
 

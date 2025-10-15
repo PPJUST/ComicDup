@@ -63,6 +63,9 @@ class WindowPresenter(QObject):
         self.thread_compare_hash = ThreadCompareHash()
         self.thread_compare_ssim = ThreadCompareSSIM()
 
+        # 将设置项传递给子线程
+        self._set_thread_setting()
+
         # 初始化viewer
         self._init_viewer()
 
@@ -110,7 +113,7 @@ class WindowPresenter(QObject):
         # 切换到运行信息页
         self.viewer.turn_page_running_info()
 
-        # 将设置项传递给子线程
+        # 将设置项重新传递给子线程
         self._set_thread_setting()
 
         # 传参给子线程，并启动
