@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'match_result_cacheJFQXYR.ui'
+## Form generated from reading UI file 'match_result_cachexDUEpz.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.1
 ##
@@ -34,16 +34,19 @@ class Ui_Dialog(object):
         self.gridLayout.setContentsMargins(0, -1, -1, -1)
         self.label_size_count_1 = QLabel(Dialog)
         self.label_size_count_1.setObjectName(u"label_size_count_1")
+        self.label_size_count_1.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.gridLayout.addWidget(self.label_size_count_1, 1, 4, 1, 1)
 
         self.label_2 = QLabel(Dialog)
         self.label_2.setObjectName(u"label_2")
+        self.label_2.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.gridLayout.addWidget(self.label_2, 0, 3, 1, 1)
 
         self.label_date_3 = QLabel(Dialog)
         self.label_date_3.setObjectName(u"label_date_3")
+        self.label_date_3.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.gridLayout.addWidget(self.label_date_3, 3, 2, 1, 1)
 
@@ -54,6 +57,7 @@ class Ui_Dialog(object):
 
         self.label_group_count_3 = QLabel(Dialog)
         self.label_group_count_3.setObjectName(u"label_group_count_3")
+        self.label_group_count_3.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.gridLayout.addWidget(self.label_group_count_3, 3, 3, 1, 1)
 
@@ -74,11 +78,13 @@ class Ui_Dialog(object):
 
         self.label_3 = QLabel(Dialog)
         self.label_3.setObjectName(u"label_3")
+        self.label_3.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.gridLayout.addWidget(self.label_3, 0, 4, 1, 1)
 
         self.label_date_1 = QLabel(Dialog)
         self.label_date_1.setObjectName(u"label_date_1")
+        self.label_date_1.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.gridLayout.addWidget(self.label_date_1, 1, 2, 1, 1)
 
@@ -89,6 +95,7 @@ class Ui_Dialog(object):
 
         self.label_size_count_4 = QLabel(Dialog)
         self.label_size_count_4.setObjectName(u"label_size_count_4")
+        self.label_size_count_4.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.gridLayout.addWidget(self.label_size_count_4, 4, 4, 1, 1)
 
@@ -99,6 +106,7 @@ class Ui_Dialog(object):
 
         self.label_size_count_5 = QLabel(Dialog)
         self.label_size_count_5.setObjectName(u"label_size_count_5")
+        self.label_size_count_5.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.gridLayout.addWidget(self.label_size_count_5, 5, 4, 1, 1)
 
@@ -119,16 +127,19 @@ class Ui_Dialog(object):
 
         self.label_group_count_2 = QLabel(Dialog)
         self.label_group_count_2.setObjectName(u"label_group_count_2")
+        self.label_group_count_2.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.gridLayout.addWidget(self.label_group_count_2, 2, 3, 1, 1)
 
         self.label_group_count_5 = QLabel(Dialog)
         self.label_group_count_5.setObjectName(u"label_group_count_5")
+        self.label_group_count_5.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.gridLayout.addWidget(self.label_group_count_5, 5, 3, 1, 1)
 
         self.label_size_count_3 = QLabel(Dialog)
         self.label_size_count_3.setObjectName(u"label_size_count_3")
+        self.label_size_count_3.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.gridLayout.addWidget(self.label_size_count_3, 3, 4, 1, 1)
 
@@ -139,6 +150,7 @@ class Ui_Dialog(object):
 
         self.label = QLabel(Dialog)
         self.label.setObjectName(u"label")
+        self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.gridLayout.addWidget(self.label, 0, 2, 1, 1)
 
@@ -154,26 +166,31 @@ class Ui_Dialog(object):
 
         self.label_size_count_2 = QLabel(Dialog)
         self.label_size_count_2.setObjectName(u"label_size_count_2")
+        self.label_size_count_2.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.gridLayout.addWidget(self.label_size_count_2, 2, 4, 1, 1)
 
         self.label_group_count_4 = QLabel(Dialog)
         self.label_group_count_4.setObjectName(u"label_group_count_4")
+        self.label_group_count_4.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.gridLayout.addWidget(self.label_group_count_4, 4, 3, 1, 1)
 
         self.label_date_4 = QLabel(Dialog)
         self.label_date_4.setObjectName(u"label_date_4")
+        self.label_date_4.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.gridLayout.addWidget(self.label_date_4, 4, 2, 1, 1)
 
         self.label_5 = QLabel(Dialog)
         self.label_5.setObjectName(u"label_5")
+        self.label_5.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.gridLayout.addWidget(self.label_5, 0, 0, 1, 1)
 
         self.label_date_2 = QLabel(Dialog)
         self.label_date_2.setObjectName(u"label_date_2")
+        self.label_date_2.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.gridLayout.addWidget(self.label_date_2, 2, 2, 1, 1)
 
@@ -194,41 +211,49 @@ class Ui_Dialog(object):
 
         self.label_group_count_1 = QLabel(Dialog)
         self.label_group_count_1.setObjectName(u"label_group_count_1")
+        self.label_group_count_1.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.gridLayout.addWidget(self.label_group_count_1, 1, 3, 1, 1)
 
         self.label_date_5 = QLabel(Dialog)
         self.label_date_5.setObjectName(u"label_date_5")
+        self.label_date_5.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.gridLayout.addWidget(self.label_date_5, 5, 2, 1, 1)
 
         self.label_18 = QLabel(Dialog)
         self.label_18.setObjectName(u"label_18")
+        self.label_18.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.gridLayout.addWidget(self.label_18, 0, 1, 1, 1)
 
         self.label_filename_1 = QLabel(Dialog)
         self.label_filename_1.setObjectName(u"label_filename_1")
+        self.label_filename_1.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.gridLayout.addWidget(self.label_filename_1, 1, 1, 1, 1)
 
         self.label_filename_2 = QLabel(Dialog)
         self.label_filename_2.setObjectName(u"label_filename_2")
+        self.label_filename_2.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.gridLayout.addWidget(self.label_filename_2, 2, 1, 1, 1)
 
         self.label_filename_3 = QLabel(Dialog)
         self.label_filename_3.setObjectName(u"label_filename_3")
+        self.label_filename_3.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.gridLayout.addWidget(self.label_filename_3, 3, 1, 1, 1)
 
         self.label_filename_4 = QLabel(Dialog)
         self.label_filename_4.setObjectName(u"label_filename_4")
+        self.label_filename_4.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.gridLayout.addWidget(self.label_filename_4, 4, 1, 1, 1)
 
         self.label_filename_5 = QLabel(Dialog)
         self.label_filename_5.setObjectName(u"label_filename_5")
+        self.label_filename_5.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         self.gridLayout.addWidget(self.label_filename_5, 5, 1, 1, 1)
 
