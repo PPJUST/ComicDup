@@ -13,6 +13,8 @@ class RuntimeInfoViewer(QWidget):
         self.ui = Ui_Form()
         self.ui.setupUi(self)
 
+        self.lines_count = 0  # 行数
+
     def update_runtime_total(self, time_str: str):
         """更新任务运行总耗时"""
         self.ui.label_runtime_total.setText(time_str)
@@ -41,11 +43,13 @@ class RuntimeInfoViewer(QWidget):
 
     def append_textline(self, text_info: str):
         """向文本框中添加文本行"""
-        self.ui.textBrowser_runtime_info.append(text_info)
-
+        self.lines_count += 1
         # 检查文本量，超过上限后清空
-        if self.ui.textBrowser_runtime_info.toPlainText().count('\n') > MAX_LINES:
+        if self.lines_count >= MAX_LINES:
             self.ui.textBrowser_runtime_info.clear()
+            self.lines_count = 1
+
+        self.ui.textBrowser_runtime_info.append(text_info)
 
 
 if __name__ == "__main__":
