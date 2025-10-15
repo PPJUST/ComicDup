@@ -26,6 +26,7 @@ class SimilarResultPreviewPresenter(QObject):
         self.current_page = 1  # 当前页数
         self.total_page = 1  # 总页数
         self.show_group_count = 5  # 一页显示的组数
+        self.is_reconfirm_before_delete = True  # 是否删除前再次确认
 
         # 绑定信号
         self.viewer.NextPage.connect(self.next_page)
@@ -53,6 +54,8 @@ class SimilarResultPreviewPresenter(QObject):
             # 设置编号
             index_page = (show_page - 1) * self.show_group_count + index
             similar_group_info_presenter.set_group_index(index_page)
+            # 更新删除重复确认变量
+            similar_group_info_presenter.set_is_reconfirm_before_delete(self.is_reconfirm_before_delete)
             # 添加控件到变量中
             self.comic_widgets_showed.append(similar_group_info_presenter)
             # 添加控件到视图中
@@ -104,6 +107,8 @@ class SimilarResultPreviewPresenter(QObject):
 
     def set_is_reconfirm_before_delete(self, is_reconfirm: bool):
         """设置是否删除前再次确认"""
+        self.is_reconfirm_before_delete = is_reconfirm
+
         for widget in self.comic_widgets_showed:
             widget: SimilarGroupInfoPresenter
             widget.set_is_reconfirm_before_delete(is_reconfirm)
