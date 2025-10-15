@@ -2,6 +2,8 @@ from PySide6.QtWidgets import QWidget, QApplication
 
 from components.widget_runtime_info.res.ui_runtime_info import Ui_Form
 
+MAX_LINES = 200
+
 
 class RuntimeInfoViewer(QWidget):
     """运行信息模块的界面组件"""
@@ -40,6 +42,10 @@ class RuntimeInfoViewer(QWidget):
     def append_textline(self, text_info: str):
         """向文本框中添加文本行"""
         self.ui.textBrowser_runtime_info.append(text_info)
+
+        # 检查文本量，超过上限后清空
+        if self.ui.textBrowser_runtime_info.toPlainText().count('\n') > MAX_LINES:
+            self.ui.textBrowser_runtime_info.clear()
 
 
 if __name__ == "__main__":

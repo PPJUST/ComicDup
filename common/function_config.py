@@ -310,7 +310,7 @@ class SettingIsAnalyzeArchive(_ModuleChildSettingSingleEnable):
     """漫画选项：是否识别压缩文件"""
 
     def __init__(self, config_file):
-        super().__init__(config_file, section='IsAnalyzeArchive', key='is_enable', default_value=False)
+        super().__init__(config_file, section='IsAnalyzeArchive', key='is_enable', default_value=True)
 
 
 class SettingIsAllowOtherFiletypesInComic(_ModuleChildSettingSingleEnable):
