@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'similar_result_previewgqeyLN.ui'
+## Form generated from reading UI file 'similar_result_previewVLGorQ.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.1
 ##
@@ -77,8 +77,8 @@ class Ui_Form(object):
 
         self.line = QFrame(Form)
         self.line.setObjectName(u"line")
+        self.line.setFrameShadow(QFrame.Shadow.Raised)
         self.line.setFrameShape(QFrame.Shape.VLine)
-        self.line.setFrameShadow(QFrame.Shadow.Sunken)
 
         self.horizontalLayout.addWidget(self.line)
 

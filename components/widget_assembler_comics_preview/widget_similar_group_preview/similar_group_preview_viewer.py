@@ -27,6 +27,9 @@ class SimilarGroupPreviewViewer(QWidget):
         # 绑定信号
         self._bind_signal()
 
+        self.ui.checkBox_auto_calc_similar.setEnabled(False)  # 备忘录
+        self.ui.checkBox_auto_image_diff.setEnabled(False)  # 备忘录
+
     def add_widget(self, widget: QWidget):
         """显示一个控件"""
         self.ui.horizontalLayout_group.addWidget(widget)

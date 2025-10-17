@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'similar_group_previewYKUtct.ui'
+## Form generated from reading UI file 'similar_group_previewVuWwfw.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.1
 ##
@@ -15,15 +15,15 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QHBoxLayout, QLabel, QPushButton,
-    QSizePolicy, QSpacerItem, QToolButton, QVBoxLayout,
-    QWidget)
+from PySide6.QtWidgets import (QApplication, QCheckBox, QFrame, QHBoxLayout,
+    QLabel, QPushButton, QSizePolicy, QSpacerItem,
+    QToolButton, QVBoxLayout, QWidget)
 
 class Ui_Form(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        Form.resize(415, 257)
+        Form.resize(662, 309)
         self.verticalLayout = QVBoxLayout(Form)
         self.verticalLayout.setSpacing(3)
         self.verticalLayout.setObjectName(u"verticalLayout")
@@ -61,10 +61,34 @@ class Ui_Form(object):
 
         self.horizontalLayout.addWidget(self.toolButton_reset)
 
+        self.line = QFrame(Form)
+        self.line.setObjectName(u"line")
+        self.line.setFrameShadow(QFrame.Shadow.Raised)
+        self.line.setFrameShape(QFrame.Shape.VLine)
+
+        self.horizontalLayout.addWidget(self.line)
+
         self.pushButton_quit = QPushButton(Form)
         self.pushButton_quit.setObjectName(u"pushButton_quit")
 
         self.horizontalLayout.addWidget(self.pushButton_quit)
+
+        self.line_2 = QFrame(Form)
+        self.line_2.setObjectName(u"line_2")
+        self.line_2.setFrameShadow(QFrame.Shadow.Raised)
+        self.line_2.setFrameShape(QFrame.Shape.VLine)
+
+        self.horizontalLayout.addWidget(self.line_2)
+
+        self.checkBox_auto_calc_similar = QCheckBox(Form)
+        self.checkBox_auto_calc_similar.setObjectName(u"checkBox_auto_calc_similar")
+
+        self.horizontalLayout.addWidget(self.checkBox_auto_calc_similar)
+
+        self.checkBox_auto_image_diff = QCheckBox(Form)
+        self.checkBox_auto_image_diff.setObjectName(u"checkBox_auto_image_diff")
+
+        self.horizontalLayout.addWidget(self.checkBox_auto_image_diff)
 
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
@@ -94,5 +118,7 @@ class Ui_Form(object):
         self.toolButton_next2.setText(QCoreApplication.translate("Form", u"next2", None))
         self.toolButton_reset.setText(QCoreApplication.translate("Form", u"reset", None))
         self.pushButton_quit.setText(QCoreApplication.translate("Form", u"\u9000\u51fa", None))
+        self.checkBox_auto_calc_similar.setText(QCoreApplication.translate("Form", u"\u5b9e\u65f6\u663e\u793a\u76f8\u4f3c\u5ea6", None))
+        self.checkBox_auto_image_diff.setText(QCoreApplication.translate("Form", u"\u5b9e\u65f6\u663e\u793a\u56fe\u7247\u5dee\u5f02", None))
     # retranslateUi
 

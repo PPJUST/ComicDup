@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>415</width>
-    <height>257</height>
+    <width>662</width>
+    <height>309</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -77,9 +77,43 @@
       </widget>
      </item>
      <item>
+      <widget class="Line" name="line">
+       <property name="frameShadow">
+        <enum>QFrame::Shadow::Raised</enum>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Orientation::Vertical</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="pushButton_quit">
        <property name="text">
         <string>退出</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="Line" name="line_2">
+       <property name="frameShadow">
+        <enum>QFrame::Shadow::Raised</enum>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Orientation::Vertical</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="checkBox_auto_calc_similar">
+       <property name="text">
+        <string>实时显示相似度</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="checkBox_auto_image_diff">
+       <property name="text">
+        <string>实时显示图片差异</string>
        </property>
       </widget>
      </item>
