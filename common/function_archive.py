@@ -65,7 +65,8 @@ def save_preview_image(archive: str, image_path_inside: str, preview_image_path:
     width, height = image.size
     resize_width = int(height_zoom_out * width / height)
     image = image.resize((resize_width, height_zoom_out), Image.LANCZOS)
-    # 保存到本地
+    # 清除清除所有元数据，保存到本地
+    image.info.clear()
     image.save(preview_image_path)
 
     return preview_image_path
