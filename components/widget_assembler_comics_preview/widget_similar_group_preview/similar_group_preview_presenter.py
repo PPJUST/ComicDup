@@ -21,6 +21,7 @@ class SimilarGroupPreviewPresenter(QObject):
 
         self.widgets_comic = []  # 显示的漫画控件列表
         self.is_reconfirm_before_delete = True  # 删除前是否需要再次确认（在此模块单独存储一次，用于创建子模块时进行赋值）
+        self.is_show_similar = True  # 是否显示相似度
 
         # 绑定信号
         self._bind_signal()
@@ -34,17 +35,26 @@ class SimilarGroupPreviewPresenter(QObject):
         self.widgets_comic.append(self.widget_comic_preview)
         self.viewer.add_widget(self.widget_comic_preview.get_viewer())
 
+        if self.is_show_similar:
+            self.show_current_page_similar()
+
     def turn_to_previous_page(self, page_count: int = 1):
         """全局翻页-向前翻页"""
         for widget in self.widgets_comic:
             widget: ComicPreviewPresenter
             widget.turn_to_previous_page(page_count)
 
+        if self.is_show_similar:
+            self.show_current_page_similar()
+
     def turn_to_next_page(self, page_count: int = 1):
         """全局翻页-向后翻页"""
         for widget in self.widgets_comic:
             widget: ComicPreviewPresenter
             widget.turn_to_next_page(page_count)
+
+        if self.is_show_similar:
+            self.show_current_page_similar()
 
     def set_is_reconfirm_before_delete(self, is_reconfirm: bool):
         """设置是否删除前再次确认"""
@@ -60,6 +70,9 @@ class SimilarGroupPreviewPresenter(QObject):
             widget: ComicPreviewPresenter
             widget.reset_page()
 
+        if self.is_show_similar:
+            self.show_current_page_similar()
+
     def comic_deleted(self):
         """漫画被删除后的操作"""
         widget_presenter: ComicPreviewPresenter = self.sender()
@@ -72,6 +85,19 @@ class SimilarGroupPreviewPresenter(QObject):
         widget_presenter.deleteLater()
         # 发送信号
         self.ComicDeleted.emit(deleted_comic_info)
+
+        if self.is_show_similar:
+            self.show_current_page_similar()
+
+    def show_current_page_similar(self):
+        """显示不同漫画当前页码的图片之间的相似度"""
+        # 以第一本漫画作为基准
+        # 计算第一本漫画当前页图片的hash值
+        base_hash_ = self.widgets_comic[0].calc_current_image_hash()
+        # 显示同组漫画当前页图片的相似度
+        for widget in self.widgets_comic:
+            widget: ComicPreviewPresenter
+            widget.compare_current_image_hash(base_hash_)
 
     def quit(self):
         """退出"""

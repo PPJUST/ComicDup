@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'windowtBkQlj.ui'
+## Form generated from reading UI file 'windowUExeJO.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.1
 ##
@@ -16,8 +16,9 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QFrame, QGroupBox, QHBoxLayout,
-    QMainWindow, QPushButton, QSizePolicy, QSpacerItem,
-    QStackedWidget, QTabWidget, QVBoxLayout, QWidget)
+    QMainWindow, QPushButton, QScrollArea, QSizePolicy,
+    QSpacerItem, QStackedWidget, QTabWidget, QVBoxLayout,
+    QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -38,19 +39,33 @@ class Ui_MainWindow(object):
         self.horizontalLayout_2.setSpacing(3)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.horizontalLayout_2.setContentsMargins(3, 3, 3, 3)
-        self.verticalLayout_3 = QVBoxLayout()
-        self.verticalLayout_3.setSpacing(3)
-        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
-        self.groupBox_exec = QGroupBox(self.tab_home)
+        self.scrollArea = QScrollArea(self.tab_home)
+        self.scrollArea.setObjectName(u"scrollArea")
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.scrollArea.sizePolicy().hasHeightForWidth())
+        self.scrollArea.setSizePolicy(sizePolicy)
+        self.scrollArea.setMinimumSize(QSize(250, 0))
+        self.scrollArea.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.scrollArea.setWidgetResizable(True)
+        self.scrollAreaWidgetContents = QWidget()
+        self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 248, 764))
+        self.verticalLayout_12 = QVBoxLayout(self.scrollAreaWidgetContents)
+        self.verticalLayout_12.setSpacing(3)
+        self.verticalLayout_12.setObjectName(u"verticalLayout_12")
+        self.verticalLayout_12.setContentsMargins(3, 3, 3, 3)
+        self.groupBox_exec = QGroupBox(self.scrollAreaWidgetContents)
         self.groupBox_exec.setObjectName(u"groupBox_exec")
         self.verticalLayout_5 = QVBoxLayout(self.groupBox_exec)
         self.verticalLayout_5.setSpacing(0)
         self.verticalLayout_5.setObjectName(u"verticalLayout_5")
         self.verticalLayout_5.setContentsMargins(0, 0, 0, 0)
 
-        self.verticalLayout_3.addWidget(self.groupBox_exec)
+        self.verticalLayout_12.addWidget(self.groupBox_exec)
 
-        self.groupBox_setting = QGroupBox(self.tab_home)
+        self.groupBox_setting = QGroupBox(self.scrollAreaWidgetContents)
         self.groupBox_setting.setObjectName(u"groupBox_setting")
         self.verticalLayout_6 = QVBoxLayout(self.groupBox_setting)
         self.verticalLayout_6.setSpacing(0)
@@ -89,23 +104,24 @@ class Ui_MainWindow(object):
         self.verticalLayout_6.addLayout(self.verticalLayout_setting_3)
 
 
-        self.verticalLayout_3.addWidget(self.groupBox_setting)
+        self.verticalLayout_12.addWidget(self.groupBox_setting)
 
-        self.groupBox_cache = QGroupBox(self.tab_home)
+        self.groupBox_cache = QGroupBox(self.scrollAreaWidgetContents)
         self.groupBox_cache.setObjectName(u"groupBox_cache")
         self.verticalLayout_11 = QVBoxLayout(self.groupBox_cache)
         self.verticalLayout_11.setSpacing(0)
         self.verticalLayout_11.setObjectName(u"verticalLayout_11")
         self.verticalLayout_11.setContentsMargins(0, 0, 0, 0)
 
-        self.verticalLayout_3.addWidget(self.groupBox_cache)
+        self.verticalLayout_12.addWidget(self.groupBox_cache)
 
         self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        self.verticalLayout_3.addItem(self.verticalSpacer)
+        self.verticalLayout_12.addItem(self.verticalSpacer)
 
+        self.scrollArea.setWidget(self.scrollAreaWidgetContents)
 
-        self.horizontalLayout_2.addLayout(self.verticalLayout_3)
+        self.horizontalLayout_2.addWidget(self.scrollArea)
 
         self.stackedWidget = QStackedWidget(self.tab_home)
         self.stackedWidget.setObjectName(u"stackedWidget")
@@ -160,6 +176,7 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_2.addWidget(self.stackedWidget)
 
+        self.horizontalLayout_2.setStretch(1, 1)
         self.tabWidget.addTab(self.tab_home, "")
         self.tab_result = QWidget()
         self.tab_result.setObjectName(u"tab_result")
@@ -195,7 +212,7 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
 
         self.tabWidget.setCurrentIndex(0)
-        self.stackedWidget.setCurrentIndex(0)
+        self.stackedWidget.setCurrentIndex(1)
 
 
         QMetaObject.connectSlotsByName(MainWindow)

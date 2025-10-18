@@ -1,14 +1,11 @@
-import io
-import math
 import os
 from abc import ABC, abstractmethod
 
 import lzytools.archive
 import lzytools.file
 import lzytools.image
-from PIL import Image, ImageFile
 
-from common import function_archive
+from common import function_archive, function_image
 from common.class_comic import ComicInfoBase
 from common.class_config import TYPES_HASH_ALGORITHM, SimilarAlgorithm, FileTypes
 
@@ -52,31 +49,6 @@ class ImageInfoBase(ABC):
     @abstractmethod
     def calc_hash(self, hash_type: TYPES_HASH_ALGORITHM, hash_length: int):
         """计算图片hash值"""
-
-    def _calc_hash(self, image_pil: ImageFile, hash_type: str, hash_size: int):
-        """计算ImageFile图片对象的指定hash值"""
-        hash_dict = lzytools.image.calc_hash(image_pil, hash_type, hash_size)
-        if hash_dict['ahash']:
-            if len(hash_dict['ahash']) == 64:
-                self.aHash_64 = hash_dict['ahash']
-            elif len(hash_dict['ahash']) == 144:
-                self.aHash_144 = hash_dict['ahash']
-            elif len(hash_dict['ahash']) == 256:
-                self.aHash_256 = hash_dict['ahash']
-        elif hash_dict['phash']:
-            if len(hash_dict['phash']) == 64:
-                self.pHash_64 = hash_dict['phash']
-            elif len(hash_dict['phash']) == 144:
-                self.pHash_144 = hash_dict['phash']
-            elif len(hash_dict['phash']) == 256:
-                self.pHash_256 = hash_dict['phash']
-        elif hash_dict['dhash']:
-            if len(hash_dict['dhash']) == 64:
-                self.dHash_64 = hash_dict['dhash']
-            elif len(hash_dict['dhash']) == 144:
-                self.dHash_144 = hash_dict['dhash']
-            elif len(hash_dict['dhash']) == 256:
-                self.dHash_256 = hash_dict['dhash']
 
     def update_info_by_comic_info(self, comic_info: ComicInfoBase):
         """根据漫画信息类更新信息"""
@@ -179,14 +151,29 @@ class ImageInfoFolder(ImageInfoBase):
 
     def calc_hash(self, hash_type: TYPES_HASH_ALGORITHM, hash_length: int):
         super().calc_hash(hash_type, hash_length)
-        # 提取参数
-        hash_type_str = hash_type.text
-        hash_size = int(math.sqrt(hash_length))
+        hash_ = function_image.calc_image_hash(self.image_path, hash_type, hash_length)
 
-        # 创建ImageFile对象
-        image_pil = Image.open(self.image_path)
-
-        self._calc_hash(image_pil, hash_type_str, hash_size)
+        if isinstance(hash_type, SimilarAlgorithm.aHash):
+            if len(hash_) == 64:
+                self.aHash_64 = hash_
+            elif len(hash_) == 144:
+                self.aHash_144 = hash_
+            elif len(hash_) == 256:
+                self.aHash_256 = hash_
+        elif isinstance(hash_type, SimilarAlgorithm.pHash):
+            if len(hash_) == 64:
+                self.pHash_64 = hash_
+            elif len(hash_) == 144:
+                self.pHash_144 = hash_
+            elif len(hash_) == 256:
+                self.pHash_256 = hash_
+        elif isinstance(hash_type, SimilarAlgorithm.dHash):
+            if len(hash_) == 64:
+                self.dHash_64 = hash_
+            elif len(hash_) == 144:
+                self.dHash_144 = hash_
+            elif len(hash_) == 256:
+                self.dHash_256 = hash_
 
     def is_useful(self):
         super().is_useful()
@@ -209,22 +196,33 @@ class ImageInfoArchive(ImageInfoBase):
 
     def calc_filesize(self):
         super().calc_filesize()
-        self.filesize = function_archive.get_filesize_inside(self.belong_comic_path, self.image_path)
 
+        self.filesize = function_archive.get_filesize_inside(self.belong_comic_path, self.image_path)
     def calc_hash(self, hash_type: TYPES_HASH_ALGORITHM, hash_length: int):
         super().calc_hash(hash_type, hash_length)
-        # 提取参数
-        hash_type_str = hash_type.text
-        hash_size = int(math.sqrt(hash_length))
+        hash_ = function_image.calc_archive_image_hash(self.belong_comic_path, self.image_path, hash_type, hash_length)
 
-        # 读取压缩文件中的图片
-        image_bytes = lzytools.archive.read_image(self.belong_comic_path, self.image_path)
-        # 将bytes读取到内存流中
-        bytes_io = io.BytesIO(image_bytes)
-        #  使用 PIL 打开内存流，创建ImageFile对象
-        image_pil = Image.open(bytes_io)
-
-        self._calc_hash(image_pil, hash_type_str, hash_size)
+        if isinstance(hash_type, SimilarAlgorithm.aHash):
+            if len(hash_) == 64:
+                self.aHash_64 = hash_
+            elif len(hash_) == 144:
+                self.aHash_144 = hash_
+            elif len(hash_) == 256:
+                self.aHash_256 = hash_
+        elif isinstance(hash_type, SimilarAlgorithm.pHash):
+            if len(hash_) == 64:
+                self.pHash_64 = hash_
+            elif len(hash_) == 144:
+                self.pHash_144 = hash_
+            elif len(hash_) == 256:
+                self.pHash_256 = hash_
+        elif isinstance(hash_type, SimilarAlgorithm.dHash):
+            if len(hash_) == 64:
+                self.dHash_64 = hash_
+            elif len(hash_) == 144:
+                self.dHash_144 = hash_
+            elif len(hash_) == 256:
+                self.dHash_256 = hash_
 
     def is_useful(self):
         super().is_useful()

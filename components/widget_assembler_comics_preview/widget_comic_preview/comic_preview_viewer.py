@@ -24,12 +24,18 @@ class ComicPreviewViewer(QWidget):
         self.ui.verticalLayout_preview.addWidget(self.label_image_preview)
 
         # 添加一个悬浮于左上角的label，用于显示图片信息
-        self.label_floating = QLabel(self)
-        self.label_floating.setGeometry(5, 5, 150, 20)
-        self.label_floating.setWindowFlags(Qt.WindowType.SubWindow)
-        self.label_floating.setStyleSheet("color: blue")
-        self.label_floating.show()
+        self.label_floating_image_info = QLabel(self)
+        self.label_floating_image_info.setGeometry(5, 5, 150, 20)
+        self.label_floating_image_info.setWindowFlags(Qt.WindowType.SubWindow)
+        self.label_floating_image_info.setStyleSheet("color: blue")
+        self.label_floating_image_info.show()
 
+        # 添加一个悬浮于左上角的label，用于显示相似度
+        self.label_floating_similar = QLabel(self)
+        self.label_floating_similar.setGeometry(5, 25, 50, 20)
+        self.label_floating_similar.setWindowFlags(Qt.WindowType.SubWindow)
+        self.label_floating_similar.setStyleSheet("color: blue")
+        self.label_floating_similar.show()
         # 绑定信号
         self._bind_signal()
 
@@ -44,6 +50,7 @@ class ComicPreviewViewer(QWidget):
     def show_bytes_image(self, data: bytes):
         """显示bytes图像"""
         self.label_image_preview.set_bytes_image(data)
+        self._show_image_info()
 
     def set_icon_archive(self):
         """设置文件类型图片为压缩文件"""
@@ -73,12 +80,16 @@ class ComicPreviewViewer(QWidget):
         """设置页数"""
         self.ui.label_page_count.setText(str(page_count))
 
+    def show_similar(self, similar: str):
+        """显示当前图片的相似度"""
+        self.label_floating_similar.setText(similar)
+
     def _show_image_info(self):
         """显示当前图片的信息"""
         width = self.label_image_preview.pixmap().size().width()
         height = self.label_image_preview.pixmap().size().height()
         image_size = f'{width} x {height}'
-        self.label_floating.setText(f'{image_size}')
+        self.label_floating_image_info.setText(f'{image_size}')
 
     def _bind_signal(self):
         """绑定信号"""

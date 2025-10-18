@@ -2,10 +2,11 @@ import os
 
 import lzytools.archive
 import lzytools.file
+import lzytools.image
 from PySide6.QtCore import QObject, Signal
 from PySide6.QtWidgets import QMessageBox
 
-from common import function_file
+from common import function_file, function_image
 from common.class_comic import ComicInfoBase
 from common.class_config import FileType
 from components.widget_assembler_comics_preview.widget_comic_preview.comic_preview_model import ComicPreviewModel
@@ -74,6 +75,31 @@ class ComicPreviewPresenter(QObject):
             inside_image_path = self.page_paths[page_index - 1]
             image_bytes = lzytools.archive.read_image(archive_path, inside_image_path)
             self.viewer.show_bytes_image(image_bytes)
+
+    def calc_current_image_hash(self):
+        """计算当前显示的图片的hash值"""
+        # 简单计算64位的dhash
+        comic_type = self.comic_info.filetype
+        if isinstance(comic_type, FileType.Folder) or comic_type == FileType.Folder:
+            image_path = self.page_paths[self.page_index - 1]
+            hash_ = function_image.calc_image_hash(image_path, 'dhash', 64)
+        elif isinstance(comic_type, FileType.Archive) or comic_type == FileType.Archive:
+            archive_path = self.comic_info.filepath
+            inside_image_path = self.page_paths[self.page_index - 1]
+            hash_ = function_image.calc_archive_image_hash(archive_path, inside_image_path, 'dhash', 64)
+        else:
+            hash_ = ''
+
+        return hash_
+
+    def compare_current_image_hash(self, compare_hash: str):
+        """计算当前图片的hash值，并于提供的hash值进行对比，计算相似度，并显示在ui上"""
+        # 计算相似度
+        self_hash = self.calc_current_image_hash()
+        similar = lzytools.image.calc_hash_similar(self_hash, compare_hash)
+        similar_str = f'{int(similar * 100)}%'
+        # 显示在ui的左上角
+        self.viewer.show_similar(similar_str)
 
     def turn_to_previous_page(self, page_count: int = 1):
         """向前翻页"""
