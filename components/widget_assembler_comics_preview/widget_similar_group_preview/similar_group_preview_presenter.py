@@ -40,6 +40,12 @@ class SimilarGroupPreviewPresenter(QObject):
 
     def set_is_show_similar(self, is_enable: bool):
         """是否显示相似度"""
+        # 设置子控件的变量
+        for widget in self.widgets_comic:
+            widget: ComicPreviewPresenter
+            widget.set_is_show_similar(is_enable)
+
+        # 计算并显示或清除相似度
         self.is_show_similar = is_enable
         if self.is_show_similar:
             self.show_current_page_similar()

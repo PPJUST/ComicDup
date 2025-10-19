@@ -26,6 +26,8 @@ class ComicPreviewPresenter(QObject):
         self.page_paths = []  # 页面列表
         self.page_index = 1  # 当前页码（从1开始）
         self.is_reconfirm_before_delete = True  # 删除前是否需要再次确认
+        self.is_show_similar = False  # 是否显示相似度
+        self.compare_hash = ''  # 用于显示相似度时使用的对比hash值
 
         # 绑定信号
         self._bind_signal()
@@ -76,6 +78,10 @@ class ComicPreviewPresenter(QObject):
             image_bytes = lzytools.archive.read_image(archive_path, inside_image_path)
             self.viewer.show_bytes_image(image_bytes)
 
+    def set_is_show_similar(self, is_enable: bool):
+        """是否显示相似度"""
+        self.is_show_similar = is_enable
+
     def calc_current_image_hash(self):
         """计算当前显示的图片的hash值"""
         # 简单计算64位的dhash
@@ -94,6 +100,8 @@ class ComicPreviewPresenter(QObject):
 
     def compare_current_image_hash(self, compare_hash: str):
         """计算当前图片的hash值，并于提供的hash值进行对比，计算相似度，并显示在ui上"""
+        self.is_show_similar = True
+        self.compare_hash = compare_hash
         # 计算相似度
         self_hash = self.calc_current_image_hash()
         similar = lzytools.image.calc_hash_similar(self_hash, compare_hash)
@@ -116,6 +124,9 @@ class ComicPreviewPresenter(QObject):
         self.show_page(self.page_index)
         self.viewer.set_current_page(self.page_index)
 
+        if self.is_show_similar:
+            self.compare_current_image_hash(self.compare_hash)
+
     def turn_to_next_page(self, page_count: int = 1):
         """向后翻页"""
         if self.page_index == len(self.page_paths):  # 在最后一页时，如果需要切换到下一页，则切换到第一页
@@ -127,11 +138,17 @@ class ComicPreviewPresenter(QObject):
         self.show_page(self.page_index)
         self.viewer.set_current_page(self.page_index)
 
+        if self.is_show_similar:
+            self.compare_current_image_hash(self.compare_hash)
+
     def reset_page(self):
         """重置页码"""
         self.page_index = 1
         self.show_page(self.page_index)
         self.viewer.set_current_page(self.page_index)
+
+        if self.is_show_similar:
+            self.compare_current_image_hash(self.compare_hash)
 
     def open_path(self):
         """打开漫画文件"""
