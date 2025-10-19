@@ -20,6 +20,10 @@ class SettingAlgorithmViewer(QWidget):
         self.ui = Ui_Form()
         self.ui.setupUi(self)
 
+        # 设置数值类选项的上下限
+        self.ui.spinBox_similarity_threshold.setRange(50, 100)
+        self.ui.spinBox_similarity_threshold.setSingleStep(5)
+
         # 加载初始设置
         self._load_setting()
 

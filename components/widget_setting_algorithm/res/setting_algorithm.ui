@@ -34,7 +34,7 @@
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>基础算法：</string>
+        <string>基础算法</string>
        </property>
       </widget>
      </item>

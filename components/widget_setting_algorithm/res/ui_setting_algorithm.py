@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'setting_algorithmPNprAo.ui'
+## Form generated from reading UI file 'setting_algorithmnpaNBr.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.1
 ##
@@ -103,7 +103,7 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
-        self.label.setText(QCoreApplication.translate("Form", u"\u57fa\u7840\u7b97\u6cd5\uff1a", None))
+        self.label.setText(QCoreApplication.translate("Form", u"\u57fa\u7840\u7b97\u6cd5", None))
         self.checkBox_enhance_algorithm.setText(QCoreApplication.translate("Form", u"\u589e\u5f3a\u7b97\u6cd5", None))
         self.label_2.setText(QCoreApplication.translate("Form", u"\u76f8\u4f3c\u5ea6\u9608\u503c", None))
         self.label_3.setText(QCoreApplication.translate("Form", u"%", None))

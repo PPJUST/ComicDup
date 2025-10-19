@@ -1,3 +1,4 @@
+import os
 from typing import Union
 
 from PySide6.QtCore import Signal, QEvent
@@ -18,6 +19,11 @@ class SettingMatchViewer(QWidget):
         self.ui = Ui_Form()
         self.ui.setupUi(self)
 
+        # 设置数值类选项的上下限
+        self.ui.spinBox_extract_pages.setRange(1, 100)
+        self.ui.spinBox_same_parent_folder.setRange(1, 10)
+        self.ui.spinBox_thread_count.setRange(1, os.cpu_count())  # 上限为cpu逻辑核心数
+
         # 加载初始设置
         self._load_setting()
 
@@ -27,8 +33,11 @@ class SettingMatchViewer(QWidget):
         # 安装事件过滤器，禁用滚轮动作
         self.ui.spinBox_thread_count.installEventFilter(self)
         self.ui.spinBox_extract_pages.installEventFilter(self)
+        self.ui.spinBox_same_parent_folder.installEventFilter(self)
 
         self.ui.checkBox_match_similar_filename.setEnabled(False)  # 备忘录
+        self.ui.checkBox_same_parent_folder.setEnabled(False)  # 备忘录
+        self.ui.spinBox_same_parent_folder.setEnabled(False)  # 备忘录
 
     def set_extract_pages(self, count: int):
         """设置提取页数"""

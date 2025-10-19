@@ -15,6 +15,9 @@ class SettingComicViewer(QWidget):
         self.ui = Ui_Form()
         self.ui.setupUi(self)
 
+        # 设置数值类选项的上下限
+        self.ui.spinBox_pages_lower_limit.setRange(1, 100)
+
         # 加载初始设置
         self._load_setting()
 

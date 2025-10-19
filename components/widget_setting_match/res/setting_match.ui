@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>125</width>
-    <height>99</height>
+    <width>175</width>
+    <height>125</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -58,11 +58,32 @@
     </widget>
    </item>
    <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QCheckBox" name="checkBox_same_parent_folder">
+       <property name="text">
+        <string>仅匹配同</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="spinBox_same_parent_folder"/>
+     </item>
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>层父目录</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
       <widget class="QLabel" name="label_2">
        <property name="text">
-        <string>线程数：</string>
+        <string>线程数</string>
        </property>
       </widget>
      </item>

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'setting_matchaQQiFT.ui'
+## Form generated from reading UI file 'setting_matchvyIAYD.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.8.1
 ##
@@ -22,7 +22,7 @@ class Ui_Form(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        Form.resize(125, 99)
+        Form.resize(175, 125)
         self.verticalLayout = QVBoxLayout(Form)
         self.verticalLayout.setSpacing(3)
         self.verticalLayout.setObjectName(u"verticalLayout")
@@ -52,6 +52,26 @@ class Ui_Form(object):
 
         self.verticalLayout.addWidget(self.checkBox_match_similar_filename)
 
+        self.horizontalLayout_2 = QHBoxLayout()
+        self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
+        self.checkBox_same_parent_folder = QCheckBox(Form)
+        self.checkBox_same_parent_folder.setObjectName(u"checkBox_same_parent_folder")
+
+        self.horizontalLayout_2.addWidget(self.checkBox_same_parent_folder)
+
+        self.spinBox_same_parent_folder = QSpinBox(Form)
+        self.spinBox_same_parent_folder.setObjectName(u"spinBox_same_parent_folder")
+
+        self.horizontalLayout_2.addWidget(self.spinBox_same_parent_folder)
+
+        self.label = QLabel(Form)
+        self.label.setObjectName(u"label")
+
+        self.horizontalLayout_2.addWidget(self.label)
+
+
+        self.verticalLayout.addLayout(self.horizontalLayout_2)
+
         self.horizontalLayout_3 = QHBoxLayout()
         self.horizontalLayout_3.setObjectName(u"horizontalLayout_3")
         self.label_2 = QLabel(Form)
@@ -78,6 +98,8 @@ class Ui_Form(object):
         self.label_3.setText(QCoreApplication.translate("Form", u"\u63d0\u53d6\u6f2b\u753b\u9875\u6570", None))
         self.checkBox_match_cache.setText(QCoreApplication.translate("Form", u"\u5339\u914d\u7f13\u5b58\u6570\u636e", None))
         self.checkBox_match_similar_filename.setText(QCoreApplication.translate("Form", u"\u4ec5\u5339\u914d\u76f8\u4f3c\u6587\u4ef6\u540d", None))
-        self.label_2.setText(QCoreApplication.translate("Form", u"\u7ebf\u7a0b\u6570\uff1a", None))
+        self.checkBox_same_parent_folder.setText(QCoreApplication.translate("Form", u"\u4ec5\u5339\u914d\u540c", None))
+        self.label.setText(QCoreApplication.translate("Form", u"\u5c42\u7236\u76ee\u5f55", None))
+        self.label_2.setText(QCoreApplication.translate("Form", u"\u7ebf\u7a0b\u6570", None))
     # retranslateUi
 
