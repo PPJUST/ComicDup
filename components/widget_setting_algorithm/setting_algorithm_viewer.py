@@ -1,7 +1,7 @@
 from typing import Union
 
-from PySide6.QtCore import Signal
-from PySide6.QtWidgets import QWidget, QApplication
+from PySide6.QtCore import Signal, QEvent
+from PySide6.QtWidgets import QWidget, QApplication, QComboBox, QSpinBox
 
 from common.class_config import TEXT_HASH_ALGORITHM, TEXT_HASH_LENGTH, TEXT_ENHANCE_ALGORITHM
 from components.widget_setting_algorithm.res.ui_setting_algorithm import Ui_Form
@@ -25,6 +25,12 @@ class SettingAlgorithmViewer(QWidget):
 
         # 绑定信号
         self._bind_signal()
+
+        # 安装事件过滤器，禁用滚轮动作
+        self.ui.comboBox_basic_algorithm.installEventFilter(self)
+        self.ui.comboBox_enhance_algorithm.installEventFilter(self)
+        self.ui.comboBox_hash_length.installEventFilter(self)
+        self.ui.spinBox_similarity_threshold.installEventFilter(self)
 
         self.ui.checkBox_enhance_algorithm.setEnabled(False)  # 备忘录
         self.ui.comboBox_enhance_algorithm.setEnabled(False)  # 备忘录
@@ -67,6 +73,15 @@ class SettingAlgorithmViewer(QWidget):
         self.ui.comboBox_enhance_algorithm.currentTextChanged.connect(self.ChangeEnhanceAlgorithm.emit)
         self.ui.spinBox_similarity_threshold.valueChanged.connect(self.ChangeSimilarThreshold.emit)
         self.ui.comboBox_hash_length.currentTextChanged.connect(self.ChangeHashLength.emit)
+
+    def eventFilter(self, obj, event):
+        # 拦截控件的滚轮动作
+        if isinstance(obj, QComboBox) and event.type() == QEvent.Wheel:
+            return True
+        elif isinstance(obj, QSpinBox) and event.type() == QEvent.Wheel:
+            return True
+        # 其他事件正常传递
+        return super().eventFilter(obj, event)
 
 
 if __name__ == "__main__":

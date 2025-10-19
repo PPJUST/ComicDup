@@ -1,7 +1,7 @@
 from typing import Union
 
-from PySide6.QtCore import Signal
-from PySide6.QtWidgets import QWidget, QApplication
+from PySide6.QtCore import Signal, QEvent
+from PySide6.QtWidgets import QWidget, QApplication, QComboBox, QSpinBox
 
 from components.widget_setting_match.res.ui_setting_match import Ui_Form
 
@@ -23,6 +23,10 @@ class SettingMatchViewer(QWidget):
 
         # 绑定信号
         self._bind_signal()
+
+        # 安装事件过滤器，禁用滚轮动作
+        self.ui.spinBox_thread_count.installEventFilter(self)
+        self.ui.spinBox_extract_pages.installEventFilter(self)
 
         self.ui.checkBox_match_similar_filename.setEnabled(False)  # 备忘录
 
@@ -52,6 +56,15 @@ class SettingMatchViewer(QWidget):
         self.ui.checkBox_match_cache.stateChanged.connect(self.ChangeIsMatchCache.emit)
         self.ui.checkBox_match_similar_filename.stateChanged.connect(self.ChangeIsMatchSimilarFilename.emit)
         self.ui.spinBox_thread_count.valueChanged.connect(self.ChangeThreadCount.emit)
+
+    def eventFilter(self, obj, event):
+        # 拦截控件的滚轮动作
+        if isinstance(obj, QComboBox) and event.type() == QEvent.Wheel:
+            return True
+        elif isinstance(obj, QSpinBox) and event.type() == QEvent.Wheel:
+            return True
+        # 其他事件正常传递
+        return super().eventFilter(obj, event)
 
 
 if __name__ == "__main__":

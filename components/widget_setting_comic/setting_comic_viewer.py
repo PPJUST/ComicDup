@@ -1,5 +1,5 @@
-from PySide6.QtCore import Signal
-from PySide6.QtWidgets import QWidget, QApplication
+from PySide6.QtCore import Signal, QEvent
+from PySide6.QtWidgets import QWidget, QApplication, QComboBox, QSpinBox
 
 from components.widget_setting_comic.res.ui_setting_comic import Ui_Form
 
@@ -20,6 +20,9 @@ class SettingComicViewer(QWidget):
 
         # 绑定信号
         self._bind_signal()
+
+        # 安装事件过滤器，禁用滚轮动作
+        self.ui.spinBox_pages_lower_limit.installEventFilter(self)
 
     def set_pages_lower_limit(self, count: int):
         """设置识别为漫画的页数下限"""
@@ -42,6 +45,15 @@ class SettingComicViewer(QWidget):
         self.ui.spinBox_pages_lower_limit.valueChanged.connect(self.ChangePagesLowerLimit.emit)
         self.ui.checkBox_analyze_archive.stateChanged.connect(self.ChangeIsAnalyzeArchive.emit)
         self.ui.checkBox_allow_other_filetypes.stateChanged.connect(self.ChangeIsAllowOtherFiletypes.emit)
+
+    def eventFilter(self, obj, event):
+        # 拦截控件的滚轮动作
+        if isinstance(obj, QComboBox) and event.type() == QEvent.Wheel:
+            return True
+        elif isinstance(obj, QSpinBox) and event.type() == QEvent.Wheel:
+            return True
+        # 其他事件正常传递
+        return super().eventFilter(obj, event)
 
 
 if __name__ == "__main__":

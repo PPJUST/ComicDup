@@ -70,10 +70,11 @@ class ThreadCompareHash(ThreadPattern):
                 hash_ = futures[future]
                 try:
                     similar_group = future.result()
-                    # 即使只有其自身，仍旧写入相似组，因为可能存在漫画的复制品，导致hash值相同
-                    self.similar_hash_group.append(similar_group)
-                    completed_count += 1
-                    self.SignalRate.emit(f'{completed_count}/{total}')
+                    # 即使只有其自身，仍旧写入相似组，因为可能存在漫画的复制品，导致hash值相同，但是跳过空值（纯色页）
+                    if similar_group:
+                        self.similar_hash_group.append(similar_group)
+                        completed_count += 1
+                        self.SignalRate.emit(f'{completed_count}/{total}')
                 except Exception as e:
                     self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning, f'对比{hash_}失败：{str(e)}')
 
@@ -95,7 +96,6 @@ class ThreadCompareHash(ThreadPattern):
 
     def _compare(self, hash_: str, match_hash_list: List[str]):
         """对比单个hash值与其他hash值的相似度"""
-        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.RateInfo, f'开始对比：{hash_}')
         similar = {hash_}  # 集合，用于去重
         if hash_ in match_hash_list:
             match_hash_list.remove(hash_)
@@ -103,7 +103,7 @@ class ThreadCompareHash(ThreadPattern):
         # 统计hash中0和1个个数，剔除纯色图片（占比大于90%）
         zero_count = hash_.count('0')
         if zero_count / len(hash_) > 0.9 or zero_count / len(hash_) < 0.1:
-            return list(similar)
+            return None
 
         zero_count = hash_.count('0')
         for hash_compare in match_hash_list:

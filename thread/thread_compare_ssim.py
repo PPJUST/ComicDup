@@ -12,7 +12,7 @@ class ThreadCompareSSIM(ThreadPattern):
 
     def __init__(self):
         super().__init__()
-        self.step_index = 5
+        self.step_index = 4
         self.step_info = '计算SSIM相似度'
 
         # 需要匹配的图片组列表

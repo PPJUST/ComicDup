@@ -100,6 +100,7 @@ class WindowPresenter(QObject):
         """执行查重"""
         # 开始计时
         self.widget_runtime_info.start_time()
+        self.widget_runtime_info.update_step_count(4)
 
         # 获取需要检索的路径
         search_paths = self.widget_search_list.get_paths()

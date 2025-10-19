@@ -19,6 +19,9 @@ class WindowViewer(QMainWindow):
         # 设置图标
         self.setWindowIcon(base64_to_pixmap(ICON_LOGO))
 
+        # 切换到默认页
+        self.turn_page_search_list()
+
     def turn_page_search_list(self):
         """翻页到搜索目录页"""
         self.ui.stackedWidget.setCurrentIndex(0)
