@@ -15,6 +15,7 @@ class SimilarGroupPreviewViewer(QWidget):
     NextPage2 = Signal(name='下一页2')
     Reset = Signal(name='重置页码')
     Quit = Signal(name='退出')
+    IsShowSimilar = Signal(bool, name='是否显示图片相似度')
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -27,7 +28,6 @@ class SimilarGroupPreviewViewer(QWidget):
         # 绑定信号
         self._bind_signal()
 
-        self.ui.checkBox_auto_calc_similar.setEnabled(False)  # 备忘录
         self.ui.checkBox_auto_image_diff.setEnabled(False)  # 备忘录
 
     def add_widget(self, widget: QWidget):
@@ -76,6 +76,7 @@ class SimilarGroupPreviewViewer(QWidget):
         self.ui.toolButton_next2.clicked.connect(self.NextPage2.emit)
         self.ui.toolButton_reset.clicked.connect(self.Reset.emit)
         self.ui.pushButton_quit.clicked.connect(self.Quit.emit)
+        self.ui.checkBox_auto_calc_similar.stateChanged.connect(self.IsShowSimilar.emit)
 
 
 if __name__ == "__main__":

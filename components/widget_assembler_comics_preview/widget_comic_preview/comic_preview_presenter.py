@@ -101,6 +101,10 @@ class ComicPreviewPresenter(QObject):
         # 显示在ui的左上角
         self.viewer.show_similar(similar_str)
 
+    def clear_similar_info(self):
+        """清除相似度信息"""
+        self.viewer.show_similar('')
+
     def turn_to_previous_page(self, page_count: int = 1):
         """向前翻页"""
         if self.page_index == 1:  # 在第一页时，如果需要切换到上一页，则切换到最后一页

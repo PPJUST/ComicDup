@@ -13,10 +13,12 @@ class AssemblerDialogComicsPreview(QDialog):
         super().__init__()
         self.setWindowTitle('漫画预览器')
         self.setModal(True)
+        self.resize(800, 600)
 
         # 添加控件实例到dialog中
         self.presenter = widget_similar_group_preview.get_presenter()
         main_layout = QVBoxLayout(self)
+        main_layout.setContentsMargins(0, 0, 0, 0)
         main_layout.addWidget(self.presenter.get_viewer())
 
         # 绑定信号

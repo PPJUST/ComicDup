@@ -21,7 +21,7 @@ class SimilarGroupPreviewPresenter(QObject):
 
         self.widgets_comic = []  # 显示的漫画控件列表
         self.is_reconfirm_before_delete = True  # 删除前是否需要再次确认（在此模块单独存储一次，用于创建子模块时进行赋值）
-        self.is_show_similar = True  # 是否显示相似度
+        self.is_show_similar = False  # 是否显示相似度
 
         # 绑定信号
         self._bind_signal()
@@ -37,6 +37,14 @@ class SimilarGroupPreviewPresenter(QObject):
 
         if self.is_show_similar:
             self.show_current_page_similar()
+
+    def set_is_show_similar(self, is_enable: bool):
+        """是否显示相似度"""
+        self.is_show_similar = is_enable
+        if self.is_show_similar:
+            self.show_current_page_similar()
+        else:
+            self.clear_similar()
 
     def turn_to_previous_page(self, page_count: int = 1):
         """全局翻页-向前翻页"""
@@ -91,6 +99,7 @@ class SimilarGroupPreviewPresenter(QObject):
 
     def show_current_page_similar(self):
         """显示不同漫画当前页码的图片之间的相似度"""
+        print('显示不同漫画当前页码的图片之间的相似度')
         # 以第一本漫画作为基准
         # 计算第一本漫画当前页图片的hash值
         base_hash_ = self.widgets_comic[0].calc_current_image_hash()
@@ -98,6 +107,12 @@ class SimilarGroupPreviewPresenter(QObject):
         for widget in self.widgets_comic:
             widget: ComicPreviewPresenter
             widget.compare_current_image_hash(base_hash_)
+
+    def clear_similar(self):
+        """清除相似度"""
+        for widget in self.widgets_comic:
+            widget: ComicPreviewPresenter
+            widget.clear_similar_info()
 
     def quit(self):
         """退出"""
@@ -121,3 +136,4 @@ class SimilarGroupPreviewPresenter(QObject):
         self.viewer.NextPage2.connect(lambda: self.turn_to_next_page(5))
         self.viewer.Reset.connect(self.reset_page_number)
         self.viewer.Quit.connect(self.quit)
+        self.viewer.IsShowSimilar.connect(self.set_is_show_similar)

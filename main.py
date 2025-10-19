@@ -37,8 +37,9 @@ def set_working_directory_to_exe_path():
 
     exe_path = sys.argv[0]
     exe_parent = os.path.dirname(__file__)
-    os.chdir(exe_parent)
-    print(f'设置工作路径为{exe_parent}')
+    if exe_parent:
+        os.chdir(exe_parent)
+        print(f'设置工作路径为{exe_parent}')
 
 
 def check_cache_exist():
