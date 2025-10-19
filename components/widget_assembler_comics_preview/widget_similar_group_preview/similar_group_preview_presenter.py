@@ -22,6 +22,7 @@ class SimilarGroupPreviewPresenter(QObject):
         self.widgets_comic = []  # 显示的漫画控件列表
         self.is_reconfirm_before_delete = True  # 删除前是否需要再次确认（在此模块单独存储一次，用于创建子模块时进行赋值）
         self.is_show_similar = False  # 是否显示相似度
+        self.base_hash = ''  # 第一本漫画当前页图片的hash值
 
         # 绑定信号
         self._bind_signal()
@@ -32,6 +33,7 @@ class SimilarGroupPreviewPresenter(QObject):
         self.widget_comic_preview.set_comic(comic_info)
         self.widget_comic_preview.set_is_reconfirm_before_delete(self.is_reconfirm_before_delete)
         self.widget_comic_preview.ComicDeleted.connect(self.comic_deleted)
+        self.widget_comic_preview.TurnPaged.connect(self._child_comic_turned_page)
         self.widgets_comic.append(self.widget_comic_preview)
         self.viewer.add_widget(self.widget_comic_preview.get_viewer())
 
@@ -40,12 +42,6 @@ class SimilarGroupPreviewPresenter(QObject):
 
     def set_is_show_similar(self, is_enable: bool):
         """是否显示相似度"""
-        # 设置子控件的变量
-        for widget in self.widgets_comic:
-            widget: ComicPreviewPresenter
-            widget.set_is_show_similar(is_enable)
-
-        # 计算并显示或清除相似度
         self.is_show_similar = is_enable
         if self.is_show_similar:
             self.show_current_page_similar()
@@ -105,14 +101,13 @@ class SimilarGroupPreviewPresenter(QObject):
 
     def show_current_page_similar(self):
         """显示不同漫画当前页码的图片之间的相似度"""
-        print('显示不同漫画当前页码的图片之间的相似度')
         # 以第一本漫画作为基准
         # 计算第一本漫画当前页图片的hash值
-        base_hash_ = self.widgets_comic[0].calc_current_image_hash()
+        self.base_hash = self.widgets_comic[0].calc_current_image_hash()
         # 显示同组漫画当前页图片的相似度
         for widget in self.widgets_comic:
             widget: ComicPreviewPresenter
-            widget.compare_current_image_hash(base_hash_)
+            widget.compare_current_image_hash(self.base_hash)
 
     def clear_similar(self):
         """清除相似度"""
@@ -133,6 +128,15 @@ class SimilarGroupPreviewPresenter(QObject):
     def get_viewer(self):
         """获取viewer"""
         return self.viewer
+
+    def _child_comic_turned_page(self):
+        """子漫画翻页后执行的操作"""
+        widget_presenter: ComicPreviewPresenter = self.sender()
+        # 如果是第一个漫画项目翻页了，则更新全部漫画项目的相似度
+        if self.widgets_comic.index(widget_presenter) == 0:
+            self.show_current_page_similar()
+        else:  # 否则，仅需要更新当前漫画项目相似度
+            widget_presenter.compare_current_image_hash(self.base_hash)
 
     def _bind_signal(self):
         """绑定信号"""

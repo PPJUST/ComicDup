@@ -27,14 +27,14 @@ class ComicPreviewViewer(QWidget):
         self.label_floating_image_info = QLabel(self)
         self.label_floating_image_info.setGeometry(5, 5, 150, 20)
         self.label_floating_image_info.setWindowFlags(Qt.WindowType.SubWindow)
-        self.label_floating_image_info.setStyleSheet("color: blue")
+        self.label_floating_image_info.setStyleSheet("color: blue; font-weight: bold;")
         self.label_floating_image_info.show()
 
         # 添加一个悬浮于左上角的label，用于显示相似度
         self.label_floating_similar = QLabel(self)
         self.label_floating_similar.setGeometry(5, 25, 50, 20)
         self.label_floating_similar.setWindowFlags(Qt.WindowType.SubWindow)
-        self.label_floating_similar.setStyleSheet("color: blue")
+        self.label_floating_similar.setStyleSheet("color: blue; font-weight: bold;")
         self.label_floating_similar.show()
         # 绑定信号
         self._bind_signal()
