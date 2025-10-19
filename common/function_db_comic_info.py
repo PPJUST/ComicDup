@@ -1,7 +1,7 @@
 # 数据库方法
 import os
 import sqlite3
-from typing import Union
+from typing import Union, List, Tuple
 
 import lzytools.common
 
@@ -266,6 +266,19 @@ class DBComicInfo:
         paths = list(set(paths))
         return paths
 
+    def get_fingerprint_list(self) -> List[str]:
+        """获取所有项目的指纹"""
+        self.cursor.execute(f'SELECT {KEY_FINGERPRINT} FROM {TABLE_NAME}')
+        result = self.cursor.fetchall()
+        lst = [item[0] for item in result]
+        return lst
+
+    def get_path_fingerprint_list(self) -> List[Tuple[str, str]]:
+        """获取所有项目的(路径, 指纹)，用于判断是否已经存在"""
+        self.cursor.execute(f'SELECT {KEY_FILEPATH}, {KEY_FINGERPRINT} FROM {TABLE_NAME}')
+        result = self.cursor.fetchall()
+        return result
+
     def get_preview_paths(self):
         """获取所有预览图路径"""
         self.cursor.execute(f'SELECT {KEY_PREVIEW_PATH} FROM {TABLE_NAME}')
@@ -277,7 +290,7 @@ class DBComicInfo:
     def is_comic_exist(self, comic_path: str, comic_fingerprint: str):
         """检查漫画在数据库中是否已存在
         同时使用路径和文件指纹判断"""
-        # 备忘录 传入多个 同时检查 一个一个查太慢了
+        # 2025.10.19：不在使用该方法判断，单个查询过慢
         comic_path = os.path.normpath(comic_path)
         self.cursor.execute(f'SELECT 1 FROM {TABLE_NAME} '
                             f'WHERE {KEY_FILEPATH} = "{comic_path}" '

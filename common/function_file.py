@@ -60,6 +60,8 @@ def save_preview_image(origin_image_path: str, preview_image_path: str, height_z
     :param preview_image_path: 预览小图存放的路径
     :param height_zoom_out: 缩放的图片高度"""
     image = Image.open(origin_image_path)
+    # 清除元数据
+    image.info.clear()
     # 转换图像模式，防止报错OSError: cannot write mode P as JPEG
     image = image.convert('RGB')
     # 缩小尺寸
@@ -68,5 +70,6 @@ def save_preview_image(origin_image_path: str, preview_image_path: str, height_z
     image = image.resize((resize_width, height_zoom_out), Image.LANCZOS)
     # 保存到本地
     image.save(preview_image_path)
+    image.close()
 
     return preview_image_path

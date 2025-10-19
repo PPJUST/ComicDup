@@ -28,15 +28,20 @@ class WindowModel(QObject):
     def save_comic_info_to_db(self, comic_infos: List[ComicInfoBase]):
         """保存漫画信息到本地数据库中"""
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '正在保存漫画信息到本地数据库')
+        # 在保存漫画信息前，提取数据库中所有项目的(路径, 指纹)，用于判断漫画是否已经存在于数据库中
+        # 提取数据库中所有项目的指纹，用于判断漫画是否已存在于数据库但本地文件已被移动
+        db_fingerprint_list = self.db_comic_info.get_fingerprint_list()
+        db_path_fingerprint_list = self.db_comic_info.get_path_fingerprint_list()
         for comic_info in comic_infos:
             # 在保存漫画信息前，考虑已存在于数据库中的项目，具体逻辑参考流程图
-            is_comic_exist_db = self.db_comic_info.is_comic_exist(comic_info.filepath, comic_info.fingerprint)
+            _check_tuple = (comic_info.filepath, comic_info.fingerprint)
+            is_comic_exist_db = _check_tuple in db_path_fingerprint_list
             if not is_comic_exist_db:  # 不存在则新增
                 self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, f'保存{comic_info.filename}到数据库')
                 comic_info.save_preview_image()  # 新增前保存预览图
                 self.db_comic_info.add(comic_info)
             else:
-                is_comic_moved_db = self.db_comic_info.is_comic_moved(comic_info.fingerprint, comic_info.filepath)
+                is_comic_moved_db = comic_info.fingerprint in db_fingerprint_list  # 指纹存在，但是(路径, 指纹)不存在，则说明本地文件已经被移动
                 if not is_comic_moved_db:  # 已存在且未移动则跳过
                     self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, f'{comic_info.filename}已存在于数据库，跳过')
                     continue

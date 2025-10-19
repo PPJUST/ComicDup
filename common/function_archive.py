@@ -59,6 +59,8 @@ def save_preview_image(archive: str, image_path_inside: str, preview_image_path:
     :param height_zoom_out: 缩放的图片高度"""
     image_bytes = lzytools.archive.read_image(archive, image_path_inside)
     image = Image.open(io.BytesIO(image_bytes))
+    # 清除元数据
+    image.info.clear()
     # 转换图像模式，防止报错OSError: cannot write mode P as JPEG
     image = image.convert('RGB')
     # 缩小尺寸
@@ -67,6 +69,7 @@ def save_preview_image(archive: str, image_path_inside: str, preview_image_path:
     image = image.resize((resize_width, height_zoom_out), Image.LANCZOS)
     # 保存到本地
     image.save(preview_image_path)
+    image.close()
 
     return preview_image_path
 

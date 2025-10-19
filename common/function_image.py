@@ -29,6 +29,7 @@ def calc_image_hash(image_path: str, hash_type: TYPES_HASH_ALGORITHM, hash_lengt
 
     # 计算hash（字典）
     hash_dict = lzytools.image.calc_hash(image_pil, hash_type, hash_size)
+    image_pil.close()
 
     # 提取需要的hash值
     hash_ = hash_dict[hash_type.lower()]
@@ -60,6 +61,7 @@ def calc_archive_image_hash(archive_path: str, inside_image_path: str, hash_type
 
     # 计算hash（字典）
     hash_dict = lzytools.image.calc_hash(image_pil, hash_type, hash_size)
+    image_pil.close()
 
     # 提取需要的hash值
     hash_ = hash_dict[hash_type.lower()]
