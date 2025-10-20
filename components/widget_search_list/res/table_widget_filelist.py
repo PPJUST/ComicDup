@@ -2,7 +2,7 @@ import os
 
 import lzytools._qt_pyside6
 import lzytools.archive
-from PySide6.QtCore import Qt
+from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QTableWidget, QTableWidgetItem, QPushButton, QHeaderView
 
 from common.class_config import FileType
@@ -11,6 +11,7 @@ from components.widget_search_list.res.icon_base64 import ICON_ARCHIVE, ICON_FOL
 
 class TableWidgetFilelist(QTableWidget):
     """用于显示文件列表的表格控件"""
+    Deleted = Signal(name="删除行项目")
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -84,6 +85,7 @@ class TableWidgetFilelist(QTableWidget):
             self.removeRow(row)
             # 重新绑定所有删除按钮，因为删除一行后其他行的索引会变化
             self._rebind_delete_buttons()
+        self.Deleted.emit()
 
     def remove_useless_row(self):
         """删除无效行"""

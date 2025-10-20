@@ -10,6 +10,7 @@ from components.widget_search_list.res.ui_search_list import Ui_Form
 class SearchListViewer(QWidget):
     """搜索列表模块的界面组件"""
     DropFiles = Signal(object, name="拖入文件")
+    PathsChanged = Signal(name="路径改变")
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -20,6 +21,7 @@ class SearchListViewer(QWidget):
 
         # 添加自定义控件
         self.table_widget_filelist = TableWidgetFilelist(self)
+        self.table_widget_filelist.Deleted.connect(self.PathsChanged.emit)
         self.ui.layout_filelist.addWidget(self.table_widget_filelist)
 
         # 绑定信号
@@ -37,10 +39,18 @@ class SearchListViewer(QWidget):
     def add_row(self, filepath: str):
         """添加新的文件行"""
         self.table_widget_filelist.add_row(filepath)
+        self.PathsChanged.emit()
+
+    def add_rows(self, filepaths: list):
+        """添加新的文件行"""
+        for i in filepaths:
+            self.table_widget_filelist.add_row(i)
+        self.PathsChanged.emit()
 
     def remove_useless_row(self):
         """删除无效行"""
         self.table_widget_filelist.remove_useless_row()
+        self.PathsChanged.emit()
 
     def get_paths(self) -> list:
         """获取所有文件路径"""
@@ -49,6 +59,7 @@ class SearchListViewer(QWidget):
     def clear(self):
         """清空列表"""
         self.table_widget_filelist.clear()
+        self.PathsChanged.emit()
 
     def _choose_files(self):
         """弹出文件选择框"""

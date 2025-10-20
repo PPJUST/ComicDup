@@ -365,7 +365,9 @@ class SettingSearchList(_ModuleChildSetting):
         """读取设置项"""
         value = self._read_key(self.section, self.key, self._default_value)
         # 将读取的文本值转换为列表
-        if isinstance(value, str):
+        if not value:
+            return []
+        elif isinstance(value, str):
             lst = value.split(self._SPLIT_LIST)
             return lst
         elif isinstance(value, list):

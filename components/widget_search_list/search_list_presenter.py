@@ -18,6 +18,7 @@ class SearchListPresenter(QObject):
 
         # 绑定信号
         self.viewer.DropFiles.connect(self.drop_files)
+        self.viewer.PathsChanged.connect(self.save_paths_to_config)
 
     def get_paths(self):
         """获取所有文件路径"""
@@ -34,10 +35,10 @@ class SearchListPresenter(QObject):
         if isinstance(files, str):
             files = [files]
 
-        for file in files:
-            self.viewer.add_row(file)
+        self.viewer.add_rows(files)
 
-        # 写入配置文件
+    def save_paths_to_config(self):
+        """保存文件路径到配置文件"""
         self.model.write_paths_to_config(self.get_paths())
 
     def _load_setting(self):

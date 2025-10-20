@@ -18,11 +18,13 @@ class LabelImagePreview(QLabel):
     def set_image(self, image_path: str = None):
         """设置图片"""
         self.pixmap_original = QPixmap(image_path)
+        self.resize_image_size(self.width(), self.height())
 
     def set_bytes_image(self, data: bytes):
         """设置bytes图片"""
         self.pixmap_original = QPixmap()
         self.pixmap_original.loadFromData(data, format=None)
+        self.resize_image_size(self.width(), self.height())
 
     def resize_image_size(self, width: int, height: int):
         """设置图片尺寸"""
