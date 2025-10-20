@@ -13,6 +13,9 @@ class SearchListPresenter(QObject):
         self.viewer = viewer
         self.model = model
 
+        # 初始化
+        self._load_setting()
+
         # 绑定信号
         self.viewer.DropFiles.connect(self.drop_files)
 
@@ -33,3 +36,13 @@ class SearchListPresenter(QObject):
 
         for file in files:
             self.viewer.add_row(file)
+
+        # 写入配置文件
+        self.model.write_paths_to_config(self.get_paths())
+
+    def _load_setting(self):
+        """加载配置文件"""
+        paths = self.model.read_paths_from_config()
+        if paths:
+            for path in paths:
+                self.viewer.add_row(path)

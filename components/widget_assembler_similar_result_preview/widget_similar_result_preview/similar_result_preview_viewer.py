@@ -30,7 +30,7 @@ class SimilarResultPreviewViewer(QWidget):
         self.ui.listWidget_group.setItemWidget(list_item, similar_group_widget)
         # 设置列表项的高度，以适应自定义widget
         size_hint = similar_group_widget.sizeHint()
-        size_hint.setHeight(size_hint.height() + 20)
+        size_hint.setHeight(size_hint.height() + 45)
         list_item.setSizeHint(size_hint)
 
     def clear(self):

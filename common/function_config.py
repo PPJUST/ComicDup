@@ -338,12 +338,42 @@ class SettingSimilarResult(_ModuleChildSetting):
         value = self._read_key(self.section, self.key, self._default_value)
         # 将读取的文本值转换为列表
         if isinstance(value, str):
-            lst = [i.split('|') for i in value.split('||')]
+            lst = [i.split(self._SPLIT_LIST) for i in value.split(self._SPLIT_ITEM)]
             return lst
+        elif isinstance(value, list):
+            return value
         else:
             raise ValueError(self.section, self.key, '无效的设置项值')
 
     def set(self, value: List[Tuple[str]]):
         """设置设置项"""
-        value_str = '||'.join(['|'.join(i) for i in value])
+        value_str = self._SPLIT_ITEM.join([self._SPLIT_LIST.join(i) for i in value])
+        self._set_value(self.section, self.key, value_str)
+
+
+class SettingSearchList(_ModuleChildSetting):
+    """检索路径列表"""
+
+    def __init__(self, config_file):
+        super().__init__(config_file)
+        self.section = 'SearchList'
+        self.key = 'paths'
+        self._default_value: list = []
+        self._SPLIT_LIST: str = '|'  # 内部元素内的路径的文本分隔符
+
+    def read(self) -> List[str]:
+        """读取设置项"""
+        value = self._read_key(self.section, self.key, self._default_value)
+        # 将读取的文本值转换为列表
+        if isinstance(value, str):
+            lst = value.split(self._SPLIT_LIST)
+            return lst
+        elif isinstance(value, list):
+            return value
+        else:
+            raise ValueError(self.section, self.key, '无效的设置项值')
+
+    def set(self, value: List[str]):
+        """设置设置项"""
+        value_str = self._SPLIT_LIST.join(value)
         self._set_value(self.section, self.key, value_str)
