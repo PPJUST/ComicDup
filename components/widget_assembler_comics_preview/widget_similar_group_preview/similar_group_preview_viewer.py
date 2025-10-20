@@ -2,6 +2,7 @@ import lzytools._qt_pyside6
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget, QApplication
 
+from components.widget_assembler_comics_preview.widget_comic_preview import ComicPreviewViewer
 from components.widget_assembler_comics_preview.widget_similar_group_preview.res.icon_base64 import ICON_LEFT_ARROW_1, \
     ICON_LEFT_ARROW_3, ICON_RIGHT_ARROW_1, ICON_RIGHT_ARROW_3, ICON_QUIT, ICON_REFRESH
 from components.widget_assembler_comics_preview.widget_similar_group_preview.res.ui_similar_group_preview import Ui_Form
@@ -39,6 +40,18 @@ class SimilarGroupPreviewViewer(QWidget):
         layout = self.ui.horizontalLayout_group.layout()
         layout.removeWidget(widget)
         widget.deleteLater()
+
+    def resize_image_size(self, parent_width: int, parent_height: int):
+        """设置图片尺寸"""
+        # 需要预留顶部功能行的空间
+        height_button = self.ui.pushButton_quit.height()
+        height = parent_height - height_button
+        layout = self.ui.horizontalLayout_group
+        for i in range(layout.count()):
+            item = layout.itemAt(i)
+            widget: ComicPreviewViewer = item.widget()
+            if widget:
+                widget.resize_image_size(parent_width, height)
 
     def clear(self):
         """清空界面"""

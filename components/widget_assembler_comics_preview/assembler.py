@@ -13,7 +13,7 @@ class AssemblerDialogComicsPreview(QDialog):
         super().__init__()
         self.setWindowTitle('漫画预览器')
         self.setModal(True)
-        # self.resize(800, 600)  # 备忘录 有bug dialog由于过长下部显示滑动条，导致内部控件缩放，图片label循环自适应图片缩放导致程序闪退
+        self.resize(800, 600)
 
         # 添加控件实例到dialog中
         self.presenter = widget_similar_group_preview.get_presenter()
@@ -44,3 +44,8 @@ class AssemblerDialogComicsPreview(QDialog):
     def clear(self):
         """清空结果"""
         self.presenter.clear()
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        # 改变内部图片label大小
+        self.presenter.resize_image_size(self.width(), self.height())

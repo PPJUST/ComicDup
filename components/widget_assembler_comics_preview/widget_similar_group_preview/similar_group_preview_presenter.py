@@ -83,6 +83,10 @@ class SimilarGroupPreviewPresenter(QObject):
         if self.is_show_similar:
             self.show_current_page_similar()
 
+    def resize_image_size(self, parent_width: int, parent_height: int):
+        """设置图片尺寸"""
+        self.viewer.resize_image_size(parent_width, parent_height)
+
     def comic_deleted(self):
         """漫画被删除后的操作"""
         widget_presenter: ComicPreviewPresenter = self.sender()

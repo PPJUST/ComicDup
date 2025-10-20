@@ -137,6 +137,10 @@ class ComicPreviewPresenter(QObject):
         self.viewer.set_current_page(self.page_index)
         self.TurnPaged.emit()
 
+    def resize_image_size(self, width: int, height: int):
+        """设置图片尺寸"""
+        self.viewer.resize_image_size(width, height)
+
     def open_path(self):
         """打开漫画文件"""
         path = self.comic_info.filepath

@@ -4,6 +4,7 @@ from PySide6.QtWidgets import QWidget, QApplication, QLabel
 
 from components.widget_assembler_comics_preview.widget_comic_preview.res.icon_base64 import ICON_ARCHIVE, ICON_FOLDER, \
     ICON_LEFT_ARROW, ICON_RIGHT_ARROW, ICON_JUMP_TO, ICON_DELETE
+from components.widget_assembler_comics_preview.widget_comic_preview.res.label_image_preview import LabelImagePreview
 from components.widget_assembler_comics_preview.widget_comic_preview.res.ui_comic_preview import Ui_Form
 
 
@@ -20,7 +21,7 @@ class ComicPreviewViewer(QWidget):
         self.ui.setupUi(self)
 
         # 添加自定义图像显示控件
-        self.label_image_preview = lzytools._qt_pyside6.LabelImageAutoSize()
+        self.label_image_preview = LabelImagePreview()
         self.ui.verticalLayout_preview.addWidget(self.label_image_preview)
 
         # 添加一个悬浮于左上角的label，用于显示图片信息
@@ -51,6 +52,14 @@ class ComicPreviewViewer(QWidget):
         """显示bytes图像"""
         self.label_image_preview.set_bytes_image(data)
         self._show_image_info()
+
+    def resize_image_size(self, parent_width: int, parent_height: int):
+        """设置图片尺寸"""
+        # 需要预留其余空间的空间
+        height_info_label = self.ui.label_filename.height() + self.ui.label_parent_dirpath.height() + self.ui.toolButton_previous.height()
+        height_blank = 45
+        height = parent_height - height_info_label - height_blank
+        self.label_image_preview.resize_image_size(parent_width, height)
 
     def set_icon_archive(self):
         """设置文件类型图片为压缩文件"""
