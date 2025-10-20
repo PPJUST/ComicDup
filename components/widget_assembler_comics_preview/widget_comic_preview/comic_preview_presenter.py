@@ -79,11 +79,11 @@ class ComicPreviewPresenter(QObject):
 
     def calc_current_image_hash(self):
         """计算当前显示的图片的hash值"""
-        # 简单计算64位的dhash
+        # 简单计算12*12的dhash
         comic_type = self.comic_info.filetype
         if isinstance(comic_type, FileType.Folder) or comic_type == FileType.Folder:
             image_path = self.page_paths[self.page_index - 1]
-            hash_ = function_image.calc_image_hash(image_path, 'dhash', 64)
+            hash_ = function_image.calc_image_hash(image_path, 'dhash', 144)
         elif isinstance(comic_type, FileType.Archive) or comic_type == FileType.Archive:
             archive_path = self.comic_info.filepath
             inside_image_path = self.page_paths[self.page_index - 1]

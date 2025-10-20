@@ -95,8 +95,8 @@ class ComicPreviewViewer(QWidget):
 
     def _show_image_info(self):
         """显示当前图片的信息"""
-        width = self.label_image_preview.pixmap().size().width()
-        height = self.label_image_preview.pixmap().size().height()
+        width = self.label_image_preview.pixmap_original.size().width()  # 读取原始图像尺寸
+        height = self.label_image_preview.pixmap_original.size().height()  # 读取原始图像尺寸
         image_size = f'{width} x {height}'
         self.label_floating_image_info.setText(f'{image_size}')
 
