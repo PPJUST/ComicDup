@@ -1,6 +1,6 @@
 import lzytools._qt_pyside6
 from PySide6.QtCore import Signal
-from PySide6.QtGui import QPixmap
+from PySide6.QtGui import QPixmap, Qt
 from PySide6.QtWidgets import QApplication, QFrame
 
 from components.widget_assembler_similar_result_preview.widget_comic_info.res.icon_base64 import ICON_JUMP_TO, \
@@ -28,7 +28,8 @@ class ComicInfoViewer(QFrame):
         self._set_icon()
 
         # 设置ui
-        self.ui.label_preview.setFixedSize(90, 128)
+        self.ui.label_preview.setFixedSize(250, 128)
+        self.ui.label_preview.setAlignment(Qt.AlignCenter)
         self.setMinimumWidth(250)
         self.setFrameShape(QFrame.Shape.Box)
         self.setFrameShadow(QFrame.Shadow.Plain)
