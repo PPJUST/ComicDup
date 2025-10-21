@@ -21,7 +21,7 @@ class AssemblerSimilarResultPreview:
 
     def show_similar_result(self):
         """显示相似结果"""
-        self.presenter.show_page(1)
+        self.presenter.reload()
 
     def sort_groups_item(self, sort_key: ORDER_KEYS, sort_direction: ORDER_DIRECTIONS):
         """排序相似组内元素"""
