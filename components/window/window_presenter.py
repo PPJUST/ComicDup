@@ -17,6 +17,7 @@ from PySide6.QtCore import QObject, Signal
 
 from common.class_comic import ComicInfoBase
 from common.class_config import SimilarAlgorithm
+from common.class_image import ImageInfoBase
 from common.class_runtime import TYPE_RUNTIME_INFO, TypeRuntimeInfo
 from components import widget_exec, widget_setting_algorithm, widget_setting_match, widget_setting_comic, \
     widget_search_list, widget_runtime_info, widget_similar_result_filter, widget_assembler_similar_result_preview, \
@@ -27,6 +28,8 @@ from thread.thread_analyse_comic_info import ThreadAnalyseComicInfo
 from thread.thread_analyse_image_info import ThreadAnalyseImageInfo
 from thread.thread_compare_hash import ThreadCompareHash
 from thread.thread_compare_ssim import ThreadCompareSSIM
+from thread.thread_save_comic import ThreadSaveComic
+from thread.thread_save_image import ThreadSaveImage
 from thread.thread_search_comic import ThreadSearchComic
 
 
@@ -62,9 +65,14 @@ class WindowPresenter(QObject):
         self.thread_analyse_image_info = ThreadAnalyseImageInfo()
         self.thread_compare_hash = ThreadCompareHash()
         self.thread_compare_ssim = ThreadCompareSSIM()
+        self.thread_save_comic = ThreadSaveComic()
+        self.thread_save_image = ThreadSaveImage()
 
         # 将设置项传递给子线程
         self._set_thread_setting()
+        self.thread_save_comic.set_db_comic_info(self.model.get_comic_db())
+        self.thread_save_comic.set_db_image_info(self.model.get_image_db())
+        self.thread_save_image.set_db_image_info(self.model.get_image_db())
 
         # 初始化viewer
         self._init_viewer()
@@ -176,8 +184,22 @@ class WindowPresenter(QObject):
                 self.widget_runtime_info.stop_time()
                 return
             # 保存到本地数据库中
-            self.model.save_comic_info_to_db(comic_info_dict.values())
-            # 将提取的漫画信息列表传递给 子线程-分析图片信息
+            self.start_save_comic_info(comic_info_list)
+        else:
+            self.widget_runtime_info.stop_time()
+
+    def start_save_comic_info(self, comic_info_list: List[ComicInfoBase]):
+        """启动子线程-保存漫画信息到数据库"""
+        if not self.is_stop:
+            self.thread_save_comic.set_comic_info_list(comic_info_list)
+            self.thread_save_comic.start()
+        else:
+            self.widget_runtime_info.stop_time()
+
+    def thread_save_comic_info_finished(self):
+        """子线程-保存漫画信息到数据库执行完毕"""
+        if not self.is_stop:
+            comic_info_list = self.thread_save_comic.get_comic_info_list()
             self.start_analyse_image_info(comic_info_list)
         else:
             self.widget_runtime_info.stop_time()
@@ -200,7 +222,22 @@ class WindowPresenter(QObject):
                 self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning, '未找到任何图片')
                 return
             # 保存到本地数据库中
-            self.model.save_image_info_to_db(image_info_dict.values())
+            self.start_save_image_info(image_info_dict.values())
+        else:
+            self.widget_runtime_info.stop_time()
+
+    def start_save_image_info(self, image_info_list: List[ImageInfoBase]):
+        """启动子线程-保存图片信息到数据库"""
+        if not self.is_stop:
+            self.thread_save_image.set_image_info_list(image_info_list)
+            self.thread_save_image.start()
+        else:
+            self.widget_runtime_info.stop_time()
+
+    def thread_save_image_info_finished(self):
+        """子线程-保存图片信息到数据库执行完毕"""
+        if not self.is_stop:
+            image_info_list = self.thread_save_image.get_image_info_list()
             # 提取图片信息中的hash值
             hash_algorithm = self.widget_setting_algorithm.get_base_algorithm()  # hash算法
             hash_length = self.widget_setting_algorithm.get_hash_length()  # hash长度
@@ -209,8 +246,7 @@ class WindowPresenter(QObject):
             if is_match_cache:  # 如果选中了匹配缓存数据，则从漫画信息数据库中提取出所有的项目并以此进行相似匹配（不会计算缺失的hash值）
                 hash_list = self.model.get_hashs(hash_algorithm, hash_length)
             else:  # 否则仅匹配本次提取到的图片信息
-                hash_list = self.model.get_hash_list_from_image_infos(image_info_dict.values(), hash_algorithm,
-                                                                      hash_length)
+                hash_list = self.model.get_hash_list_from_image_infos(image_info_list, hash_algorithm, hash_length)
             # 将提取的hash值列表传递给 子线程-对比图片hash
             self.start_thread_compare_hash(hash_list)
         else:
@@ -234,6 +270,7 @@ class WindowPresenter(QObject):
                 self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning, '未找到任何相似图片')
                 return
             # 将hash列表转换为对应的漫画信息类列表
+            # 备忘录 容易堵塞ui线程
             hash_type = self.widget_setting_algorithm.get_base_algorithm()  # 提取的hash类型
             comic_info_groups = self.model.convert_hash_group_to_comic_info_group(similar_hash_groups, hash_type)
             print('显示结果漫画信息类列表', comic_info_groups)
@@ -453,3 +490,19 @@ class WindowPresenter(QObject):
         self.thread_compare_ssim.SignalRuntimeInfo.connect(self.update_runtime_info_textline)
         # self.thread_compare_ssim.SignalFinished.connect()
         # self.thread_compare_ssim.SignalStopped.connect()
+
+        # self.thread_save_comic.SignalStart.connect()
+        self.thread_save_comic.SignalIndex.connect(self.update_runtime_info_index)
+        self.thread_save_comic.SignalInfo.connect(self.update_runtime_info_title)
+        self.thread_save_comic.SignalRate.connect(self.update_runtime_info_rate)
+        self.thread_save_comic.SignalRuntimeInfo.connect(self.update_runtime_info_textline)
+        self.thread_save_comic.SignalFinished.connect(self.thread_save_comic_info_finished)
+        # self.thread_save_comic.SignalStopped.connect()
+
+        # self.thread_save_image.SignalStart.connect()
+        self.thread_save_image.SignalIndex.connect(self.update_runtime_info_index)
+        self.thread_save_image.SignalInfo.connect(self.update_runtime_info_title)
+        self.thread_save_image.SignalRate.connect(self.update_runtime_info_rate)
+        self.thread_save_image.SignalRuntimeInfo.connect(self.update_runtime_info_textline)
+        self.thread_save_image.SignalFinished.connect(self.thread_save_image_info_finished)
+        # self.thread_save_image.SignalStopped.connect()

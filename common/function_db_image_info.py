@@ -35,7 +35,7 @@ class DBImageInfo:
     def __init__(self, db_file: str = DB_FILEPATH):
         self.db_filepath = db_file
         self.check_exist(db_file)
-        self.conn = sqlite3.connect(db_file)
+        self.conn = sqlite3.connect(db_file, check_same_thread=False)
         self.cursor = self.conn.cursor()
 
     def check_exist(self, db_file: str = DB_FILEPATH):
