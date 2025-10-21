@@ -123,7 +123,6 @@ class ThreadSearchComic(ThreadPattern):
         self.comics_path = natsort.os_sorted(list(comics_path))
 
         # 结束后发送信号
-        print('搜索到的漫画', self.comics_path)
         print('结束子线程 搜索漫画')
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '完成漫画搜索')
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, f'共搜索到{len(self.comics_path)}本漫画')

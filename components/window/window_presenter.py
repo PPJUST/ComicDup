@@ -273,7 +273,6 @@ class WindowPresenter(QObject):
             # 备忘录 容易堵塞ui线程
             hash_type = self.widget_setting_algorithm.get_base_algorithm()  # 提取的hash类型
             comic_info_groups = self.model.convert_hash_group_to_comic_info_group(similar_hash_groups, hash_type)
-            print('显示结果漫画信息类列表', comic_info_groups)
             # 对转换的漫画信息类列表进行处理
             # 检查漫画是否存在，剔除已经不存在的项目
             comic_info_groups_filter = self.model.filter_comic_info_group_is_exist(comic_info_groups)

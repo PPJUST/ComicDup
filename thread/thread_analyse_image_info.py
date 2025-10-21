@@ -111,7 +111,6 @@ class ThreadAnalyseImageInfo(ThreadPattern):
 
     def _finish_analyse(self, total_images: int):
         """完成分析后的处理"""
-        print('提取的图片信息', self.image_info_dict)
         print('结束线程池 分析图片信息')
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '全部图片信息完成分析')
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, f'共完成分析{total_images}张图片')
