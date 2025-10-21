@@ -1,4 +1,4 @@
-from PySide6.QtCore import Signal
+from PySide6.QtCore import Signal, QTimer
 from PySide6.QtWidgets import QDialog, QVBoxLayout
 
 from common.class_comic import ComicInfoBase
@@ -20,6 +20,15 @@ class AssemblerDialogComicsPreview(QDialog):
         main_layout = QVBoxLayout(self)
         main_layout.setContentsMargins(0, 0, 0, 0)
         main_layout.addWidget(self.presenter.get_viewer())
+
+        # 初始化ui
+        self._init_viewer()
+
+        # 定时器，用于延迟保存窗口尺寸
+        self.timer = QTimer()
+        self.timer.setSingleShot(True)
+        self.timer.setInterval(1000)
+        self.timer.timeout.connect(self._save_size)
 
         # 绑定信号
         self.presenter.Quit.connect(self.close)
@@ -45,7 +54,22 @@ class AssemblerDialogComicsPreview(QDialog):
         """清空结果"""
         self.presenter.clear()
 
+    def _init_viewer(self):
+        """初始化ui"""
+        # 备忘录
+        width = None
+        height = None
+        self.presenter.get_viewer().setBaseSize(width, height)
+
+    def _save_size(self):
+        """保存窗口大小"""
+        width = self.presenter.get_viewer().width()
+        height = self.presenter.get_viewer().height()
+        # 备忘录
+
     def resizeEvent(self, event):
         super().resizeEvent(event)
         # 改变内部图片label大小
         self.presenter.resize_image_size(self.width(), self.height())
+        # 延迟保存窗口大小
+        self.timer.start()

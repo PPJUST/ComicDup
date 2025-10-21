@@ -13,7 +13,7 @@
 """
 from typing import List
 
-from PySide6.QtCore import QObject, Signal
+from PySide6.QtCore import QObject, Signal, QSize
 
 from common.class_comic import ComicInfoBase
 from common.class_config import SimilarAlgorithm
@@ -432,6 +432,12 @@ class WindowPresenter(QObject):
         self.widget_cache_manager.set_image_cache_count_info(image_count_info)
         self.widget_cache_manager.set_preview_cache_count_info(preview_image_info)
 
+    def _save_size(self):
+        """保存窗口大小"""
+        width = self.viewer.width()
+        height = self.viewer.height()
+        # 备忘录
+
     def _init_viewer(self):
         """设置viewer"""
         self.viewer.add_viewer_exec(self.widget_exec.viewer)
@@ -444,6 +450,12 @@ class WindowPresenter(QObject):
         self.viewer.add_viewer_result_preview(self.similar_result_preview.viewer)
         self.viewer.add_viewer_cache_manager(self.widget_cache_manager.viewer)
 
+        # 读取配置文件中的窗口尺寸
+        # 备忘录
+        width = None
+        height = None
+        self.viewer.setBaseSize(QSize(width, height))
+
     def _init_widget(self):
         """初始化子控件"""
         self.widget_cache_manager.set_comic_db(self.model.db_comic_info)
@@ -451,6 +463,8 @@ class WindowPresenter(QObject):
 
     def _bind_signal(self):
         """绑定信号"""
+        self.viewer.Resized.connect(self._save_size)
+
         self.widget_exec.Start.connect(self.start)
         self.widget_exec.Stop.connect(self.stop)
         self.widget_exec.LoadLastResult.connect(self.open_dialog_match_result_cache)

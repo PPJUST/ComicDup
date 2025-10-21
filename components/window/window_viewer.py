@@ -1,3 +1,4 @@
+from PySide6.QtCore import QTimer, Signal
 from PySide6.QtWidgets import QApplication, QMainWindow
 from lzytools._qt_pyside6 import base64_to_pixmap
 
@@ -7,11 +8,18 @@ from components.window.res.ui_window import Ui_MainWindow
 
 class WindowViewer(QMainWindow):
     """主窗口的界面组件"""
+    Resized = Signal(name='更新窗口尺寸')
 
     def __init__(self, parent=None):
         super().__init__(parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+
+        # 定时器，用于延迟保存窗口尺寸
+        self.timer = QTimer()
+        self.timer.setSingleShot(True)
+        self.timer.setInterval(1000)
+        self.timer.timeout.connect(self.Resized.emit)
 
         # 绑定信号
         self.ui.pushButton_back_to_search_list.clicked.connect(self.turn_page_search_list)
@@ -69,6 +77,10 @@ class WindowViewer(QMainWindow):
     def add_viewer_cache_manager(self, widget):
         """添加缓存管理器控件"""
         self.ui.groupBox_cache.layout().addWidget(widget)
+
+    def resizeEvent(self, event):
+        super().resizeEvent(event)
+        self.timer.start()
 
 
 if __name__ == "__main__":
