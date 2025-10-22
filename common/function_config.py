@@ -379,3 +379,63 @@ class SettingSearchList(_ModuleChildSetting):
         """设置设置项"""
         value_str = self._SPLIT_LIST.join(value)
         self._set_value(self.section, self.key, value_str)
+
+
+class SettingWindowSize(_ModuleChildSetting):
+    """窗口大小"""
+
+    def __init__(self, config_file):
+        super().__init__(config_file)
+        self.section = 'WindowSize'
+        self.key = 'width_height'
+        self._default_value: tuple = (800, 600)
+        self._SPLIT: str = '|'
+
+    def read(self):
+        """读取设置项"""
+        value = self._read_key(self.section, self.key, self._default_value)
+        # 将读取的文本值转换为列表
+        if not value:
+            return self._default_value
+        elif isinstance(value, str):
+            lst = [int(i) for i in value.split(self._SPLIT)]
+            return tuple(lst)
+        elif isinstance(value, tuple):
+            return value
+        else:
+            raise ValueError(self.section, self.key, '无效的设置项值')
+
+    def set(self, value: tuple):
+        """设置设置项"""
+        value_str = f'{value[0]}{self._SPLIT}{value[1]}'
+        self._set_value(self.section, self.key, value_str)
+
+
+class SettingPreviewDialogSize(_ModuleChildSetting):
+    """漫画预览窗口大小"""
+
+    def __init__(self, config_file):
+        super().__init__(config_file)
+        self.section = 'PreviewDialogSize'
+        self.key = 'width_height'
+        self._default_value: tuple = (800, 600)
+        self._SPLIT: str = '|'
+
+    def read(self):
+        """读取设置项"""
+        value = self._read_key(self.section, self.key, self._default_value)
+        # 将读取的文本值转换为列表
+        if not value:
+            return self._default_value
+        elif isinstance(value, str):
+            lst = [int(i) for i in value.split(self._SPLIT)]
+            return tuple(lst)
+        elif isinstance(value, tuple):
+            return value
+        else:
+            raise ValueError(self.section, self.key, '无效的设置项值')
+
+    def set(self, value: tuple):
+        """设置设置项"""
+        value_str = f'{value[0]}{self._SPLIT}{value[1]}'
+        self._set_value(self.section, self.key, value_str)

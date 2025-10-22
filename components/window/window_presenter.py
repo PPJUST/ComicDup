@@ -13,7 +13,7 @@
 """
 from typing import List
 
-from PySide6.QtCore import QObject, Signal, QSize
+from PySide6.QtCore import QObject, Signal
 
 from common.class_comic import ComicInfoBase
 from common.class_config import SimilarAlgorithm
@@ -436,7 +436,7 @@ class WindowPresenter(QObject):
         """保存窗口大小"""
         width = self.viewer.width()
         height = self.viewer.height()
-        # 备忘录
+        self.model.set_window_size_db(width, height)
 
     def _init_viewer(self):
         """设置viewer"""
@@ -451,10 +451,8 @@ class WindowPresenter(QObject):
         self.viewer.add_viewer_cache_manager(self.widget_cache_manager.viewer)
 
         # 读取配置文件中的窗口尺寸
-        # 备忘录
-        width = None
-        height = None
-        self.viewer.setBaseSize(QSize(width, height))
+        width, height = self.model.get_window_size_db()
+        self.viewer.resize(width, height)
 
     def _init_widget(self):
         """初始化子控件"""

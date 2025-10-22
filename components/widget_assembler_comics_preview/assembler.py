@@ -2,6 +2,7 @@ from PySide6.QtCore import Signal, QTimer
 from PySide6.QtWidgets import QDialog, QVBoxLayout
 
 from common.class_comic import ComicInfoBase
+from common.function_config import SettingPreviewDialogSize, CONFIG_FILE
 from components.widget_assembler_comics_preview import widget_similar_group_preview
 
 
@@ -56,16 +57,17 @@ class AssemblerDialogComicsPreview(QDialog):
 
     def _init_viewer(self):
         """初始化ui"""
-        # 备忘录
-        width = None
-        height = None
-        self.presenter.get_viewer().setBaseSize(width, height)
+        config = SettingPreviewDialogSize(CONFIG_FILE)
+        width, height = config.read()
+        self.presenter.get_viewer().resize(width, height)
 
     def _save_size(self):
         """保存窗口大小"""
         width = self.presenter.get_viewer().width()
         height = self.presenter.get_viewer().height()
-        # 备忘录
+        size = (width, height)
+        config = SettingPreviewDialogSize(CONFIG_FILE)
+        config.set(size)
 
     def resizeEvent(self, event):
         super().resizeEvent(event)

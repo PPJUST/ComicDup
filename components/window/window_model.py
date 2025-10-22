@@ -11,6 +11,7 @@ from common.class_config import TYPES_HASH_ALGORITHM
 from common.class_count_info import CountInfo
 from common.class_image import ImageInfoBase
 from common.class_runtime import TypeRuntimeInfo
+from common.function_config import SettingWindowSize, CONFIG_FILE
 from common.function_db_comic_info import DBComicInfo
 from common.function_db_image_info import DBImageInfo
 
@@ -185,3 +186,15 @@ class WindowModel(QObject):
         info_count.set_size_count(filesize_str)
 
         return info_count
+
+    def get_window_size_db(self):
+        """获取数据库中的窗口尺寸"""
+        config = SettingWindowSize(CONFIG_FILE)
+        width, height = config.read()
+        return width, height
+
+    def set_window_size_db(self, width: int, height: int):
+        """设置数据库中的窗口尺寸"""
+        config = SettingWindowSize(CONFIG_FILE)
+        size = (width, height)
+        config.set(size)
