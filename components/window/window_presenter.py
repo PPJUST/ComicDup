@@ -11,6 +11,7 @@
 8.如果需要使用增强算法，则将得到的漫画相似组列表传递给对应的子线程并执行，得到一个经过二次筛选的漫画相似组列表
 9.提取该漫画相似组列表，并显示在UI中
 """
+import os.path
 from typing import List
 
 from PySide6.QtCore import QObject, Signal
@@ -101,7 +102,16 @@ class WindowPresenter(QObject):
     def load_last_result(self, match_result: List[List[ComicInfoBase]]):
         """加载匹配结果"""
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '正在加载历史匹配结果')
-        self.show_similar_result(match_result)
+        # 由于历史记录中可能存在已经被删除的项目，所以需要进行一次存在校验
+        match_result_filter = []
+        for group in match_result:
+            group_filter = []
+            for comic_info in group:
+                comic_path = comic_info.filepath
+                if os.path.exists(comic_path):
+                    group_filter.append(comic_info)
+            match_result_filter.append(group_filter)
+        self.show_similar_result(match_result_filter)
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '完成加载历史匹配结果')
 
     def open_about(self):
