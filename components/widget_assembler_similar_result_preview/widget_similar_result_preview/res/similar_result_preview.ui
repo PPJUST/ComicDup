@@ -90,30 +90,6 @@
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_previous_page">
-       <property name="text">
-        <string>上一页</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushButton_next_page">
-       <property name="text">
-        <string>下一页</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="Line" name="line">
-       <property name="frameShadow">
-        <enum>QFrame::Shadow::Raised</enum>
-       </property>
-       <property name="orientation">
-        <enum>Qt::Orientation::Vertical</enum>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QLabel" name="label">
        <property name="text">
         <string>每页显示组数</string>
@@ -161,6 +137,9 @@
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <property name="spacing">
+      <number>6</number>
+     </property>
      <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
@@ -173,6 +152,13 @@
         </size>
        </property>
       </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_previous_page">
+       <property name="text">
+        <string>上一页</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QLabel" name="label_current_page">
@@ -192,6 +178,13 @@
       <widget class="QLabel" name="label_total_page">
        <property name="text">
         <string>5</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_next_page">
+       <property name="text">
+        <string>下一页</string>
        </property>
       </widget>
      </item>

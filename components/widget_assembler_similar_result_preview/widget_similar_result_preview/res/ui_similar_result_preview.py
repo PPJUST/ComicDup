@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'similar_result_previewVLGorQ.ui'
+## Form generated from reading UI file 'similar_result_previewKMfZQs.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.8.1
+## Created by: Qt User Interface Compiler version 6.10.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -15,9 +15,9 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QComboBox, QFrame, QHBoxLayout,
-    QLabel, QListWidget, QListWidgetItem, QPushButton,
-    QSizePolicy, QSpacerItem, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QComboBox, QHBoxLayout, QLabel,
+    QListWidget, QListWidgetItem, QPushButton, QSizePolicy,
+    QSpacerItem, QVBoxLayout, QWidget)
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -65,23 +65,6 @@ class Ui_Form(object):
 
         self.horizontalLayout.addItem(self.horizontalSpacer_3)
 
-        self.pushButton_previous_page = QPushButton(Form)
-        self.pushButton_previous_page.setObjectName(u"pushButton_previous_page")
-
-        self.horizontalLayout.addWidget(self.pushButton_previous_page)
-
-        self.pushButton_next_page = QPushButton(Form)
-        self.pushButton_next_page.setObjectName(u"pushButton_next_page")
-
-        self.horizontalLayout.addWidget(self.pushButton_next_page)
-
-        self.line = QFrame(Form)
-        self.line.setObjectName(u"line")
-        self.line.setFrameShadow(QFrame.Shadow.Raised)
-        self.line.setFrameShape(QFrame.Shape.VLine)
-
-        self.horizontalLayout.addWidget(self.line)
-
         self.label = QLabel(Form)
         self.label.setObjectName(u"label")
 
@@ -107,10 +90,16 @@ class Ui_Form(object):
         self.verticalLayout.addWidget(self.listWidget_group)
 
         self.horizontalLayout_2 = QHBoxLayout()
+        self.horizontalLayout_2.setSpacing(6)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_2.addItem(self.horizontalSpacer)
+
+        self.pushButton_previous_page = QPushButton(Form)
+        self.pushButton_previous_page.setObjectName(u"pushButton_previous_page")
+
+        self.horizontalLayout_2.addWidget(self.pushButton_previous_page)
 
         self.label_current_page = QLabel(Form)
         self.label_current_page.setObjectName(u"label_current_page")
@@ -126,6 +115,11 @@ class Ui_Form(object):
         self.label_total_page.setObjectName(u"label_total_page")
 
         self.horizontalLayout_2.addWidget(self.label_total_page)
+
+        self.pushButton_next_page = QPushButton(Form)
+        self.pushButton_next_page.setObjectName(u"pushButton_next_page")
+
+        self.horizontalLayout_2.addWidget(self.pushButton_next_page)
 
         self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
@@ -149,8 +143,6 @@ class Ui_Form(object):
         self.label_comic_count.setText(QCoreApplication.translate("Form", u"0", None))
         self.label_6.setText(QCoreApplication.translate("Form", u"\u9879", None))
         self.label_size_count.setText("")
-        self.pushButton_previous_page.setText(QCoreApplication.translate("Form", u"\u4e0a\u4e00\u9875", None))
-        self.pushButton_next_page.setText(QCoreApplication.translate("Form", u"\u4e0b\u4e00\u9875", None))
         self.label.setText(QCoreApplication.translate("Form", u"\u6bcf\u9875\u663e\u793a\u7ec4\u6570", None))
         self.comboBox_show_group_count.setItemText(0, QCoreApplication.translate("Form", u"5", None))
         self.comboBox_show_group_count.setItemText(1, QCoreApplication.translate("Form", u"10", None))
@@ -159,8 +151,10 @@ class Ui_Form(object):
         self.comboBox_show_group_count.setItemText(4, QCoreApplication.translate("Form", u"30", None))
         self.comboBox_show_group_count.setItemText(5, QCoreApplication.translate("Form", u"50", None))
 
+        self.pushButton_previous_page.setText(QCoreApplication.translate("Form", u"\u4e0a\u4e00\u9875", None))
         self.label_current_page.setText(QCoreApplication.translate("Form", u"1", None))
         self.label_2.setText(QCoreApplication.translate("Form", u"/", None))
         self.label_total_page.setText(QCoreApplication.translate("Form", u"5", None))
+        self.pushButton_next_page.setText(QCoreApplication.translate("Form", u"\u4e0b\u4e00\u9875", None))
     # retranslateUi
 
