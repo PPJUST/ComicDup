@@ -38,6 +38,7 @@ class SettingMatchViewer(QWidget):
         self.ui.checkBox_match_similar_filename.setEnabled(False)  # 备忘录
         self.ui.checkBox_same_parent_folder.setEnabled(False)  # 备忘录
         self.ui.spinBox_same_parent_folder.setEnabled(False)  # 备忘录
+        self.ui.checkBox_match_cache.setEnabled(False)  # 备忘录 缓存功能有问题 暂时禁用 后期需要修改逻辑
 
     def set_extract_pages(self, count: int):
         """设置提取页数"""
