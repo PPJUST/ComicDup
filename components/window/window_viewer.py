@@ -18,7 +18,7 @@ class WindowViewer(QMainWindow):
         # 定时器，用于延迟保存窗口尺寸
         self.timer = QTimer()
         self.timer.setSingleShot(True)
-        self.timer.setInterval(1000)
+        self.timer.setInterval(500)
         self.timer.timeout.connect(self.Resized.emit)
 
         # 绑定信号

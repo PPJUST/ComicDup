@@ -1,6 +1,8 @@
-from PySide6.QtCore import Signal, QSize
+import lzytools._qt_pyside6
+from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget, QApplication, QListWidgetItem
 
+from components.widget_assembler_similar_result_preview.widget_similar_result_preview.res.icon_base64 import ICON_JUMP
 from components.widget_assembler_similar_result_preview.widget_similar_result_preview.res.ui_similar_result_preview import \
     Ui_Form
 
@@ -16,10 +18,15 @@ class SimilarResultPreviewViewer(QWidget):
         self.ui = Ui_Form()
         self.ui.setupUi(self)
 
+        # 设置图标
+        self._set_icon()
+
         # 绑定信号
         self.ui.pushButton_previous_page.clicked.connect(self.PreviousPage.emit)
         self.ui.pushButton_next_page.clicked.connect(self.NextPage.emit)
         self.ui.comboBox_show_group_count.currentTextChanged.connect(self.ChangeShowGroupCount.emit)
+        self.ui.toolButton_jump_page.clicked.connect(self.jump_page)
+
 
     def add_similar_group(self, similar_group_widget: QWidget):
         """添加相似匹配结果组"""
@@ -32,6 +39,10 @@ class SimilarResultPreviewViewer(QWidget):
         size_hint = similar_group_widget.sizeHint()
         size_hint.setHeight(size_hint.height() + 45)
         list_item.setSizeHint(size_hint)
+
+    def jump_page(self):
+        """跳转页面"""
+
 
     def clear(self):
         """清空内容"""
@@ -80,6 +91,10 @@ class SimilarResultPreviewViewer(QWidget):
             else:
                 self.ui.pushButton_previous_page.setEnabled(True)
                 self.ui.pushButton_next_page.setEnabled(True)
+
+    def _set_icon(self):
+        """设置图标"""
+        self.ui.toolButton_jump_page.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_JUMP))
 
 
 if __name__ == "__main__":

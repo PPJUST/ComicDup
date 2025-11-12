@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'similar_result_previewKMfZQs.ui'
+## Form generated from reading UI file 'similar_result_previewuNHxpv.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.10.0
 ##
@@ -17,7 +17,7 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QComboBox, QHBoxLayout, QLabel,
     QListWidget, QListWidgetItem, QPushButton, QSizePolicy,
-    QSpacerItem, QVBoxLayout, QWidget)
+    QSpacerItem, QToolButton, QVBoxLayout, QWidget)
 
 class Ui_Form(object):
     def setupUi(self, Form):
@@ -121,6 +121,11 @@ class Ui_Form(object):
 
         self.horizontalLayout_2.addWidget(self.pushButton_next_page)
 
+        self.toolButton_jump_page = QToolButton(Form)
+        self.toolButton_jump_page.setObjectName(u"toolButton_jump_page")
+
+        self.horizontalLayout_2.addWidget(self.toolButton_jump_page)
+
         self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout_2.addItem(self.horizontalSpacer_2)
@@ -156,5 +161,6 @@ class Ui_Form(object):
         self.label_2.setText(QCoreApplication.translate("Form", u"/", None))
         self.label_total_page.setText(QCoreApplication.translate("Form", u"5", None))
         self.pushButton_next_page.setText(QCoreApplication.translate("Form", u"\u4e0b\u4e00\u9875", None))
+        self.toolButton_jump_page.setText(QCoreApplication.translate("Form", u"...", None))
     # retranslateUi
 
