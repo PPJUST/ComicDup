@@ -2,6 +2,7 @@ import lzytools._qt_pyside6
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget, QApplication, QListWidgetItem
 
+from components.dialog_choose_number import DialogChooseNumber
 from components.widget_assembler_similar_result_preview.widget_similar_result_preview.res.icon_base64 import ICON_JUMP
 from components.widget_assembler_similar_result_preview.widget_similar_result_preview.res.ui_similar_result_preview import \
     Ui_Form
@@ -12,6 +13,7 @@ class SimilarResultPreviewViewer(QWidget):
     PreviousPage = Signal(name='上一页')
     NextPage = Signal(name='下一页')
     ChangeShowGroupCount = Signal(str, name='改变每页显示的组数')
+    JumpPage = Signal(int, name='跳转页面')
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -27,7 +29,6 @@ class SimilarResultPreviewViewer(QWidget):
         self.ui.comboBox_show_group_count.currentTextChanged.connect(self.ChangeShowGroupCount.emit)
         self.ui.toolButton_jump_page.clicked.connect(self.jump_page)
 
-
     def add_similar_group(self, similar_group_widget: QWidget):
         """添加相似匹配结果组"""
         # 创建列表项
@@ -42,7 +43,14 @@ class SimilarResultPreviewViewer(QWidget):
 
     def jump_page(self):
         """跳转页面"""
-
+        dialog = DialogChooseNumber()
+        dialog.set_info('跳转到第n页')
+        dialog.set_min(1)
+        dialog.set_max(int(self.ui.label_total_page.text()))
+        dialog.set_number(int(self.ui.label_current_page.text()))
+        page = dialog.exec()
+        if page:
+            self.JumpPage.emit(page)
 
     def clear(self):
         """清空内容"""

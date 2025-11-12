@@ -32,6 +32,7 @@ class SimilarResultPreviewPresenter(QObject):
         self.viewer.NextPage.connect(self.next_page)
         self.viewer.PreviousPage.connect(self.previous_page)
         self.viewer.ChangeShowGroupCount.connect(self.change_show_group_count)
+        self.viewer.JumpPage.connect(self.jump_page)
 
     def set_groups(self, comic_info_list_list: List[List[ComicInfoBase]]):
         """设置相似组列表"""
@@ -79,6 +80,11 @@ class SimilarResultPreviewPresenter(QObject):
             self.current_page += 1
             self.viewer.set_current_page(self.current_page)
             self.show_page(self.current_page)
+
+    def jump_page(self, page: int):
+        """跳转页面"""
+        self.current_page = page
+        self.show_page(self.current_page)
 
     def sort_groups_item(self, sort_key: ORDER_KEYS, sort_direction: ORDER_DIRECTIONS):
         """排序相似组内元素"""

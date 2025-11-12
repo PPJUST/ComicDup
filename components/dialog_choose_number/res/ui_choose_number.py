@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'choose_numberHMxdrF.ui'
+## Form generated from reading UI file 'choose_numberXheKUD.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.10.0
 ##
@@ -16,8 +16,8 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QAbstractButton, QApplication, QDialog, QDialogButtonBox,
-    QHBoxLayout, QLabel, QSizePolicy, QSpinBox,
-    QVBoxLayout, QWidget)
+    QHBoxLayout, QLabel, QSizePolicy, QSpacerItem,
+    QSpinBox, QVBoxLayout, QWidget)
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
@@ -37,6 +37,10 @@ class Ui_Dialog(object):
         self.spinBox_number.setObjectName(u"spinBox_number")
 
         self.horizontalLayout.addWidget(self.spinBox_number)
+
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout.addItem(self.horizontalSpacer)
 
 
         self.verticalLayout.addLayout(self.horizontalLayout)

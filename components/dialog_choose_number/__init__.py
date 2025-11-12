@@ -1,0 +1,1 @@
+from .choose_number_viewer import ChooseNumberViewer as DialogChooseNumber
