@@ -36,8 +36,8 @@ class SettingAlgorithmViewer(QWidget):
         self.ui.comboBox_hash_length.installEventFilter(self)
         self.ui.spinBox_similarity_threshold.installEventFilter(self)
 
-        self.ui.checkBox_enhance_algorithm.setEnabled(False)  # 备忘录
-        self.ui.comboBox_enhance_algorithm.setEnabled(False)  # 备忘录
+        self.ui.checkBox_enhance_algorithm.setEnabled(False)  # todo
+        self.ui.comboBox_enhance_algorithm.setEnabled(False)  # todo
 
     def set_basic_algorithm(self, algorithm: str):
         """设置基础算法"""

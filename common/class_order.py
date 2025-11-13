@@ -44,7 +44,7 @@ class OrderDirection:
         text = '正序'
 
 
-ORDER_KEYS = [OrderKey.Filesize, OrderKey.FileTime, OrderKey.Pages, OrderKey.ParentDirpath]  # 备忘录 暂时禁用未完成的key
+ORDER_KEYS = [OrderKey.Filesize, OrderKey.FileTime, OrderKey.Pages, OrderKey.ParentDirpath]  # todo 禁用未完成的key
 ORDER_KEYS_TEXT = [key.text for key in ORDER_KEYS]
 
 ORDER_DIRECTIONS = [OrderDirection.Descending, OrderDirection.Ascending]

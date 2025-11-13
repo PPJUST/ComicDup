@@ -35,6 +35,10 @@ from thread.thread_save_image import ThreadSaveImage
 from thread.thread_search_comic import ThreadSearchComic
 
 
+# todo 修改匹配缓存数据的逻辑，目前为勾选后会将缓存数据写入需要匹配的项目中，然后全部相互匹配，应该修改为需要匹配的项目与缓存数据相匹配，缓存数据内部之间不进行匹配
+# todo 匹配缓存数据时，如果是无效数据，则直接跳过，或者提前检查一遍获取的缓存数据
+# todo 启动子线程后禁用设置选项
+
 class WindowPresenter(QObject):
     """主窗口的桥梁组件"""
     SignalRuntimeInfo = Signal(object, str, name='运行信息')
@@ -116,7 +120,7 @@ class WindowPresenter(QObject):
 
     def open_about(self):
         """打开程序说明"""
-        pass  # 备忘录
+        pass  # todo
 
     def start(self):
         """执行查重"""
@@ -324,9 +328,9 @@ class WindowPresenter(QObject):
             enhance_algorithm = self.widget_setting_algorithm.get_enhance_algorithm()
             if is_enhance_algorithm:
                 if isinstance(enhance_algorithm, SimilarAlgorithm.SSIM):
-                    pass  # 备忘录
+                    pass  # todo
                 elif isinstance(enhance_algorithm, SimilarAlgorithm.ORB):
-                    pass  # 备忘录
+                    pass  # todo
 
         else:
             self.widget_runtime_info.stop_time()

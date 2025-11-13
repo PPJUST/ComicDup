@@ -8,6 +8,8 @@ from components.widget_runtime_info.runtime_info_model import RuntimeInfoModel
 from components.widget_runtime_info.runtime_info_viewer import RuntimeInfoViewer
 
 
+# fixme 重新开始查重时运行进度未重置
+
 class RuntimeInfoPresenter(QObject):
     """运行信息模块的桥梁组件"""
 

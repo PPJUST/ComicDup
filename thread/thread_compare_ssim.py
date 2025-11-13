@@ -7,6 +7,8 @@ import lzytools.image
 from thread.thread_pattern import ThreadPattern
 
 
+# todo SSIM对比时，缩放的尺寸要大一点，例如256*256，并且要去噪（用高斯模糊处理扫描噪点，避免干扰结构判断）
+
 class ThreadCompareSSIM(ThreadPattern):
     """子线程-使用SSIM相似度计算相似度"""
 

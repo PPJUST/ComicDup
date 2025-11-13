@@ -13,6 +13,8 @@ from components.widget_assembler_comics_preview.widget_comic_preview.comic_previ
 from components.widget_assembler_comics_preview.widget_comic_preview.comic_preview_viewer import ComicPreviewViewer
 
 
+# todo 新增一个字典变量，用于存储图片对应的hash值，预览漫画时，建立一个后台线程，计算漫画下所有图片的hash值，并保存到该变量中，用于实时相似度匹配（可以修改为匹配到相似组后，就开始计算所有相似组内漫画的图片hash）
+
 class ComicPreviewPresenter(QObject):
     """漫画预览模块的桥梁组件"""
     ComicDeleted = Signal(name='删除漫画')
@@ -95,6 +97,7 @@ class ComicPreviewPresenter(QObject):
 
     def compare_current_image_hash(self, compare_hash: str):
         """计算当前图片的hash值，并于提供的hash值进行对比，计算相似度，并显示在ui上"""
+        # debug 即使未勾选显示相似度，预览dialog翻页后仍旧会显示相似度
         # 计算相似度
         self_hash = self.calc_current_image_hash()
         similar = lzytools.image.calc_hash_similar(self_hash, compare_hash)

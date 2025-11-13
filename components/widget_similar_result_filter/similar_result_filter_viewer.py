@@ -30,8 +30,8 @@ class SimilarResultFilterViewer(QWidget):
         self.ui.comboBox_sort_key.currentTextChanged.connect(self.ChangeSortKey.emit)
         self.ui.comboBox_sort_direction.currentTextChanged.connect(self.ChangeSortDirection.emit)
 
-        self.ui.pushButton_filter_same_items.setEnabled(False)
-        self.ui.pushButton_exclude_diff_pages.setEnabled(False)
+        self.ui.pushButton_filter_same_items.setEnabled(False)  # todo
+        self.ui.pushButton_exclude_diff_pages.setEnabled(False) # todo
 
     def _load_setting(self):
         """加载设置"""

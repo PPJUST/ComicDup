@@ -25,7 +25,7 @@ def check_cache_exist(cache_dirpath: str = CACHE_PREVIEW_DIRPATH):
 def clear_cache(cache_dirpath: str = CACHE_PREVIEW_DIRPATH):
     """清空缓存"""
     if os.path.exists(cache_dirpath):
-        lzytools.file.delete(cache_dirpath, send_to_trash=True)  # 备忘录 调试阶段，仅删除到回收站而不是直接删除
+        lzytools.file.delete(cache_dirpath, send_to_trash=True)  # note 调试阶段，仅删除到回收站而不是直接删除
 
 
 def save_preview_image_to_cache(origin_image_path: str, cache_dirpath: str = CACHE_PREVIEW_DIRPATH,

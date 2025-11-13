@@ -11,7 +11,7 @@ from components.widget_assembler_similar_result_preview.widget_comic_info.comic_
 from components.widget_assembler_similar_result_preview.widget_comic_info.comic_info_viewer import ComicInfoViewer
 from components.widget_search_list.res.icon_base64 import ICON_FOLDER, ICON_ARCHIVE
 
-
+# todo 文件名要素高亮标记，例如作者、社团、标题、tag等
 class ComicInfoPresenter(QObject):
     """单个漫画信息模块的桥梁组件"""
     ComicDeleted = Signal(name='删除漫画')

@@ -10,6 +10,9 @@ from components.widget_cache_manager.cache_manager_viewer import CacheManagerVie
 from thread.thread_refresh_comic_db import ThreadRefreshComicDB
 
 
+# fixme 缓存管理模块相关功能启动后会卡ui
+# fixme 缓存模块功能调用时未切换到信息页面
+
 class CacheManagerPresenter(QObject):
     """缓存管理器模块的桥梁组件"""
     MatchCache = Signal(name="缓存内部匹配")
@@ -70,7 +73,7 @@ class CacheManagerPresenter(QObject):
             print('检查预览图是否存在于数据库', preview_path)
             if preview_path not in preview_paths_in_db:
                 print('不存在，删除')
-                lzytools.file.delete(preview_path, send_to_trash=True)  # 备忘录 调试阶段，仅删除到回收站而不是直接删除
+                lzytools.file.delete(preview_path, send_to_trash=True)  # note 调试阶段，仅删除到回收站而不是直接删除
 
     def refresh_cache(self):
         """刷新缓存"""
@@ -86,7 +89,7 @@ class CacheManagerPresenter(QObject):
         self.thread_refresh_comic_db.start()
 
         # 刷新图片数据库项目
-        # 备忘录 图片数据库暂时不做更新方法
+        # todo 图片数据库的更新方法
 
     def match_cache(self):
         """缓存内部匹配"""

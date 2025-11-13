@@ -8,6 +8,8 @@ from common import function_cache_preview, function_cache_result
 from components import window
 
 
+# todo 参照OU项目，全部报错都传递到运行信息中
+
 def load_app():
     app_ = QApplication()
     app_.setStyle('Fusion')
