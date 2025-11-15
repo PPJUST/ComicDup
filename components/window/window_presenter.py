@@ -35,7 +35,6 @@ from thread.thread_save_image import ThreadSaveImage
 from thread.thread_search_comic import ThreadSearchComic
 
 
-# todo 修改匹配缓存数据的逻辑，目前为勾选后会将缓存数据写入需要匹配的项目中，然后全部相互匹配，应该修改为需要匹配的项目与缓存数据相匹配，缓存数据内部之间不进行匹配
 # todo 匹配缓存数据时，如果是无效数据，则直接跳过，或者提前检查一遍获取的缓存数据
 # todo 启动子线程后禁用设置选项
 
@@ -259,12 +258,7 @@ class WindowPresenter(QObject):
             # 提取图片信息中的hash值
             hash_algorithm = self.widget_setting_algorithm.get_base_algorithm()  # hash算法
             hash_length = self.widget_setting_algorithm.get_hash_length()  # hash长度
-            # 检查匹配选项-是否匹配缓存数据
-            is_match_cache = self.widget_setting_match.get_is_match_cache()
-            if is_match_cache:  # 如果选中了匹配缓存数据，则从漫画信息数据库中提取出所有的项目并以此进行相似匹配（不会计算缺失的hash值）
-                hash_list = self.model.get_hashs(hash_algorithm, hash_length)
-            else:  # 否则仅匹配本次提取到的图片信息
-                hash_list = self.model.get_hash_list_from_image_infos(image_info_list, hash_algorithm, hash_length)
+            hash_list = self.model.get_hash_list_from_image_infos(image_info_list, hash_algorithm, hash_length)
             # 将提取的hash值列表传递给 子线程-对比图片hash
             self.start_thread_compare_hash(hash_list)
         else:
@@ -274,6 +268,16 @@ class WindowPresenter(QObject):
         """启动子线程-对比图片hash"""
         if not self.is_stop:
             self.thread_compare_hash.set_hash_list(hash_list)
+            # 检查匹配选项-是否匹配缓存数据
+            is_match_cache = self.widget_setting_match.get_is_match_cache()
+            self.thread_compare_hash.set_is_match_cache(is_match_cache)
+            if is_match_cache:
+                # 从漫画信息数据库中提取出所有的项目的对应hash值（不会计算缺失的hash值）
+                hash_algorithm = self.widget_setting_algorithm.get_base_algorithm()  # hash算法
+                hash_length = self.widget_setting_algorithm.get_hash_length()  # hash长度
+                cache_hash_list = self.model.get_hashs(hash_algorithm, hash_length)
+                self.thread_compare_hash.set_cache_hash_list(cache_hash_list)
+
             self.thread_compare_hash.start()
         else:
             self.widget_runtime_info.stop_time()
