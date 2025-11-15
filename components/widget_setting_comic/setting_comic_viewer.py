@@ -39,6 +39,12 @@ class SettingComicViewer(QWidget):
         """设置是否允许漫画包含其他类型文件"""
         self.ui.checkBox_allow_other_filetypes.setChecked(is_enable)
 
+    def set_options_state(self, is_enable: bool):
+        """设置选项启用/禁用"""
+        self.ui.spinBox_pages_lower_limit.setEnabled(is_enable)
+        self.ui.checkBox_analyze_archive.setEnabled(is_enable)
+        self.ui.checkBox_allow_other_filetypes.setEnabled(is_enable)
+
     def _load_setting(self):
         """加载初始设置"""
         pass

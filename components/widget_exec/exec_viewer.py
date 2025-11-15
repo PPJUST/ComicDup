@@ -16,6 +16,8 @@ class ExecViewer(QWidget):
         self.ui = Ui_Form()
         self.ui.setupUi(self)
 
+        self.ui.pushButton_stop.setEnabled(False)
+
         # 设置图标
         self._set_icon()
 
@@ -24,6 +26,18 @@ class ExecViewer(QWidget):
         self.ui.pushButton_stop.clicked.connect(self.Stop.emit)
         self.ui.pushButton_load_last_result.clicked.connect(self.LoadLastResult.emit)
         self.ui.pushButton_info.clicked.connect(self.OpenAbout.emit)
+
+    def set_button_state_start(self):
+        """设置按钮状态-启动匹配状态"""
+        self.ui.pushButton_start.setEnabled(False)
+        self.ui.pushButton_stop.setEnabled(True)
+        self.ui.pushButton_load_last_result.setEnabled(False)
+
+    def set_button_state_end(self):
+        """设置按钮状态-结束匹配状态"""
+        self.ui.pushButton_start.setEnabled(True)
+        self.ui.pushButton_stop.setEnabled(False)
+        self.ui.pushButton_load_last_result.setEnabled(True)
 
     def _set_icon(self):
         """设置图标"""

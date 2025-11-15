@@ -55,6 +55,15 @@ class SettingMatchViewer(QWidget):
         """设置线程数"""
         self.ui.spinBox_thread_count.setValue(int(count))
 
+    def set_options_state(self, is_enable: bool):
+        """设置选项启用/禁用"""
+        self.ui.spinBox_extract_pages.setEnabled(is_enable)
+        self.ui.checkBox_match_cache.setEnabled(is_enable)
+        self.ui.checkBox_match_similar_filename.setEnabled(is_enable)
+        self.ui.checkBox_same_parent_folder.setEnabled(is_enable)
+        self.ui.spinBox_same_parent_folder.setEnabled(is_enable)
+        self.ui.spinBox_thread_count.setEnabled(is_enable)
+
     def _load_setting(self):
         """加载初始设置"""
         pass

@@ -36,7 +36,6 @@ from thread.thread_search_comic import ThreadSearchComic
 
 
 # todo 匹配缓存数据时，如果是无效数据，则直接跳过，或者提前检查一遍获取的缓存数据
-# todo 启动子线程后禁用设置选项
 
 class WindowPresenter(QObject):
     """主窗口的桥梁组件"""
@@ -127,11 +126,14 @@ class WindowPresenter(QObject):
         self.widget_runtime_info.start_time()
         self.widget_runtime_info.update_step_count(4)
 
+        # 禁用相关设置选项
+        self._set_options_state(False)
+
         # 获取需要检索的路径
         search_paths = self.widget_search_list.get_paths()
         if not search_paths:
             self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning, '未选择需要检索的目录')
-            self.widget_runtime_info.stop_time()
+            self.stop()
             return
 
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '执行查找重复项')
@@ -149,8 +151,9 @@ class WindowPresenter(QObject):
     def stop(self):
         """停止查重"""
         self.is_stop = True
+        self._set_options_state(True)
         self.widget_runtime_info.stop_time()
-        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning, '停止查找重复项')
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning, '当前匹配任务已结束')
         self.thread_search_comic.set_stop()
         self.thread_analyse_comic_info.set_stop()
         self.thread_analyse_image_info.set_stop()
@@ -165,7 +168,7 @@ class WindowPresenter(QObject):
             self.thread_search_comic.set_search_list(search_paths)
             self.thread_search_comic.start()
         else:
-            self.widget_runtime_info.stop_time()
+            self.stop()
 
     def thread_search_comic_finished(self):
         """子线程-搜索漫画执行完毕"""
@@ -174,13 +177,13 @@ class WindowPresenter(QObject):
             comics_path = self.thread_search_comic.get_comics_path()
             if not comics_path:
                 self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning, '未找到任何漫画')
-                self.widget_runtime_info.stop_time()
+                self.stop()
                 return
             self._comic_paths_search = comics_path  # 赋值给变量，用于后续使用
             # 传递给 子线程-分析漫画信息
             self.start_thread_analyse_comic_info(comics_path)
         else:
-            self.widget_runtime_info.stop_time()
+            self.stop()
 
     def start_thread_analyse_comic_info(self, comics_path: list):
         """启动子线程-分析漫画信息"""
@@ -188,7 +191,7 @@ class WindowPresenter(QObject):
             self.thread_analyse_comic_info.set_comics(comics_path)
             self.thread_analyse_comic_info.start()
         else:
-            self.widget_runtime_info.stop_time()
+            self.stop()
 
     def thread_analyse_comic_info_finished(self):
         """子线程-分析漫画信息执行完毕"""
@@ -198,12 +201,12 @@ class WindowPresenter(QObject):
             comic_info_list = list(comic_info_dict.values())
             if not comic_info_list:
                 self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning, '未找到任何漫画')
-                self.widget_runtime_info.stop_time()
+                self.stop()
                 return
             # 保存到本地数据库中
             self.start_save_comic_info(comic_info_list)
         else:
-            self.widget_runtime_info.stop_time()
+            self.stop()
 
     def start_save_comic_info(self, comic_info_list: List[ComicInfoBase]):
         """启动子线程-保存漫画信息到数据库"""
@@ -211,7 +214,7 @@ class WindowPresenter(QObject):
             self.thread_save_comic.set_comic_info_list(comic_info_list)
             self.thread_save_comic.start()
         else:
-            self.widget_runtime_info.stop_time()
+            self.stop()
 
     def thread_save_comic_info_finished(self):
         """子线程-保存漫画信息到数据库执行完毕"""
@@ -219,7 +222,7 @@ class WindowPresenter(QObject):
             comic_info_list = self.thread_save_comic.get_comic_info_list()
             self.start_analyse_image_info(comic_info_list)
         else:
-            self.widget_runtime_info.stop_time()
+            self.stop()
 
     def start_analyse_image_info(self, comic_info_list: list):
         """启动子线程-分析图片信息"""
@@ -227,7 +230,7 @@ class WindowPresenter(QObject):
             self.thread_analyse_image_info.set_comic_info_list(comic_info_list)
             self.thread_analyse_image_info.start()
         else:
-            self.widget_runtime_info.stop_time()
+            self.stop()
 
     def thread_analyse_image_info_finished(self):
         """子线程-分析图片信息执行完毕"""
@@ -235,13 +238,13 @@ class WindowPresenter(QObject):
             # 提取图片信息字典
             image_info_dict = self.thread_analyse_image_info.get_image_info_dict()
             if not image_info_dict:
-                self.widget_runtime_info.stop_time()
+                self.stop()
                 self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning, '未找到任何图片')
                 return
             # 保存到本地数据库中
             self.start_save_image_info(image_info_dict.values())
         else:
-            self.widget_runtime_info.stop_time()
+            self.stop()
 
     def start_save_image_info(self, image_info_list: List[ImageInfoBase]):
         """启动子线程-保存图片信息到数据库"""
@@ -249,7 +252,7 @@ class WindowPresenter(QObject):
             self.thread_save_image.set_image_info_list(image_info_list)
             self.thread_save_image.start()
         else:
-            self.widget_runtime_info.stop_time()
+            self.stop()
 
     def thread_save_image_info_finished(self):
         """子线程-保存图片信息到数据库执行完毕"""
@@ -262,7 +265,7 @@ class WindowPresenter(QObject):
             # 将提取的hash值列表传递给 子线程-对比图片hash
             self.start_thread_compare_hash(hash_list)
         else:
-            self.widget_runtime_info.stop_time()
+            self.stop()
 
     def start_thread_compare_hash(self, hash_list: list):
         """启动子线程-对比图片hash"""
@@ -280,7 +283,7 @@ class WindowPresenter(QObject):
 
             self.thread_compare_hash.start()
         else:
-            self.widget_runtime_info.stop_time()
+            self.stop()
 
     def thread_compare_hash_finished(self):
         """子线程-对比图片hash执行完毕"""
@@ -288,13 +291,13 @@ class WindowPresenter(QObject):
             # 提取相似hash组列表
             similar_hash_groups = self.thread_compare_hash.get_similar_hash_group()
             if not similar_hash_groups:
-                self.widget_runtime_info.stop_time()
+                self.stop()
                 self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning, '未找到任何相似图片')
                 return
             # 将hash列表转换为对应的漫画信息类列表
             self.start_convert_hash_to_comic_info(similar_hash_groups)
         else:
-            self.widget_runtime_info.stop_time()
+            self.stop()
 
     def start_convert_hash_to_comic_info(self, similar_hash_groups: list[list[str]]):
         """启动子线程-转换hash值为漫画信息类"""
@@ -304,7 +307,7 @@ class WindowPresenter(QObject):
             self.thread_convert_hash_to_comic_info.set_hash_type(hash_type)
             self.thread_convert_hash_to_comic_info.start()
         else:
-            self.widget_runtime_info.stop_time()
+            self.stop()
 
     def thread_convert_hash_to_comic_info_finished(self):
         """子线程-转换hash值为漫画信息类执行完毕"""
@@ -335,9 +338,8 @@ class WindowPresenter(QObject):
                     pass  # todo
                 elif isinstance(enhance_algorithm, SimilarAlgorithm.ORB):
                     pass  # todo
-
         else:
-            self.widget_runtime_info.stop_time()
+            self.stop()
 
     def start_thread_compare_ssim(self, image_group: list):
         """启动子线程-对比图片ssim"""
@@ -345,7 +347,7 @@ class WindowPresenter(QObject):
             self.thread_compare_ssim.set_image_group(image_group)
             self.thread_compare_ssim.start()
         else:
-            self.widget_runtime_info.stop_time()
+            self.stop()
 
     def show_similar_result(self, comic_info_groups: List[List[ComicInfoBase]]):
         """显示相似匹配结果"""
@@ -356,7 +358,7 @@ class WindowPresenter(QObject):
             self.assembler_similar_result_preview.show_similar_result()
             self.viewer.turn_page_match_result()
 
-        self.widget_runtime_info.stop_time()
+        self.stop()
 
     """缓存内部匹配方法"""
 
@@ -455,6 +457,17 @@ class WindowPresenter(QObject):
         width = self.viewer.width()
         height = self.viewer.height()
         self.model.set_window_size_db(width, height)
+
+    def _set_options_state(self, is_enable: bool):
+        """设置选项启用/禁用"""
+        if is_enable:
+            self.widget_exec.set_button_state_end()
+        else:
+            self.widget_exec.set_button_state_start()
+        self.widget_setting_algorithm.set_options_state(is_enable)
+        self.widget_setting_match.set_options_state(is_enable)
+        self.widget_setting_comic.set_options_state(is_enable)
+        self.widget_cache_manager.set_options_state(is_enable)
 
     def _init_viewer(self):
         """设置viewer"""

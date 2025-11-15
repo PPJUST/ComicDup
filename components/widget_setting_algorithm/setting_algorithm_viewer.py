@@ -59,6 +59,14 @@ class SettingAlgorithmViewer(QWidget):
         """设置相似度阈值"""
         self.ui.spinBox_similarity_threshold.setValue(int(threshold))
 
+    def set_options_state(self, is_enable: bool):
+        """设置选项启用/禁用"""
+        self.ui.comboBox_basic_algorithm.setEnabled(is_enable)
+        self.ui.checkBox_enhance_algorithm.setEnabled(is_enable)
+        self.ui.comboBox_enhance_algorithm.setEnabled(is_enable)
+        self.ui.spinBox_similarity_threshold.setEnabled(is_enable)
+        self.ui.comboBox_hash_length.setEnabled(is_enable)
+
     def _load_setting(self):
         """加载初始设置"""
         # 基础算法

@@ -38,6 +38,10 @@ class SettingAlgorithmPresenter(QObject):
     def get_hash_length(self) -> int:
         return self.model.get_hash_length()
 
+    def set_options_state(self, is_enable: bool):
+        """设置选项启用/禁用"""
+        self.viewer.set_options_state(is_enable)
+
     def _load_setting(self):
         """加载初始设置"""
         basic_algorithm = self.model.get_basic_algorithm_text()

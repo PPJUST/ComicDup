@@ -11,7 +11,7 @@ class ExecPresenter(QObject):
     LoadLastResult = Signal(name="加载上次结果")
     OpenAbout = Signal(name="打开程序说明")
 
-    def __init__(self, viewer: ExecViewer, model:ExecModel):
+    def __init__(self, viewer: ExecViewer, model: ExecModel):
         super().__init__()
         self.viewer = viewer
         self.model = model
@@ -21,3 +21,11 @@ class ExecPresenter(QObject):
         self.viewer.Stop.connect(self.Stop.emit)
         self.viewer.LoadLastResult.connect(self.LoadLastResult.emit)
         self.viewer.OpenAbout.connect(self.OpenAbout.emit)
+
+    def set_button_state_start(self):
+        """设置按钮状态-启动匹配状态"""
+        self.viewer.set_button_state_start()
+
+    def set_button_state_end(self):
+        """设置按钮状态-结束匹配状态"""
+        self.viewer.set_button_state_end()

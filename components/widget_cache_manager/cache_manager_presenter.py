@@ -95,6 +95,10 @@ class CacheManagerPresenter(QObject):
         """缓存内部匹配"""
         self.MatchCache.emit()
 
+    def set_options_state(self, is_enable: bool):
+        """设置选项启用/禁用"""
+        self.viewer.set_options_state(is_enable)
+
     def _bind_signal(self):
         """绑定信号"""
         self.viewer.RefreshCache.connect(self.refresh_cache)

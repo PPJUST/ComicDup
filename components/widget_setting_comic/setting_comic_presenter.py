@@ -30,6 +30,10 @@ class SettingComicPresenter(QObject):
         """获取是否允许漫画包含其他类型文件"""
         return self.model.get_is_allow_other_filetypes()
 
+    def set_options_state(self, is_enable: bool):
+        """设置选项启用/禁用"""
+        self.viewer.set_options_state(is_enable)
+
     def _load_setting(self):
         """加载初始设置"""
         pages_lower_limit = self.model.get_pages_lower_limit()

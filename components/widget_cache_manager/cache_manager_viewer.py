@@ -37,6 +37,13 @@ class CacheManagerViewer(QWidget):
         self.ui.label_preview_count.setText(str(count_info.get_item_count()))
         self.ui.label_preview_size.setText(str(count_info.get_size_count()))
 
+    def set_options_state(self, is_enable: bool):
+        """设置选项启用/禁用"""
+        self.ui.pushButton_refresh.setEnabled(is_enable)
+        self.ui.pushButton_cache_match.setEnabled(is_enable)
+        self.ui.pushButton_delete_useless.setEnabled(is_enable)
+        self.ui.pushButton_clear.setEnabled(is_enable)
+
     def _bind_signal(self):
         """绑定信号"""
         self.ui.pushButton_refresh.clicked.connect(self.RefreshCache.emit)

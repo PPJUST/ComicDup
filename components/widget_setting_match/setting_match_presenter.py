@@ -38,6 +38,10 @@ class SettingMatchPresenter(QObject):
         """手动设置是否匹配缓存"""
         self.viewer.set_is_match_cache(is_enable)
 
+    def set_options_state(self, is_enable: bool):
+        """设置选项启用/禁用"""
+        self.viewer.set_options_state(is_enable)
+
     def _load_setting(self):
         """加载初始设置"""
         extract_pages = self.model.get_extract_pages()
