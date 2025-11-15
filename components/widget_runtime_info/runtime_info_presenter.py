@@ -8,8 +8,6 @@ from components.widget_runtime_info.runtime_info_model import RuntimeInfoModel
 from components.widget_runtime_info.runtime_info_viewer import RuntimeInfoViewer
 
 
-# fixme 重新开始查重时运行进度未重置
-
 class RuntimeInfoPresenter(QObject):
     """运行信息模块的桥梁组件"""
 
@@ -27,6 +25,7 @@ class RuntimeInfoPresenter(QObject):
 
     def start_time(self):
         """开始计时"""
+        self.clear_step_info()
         self.start_time_total = time.time()
         self.start_time_current = time.time()
         self.timer.start()
@@ -42,6 +41,10 @@ class RuntimeInfoPresenter(QObject):
     def stop_time(self):
         """结束计时"""
         self.timer.stop()
+
+    def clear_step_info(self):
+        """清空步骤信息"""
+        self.viewer.clear_step_info()
 
     def _update_runtime_total(self, runtime: float):
         """更新任务运行总耗时"""

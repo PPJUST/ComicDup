@@ -39,6 +39,15 @@ class RuntimeInfoViewer(QWidget):
         """更新任务运行当前步骤的内部进度"""
         self.ui.label_progress_current.setText(progress)
 
+    def clear_step_info(self):
+        """清空步骤信息"""
+        self.update_runtime_total('0:00:00')
+        self.update_runtime_current('0:00:00')
+        self.update_step_index('-')
+        self.update_step_count('-')
+        self.update_step_title('')
+        self.update_progress_current('-/-')
+
     """文本框方法"""
 
     def append_textline(self, text_info: str):
