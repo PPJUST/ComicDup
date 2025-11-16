@@ -136,11 +136,12 @@ class SimilarGroupPreviewPresenter(QObject):
     def _child_comic_turned_page(self):
         """子漫画翻页后执行的操作"""
         widget_presenter: ComicPreviewPresenter = self.sender()
-        # 如果是第一个漫画项目翻页了，则更新全部漫画项目的相似度
-        if self.widgets_comic.index(widget_presenter) == 0:
-            self.show_current_page_similar()
-        else:  # 否则，仅需要更新当前漫画项目相似度
-            widget_presenter.compare_current_image_hash(self.base_hash)
+        if self.is_show_similar:
+            # 如果是第一个漫画项目翻页了，则更新全部漫画项目的相似度
+            if self.widgets_comic.index(widget_presenter) == 0:
+                self.show_current_page_similar()
+            else:  # 否则，仅需要更新当前漫画项目相似度
+                widget_presenter.compare_current_image_hash(self.base_hash)
 
     def _bind_signal(self):
         """绑定信号"""
