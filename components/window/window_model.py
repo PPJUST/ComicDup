@@ -15,7 +15,6 @@ from common.class_runtime import TypeRuntimeInfo
 from common.function_config import SettingWindowSize, CONFIG_FILE
 from common.function_db_comic_info import DBComicInfo
 from common.function_db_image_info import DBImageInfo
-from thread.thread_refresh_comic_db import ThreadRefreshComicDB
 
 
 class WindowModel(QObject):
@@ -78,6 +77,11 @@ class WindowModel(QObject):
         """根据漫画路径获取对于的漫画信息类"""
         comic_info = self.db_comic_info.get_comic_info_by_comic_path(comic_path)
         return comic_info
+    def get_comic_paths(self)->List[str]:
+        """获取数据库中所有的漫画路径"""
+        comics_path_list = self.db_comic_info.get_comic_paths()
+        return comics_path_list
+
 
     def convert_hash_group_to_comic_info_group(self,
                                                hash_group: List[List[str]],
@@ -151,21 +155,7 @@ class WindowModel(QObject):
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, f'完成相似组相关性筛选')
         return comic_info_group_filter
 
-    def refresh_cache(self):
-        """刷新缓存"""
-        # 刷新漫画数据库项目
-        # 获取存储的漫画路径列表
-        comics_path_list = self.db_comic_info.get_comic_paths()
-        # 实例化更新子线程
-        self.thread_refresh_comic_db = ThreadRefreshComicDB()
-        # 传递参数
-        self.thread_refresh_comic_db.set_comics_path(comics_path_list)
-        self.thread_refresh_comic_db.set_comic_db(self.db_comic_info)
-        # 重新分析漫画信息并刷新漫画数据库
-        self.thread_refresh_comic_db.start()
 
-        # 刷新图片数据库项目
-        # todo 图片数据库的更新方法
 
     def delete_useless_cache(self):
         """删除无用缓存"""

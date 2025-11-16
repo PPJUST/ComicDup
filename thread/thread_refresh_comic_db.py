@@ -75,6 +75,8 @@ class ThreadRefreshComicDB(ThreadPattern):
                     self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning, f'分析{comic_path}失败：{str(e)}')
 
         self.update_db(list(comic_info_dict.values()))
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '完成数据库更新')
+        self.finished()
 
     def update_db(self, comic_info_list: List[ComicInfoBase]):
         """更新数据库"""

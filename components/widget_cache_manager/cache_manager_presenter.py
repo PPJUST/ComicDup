@@ -5,9 +5,6 @@ from components.widget_cache_manager.cache_manager_model import CacheManagerMode
 from components.widget_cache_manager.cache_manager_viewer import CacheManagerViewer
 
 
-# fixme 清除无效数据/刷新缓存数据单独拆分为子线程，并显示运行信息
-# fixme 缓存模块功能调用时未切换到信息页面
-
 class CacheManagerPresenter(QObject):
     """缓存管理器模块的桥梁组件"""
     CacheRefresh = Signal(name="刷新缓存")

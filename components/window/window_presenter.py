@@ -30,6 +30,7 @@ from thread.thread_analyse_image_info import ThreadAnalyseImageInfo
 from thread.thread_compare_hash import ThreadCompareHash
 from thread.thread_compare_ssim import ThreadCompareSSIM
 from thread.thread_convert_hash_to_comic_info import ThreadConvertHashToComicInfo
+from thread.thread_refresh_comic_db import ThreadRefreshComicDB
 from thread.thread_save_comic import ThreadSaveComic
 from thread.thread_save_image import ThreadSaveImage
 from thread.thread_search_comic import ThreadSearchComic
@@ -72,6 +73,7 @@ class WindowPresenter(QObject):
         self.thread_save_comic = ThreadSaveComic()
         self.thread_save_image = ThreadSaveImage()
         self.thread_convert_hash_to_comic_info = ThreadConvertHashToComicInfo()
+        self.thread_refresh_comic_db = ThreadRefreshComicDB()
 
         # 将设置项传递给子线程
         self._set_thread_setting()
@@ -371,21 +373,58 @@ class WindowPresenter(QObject):
 
         self.stop()
 
-    """缓存内部匹配方法"""
+    """缓存管理相关方法"""
 
-    def self_match_comic_db(self):
+    def _prepare_before_cache_thread(self):
+        """缓存管理相关子线程启动前的准备操作"""
+        # 开始计时
+        self.widget_runtime_info.start_time()
+        # 禁用相关设置选项
+        self._set_options_state(False)
+        # 切换到运行信息页
+        self.viewer.turn_page_running_info()
+        # 将设置项重新传递给子线程
+        self._set_thread_setting()
+        self.is_stop = False
+
+    def refresh_cache(self):
+        """刷新缓存"""
+        self._prepare_before_cache_thread()
+        # 刷新漫画数据库项目
+        # 获取存储的漫画路径列表
+        comics_path_list = self.model.get_comic_paths()
+        # 传递参数
+        self.thread_refresh_comic_db.set_comics_path(comics_path_list)
+        self.thread_refresh_comic_db.set_comic_db(self.model.get_comic_db())
+        # 重新分析漫画信息并刷新漫画数据库
+        self.thread_refresh_comic_db.start()
+
+        # 刷新图片数据库项目
+        # todo 图片数据库的更新方法
+
+    def thread_refresh_comic_db_finished(self):
+        """子线程-刷新缓存数据执行完毕"""
+        print('子线程-刷新缓存数据执行完毕')
+        self.stop()
+
+    def delete_useless_cache(self):
+        """删除无用缓存"""
+        self.model.delete_useless_cache()
+
+    def clear_cache(self):
+        """清空缓存"""
+        self.model.clear_cache()
+
+    def match_cache_data_self(self):
         """漫画数据库项目自我匹配"""
-        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '开始漫画数据库内部匹配')
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '开始数据库内部匹配')
         # 提取数据库中的hash值
         hash_algorithm = self.widget_setting_algorithm.get_base_algorithm()  # hash算法
         hash_length = self.widget_setting_algorithm.get_hash_length()  # hash长度
         hash_list = self.model.get_hashs(hash_algorithm, hash_length)
-        # 启动子线程-对比图片hash
-        self.start_thread_match_cache_hash(hash_list)
 
-    def start_thread_match_cache_hash(self, hash_list: list):
-        """启动子线程-对比图片hash"""
-        self.is_stop = False
+        # 跳步启动子线程
+        self._prepare_before_cache_thread()
         self.thread_compare_hash.set_hash_list(hash_list)
         self.thread_compare_hash.set_is_match_cache(True)
         self.thread_compare_hash.start()
@@ -520,10 +559,10 @@ class WindowPresenter(QObject):
         self.widget_similar_result_filter.ChangeSortKey.connect(self.order_similar_result)
         self.widget_similar_result_filter.ChangeSortDirection.connect(self.order_similar_result)
 
-        self.widget_cache_manager.CacheRefresh.connect(self.model.refresh_cache)
-        self.widget_cache_manager.CacheDeleteUseless.connect(self.model.delete_useless_cache)
-        self.widget_cache_manager.CacheMatch.connect(self.self_match_comic_db)
-        self.widget_cache_manager.CacheClear.connect(self.model.clear_cache)
+        self.widget_cache_manager.CacheRefresh.connect(self.refresh_cache)
+        self.widget_cache_manager.CacheDeleteUseless.connect(self.delete_useless_cache)
+        self.widget_cache_manager.CacheMatch.connect(self.match_cache_data_self)
+        self.widget_cache_manager.CacheClear.connect(self.clear_cache)
 
     def _bind_thread_signal(self):
         """绑定子线程信号"""
@@ -590,3 +629,11 @@ class WindowPresenter(QObject):
         self.thread_convert_hash_to_comic_info.SignalRuntimeInfo.connect(self.update_runtime_info_textline)
         self.thread_convert_hash_to_comic_info.SignalFinished.connect(self.thread_convert_hash_to_comic_info_finished)
         # self.thread_convert_hash_to_comic_info.SignalStopped.connect()
+
+        # self.thread_refresh_comic_db.SignalStart.connect()
+        self.thread_refresh_comic_db.SignalIndex.connect(self.update_runtime_info_index)
+        self.thread_refresh_comic_db.SignalInfo.connect(self.update_runtime_info_title)
+        self.thread_refresh_comic_db.SignalRate.connect(self.update_runtime_info_rate)
+        self.thread_refresh_comic_db.SignalRuntimeInfo.connect(self.update_runtime_info_textline)
+        self.thread_refresh_comic_db.SignalFinished.connect(self.thread_refresh_comic_db_finished)
+        # self.thread_refresh_comic_db.SignalStopped.connect()
