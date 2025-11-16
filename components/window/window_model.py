@@ -2,6 +2,7 @@ import os
 from typing import List
 
 import lzytools.common
+import lzytools.file
 import natsort
 from PySide6.QtCore import Signal, QObject
 
@@ -14,6 +15,7 @@ from common.class_runtime import TypeRuntimeInfo
 from common.function_config import SettingWindowSize, CONFIG_FILE
 from common.function_db_comic_info import DBComicInfo
 from common.function_db_image_info import DBImageInfo
+from thread.thread_refresh_comic_db import ThreadRefreshComicDB
 
 
 class WindowModel(QObject):
@@ -148,6 +150,46 @@ class WindowModel(QObject):
 
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, f'完成相似组相关性筛选')
         return comic_info_group_filter
+
+    def refresh_cache(self):
+        """刷新缓存"""
+        # 刷新漫画数据库项目
+        # 获取存储的漫画路径列表
+        comics_path_list = self.db_comic_info.get_comic_paths()
+        # 实例化更新子线程
+        self.thread_refresh_comic_db = ThreadRefreshComicDB()
+        # 传递参数
+        self.thread_refresh_comic_db.set_comics_path(comics_path_list)
+        self.thread_refresh_comic_db.set_comic_db(self.db_comic_info)
+        # 重新分析漫画信息并刷新漫画数据库
+        self.thread_refresh_comic_db.start()
+
+        # 刷新图片数据库项目
+        # todo 图片数据库的更新方法
+
+    def delete_useless_cache(self):
+        """删除无用缓存"""
+        # 删除无效的漫画数据库项目
+        self.db_comic_info.delete_useless_items()
+        # 删除无效的图片数据库项目
+        self.db_image_info.delete_useless_items()
+        # 删除无效的预览图
+        preview_paths_in_db = self.db_comic_info.get_preview_paths()
+        preview_paths_in_local = function_cache_preview.get_preview_image_paths()
+        for preview_path in preview_paths_in_local:
+            print('检查预览图是否存在于数据库', preview_path)
+            if preview_path not in preview_paths_in_db:
+                print('不存在，删除')
+                lzytools.file.delete(preview_path, send_to_trash=True)  # note 调试阶段，仅删除到回收站而不是直接删除
+
+    def clear_cache(self):
+        """清空缓存"""
+        # 清空漫画数据库
+        self.db_image_info.clear()
+        # 清空图片数据库
+        self.db_image_info.clear()
+        # 清空预览图
+        function_cache_preview.clear_cache()
 
     def get_comic_db_count_info(self) -> CountInfo:
         """获取漫画数据库统计信息"""

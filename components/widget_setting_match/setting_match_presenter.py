@@ -34,10 +34,6 @@ class SettingMatchPresenter(QObject):
         """获取线程数"""
         return self.model.get_thread_count()
 
-    def set_is_match_cache(self, is_enable: bool):
-        """手动设置是否匹配缓存"""
-        self.viewer.set_is_match_cache(is_enable)
-
     def set_options_state(self, is_enable: bool):
         """设置选项启用/禁用"""
         self.viewer.set_options_state(is_enable)

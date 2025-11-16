@@ -1,14 +1,13 @@
 import os
 import sys
 
+import lzytools.common
 from PySide6.QtGui import QFont
-from PySide6.QtWidgets import QApplication
+from PySide6.QtWidgets import QApplication, QMessageBox
 
 from common import function_cache_preview, function_cache_result
 from components import window
 
-
-# todo 参照OU项目，全部报错都传递到运行信息中
 
 def load_app():
     app_ = QApplication()
@@ -50,7 +49,18 @@ def check_cache_exist():
     function_cache_result.check_cache_exist()
 
 
+def show_dup_info():
+    app_ = QApplication([])
+    messagebox = QMessageBox()
+    messagebox.setText('OnlyUnzip已经运行了一个实例，请勿重复运行。')
+    messagebox.exec()
+    sys.exit(1)
+
+
 if __name__ == "__main__":
     set_working_directory_to_exe_path()
     check_cache_exist()
-    load_app()
+    if not lzytools.common.check_mutex('ComicDup'):  # 互斥体检查（单个实例）
+        load_app()
+    else:
+        show_dup_info()

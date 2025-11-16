@@ -42,6 +42,9 @@ class ThreadCompareHash(ThreadPattern):
     def set_is_match_cache(self, is_match_cache: bool):
         """设置是否匹配缓存数据"""
         self.is_match_cache = is_match_cache
+    def get_is_match_cache(self):
+        """获取是否匹配缓存数据"""
+        return self.is_match_cache
 
     def set_cache_hash_list(self, cache_hash_list: List[str]):
         """设置用于匹配的缓存hash数据"""
@@ -75,6 +78,10 @@ class ThreadCompareHash(ThreadPattern):
         if self.is_match_cache:
             match_hash_list.extend(self.cache_hash_list)
             match_hash_list = self.sort_hash(match_hash_list)
+
+        # 去重匹配列表并排序
+        match_hash_list = list(set(match_hash_list))
+        match_hash_list = self.sort_hash(match_hash_list)
 
         with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
             # 提交所有任务
