@@ -84,6 +84,7 @@ class SimilarResultPreviewPresenter(QObject):
     def jump_page(self, page: int):
         """跳转页面"""
         self.current_page = page
+        self.viewer.set_current_page(self.current_page)
         self.show_page(self.current_page)
 
     def sort_groups_item(self, sort_key: ORDER_KEYS, sort_direction: ORDER_DIRECTIONS):
