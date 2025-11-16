@@ -153,6 +153,7 @@ class WindowPresenter(QObject):
         self._set_options_state(True)
         self.widget_runtime_info.stop_time()
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning, '当前匹配任务已结束')
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning, '-' * 200)
         self.thread_search_comic.set_stop()
         self.thread_analyse_comic_info.set_stop()
         self.thread_analyse_image_info.set_stop()
