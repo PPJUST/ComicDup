@@ -84,5 +84,4 @@ class ThreadConvertHashToComicInfo(ThreadPattern):
         image_infos = self.db_image_info.get_image_info_by_hash(hash_, hash_type)
         print('将hash值转换为对应的图片')
         print('hash值', hash_)
-        print('对应的图片', [i.image_path for i in image_infos])
         return image_infos

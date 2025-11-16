@@ -62,7 +62,6 @@ class WindowModel(QObject):
             self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, f'转换的图片路径：{_image_info.image_path}')
         print('将hash值转换为对应的图片')
         print('hash值', hash_)
-        print('对应的图片', [i.image_path for i in image_infos])
         return image_infos
 
     def get_comic_info_by_image_info(self, image_info: ImageInfoBase):
@@ -77,11 +76,11 @@ class WindowModel(QObject):
         """根据漫画路径获取对于的漫画信息类"""
         comic_info = self.db_comic_info.get_comic_info_by_comic_path(comic_path)
         return comic_info
-    def get_comic_paths(self)->List[str]:
+
+    def get_comic_paths(self) -> List[str]:
         """获取数据库中所有的漫画路径"""
         comics_path_list = self.db_comic_info.get_comic_paths()
         return comics_path_list
-
 
     def convert_hash_group_to_comic_info_group(self,
                                                hash_group: List[List[str]],
@@ -154,8 +153,6 @@ class WindowModel(QObject):
 
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, f'完成相似组相关性筛选')
         return comic_info_group_filter
-
-
 
     def delete_useless_cache(self):
         """删除无用缓存"""

@@ -42,6 +42,7 @@ class ThreadCompareHash(ThreadPattern):
     def set_is_match_cache(self, is_match_cache: bool):
         """设置是否匹配缓存数据"""
         self.is_match_cache = is_match_cache
+
     def get_is_match_cache(self):
         """获取是否匹配缓存数据"""
         return self.is_match_cache
@@ -65,6 +66,7 @@ class ThreadCompareHash(ThreadPattern):
         print(f'启动线程池 对比图片hash，线程数量：{self.max_workers}')
 
         total = len(self.hash_list)
+        print('hash总数', total)
         if total == 0:
             self._finish_compare()
             return
@@ -82,7 +84,7 @@ class ThreadCompareHash(ThreadPattern):
         # 去重匹配列表并排序
         match_hash_list = list(set(match_hash_list))
         match_hash_list = self.sort_hash(match_hash_list)
-
+        print('用于匹配的hash列表总数', len(match_hash_list))
         with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
             # 提交所有任务
             # note 线程公用匹配列表，请勿在匹配方法中修改该列表
@@ -122,23 +124,41 @@ class ThreadCompareHash(ThreadPattern):
 
     def _compare(self, hash_: str, match_hash_list: List[str]):
         """对比单个hash值与其他hash值的相似度"""
-        similar = {hash_}  # 集合，用于去重
+        similar_group = set()  # 相似的hash值列表
 
         # 统计需匹配的hash中0和1的个数，如果占比大于90%，则判断为纯色图片，不进行后续匹配
         zero_count = hash_.count('0')
         if zero_count / len(hash_) > 0.9 or zero_count / len(hash_) < 0.1:
             return None
 
+        # 从匹配列表中提取出有效的hash值
+        # 在计算两个hash值的汉明距离时，如果其0的计数差异大于阈值的1/2时，两个hash值的汉明距离不可能再低于阈值
+        # 匹配列表在匹配前已经进行过排序操作，所以只需要提取出中间段的hash值
+        min_zero_count = int(zero_count / 2)
+        max_zero_count = int(zero_count * 1.5)
+        # 找列表切片索引
+        start = 0
+        end = len(match_hash_list)
+        for index, i in enumerate(match_hash_list):
+            _c = i.count('0')
+            if not start and _c >= min_zero_count:
+                start = index
+            if _c >= max_zero_count:
+                end = index
+                break
+
+        match_hash_list_filter = match_hash_list[start:end]
+
         # 执行匹配
         zero_count = hash_.count('0')
-        for hash_compare in match_hash_list:
-            # 提前过滤不可能相似的hash值
-            # 在计算两个hash值的汉明距离时，如果其0的计数差异大于阈值的1/2时，两个hash值的汉明距离不可能再低于阈值
-            # 因为在匹配前已经进行过排序操作，所以在出现超阈值的值后，即可终止循环
-            if abs(zero_count - hash_compare.count('0')) > self.hamming_distance / 2:
-                break
+        for hash_compare in match_hash_list_filter:
             distance = lzytools.image.calc_hash_hamming_distance(hash_, hash_compare)
             if distance <= self.hamming_distance:
-                similar.add(hash_compare)
+                similar_group.add(hash_compare)
 
-        return list(similar)
+        # 存在相似项时才返回数据，否则返回空
+        if len(similar_group) > 0:
+            similar_group.add(hash_)
+            return list(similar_group)
+        else:
+            return []
