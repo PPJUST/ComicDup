@@ -400,8 +400,7 @@ class WindowPresenter(QObject):
         # 重新分析漫画信息并刷新漫画数据库
         self.thread_refresh_comic_db.start()
 
-        # 刷新图片数据库项目
-        # todo 图片数据库的更新方法
+        # note 不刷新图片数据库项目
 
     def thread_refresh_comic_db_finished(self):
         """子线程-刷新缓存数据执行完毕"""
