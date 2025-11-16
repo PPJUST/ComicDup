@@ -79,16 +79,14 @@ class ThreadCompareHash(ThreadPattern):
         # 如果需要匹配缓存hash值，则写入匹配列表中
         if self.is_match_cache:
             match_hash_list.extend(self.cache_hash_list)
-            match_hash_list = self.sort_hash(match_hash_list)
 
-        # 去重匹配列表并排序
-        match_hash_list = list(set(match_hash_list))
+        # 重新排序
         match_hash_list = self.sort_hash(match_hash_list)
         print('用于匹配的hash列表总数', len(match_hash_list))
         with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
             # 提交所有任务
             # note 线程公用匹配列表，请勿在匹配方法中修改该列表
-            futures = {executor.submit(self._compare, hash_, match_hash_list): hash_ for hash_ in self.hash_list}
+            futures = {executor.submit(self._compare, hash_, match_hash_list.copy()): hash_ for hash_ in self.hash_list}
 
             # 处理完成的任务
             for future in as_completed(futures):
@@ -99,11 +97,12 @@ class ThreadCompareHash(ThreadPattern):
                 hash_ = futures[future]
                 try:
                     similar_group = future.result()
+                    print('显示匹配结果', similar_group)
                     # 即使只有其自身，仍旧写入相似组，因为可能存在漫画的复制品，导致hash值相同，但是跳过空值（纯色页）
                     if similar_group:
                         self.similar_hash_group.append(similar_group)
-                        completed_count += 1
-                        self.SignalRate.emit(f'{completed_count}/{total}')
+                    completed_count += 1
+                    self.SignalRate.emit(f'{completed_count}/{total}')
                 except Exception as e:
                     self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning, f'对比{hash_}失败：{str(e)}')
 
@@ -124,7 +123,14 @@ class ThreadCompareHash(ThreadPattern):
 
     def _compare(self, hash_: str, match_hash_list: List[str]):
         """对比单个hash值与其他hash值的相似度"""
-        similar_group = set()  # 相似的hash值列表
+        print(f'匹配hash 主hash【{hash_}】')
+        # 由于对比列表复制自需匹配列表，所以包含其自身，需要删除
+        match_hash_list.remove(hash_)
+        # 去重（删除自身后）
+        match_hash_list = list(set(match_hash_list))
+
+        # 最终的相似hash值列表
+        similar_group = set()
 
         # 统计需匹配的hash中0和1的个数，如果占比大于90%，则判断为纯色图片，不进行后续匹配
         zero_count = hash_.count('0')
@@ -148,17 +154,23 @@ class ThreadCompareHash(ThreadPattern):
                 break
 
         match_hash_list_filter = match_hash_list[start:end]
+        print('对比hash列表', len(match_hash_list_filter))
 
         # 执行匹配
-        zero_count = hash_.count('0')
         for hash_compare in match_hash_list_filter:
             distance = lzytools.image.calc_hash_hamming_distance(hash_, hash_compare)
             if distance <= self.hamming_distance:
                 similar_group.add(hash_compare)
 
+        # 手动清空变量
+        match_hash_list.clear()
+        match_hash_list_filter.clear()
+
         # 存在相似项时才返回数据，否则返回空
         if len(similar_group) > 0:
             similar_group.add(hash_)
+            print(f'返回匹配结果{similar_group}')
             return list(similar_group)
         else:
+            print(f'返回匹配结果[]')
             return []

@@ -172,7 +172,7 @@ class WindowModel(QObject):
     def clear_cache(self):
         """清空缓存"""
         # 清空漫画数据库
-        self.db_image_info.clear()
+        self.db_comic_info.clear()
         # 清空图片数据库
         self.db_image_info.clear()
         # 清空预览图
