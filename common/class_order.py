@@ -15,9 +15,10 @@ class OrderKey:
         """页数"""
         text = '页数'
 
-    class ImagePixel:
+    class _ImagePixel:
         """图片像素"""
         text = '图片像素'
+        # 不使用
 
     class Filename:
         """文件名"""
@@ -44,7 +45,8 @@ class OrderDirection:
         text = '正序'
 
 
-ORDER_KEYS = [OrderKey.Filesize, OrderKey.FileTime, OrderKey.Pages, OrderKey.ParentDirpath]  # todo 禁用未完成的key
+ORDER_KEYS = [OrderKey.Filesize, OrderKey.FileTime, OrderKey.Pages, OrderKey.ParentDirpath,
+              OrderKey.Filename]  # todo 禁用未完成的key
 ORDER_KEYS_TEXT = [key.text for key in ORDER_KEYS]
 
 ORDER_DIRECTIONS = [OrderDirection.Descending, OrderDirection.Ascending]
