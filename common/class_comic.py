@@ -11,6 +11,10 @@ import natsort
 from common import function_file, function_archive, function_cache_preview
 from common.class_config import FileType
 
+_BASE_COLOR = ['black', 'silver', 'maroon', 'red', 'purple',
+               'fuchsia', 'green', 'lime', 'olive', 'yellow',
+               'navy', 'blue', 'teal', 'aqua']
+
 
 class ComicInfoBase(ABC):
     """漫画信息基类"""
@@ -56,6 +60,15 @@ class ComicInfoBase(ABC):
     def get_page_paths(self):
         """获取漫画页路径列表"""
         return self.page_paths
+
+    def get_real_filesize(self):
+        """获取真实文件大小（字节）"""
+        if isinstance(self, FolderComicInfo):  # 如果是文件夹类漫画，则返回文件大小
+            return self.filesize_bytes
+        elif isinstance(self, ArchiveComicInfo):  # 如果是压缩文件类漫画，则返回解压后的文件大小
+            return self.get_extracted_filesize_bytes()
+        else:
+            return 0
 
     @abstractmethod
     def get_extracted_filesize_bytes(self):
@@ -227,12 +240,7 @@ def calc_comic_point(comic_info: ComicInfoBase) -> float:
     per_pic = 0.7  # 占比70%
     base_size = 0.4  # 每0.4mb加分
     page_count = comic_info.page_count
-    if isinstance(comic_info, FolderComicInfo):
-        total_filesize_bytes = comic_info.filesize_bytes
-    elif isinstance(comic_info, ArchiveComicInfo):
-        total_filesize_bytes = comic_info.get_extracted_filesize_bytes()
-    else:
-        total_filesize_bytes = 0
+    total_filesize_bytes = comic_info.get_real_filesize()
     total_filesize_mb = total_filesize_bytes / 1024 / 1024
     point_pic = min(total_filesize_mb / page_count / base_size, 10)
 

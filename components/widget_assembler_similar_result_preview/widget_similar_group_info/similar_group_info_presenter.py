@@ -3,7 +3,7 @@ from typing import List
 from PySide6.QtCore import QObject
 
 from common import function_file
-from common.class_comic import ComicInfoBase
+from common.class_comic import ComicInfoBase, _BASE_COLOR
 from common.class_sign import SignStatus, TYPE_SIGN_STATUS
 from components import widget_assembler_comics_preview
 from components.widget_assembler_comics_preview import AssemblerDialogComicsPreview
@@ -20,7 +20,6 @@ from components.widget_assembler_similar_result_preview.widget_similar_group_inf
 # todo 相似组内的全量对比功能，对比漫画之间的每一张图片，找出相同页与差异页
 # todo 匹配组内删除项目后，对应项目的封面图片变灰色，不直接从布局中删除
 # todo 结合所有单页相似度，计算两本漫画的整体相似度（如取平均值、加权值或通过规则判定）。
-# todo 在相似组内，对漫画进行边框颜色标注，如果两本漫画相同则标注相同的颜色，否则标注不同的颜色（通过文件总大小、页数相比较）
 
 
 class SimilarGroupInfoPresenter(QObject):
@@ -66,8 +65,9 @@ class SimilarGroupInfoPresenter(QObject):
 
         self.set_item_count()
         self.set_item_size()
-        self.highlight_comic_pages()
-        self.highlight_comic_filesize()
+        self.highlight_same_comics()
+        # self.highlight_comic_pages()
+        # self.highlight_comic_filesize()
         self.set_group_sign(SignStatus.Pending)
 
     def add_comic(self, comic_info: ComicInfoBase):
@@ -135,6 +135,22 @@ class SimilarGroupInfoPresenter(QObject):
             self._update_group_sign()
         else:
             raise RuntimeError('未找到对应的控件')
+
+    def highlight_same_comics(self):
+        """以同种颜色高亮相同页码、相同漫画大小的漫画项"""
+        color_dict = {}
+        for widget_presenter in self.comics_presenter:
+            comic_info = widget_presenter.get_comic_info()
+            # 提取页码、漫画大小
+            pages = comic_info.page_count
+            filesize = comic_info.get_real_filesize()
+            _joined = f'{pages}_{filesize}'
+            # 提取需要高亮的颜色
+            if _joined not in color_dict:
+                color_dict[_joined] = _BASE_COLOR[len(color_dict) % len(_BASE_COLOR)]  # 使用取模运算实现循环索引
+            color = color_dict[_joined]
+            widget_presenter.set_color(color)
+        print('组别色码表', color_dict)
 
     def highlight_comic_pages(self):
         """高亮页数最多的漫画的文本"""

@@ -11,6 +11,7 @@ from components.widget_assembler_similar_result_preview.widget_comic_info.comic_
 from components.widget_assembler_similar_result_preview.widget_comic_info.comic_info_viewer import ComicInfoViewer
 from components.widget_search_list.res.icon_base64 import ICON_FOLDER, ICON_ARCHIVE
 
+
 # todo 文件名要素高亮标记，例如作者、社团、标题、tag等
 class ComicInfoPresenter(QObject):
     """单个漫画信息模块的桥梁组件"""
@@ -73,6 +74,10 @@ class ComicInfoPresenter(QObject):
             path = self.comic_info.filepath
             lzytools.file.delete(path, send_to_trash=True)
             self.ComicDeleted.emit()
+
+    def set_color(self, color: str):
+        """为漫画项的文本添加颜色"""
+        self.viewer.set_color(color)
 
     def highlight_pages(self):
         """高亮显示页数"""
