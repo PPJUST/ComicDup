@@ -24,13 +24,13 @@ class OrderKey:
         """文件名"""
         text = '文件名'
 
-    class FileTag:
-        """文件名标识"""
-        text = '文件名标识'
-
     class ParentDirpath:
         """父目录"""
         text = '父目录'
+
+    class ComicPoint:
+        """漫画质量评分"""
+        text = '漫画质量评分'
 
 
 class OrderDirection:
@@ -45,8 +45,8 @@ class OrderDirection:
         text = '正序'
 
 
-ORDER_KEYS = [OrderKey.Filesize, OrderKey.FileTime, OrderKey.Pages, OrderKey.ParentDirpath,
-              OrderKey.Filename]  # todo 禁用未完成的key
+ORDER_KEYS = [OrderKey.ComicPoint, OrderKey.Filesize, OrderKey.Pages, OrderKey.Filename, OrderKey.FileTime,
+              OrderKey.ParentDirpath]
 ORDER_KEYS_TEXT = [key.text for key in ORDER_KEYS]
 
 ORDER_DIRECTIONS = [OrderDirection.Descending, OrderDirection.Ascending]

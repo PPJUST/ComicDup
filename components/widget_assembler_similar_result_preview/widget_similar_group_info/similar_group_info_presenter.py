@@ -20,8 +20,8 @@ from components.widget_assembler_similar_result_preview.widget_similar_group_inf
 # todo 相似组内的全量对比功能，对比漫画之间的每一张图片，找出相同页与差异页
 # todo 匹配组内删除项目后，对应项目的封面图片变灰色，不直接从布局中删除
 # todo 结合所有单页相似度，计算两本漫画的整体相似度（如取平均值、加权值或通过规则判定）。
-# todo 在相似组内，对漫画进行边框颜色标注，如果两本漫画相同则标注相同的颜色，否则标注不同的颜色
-# todo 相似组内最优漫画边框高亮绿色（评分制，综合维度评分，漫画图片质量、页数、tag等）
+# todo 在相似组内，对漫画进行边框颜色标注，如果两本漫画相同则标注相同的颜色，否则标注不同的颜色（通过文件总大小、页数相比较）
+
 
 class SimilarGroupInfoPresenter(QObject):
     """单个相似组信息模块的桥梁组件"""

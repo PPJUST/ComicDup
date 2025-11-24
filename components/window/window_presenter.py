@@ -370,6 +370,7 @@ class WindowPresenter(QObject):
             self.assembler_similar_result_preview.clear()
             self.assembler_similar_result_preview.set_groups(comic_info_groups)
             self.assembler_similar_result_preview.show_similar_result()
+            self.order_similar_result()  # 手动进行一次排序
             self.viewer.turn_page_match_result()
 
         self.stop()

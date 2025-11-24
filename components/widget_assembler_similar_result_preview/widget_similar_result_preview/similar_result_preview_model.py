@@ -23,11 +23,10 @@ class SimilarResultPreviewModel:
             group.sort(key=lambda x: x.page_count, reverse=is_reverse)
         elif sort_key == OrderKey.Filename:
             group.sort(key=lambda x: x.filename, reverse=is_reverse)
-        elif sort_key == OrderKey.FileTag:  # TODO 排序特殊标识，需要做表，[汉化]这类的tag
-            pass
-            # group.sort(key=lambda x: x., reverse=is_reverse)
         elif sort_key == OrderKey.ParentDirpath:
             group.sort(key=lambda x: x.parent_dirpath, reverse=is_reverse)
+        elif sort_key == OrderKey.ComicPoint:
+            group.sort(key=lambda x: x.calc_point(), reverse=is_reverse)
         else:
             raise Exception('排序键错误')
 

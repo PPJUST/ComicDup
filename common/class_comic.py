@@ -79,6 +79,10 @@ class ComicInfoBase(ABC):
         # 重新赋值
         self.preview_path = useless_preview_path
 
+    def calc_point(self) -> float:
+        """计算漫画评分（10分制）"""
+        return calc_comic_point(self)
+
     """数据库模式使用的手动更新信息的方法"""
 
     def update_filesize(self, filesize_bytes: int):
@@ -211,3 +215,40 @@ class ArchiveComicInfo(ComicInfoBase):
     def _update_filetitle(self):
         super()._update_filetitle()
         self.filetitle = lzytools.archive.get_filetitle(self.filename)
+
+
+def calc_comic_point(comic_info: ComicInfoBase) -> float:
+    """对漫画进行评分（10分制）"""
+    # 图片质量：10分制，占比70%，文件总大小/页数，每0.4MB/图加1分
+    # 页数：10分制，占比20%，每20页加1分
+    # 文件名规范：10分制，占比10%，每个符合规范的tag加1分
+
+    # 计算图片质量分
+    per_pic = 0.7  # 占比70%
+    base_size = 0.4  # 每0.4mb加分
+    page_count = comic_info.page_count
+    if isinstance(comic_info, FolderComicInfo):
+        total_filesize_bytes = comic_info.filesize_bytes
+    elif isinstance(comic_info, ArchiveComicInfo):
+        total_filesize_bytes = comic_info.get_extracted_filesize_bytes()
+    else:
+        total_filesize_bytes = 0
+    total_filesize_mb = total_filesize_bytes / 1024 / 1024
+    point_pic = min(total_filesize_mb / page_count / base_size, 10)
+
+    # 计算页数分
+    per_count = 0.2  # 占比20%
+    base_count = 10  # 每10页加1分
+    point_count = min(page_count / base_count, 10)
+
+    # 计算文件名规范分
+    # todo 临时按文件名长度评分
+    per_tag = 0.1  # 占比10%
+    base_tag = 5
+    filetitle = comic_info.filetitle
+    point_tag = min(len(filetitle) / base_tag, 10)
+
+    # 计算总分
+    point_total = round(point_pic * per_pic + point_count * per_count + point_tag * per_tag, 2)
+
+    return point_total
