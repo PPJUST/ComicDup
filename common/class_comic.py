@@ -11,9 +11,9 @@ import natsort
 from common import function_file, function_archive, function_cache_preview
 from common.class_config import FileType
 
-_BASE_COLOR = ['black', 'silver', 'maroon', 'red', 'purple',
-               'fuchsia', 'green', 'lime', 'olive', 'yellow',
-               'navy', 'blue', 'teal', 'aqua']
+_BASE_COLOR = ['black', 'maroon', 'red', 'purple', 'fuchsia',
+               'green', 'lime', 'olive', 'yellow', 'navy',
+               'blue', 'teal', 'aqua']
 
 
 class ComicInfoBase(ABC):

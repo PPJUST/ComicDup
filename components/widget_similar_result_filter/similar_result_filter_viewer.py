@@ -1,7 +1,8 @@
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget, QApplication
 
-from common.class_order import ORDER_KEYS_TEXT, ORDER_DIRECTIONS_TEXT, ORDER_KEYS, ORDER_DIRECTIONS
+from common.class_order import ORDER_KEYS_TEXT, ORDER_DIRECTIONS_TEXT, ORDER_KEYS, ORDER_DIRECTIONS, OrderKey, \
+    OrderDirection
 from components.widget_similar_result_filter.res.ui_similar_result_filter import Ui_Form
 
 
@@ -30,9 +31,6 @@ class SimilarResultFilterViewer(QWidget):
         self.ui.comboBox_sort_key.currentTextChanged.connect(self.ChangeSortKey.emit)
         self.ui.comboBox_sort_direction.currentTextChanged.connect(self.ChangeSortDirection.emit)
 
-        self.ui.pushButton_filter_same_items.setEnabled(False)  # todo
-        self.ui.pushButton_exclude_diff_pages.setEnabled(False) # todo
-
     def _load_setting(self):
         """加载设置"""
         self.ui.comboBox_sort_key.addItems(ORDER_KEYS_TEXT)
@@ -45,12 +43,16 @@ class SimilarResultFilterViewer(QWidget):
             if type_key.text == key:
                 return type_key
 
+        return OrderKey.ComicPoint  # 兜底
+
     def get_order_direction(self):
         """获取排序方向"""
         direction = self.ui.comboBox_sort_direction.currentText()
         for type_direction in ORDER_DIRECTIONS:
             if type_direction.text == direction:
                 return type_direction
+
+        return OrderDirection.Descending  # 兜底
 
 
 if __name__ == "__main__":

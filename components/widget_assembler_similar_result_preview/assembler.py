@@ -11,6 +11,8 @@ class AssemblerSimilarResultPreview:
     def __init__(self):
         self.presenter = widget_similar_result_preview.get_presenter()
 
+        self.similar_groups: List[List[ComicInfoBase]] = []  # 原始相似组列表
+
     def get_presenter(self):
         """获取presenter"""
         return self.presenter
@@ -29,11 +31,63 @@ class AssemblerSimilarResultPreview:
 
     def reload(self):
         """重新加载"""
+        self.presenter.set_groups(self.similar_groups)
         self.presenter.reload()
 
-    def set_groups(self, comic_info_list_list: List[List[ComicInfoBase]]):
+    def show_filter_result(self, similar_groups_filter: List[List[ComicInfoBase]]):
+        """显示筛选后的相似匹配结果"""
+        self.presenter.set_groups(similar_groups_filter)
+        self.presenter.reload()
+
+    def show_same_item_in_group(self):
+        """仅在相似组中显示存在相同项的漫画项"""
+        # 筛选相似组，仅提取同组中存在相似项的漫画项
+        similar_groups_filter = []
+        for group in self.similar_groups:
+            group_filter = []
+            fingerprints = [i.fingerprint for i in group]
+            for info_class in group:
+                fingerprint = info_class.fingerprint
+                if fingerprints.count(fingerprint) >= 2:
+                    group_filter.append(info_class)
+            if len(group_filter) >= 2:
+                similar_groups_filter.append(group_filter)
+
+        self.show_filter_result(similar_groups_filter)
+
+    def show_similar_pages_item_in_group(self):
+        """仅在相似组中显示页数相近的漫画项"""
+        similar_groups_filter = []
+        threshold_pages = 30
+        for group in self.similar_groups:
+            group_filter = []
+            # 先按页数排序
+            group = sorted(group, key=lambda x: x.page_count)
+            # 遍历相似组元素
+            for index in range(len(group)):
+                # 如果当前项的页码与左右元素页数差异小于n，则加入列表
+                pages_current = group[index].page_count
+                if index - 1 >= 0:
+                    pages_previous = group[index - 1].page_count
+                    diff_left = abs(pages_current - pages_previous)
+                    if diff_left <= threshold_pages:
+                        group_filter.append(group[index])
+                        continue
+                if index + 1 < len(group):
+                    pages_next = group[index + 1].page_count
+                    diff_right = abs(pages_current - pages_next)
+                    if diff_right <= threshold_pages:
+                        group_filter.append(group[index])
+                        continue
+            if len(group_filter) >= 2:
+                similar_groups_filter.append(group_filter)
+
+        self.show_filter_result(similar_groups_filter)
+
+    def set_groups(self, comic_info_lists: List[List[ComicInfoBase]]):
         """设置相似组列表"""
-        self.presenter.set_groups(comic_info_list_list)
+        self.similar_groups = comic_info_lists
+        self.presenter.set_groups(comic_info_lists)
 
     def set_is_reconfirm_before_delete(self, is_reconfirm: bool):
         """设置是否删除前再次确认"""

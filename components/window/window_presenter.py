@@ -557,6 +557,10 @@ class WindowPresenter(QObject):
         self.widget_similar_result_filter.ReconfirmDelete.connect(
             self.assembler_similar_result_preview.set_is_reconfirm_before_delete)
         self.widget_similar_result_filter.RefreshResult.connect(self.assembler_similar_result_preview.reload)
+        self.widget_similar_result_filter.FilterSameItems.connect(
+            self.assembler_similar_result_preview.show_same_item_in_group)
+        self.widget_similar_result_filter.FilterExcludeDiffPages.connect(
+            self.assembler_similar_result_preview.show_similar_pages_item_in_group)
         self.widget_similar_result_filter.ChangeSortKey.connect(self.order_similar_result)
         self.widget_similar_result_filter.ChangeSortDirection.connect(self.order_similar_result)
 
