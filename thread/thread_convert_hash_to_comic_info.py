@@ -72,7 +72,8 @@ class ThreadConvertHashToComicInfo(ThreadPattern):
             ci_group = []
             for comic_path in cp_group:
                 comic_info = self.db_comic_info.get_comic_info_by_comic_path(comic_path)
-                ci_group.append(comic_info)
+                if comic_info:
+                    ci_group.append(comic_info)
             self.comic_info_group.append(ci_group)
 
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '完成将hash值相似组转换为对应的漫画路径组')

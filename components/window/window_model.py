@@ -110,7 +110,8 @@ class WindowModel(QObject):
             ci_group = []
             for comic_path in cp_group:
                 comic_info = self.get_comic_info_by_comic_path(comic_path)
-                ci_group.append(comic_info)
+                if comic_info:
+                    ci_group.append(comic_info)
             comic_info_group.append(ci_group)
 
         return comic_info_group

@@ -29,7 +29,8 @@ class SimilarGroupPreviewViewer(QWidget):
         # 绑定信号
         self._bind_signal()
 
-        self.ui.checkBox_auto_image_diff.setEnabled(False)  # todo
+        # 隐藏已经弃用的功能
+        self.ui.checkBox_auto_image_diff.setVisible(False)
 
     def add_widget(self, widget: QWidget):
         """显示一个控件"""

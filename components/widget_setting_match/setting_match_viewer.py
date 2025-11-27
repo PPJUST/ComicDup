@@ -35,9 +35,11 @@ class SettingMatchViewer(QWidget):
         self.ui.spinBox_extract_pages.installEventFilter(self)
         self.ui.spinBox_same_parent_folder.installEventFilter(self)
 
-        self.ui.checkBox_match_similar_filename.setEnabled(False)  # todo
         self.ui.checkBox_same_parent_folder.setEnabled(False)  # todo 仅匹配同一目录下的漫画（设置目录层级，往上几级）
         self.ui.spinBox_same_parent_folder.setEnabled(False)  # todo
+
+        # 隐藏已经弃用的选项
+        self.ui.checkBox_match_similar_filename.setVisible(False)
 
     def set_extract_pages(self, count: int):
         """设置提取页数"""
@@ -59,7 +61,6 @@ class SettingMatchViewer(QWidget):
         """设置选项启用/禁用"""
         self.ui.spinBox_extract_pages.setEnabled(is_enable)
         self.ui.checkBox_match_cache.setEnabled(is_enable)
-        self.ui.checkBox_match_similar_filename.setEnabled(is_enable)
         self.ui.checkBox_same_parent_folder.setEnabled(is_enable)
         self.ui.spinBox_same_parent_folder.setEnabled(is_enable)
         self.ui.spinBox_thread_count.setEnabled(is_enable)

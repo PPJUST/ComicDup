@@ -220,6 +220,11 @@ class DBComicInfo:
         # 获取结果列表
         result = self.cursor.fetchone()
 
+        # fixme 读取数据库时可能存在未匹配到数据的情况，需要考虑是重新生成信息类还是直接返回空，目前按返回空处理
+        # 未匹配到数据时，返回空
+        if not result:
+            return None
+
         # 转换为漫画信息类
         result_dict = dict(zip(columns, result))  # 先转为键名-键值的字典格式
 
