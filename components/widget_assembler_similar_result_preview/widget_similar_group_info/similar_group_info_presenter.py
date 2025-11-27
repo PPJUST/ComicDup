@@ -1,3 +1,4 @@
+import os
 from typing import List
 
 from PySide6.QtCore import QObject
@@ -72,15 +73,18 @@ class SimilarGroupInfoPresenter(QObject):
 
     def add_comic(self, comic_info: ComicInfoBase):
         """添加内部漫画信息项"""
-        self.comic_info_list.append(comic_info)
+        # 添加一次存在性验证，不添加不存在于本地的项目
+        filepath = comic_info.filepath
+        if os.path.exists(filepath):
+            self.comic_info_list.append(comic_info)
 
-        comic_info_presenter = widget_comic_info.get_presenter()
-        comic_info_presenter.set_comic_info(comic_info)
-        comic_info_presenter.ComicDeleted.connect(self.comic_deleted)
-        self.comics_presenter.append(comic_info_presenter)
+            comic_info_presenter = widget_comic_info.get_presenter()
+            comic_info_presenter.set_comic_info(comic_info)
+            comic_info_presenter.ComicDeleted.connect(self.comic_deleted)
+            self.comics_presenter.append(comic_info_presenter)
 
-        widget = comic_info_presenter.get_viewer()
-        self.viewer.add_widget(widget)
+            widget = comic_info_presenter.get_viewer()
+            self.viewer.add_widget(widget)
 
     def preview(self):
         """预览当前组内的所有漫画"""

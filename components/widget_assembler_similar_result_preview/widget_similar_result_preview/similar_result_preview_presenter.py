@@ -100,7 +100,6 @@ class SimilarResultPreviewPresenter(QObject):
 
     def reload(self):
         """重新加载"""
-        # todo 重新加载时需要剔除已经失效的项目
         self.current_page = 1
         self.viewer.set_current_page(self.current_page)
         self.show_page(self.current_page)
