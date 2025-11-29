@@ -133,6 +133,7 @@ class ThreadCompareHash(ThreadPattern):
         similar_group = set()
 
         # 统计需匹配的hash中0和1的个数，如果占比大于90%，则判断为纯色图片，不进行后续匹配
+        # fixme 纯色页判断有问题
         zero_count = hash_.count('0')
         if zero_count / len(hash_) > 0.9 or zero_count / len(hash_) < 0.1:
             return None

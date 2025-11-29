@@ -86,6 +86,7 @@ class ComicInfoBase(ABC):
         self.save_preview_image()
         # 将新生成的预览图改名为原预览图文件名
         dirpath = os.path.dirname(useless_preview_path)
+        # fixme 漫画已经存在于数据库中，但是移动路径之后，会导致报错
         if not os.path.exists(dirpath):
             os.mkdir(dirpath)  # 原预览图文件夹不存在时，需要创建，否则改名时会报错
         os.rename(self.preview_path, useless_preview_path)
