@@ -41,23 +41,30 @@ class ThreadSaveComic(ThreadPattern):
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '正在保存漫画信息到本地数据库')
         # 在保存漫画信息前，提取数据库中所有项目的(路径, 指纹)，用于判断漫画是否已经存在于数据库中
         # 提取数据库中所有项目的指纹，用于判断漫画是否已存在于数据库但本地文件已被移动
+        print('正在保存漫画信息到本地数据库')
         db_fingerprint_list = self.db_comic_info.get_fingerprint_list()
+        print('提取数据库指纹', db_fingerprint_list)
         db_path_fingerprint_list = self.db_comic_info.get_path_fingerprint_list()
+        print('提取数据库指纹+路径', db_path_fingerprint_list)
         for comic_info in self.comic_info_list:
             # 在保存漫画信息前，考虑已存在于数据库中的项目
             _check_tuple = (comic_info.filepath, comic_info.fingerprint)
             is_comic_exist_db = comic_info.fingerprint in db_fingerprint_list
             if is_comic_exist_db:  # 存在则分情况处理
-                is_comic_moved_db = _check_tuple not in db_path_fingerprint_list  # 如果指纹存在，但是(路径, 指纹)不存在，则说明本地文件已经被移动
-                if is_comic_moved_db:  # 已存在且已移动，更新漫画信息数据库和图片信息数据库
+                is_need_add = _check_tuple not in db_path_fingerprint_list  # 如果指纹存在，但是(路径, 指纹)不存在，则可能是新增的相同漫画或旧漫画已经被移动
+                if is_need_add:
                     self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice,
-                                                f'{comic_info.filename}已被移动，更新数据库中的路径')
+                                                f'{comic_info.filename}可能已被移动，尝试更新数据库')
                     comic_path_deleted = self.db_comic_info.update_comic_moved(comic_info)
-                    if comic_path_deleted:
+                    if comic_path_deleted:  # 如果返回了删除的漫画路径，则说明该漫画已被移动，同步移动图片数据库中的对应项
                         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, f'更新图片数据库中对应的漫画数据')
                         self.db_image_info.update_belong_comic_moved(comic_info.fingerprint,
                                                                      old_comic_path=comic_path_deleted,
                                                                      new_comic_path=comic_info.filepath)
+                    else:  # 否则，为新增了相同漫画的情形
+                        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, f'保存{comic_info.filename}到数据库')
+                        comic_info.save_preview_image()  # 新增前保存预览图
+                        self.db_comic_info.add(comic_info)
                 else:  # 已存在且未移动则跳过
                     self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, f'{comic_info.filename}已存在于数据库，跳过更新')
                     continue

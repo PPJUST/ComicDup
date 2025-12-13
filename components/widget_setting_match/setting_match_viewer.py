@@ -11,6 +11,8 @@ class SettingMatchViewer(QWidget):
     """设置模块（匹配设置项）的界面组件"""
     ChangeExtractPages = Signal(int, name="修改漫画提取页数")
     ChangeIsMatchCache = Signal(bool, name="修改是否匹配缓存")
+    ChangeIsMatchSameParentFolder = Signal(bool, name="修改是否仅匹配相同父目录")
+    ChangeSameParentFolderLevel = Signal(int, name="修改匹配父目录的层级")
     ChangeIsMatchSimilarFilename = Signal(bool, name="修改是否仅匹配相似文件名")
     ChangeThreadCount = Signal(int, name="修改线程数")
 
@@ -35,9 +37,6 @@ class SettingMatchViewer(QWidget):
         self.ui.spinBox_extract_pages.installEventFilter(self)
         self.ui.spinBox_same_parent_folder.installEventFilter(self)
 
-        self.ui.checkBox_same_parent_folder.setEnabled(False)  # todo 仅匹配同一目录下的漫画（设置目录层级，往上几级）
-        self.ui.spinBox_same_parent_folder.setEnabled(False)  # todo
-
         # 隐藏已经弃用的选项
         self.ui.checkBox_match_similar_filename.setVisible(False)
 
@@ -48,6 +47,14 @@ class SettingMatchViewer(QWidget):
     def set_is_match_cache(self, is_enable: bool):
         """设置是否匹配缓存"""
         self.ui.checkBox_match_cache.setChecked(is_enable)
+
+    def set_is_match_same_parent_folder(self, is_enable: bool):
+        """设置是否仅匹配相同父目录"""
+        self.ui.checkBox_same_parent_folder.setChecked(is_enable)
+
+    def set_match_parent_folder_level(self, count: Union[str, int]):
+        """设置匹配父目录的层级"""
+        self.ui.spinBox_same_parent_folder.setValue(int(count))
 
     def set_is_match_similar_filename(self, is_enable: bool):
         """设置是否仅匹配相似文件名"""
@@ -73,6 +80,8 @@ class SettingMatchViewer(QWidget):
         """绑定信号"""
         self.ui.spinBox_extract_pages.valueChanged.connect(self.ChangeExtractPages.emit)
         self.ui.checkBox_match_cache.stateChanged.connect(self.ChangeIsMatchCache.emit)
+        self.ui.checkBox_same_parent_folder.stateChanged.connect(self.ChangeIsMatchSameParentFolder.emit)
+        self.ui.spinBox_same_parent_folder.valueChanged.connect(self.ChangeSameParentFolderLevel.emit)
         self.ui.checkBox_match_similar_filename.stateChanged.connect(self.ChangeIsMatchSimilarFilename.emit)
         self.ui.spinBox_thread_count.valueChanged.connect(self.ChangeThreadCount.emit)
 

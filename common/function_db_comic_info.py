@@ -75,6 +75,7 @@ class DBComicInfo:
     def add(self, comic_info: ComicInfoBase):
         """添加/更新记录"""
         comic_path = os.path.normpath(comic_info.filepath)
+        print('新增漫画信息记录到数据库', comic_info, comic_path)
 
         self.cursor.execute(f'INSERT OR IGNORE INTO {TABLE_NAME} ({KEY_FILEPATH}) VALUES ("{comic_path}")')
 
@@ -111,6 +112,10 @@ class DBComicInfo:
         self.cursor.execute(f'UPDATE {TABLE_NAME} SET {KEY_PAGE_COUNT} = "{comic_info.page_count}" '
                             f'WHERE {KEY_FILEPATH} = "{comic_path}"')
 
+        # 如果漫画预览图不存在或已失效，则需要重新生成预览图
+        check_preview = comic_info.preview_path
+        if not check_preview or not os.path.exists(check_preview):
+            comic_info.save_preview_image()
         self.cursor.execute(f'UPDATE {TABLE_NAME} SET {KEY_PREVIEW_PATH} = "{comic_info.preview_path}" '
                             f'WHERE {KEY_FILEPATH} = "{comic_path}"')
 
@@ -173,9 +178,11 @@ class DBComicInfo:
             self.conn.commit()
 
     def update_comic_moved(self, comic_info: ComicInfoBase):
-        """更新数据库中已移动路径的漫画，更新其最新路径（仅更新数据库中的第一个匹配项）"""
+        """更新数据库中已移动路径的漫画，更新其最新路径（仅更新数据库中的第一个匹配项）
+        :return: 返回在数据库中被删除的路径"""
         # 提取漫画数据库中文件指纹对应的路径
         comic_paths_db = self.get_comic_paths_by_fingerprint(comic_info.fingerprint)
+        print('提取漫画数据库中文件指纹对应的路径', comic_paths_db)
         # 更新首个不存在路径的数据，并删除该失效项
         comic_path_deleted = ''  # 被删除的漫画路径
         for path in comic_paths_db:
@@ -210,6 +217,8 @@ class DBComicInfo:
 
     def get_comic_info_by_comic_path(self, comic_path: str):
         """根据漫画文件路径获取漫画信息类"""
+        print('根据漫画文件路径获取漫画信息类')
+        print('需要转换的漫画路径', comic_path)
         comic_path = os.path.normpath(comic_path)
 
         self.cursor.execute(f'SELECT * FROM {TABLE_NAME} WHERE {KEY_FILEPATH} = "{comic_path}"')
@@ -222,6 +231,7 @@ class DBComicInfo:
 
         # fixme 读取数据库时可能存在未匹配到数据的情况，需要考虑是重新生成信息类还是直接返回空，目前按返回空处理
         # 未匹配到数据时，返回空
+        print('数据库匹配结果', result)
         if not result:
             return None
 

@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 from typing import List
 
 import lzytools.common
@@ -149,7 +150,55 @@ class WindowModel(QObject):
                 if path in comic_path_search_list:
                     group_filter.append(comic_info)
             if len(group_filter) >= 2:
-                group_filter = natsort.os_sorted(group_filter)  # 进行一次路径排序，便于后续显示
+                comic_info_group_filter.append(group_filter)
+
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, f'完成相似组相关性筛选')
+        return comic_info_group_filter
+
+    def filter_comic_info_group_is_in_same_parent_folder(self, comic_info_group: List[List[ComicInfoBase]],
+                                                         level: int):
+        """筛选漫画信息类列表，剔除不在相同n层父目录下的项目"""
+        print('相同父目录匹配')
+        # 漫画组格式：[[ComicInfo1,ComicInfo2,ComicInfo3], [ComicInfo4,ComicInfo5,ComicInfo6]]
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, f'对相似组进行相关性筛选')
+        comic_info_group_filter = []
+        for group in comic_info_group:
+            group: List[ComicInfoBase]
+            group_filter = []
+            # 先提取组中所有项目的文件路径
+            filepaths = [i.filepath for i in group]
+            # 然后提取出文件路径列表中的上n层父目录路径
+            parent_folders = []
+            for i in filepaths:
+                path = Path(i)
+                max_index = len(path.parents) - 1
+                if level > max_index:
+                    p_path = path.parents[max_index]  # 超限返回根目录
+                else:
+                    p_path = path.parents[level - 1]
+                parent_folders.append(str(p_path))
+            # 然后提取出父目录路径列表中存在父子关系、相同项的项
+            parent_folders_filter = set()
+            for p_1 in parent_folders:
+                if parent_folders.count(p_1) >= 2:  # 相同项
+                    parent_folders_filter.add(p_1)
+                for p_2 in parent_folders:  # 父子关系
+                    if p_2 == p_1:
+                        continue
+                    if p_2 in p_1:
+                        parent_folders_filter.add(p_1)
+                        parent_folders_filter.add(p_2)
+            print('共同父目录', parent_folders_filter)
+            # 最后逐个匹配文件路径，如果在父目录列表下，则添加进相似组中
+            for comic_info in group:
+                path = comic_info.filepath
+                for parent in parent_folders_filter:
+                    if parent in path:
+                        print('是子目录，添加进相似组', path)
+                        group_filter.append(comic_info)
+                        break
+
+            if len(group_filter) >= 2:
                 comic_info_group_filter.append(group_filter)
 
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, f'完成相似组相关性筛选')

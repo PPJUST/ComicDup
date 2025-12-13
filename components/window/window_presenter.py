@@ -38,6 +38,7 @@ from thread.thread_search_comic import ThreadSearchComic
 
 # todo 匹配缓存数据时，如果是无效数据，则直接跳过，或者提前检查一遍获取的缓存数据
 
+
 class WindowPresenter(QObject):
     """主窗口的桥梁组件"""
     SignalRuntimeInfo = Signal(object, str, name='运行信息')
@@ -165,6 +166,7 @@ class WindowPresenter(QObject):
     def start_search_comic(self, search_paths: list):
         """启动子线程-搜索漫画"""
         print('启动子线程-搜索漫画')
+        print('需搜索文件夹数量', len(search_paths))
         if not self.is_stop:
             self.thread_search_comic.set_search_list(search_paths)
             self.thread_search_comic.start()
@@ -177,6 +179,7 @@ class WindowPresenter(QObject):
         if not self.is_stop:
             # 提取漫画路径列表
             comics_path = self.thread_search_comic.get_comics_path()
+            print('提取到的漫画数量', len(comics_path))
             if not comics_path:
                 self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning, '未找到任何漫画')
                 self.stop()
@@ -203,6 +206,7 @@ class WindowPresenter(QObject):
             # 提取漫画信息类字典
             comic_info_dict = self.thread_analyse_comic_info.get_comic_info_dict()
             comic_info_list = list(comic_info_dict.values())
+            print('分析完毕的漫画数量', len(comic_info_list))
             if not comic_info_list:
                 self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning, '未找到任何漫画')
                 self.stop()
@@ -233,6 +237,7 @@ class WindowPresenter(QObject):
     def start_analyse_image_info(self, comic_info_list: list):
         """启动子线程-分析图片信息"""
         print('启动子线程-分析图片信息')
+        print('需分析图片的漫画数量', len(comic_info_list))
         if not self.is_stop:
             self.thread_analyse_image_info.set_comic_info_list(comic_info_list)
             self.thread_analyse_image_info.start()
@@ -245,6 +250,7 @@ class WindowPresenter(QObject):
         if not self.is_stop:
             # 提取图片信息字典
             image_info_dict = self.thread_analyse_image_info.get_image_info_dict()
+            print('分析完成的图片数量', len(image_info_dict))
             if not image_info_dict:
                 self.stop()
                 self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning, '未找到任何图片')
@@ -302,6 +308,7 @@ class WindowPresenter(QObject):
         if not self.is_stop:
             # 提取相似hash组列表
             similar_hash_groups = self.thread_compare_hash.get_similar_hash_group()
+            print('提取到的原始相似hash组', similar_hash_groups)
             if not similar_hash_groups:
                 self.stop()
                 self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning, '未找到任何相似图片')
@@ -328,6 +335,7 @@ class WindowPresenter(QObject):
         if not self.is_stop:
             # 对转换的漫画信息类列表进行处理
             comic_info_groups = self.thread_convert_hash_to_comic_info.get_comic_info_group()
+            print('匹配的原始相似组', comic_info_groups)
             # 检查漫画是否存在，剔除已经不存在的项目
             comic_info_groups_filter = self.model.filter_comic_info_group_is_exist(comic_info_groups)
             # 检查匹配选项-是否匹配缓存数据
@@ -335,6 +343,13 @@ class WindowPresenter(QObject):
             if not is_match_cache:  # 如果未选择匹配缓存数据，则剔除相似组中不在本次搜索目录中的漫画项目（由于hash转换是根据数据库数据，可能存在多余的路径）
                 comic_info_groups_filter = self.model.filter_comic_info_group_is_in_search_list(comic_info_groups,
                                                                                                 comic_path_search_list=self._comic_paths_search)
+            # 检查匹配选项-是否仅匹配相同父目录
+            is_match_same_parent_folder = self.widget_setting_match.get_is_match_same_parent_folder()
+            match_parent_folder_level = self.widget_setting_match.get_match_parent_folder_level()
+            if is_match_same_parent_folder:  # 如果勾选了仅匹配相同父目录，仅进一步筛选
+                comic_info_groups_filter = self.model.filter_comic_info_group_is_in_same_parent_folder(
+                    comic_info_groups, level=match_parent_folder_level)
+
             # 保存到缓存
             self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '正在保存相似匹配结果到本地缓存')
             self.presenter_match_result_cache.save_match_result(comic_info_groups_filter)

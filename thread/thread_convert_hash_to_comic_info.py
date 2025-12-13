@@ -51,6 +51,8 @@ class ThreadConvertHashToComicInfo(ThreadPattern):
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '将hash值相似组转换为对应的漫画路径组')
         # hash组格式：[[hash1, hash2, hash3], [hash4, hash5, hash6]]
         # 先转换为漫画路径格式
+        print('转换hash值为漫画路径')
+        print('需要转换的hash值', self.hash_group)
         comic_path_group = []
         for h_group in self.hash_group:
             p_group = set()
@@ -61,10 +63,12 @@ class ThreadConvertHashToComicInfo(ThreadPattern):
                     p_group.add(comic_path)
             if len(p_group) >= 2:
                 comic_path_group.append(list(p_group))
+        print('首次转换结果', comic_path_group)
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, f'共完成{len(comic_path_group)}组的转换')
         #  然后合并有交集的项目（用于整合组间相似项）
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, f'合并有交集的相似组')
         comic_path_group = lzytools.common.merge_intersection_item(comic_path_group)
+        print('合并交集后的结果', comic_path_group)
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, f'合并为{len(comic_path_group)}组')
         # 最后转换为漫画信息类格式
         self.comic_info_group = []
@@ -77,6 +81,7 @@ class ThreadConvertHashToComicInfo(ThreadPattern):
             self.comic_info_group.append(ci_group)
 
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '完成将hash值相似组转换为对应的漫画路径组')
+        print('最终转换的信息类', self.comic_info_group)
         self.finished()
 
     def get_image_info_by_hash(self, hash_: str, hash_type: TYPES_HASH_ALGORITHM):

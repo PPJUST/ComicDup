@@ -247,6 +247,39 @@ class SettingIsMatchCache(_ModuleChildSettingSingleEnable):
         super().__init__(config_file, section='IsMatchCache', key='is_enable', default_value=False)
 
 
+class SettingIsMatchSameParentFolder(_ModuleChildSettingSingleEnable):
+    """匹配选项：是否仅匹配相同父目录"""
+
+    def __init__(self, config_file):
+        super().__init__(config_file, section='IsMatchSameParentFolder', key='is_enable', default_value=False)
+
+
+class SettingMatchParentFolderLevel(_ModuleChildSetting):
+    """匹配选项：匹配父目录的层级"""
+
+    def __init__(self, config_file):
+        super().__init__(config_file)
+        self.section = 'MatchParentFolderLevel'
+        self.key = 'level'
+        self._default_value: int = 1
+
+    def read(self) -> int:
+        """读取设置项"""
+        value = self._read_key(self.section, self.key, self._default_value)
+        # 将读取的文本值转换为数值
+        if isinstance(value, str):
+            return int(value)
+        elif isinstance(value, int):
+            return value
+        else:
+            raise ValueError(self.section, self.key, '无效的设置项值')
+
+    def set(self, value: int):
+        """设置设置项"""
+        value_str = str(value)
+        self._set_value(self.section, self.key, value_str)
+
+
 class SettingIsMatchSimilarFilename(_ModuleChildSettingSingleEnable):
     """匹配选项：是否仅匹配相似文件名"""
 
