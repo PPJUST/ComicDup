@@ -90,6 +90,8 @@ def save_preview_image_in_archive_to_cache(archive: str, image_path_inside: str,
 def get_preview_image_count(cache_dirpath: str = CACHE_PREVIEW_DIRPATH) -> int:
     """统计缓存的预览图数量"""
     count = 0
+    if not os.path.exists(cache_dirpath):
+        return count
     cache_child_dirs = [os.path.normpath(os.path.join(cache_dirpath, i)) for i in os.listdir(cache_dirpath)]
     for _dir in cache_child_dirs:
         count += len(os.listdir(_dir))
@@ -99,6 +101,8 @@ def get_preview_image_count(cache_dirpath: str = CACHE_PREVIEW_DIRPATH) -> int:
 def get_preview_image_paths(cache_dirpath: str = CACHE_PREVIEW_DIRPATH) -> list:
     """获取缓存的预览图路径"""
     paths = []
+    if not os.path.exists(cache_dirpath):
+        return paths
     cache_child_dirs = [os.path.normpath(os.path.join(cache_dirpath, i)) for i in os.listdir(cache_dirpath)]
     for _dir in cache_child_dirs:
         paths.extend([os.path.normpath(os.path.join(_dir, i)) for i in os.listdir(_dir)])
@@ -107,5 +111,7 @@ def get_preview_image_paths(cache_dirpath: str = CACHE_PREVIEW_DIRPATH) -> list:
 
 def get_preview_size(cache_dirpath: str = CACHE_PREVIEW_DIRPATH) -> int:
     """统计缓存预览图文件夹的文件大小"""
+    if not os.path.exists(cache_dirpath):
+        return 0
     filesize = lzytools.file.get_size(cache_dirpath)
     return filesize

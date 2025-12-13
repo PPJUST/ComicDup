@@ -430,6 +430,7 @@ class WindowPresenter(QObject):
     def clear_cache(self):
         """清空缓存"""
         self.model.clear_cache()
+        self._update_cache_info()  # 更新统计信息
 
     def match_cache_data_self(self):
         """漫画数据库项目自我匹配"""
