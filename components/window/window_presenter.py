@@ -361,9 +361,9 @@ class WindowPresenter(QObject):
             enhance_algorithm = self.widget_setting_algorithm.get_enhance_algorithm()
             if is_enhance_algorithm:
                 if isinstance(enhance_algorithm, SimilarAlgorithm.SSIM):
-                    pass  # todo
+                    pass  # todo 临时禁用未完成的功能（增强算法）
                 elif isinstance(enhance_algorithm, SimilarAlgorithm.ORB):
-                    pass  # todo
+                    pass  # todo 临时禁用未完成的功能（增强算法）
         else:
             self.stop()
 
