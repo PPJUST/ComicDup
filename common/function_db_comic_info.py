@@ -199,7 +199,10 @@ class DBComicInfo:
 
         # 路径外的引号必须使用“双引号，防止字符串自动转换引号导致出错（Windows文件名可以带'而不能带"）
         self.cursor.execute(f'''DELETE FROM {TABLE_NAME} WHERE {KEY_FILEPATH} = "{comic_path}"''')
+
         self.conn.commit()
+
+        self._vacuum()
 
     def delete_useless_items(self):
         """删除无效的项目"""
@@ -371,3 +374,8 @@ class DBComicInfo:
         print('清空数据库')
         self.cursor.execute(f"DELETE FROM {TABLE_NAME};")
         self.conn.commit()
+        self._vacuum()
+
+    def _vacuum(self):
+        """手动清除空闲列表数据"""
+        self.cursor.execute('VACUUM')

@@ -63,14 +63,12 @@ class ThreadSaveComic(ThreadPattern):
                                                                      new_comic_path=comic_info.filepath)
                     else:  # 否则，为新增了相同漫画的情形
                         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, f'保存{comic_info.filename}到数据库')
-                        comic_info.save_preview_image()  # 新增前保存预览图
                         self.db_comic_info.add(comic_info)
                 else:  # 已存在且未移动则跳过
                     self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, f'{comic_info.filename}已存在于数据库，跳过更新')
                     continue
             else:  # 不存在则新增
                 self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, f'保存{comic_info.filename}到数据库')
-                comic_info.save_preview_image()  # 新增前保存预览图
                 self.db_comic_info.add(comic_info)
 
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '完成保存漫画信息到本地数据库')
