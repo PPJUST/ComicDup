@@ -17,7 +17,6 @@ class AssemblerDialogComicsPreview(QDialog):
         super().__init__()
         self.setWindowTitle('漫画预览器')
         self.setModal(True)
-        self.resize(_DEFAULT_WIDTH, _DEFAULT_HEIGHT)
 
         # 添加控件实例到dialog中
         self.presenter = widget_similar_group_preview.get_presenter()
