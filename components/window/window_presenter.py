@@ -36,9 +36,6 @@ from thread.thread_save_image import ThreadSaveImage
 from thread.thread_search_comic import ThreadSearchComic
 
 
-# todo 匹配缓存数据时，如果是无效数据，则直接跳过，或者提前检查一遍获取的缓存数据
-
-
 class WindowPresenter(QObject):
     """主窗口的桥梁组件"""
     SignalRuntimeInfo = Signal(object, str, name='运行信息')

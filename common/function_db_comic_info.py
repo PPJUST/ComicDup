@@ -232,9 +232,8 @@ class DBComicInfo:
         # 获取结果列表
         result = self.cursor.fetchone()
 
-        # fixme 读取数据库时可能存在未匹配到数据的情况，需要考虑是重新生成信息类还是直接返回空，目前按返回空处理
         # 未匹配到数据时，返回空
-        print('数据库匹配结果', result)
+        print('数据库匹配失败', comic_path)
         if not result:
             return None
 

@@ -45,7 +45,7 @@ class WindowModel(QObject):
         return hash_list
 
     def get_hashs(self, hash_algorithm: TYPES_HASH_ALGORITHM, hash_length: int) -> List[str]:
-        """获取所有图片的hash值"""
+        """获取数据库中所有图片的hash值"""
         return self.db_image_info.get_hashs(hash_algorithm, hash_length)
 
     def get_hash_from_image_info(self, image_info: ImageInfoBase, hash_type: TYPES_HASH_ALGORITHM, hash_length: int):

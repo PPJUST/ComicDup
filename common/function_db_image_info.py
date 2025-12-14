@@ -1,7 +1,7 @@
 # 数据库方法
 import os
 import sqlite3
-from typing import List
+from typing import List, Tuple
 
 import lzytools.common
 
@@ -292,13 +292,15 @@ class DBImageInfo:
         else:
             raise Exception('未知的hash类型')
 
-        self.cursor.execute(f'SELECT {key_hash} FROM {TABLE_NAME}')
-        results = self.cursor.fetchall()
+        self.cursor.execute(f'SELECT {KEY_BELONG_COMIC_PATH}, {key_hash} FROM {TABLE_NAME}')
+        results: List[Tuple[str, str]] = self.cursor.fetchall()
 
         hashs = []
         for result in results:
-            if result[0]:
-                hashs.append(result[0])
+            comic_path = result[0]
+            hash_value = result[1]
+            if os.path.exists(comic_path):  # 仅获取存在的漫画数据
+                hashs.append(hash_value)
         return hashs
 
     def is_image_exist(self, image_path: str, comic_path: str):
