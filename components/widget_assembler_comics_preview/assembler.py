@@ -5,6 +5,9 @@ from common.class_comic import ComicInfoBase
 from common.function_config import SettingPreviewDialogSize, CONFIG_FILE
 from components.widget_assembler_comics_preview import widget_similar_group_preview
 
+_DEFAULT_WIDTH = 800
+_DEFAULT_HEIGHT = 600
+
 
 class AssemblerDialogComicsPreview(QDialog):
     """预览相似组内漫画的dialog组装器"""
@@ -14,7 +17,7 @@ class AssemblerDialogComicsPreview(QDialog):
         super().__init__()
         self.setWindowTitle('漫画预览器')
         self.setModal(True)
-        self.resize(800, 600)
+        self.resize(_DEFAULT_WIDTH, _DEFAULT_HEIGHT)
 
         # 添加控件实例到dialog中
         self.presenter = widget_similar_group_preview.get_presenter()
@@ -60,11 +63,14 @@ class AssemblerDialogComicsPreview(QDialog):
         config = SettingPreviewDialogSize(CONFIG_FILE)
         width, height = config.read()
         self.presenter.get_viewer().resize(width, height)
+        self.resize(width, height)
 
     def _save_size(self):
         """保存窗口大小"""
         width = self.presenter.get_viewer().width()
         height = self.presenter.get_viewer().height()
+        if width == _DEFAULT_WIDTH and height == _DEFAULT_HEIGHT:  # 窗口尺寸为默认尺寸时，不保存到设置中
+            return
         size = (width, height)
         config = SettingPreviewDialogSize(CONFIG_FILE)
         config.set(size)
