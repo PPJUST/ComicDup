@@ -123,6 +123,11 @@ class ThreadCompareHash(ThreadPattern):
 
     def _compare(self, hash_: str, match_hash_list: List[str]):
         """对比单个hash值与其他hash值的相似度"""
+        # 统计需匹配的hash中0和1的个数，如果占比大于90%，则判断为纯色图片，不进行后续匹配
+        zero_count = hash_.count('0')
+        if zero_count / len(hash_) > 0.8 or zero_count / len(hash_) < 0.2:
+            return None
+
         print(f'匹配hash 主hash【{hash_}】')
         # 由于对比列表复制自需匹配列表，所以包含其自身，需要删除
         match_hash_list.remove(hash_)
@@ -131,12 +136,6 @@ class ThreadCompareHash(ThreadPattern):
 
         # 最终的相似hash值列表
         similar_group = set()
-
-        # 统计需匹配的hash中0和1的个数，如果占比大于90%，则判断为纯色图片，不进行后续匹配
-        # fixme 纯色页判断有问题
-        zero_count = hash_.count('0')
-        if zero_count / len(hash_) > 0.9 or zero_count / len(hash_) < 0.1:
-            return None
 
         # 从匹配列表中提取出有效的hash值
         # 在计算两个hash值的汉明距离时，如果其0的计数差异大于阈值的1/2时，两个hash值的汉明距离不可能再低于阈值
