@@ -10,6 +10,7 @@ class SimilarResultFilterViewer(QWidget):
     """相似结果筛选器模块的界面组件"""
     RefreshResult = Signal(name='重置匹配结果')
     FilterSameItems = Signal(name='筛选器 仅显示页数、文件大小相同项')
+    FilterSameFilesizeItems = Signal(name='筛选器 仅显示文件大小相同项')
     FilterExcludeDiffPages = Signal(name='筛选器 剔除页数差异过大项')
     ReconfirmDelete = Signal(bool, name='删除前再次确认')
     ChangeSortKey = Signal(str, name='排序键值改变')
@@ -26,6 +27,7 @@ class SimilarResultFilterViewer(QWidget):
         # 绑定信号
         self.ui.pushButton_refresh_result.clicked.connect(self.RefreshResult.emit)
         self.ui.pushButton_filter_same_items.clicked.connect(self.FilterSameItems.emit)
+        self.ui.pushButton_filter_same_filesize_items.clicked.connect(self.FilterSameFilesizeItems.emit)
         self.ui.pushButton_exclude_diff_pages.clicked.connect(self.FilterExcludeDiffPages.emit)
         self.ui.checkBox_reconfirm_before_delete.stateChanged.connect(self.ReconfirmDelete.emit)
         self.ui.comboBox_sort_key.currentTextChanged.connect(self.ChangeSortKey.emit)

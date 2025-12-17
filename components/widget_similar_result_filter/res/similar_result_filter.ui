@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>534</width>
-    <height>60</height>
+    <width>523</width>
+    <height>83</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -51,6 +51,13 @@
       <widget class="QPushButton" name="pushButton_filter_same_items">
        <property name="text">
         <string>仅显示100%相同项</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_filter_same_filesize_items">
+       <property name="text">
+        <string>仅显示文件大小相同项</string>
        </property>
       </widget>
      </item>

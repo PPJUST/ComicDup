@@ -8,6 +8,7 @@ class SimilarResultFilterPresenter(QObject):
     """相似结果筛选器模块的桥梁组件"""
     RefreshResult = Signal(name='重置匹配结果')
     FilterSameItems = Signal(name='筛选器 仅显示页数、文件大小相同项')
+    FilterSameFilesizeItems = Signal(name='筛选器 仅显示文件大小相同项')
     FilterExcludeDiffPages = Signal(name='筛选器 剔除页数差异过大项')
     ReconfirmDelete = Signal(bool, name='删除前再次确认')
     ChangeSortKey = Signal(str, name='排序键值改变')
@@ -20,6 +21,7 @@ class SimilarResultFilterPresenter(QObject):
 
         # 绑定信号
         self.viewer.FilterSameItems.connect(self.FilterSameItems.emit)
+        self.viewer.FilterSameFilesizeItems.connect(self.FilterSameFilesizeItems.emit)
         self.viewer.FilterExcludeDiffPages.connect(self.FilterExcludeDiffPages.emit)
         self.viewer.RefreshResult.connect(self.RefreshResult.emit)
         self.viewer.ReconfirmDelete.connect(self.ReconfirmDelete.emit)

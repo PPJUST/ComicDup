@@ -40,8 +40,8 @@ class AssemblerSimilarResultPreview:
         self.presenter.reload()
 
     def show_same_item_in_group(self):
-        """仅在相似组中显示存在相同项的漫画项"""
-        # 筛选相似组，仅提取同组中存在相似项的漫画项
+        """仅在相似组中显示存在相同项的漫画项（根据文件指纹判断）"""
+        # 筛选相似组，仅提取同组中存在相同项的漫画项
         similar_groups_filter = []
         for group in self.similar_groups:
             group_filter = []
@@ -49,6 +49,22 @@ class AssemblerSimilarResultPreview:
             for info_class in group:
                 fingerprint = info_class.fingerprint
                 if fingerprints.count(fingerprint) >= 2:
+                    group_filter.append(info_class)
+            if len(group_filter) >= 2:
+                similar_groups_filter.append(group_filter)
+
+        self.show_filter_result(similar_groups_filter)
+
+    def show_same_filesize_item_in_group(self):
+        """仅在相似组中显示存在相同项的漫画项（根据文件大小判断）"""
+        # 筛选相似组，仅提取同组中存在相同项的漫画项
+        similar_groups_filter = []
+        for group in self.similar_groups:
+            group_filter = []
+            filesizes = [i.get_real_filesize() for i in group]
+            for info_class in group:
+                filesize = info_class.get_real_filesize()
+                if filesize and filesizes.count(filesize) >= 2:
                     group_filter.append(info_class)
             if len(group_filter) >= 2:
                 similar_groups_filter.append(group_filter)

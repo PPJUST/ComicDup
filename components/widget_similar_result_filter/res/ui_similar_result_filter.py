@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'similar_result_filternOkvvI.ui'
+## Form generated from reading UI file 'similar_result_filterRjbWOc.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.8.1
+## Created by: Qt User Interface Compiler version 6.10.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -23,7 +23,7 @@ class Ui_Form(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        Form.resize(534, 60)
+        Form.resize(523, 83)
         self.horizontalLayout_2 = QHBoxLayout(Form)
         self.horizontalLayout_2.setSpacing(3)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
@@ -45,6 +45,11 @@ class Ui_Form(object):
         self.pushButton_filter_same_items.setObjectName(u"pushButton_filter_same_items")
 
         self.verticalLayout.addWidget(self.pushButton_filter_same_items)
+
+        self.pushButton_filter_same_filesize_items = QPushButton(Form)
+        self.pushButton_filter_same_filesize_items.setObjectName(u"pushButton_filter_same_filesize_items")
+
+        self.verticalLayout.addWidget(self.pushButton_filter_same_filesize_items)
 
         self.pushButton_exclude_diff_pages = QPushButton(Form)
         self.pushButton_exclude_diff_pages.setObjectName(u"pushButton_exclude_diff_pages")
@@ -115,6 +120,7 @@ class Ui_Form(object):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
         self.pushButton_refresh_result.setText(QCoreApplication.translate("Form", u"\u91cd\u7f6e\u7ed3\u679c", None))
         self.pushButton_filter_same_items.setText(QCoreApplication.translate("Form", u"\u4ec5\u663e\u793a100%\u76f8\u540c\u9879", None))
+        self.pushButton_filter_same_filesize_items.setText(QCoreApplication.translate("Form", u"\u4ec5\u663e\u793a\u6587\u4ef6\u5927\u5c0f\u76f8\u540c\u9879", None))
         self.pushButton_exclude_diff_pages.setText(QCoreApplication.translate("Form", u"\u5254\u9664\u9875\u6570\u5dee\u5f02\u8fc7\u5927\u9879", None))
         self.label.setText(QCoreApplication.translate("Form", u"\u7ec4\u5185\u6392\u5e8f\u89c4\u5219", None))
         self.checkBox_reconfirm_before_delete.setText(QCoreApplication.translate("Form", u"\u5220\u9664\u6f2b\u753b\u524d\u9700\u518d\u6b21\u786e\u8ba4", None))
