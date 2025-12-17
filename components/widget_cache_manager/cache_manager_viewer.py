@@ -1,5 +1,5 @@
 from PySide6.QtCore import Signal
-from PySide6.QtWidgets import QWidget, QApplication
+from PySide6.QtWidgets import QWidget, QApplication, QMessageBox
 
 from common.class_count_info import CountInfo
 from components.widget_cache_manager.res.ui_cache_manager import Ui_Form
@@ -44,12 +44,20 @@ class CacheManagerViewer(QWidget):
         self.ui.pushButton_delete_useless.setEnabled(is_enable)
         self.ui.pushButton_clear.setEnabled(is_enable)
 
+    def _clear_cache(self):
+        """点击清空缓存按钮"""
+        # 弹出确认框
+        reply = QMessageBox.question(self, "提示", "确定要清空所有缓存吗？\n该操作不可撤销",
+                                     QMessageBox.Yes | QMessageBox.No)
+        if reply == QMessageBox.StandardButton.Yes:
+            self.ClearCache.emit()
+
     def _bind_signal(self):
         """绑定信号"""
         self.ui.pushButton_refresh.clicked.connect(self.RefreshCache.emit)
         self.ui.pushButton_cache_match.clicked.connect(self.MatchCache.emit)
         self.ui.pushButton_delete_useless.clicked.connect(self.DeleteUselessCache.emit)
-        self.ui.pushButton_clear.clicked.connect(self.ClearCache.emit)
+        self.ui.pushButton_clear.clicked.connect(self._clear_cache)
 
 
 if __name__ == "__main__":
