@@ -3,7 +3,7 @@ import os
 import sqlite3
 from typing import List, Tuple
 
-import lzytools.common
+import lzytools
 
 from common import function_file
 from common.class_config import SimilarAlgorithm, TYPES_HASH_ALGORITHM, FileType
@@ -329,7 +329,7 @@ class DBImageInfo:
     def get_info_update_time(self) -> str:
         """获取数据库文件最后修改时间"""
         modified_time = os.path.getmtime(self.db_filepath)
-        modified_time_str = lzytools.common.convert_time_ymd(modified_time)
+        modified_time_str = lzytools.time.convert_duration_to_date(modified_time)
         return modified_time_str
 
     def clear(self):

@@ -1,6 +1,6 @@
 import time
 
-import lzytools.common
+import lzytools
 from PySide6.QtCore import QObject, QTimer
 
 from common.class_runtime import TYPE_RUNTIME_INFO
@@ -48,11 +48,11 @@ class RuntimeInfoPresenter(QObject):
 
     def _update_runtime_total(self, runtime: float):
         """更新任务运行总耗时"""
-        self.viewer.update_runtime_total(lzytools.common.convert_time_hms(runtime))
+        self.viewer.update_runtime_total(lzytools.time.format_duration(runtime))
 
     def _update_runtime_current(self, runtime: float):
         """更新任务运行当前步骤耗时"""
-        self.viewer.update_runtime_current(lzytools.common.convert_time_hms(runtime))
+        self.viewer.update_runtime_current(lzytools.time.format_duration(runtime))
 
     def update_step_index(self, index: int):
         """更新当前步骤索引"""

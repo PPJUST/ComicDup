@@ -7,8 +7,7 @@
 """
 import os
 
-import lzytools.common
-import lzytools.file
+import lzytools
 
 from common import function_file, function_archive
 

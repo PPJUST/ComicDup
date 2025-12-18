@@ -3,7 +3,7 @@ import os
 import zipfile
 from typing import Union
 
-import lzytools.archive
+import lzytools_archive
 import natsort
 import rarfile
 from PIL import Image
@@ -24,7 +24,7 @@ def is_archive_by_filename(filepath: str):
 def get_images_in_archive(archive: str):
     """获取压缩包文件所有图片的路径列表（仅支持zip和rar）"""
     # 提取压缩文件信息
-    infolist = lzytools.archive.get_infolist(archive)
+    infolist = lzytools_archive.get_infolist(archive)
     # 提取内部路径
     files = [i.filename for i in infolist]
     # 检查文件类型
@@ -41,7 +41,7 @@ def get_images_in_archive(archive: str):
 def get_archive_real_size(archive: str) -> int:
     """获取一个压缩文件的真实大小（解压后的）"""
     # 提取压缩文件信息
-    infolist = lzytools.archive.get_infolist(archive)
+    infolist = lzytools_archive.get_infolist(archive)
     # 计算文件大小
     total_size = 0
     for info in infolist:
@@ -57,7 +57,7 @@ def save_preview_image(archive: str, image_path_inside: str, preview_image_path:
     :param image_path_inside: 需要保存的压缩包内图片的内部路径
     :param preview_image_path: 预览小图存放的路径
     :param height_zoom_out: 缩放的图片高度"""
-    image_bytes = lzytools.archive.read_image(archive, image_path_inside)
+    image_bytes = lzytools_archive.read_image(archive, image_path_inside)
     image = Image.open(io.BytesIO(image_bytes))
     # 清除元数据
     image.info.clear()
@@ -76,7 +76,7 @@ def save_preview_image(archive: str, image_path_inside: str, preview_image_path:
 
 def get_filesize_inside(archive_path: str, filepath_inside: str) -> int:
     """获取压缩文件中指定文件的大小（解压后的，字节bytes）"""
-    infolist = lzytools.archive.get_infolist(archive_path)
+    infolist = lzytools_archive.get_infolist(archive_path)
     for info in infolist:
         info: Union[zipfile.ZipInfo, rarfile.RarInfo]
         path = info.filename

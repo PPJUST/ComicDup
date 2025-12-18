@@ -1,7 +1,9 @@
 import os
 
-import lzytools._qt_pyside6
-import lzytools.archive
+import lzytools
+import lzytools
+import lzytools_Qt
+import lzytools_archive
 from PySide6.QtCore import Qt, Signal
 from PySide6.QtWidgets import QTableWidget, QTableWidgetItem, QPushButton, QHeaderView
 
@@ -56,11 +58,11 @@ class TableWidgetFilelist(QTableWidget):
         item_icon = QTableWidgetItem()
         filetype = self.check_filetype(filepath)
         if isinstance(filetype, FileType.Archive):
-            icon = lzytools._qt_pyside6.base64_to_pixmap(ICON_ARCHIVE)
+            icon = lzytools_Qt.convert_base64_image_to_pixmap(ICON_ARCHIVE)
         elif isinstance(filetype, FileType.Folder):
-            icon = lzytools._qt_pyside6.base64_to_pixmap(ICON_FOLDER)
+            icon = lzytools_Qt.convert_base64_image_to_pixmap(ICON_FOLDER)
         else:
-            icon = lzytools._qt_pyside6.base64_to_pixmap(ICON_WARNING)
+            icon = lzytools_Qt.convert_base64_image_to_pixmap(ICON_WARNING)
         item_icon.setIcon(icon)
         item_icon.setFlags(item_icon.flags() & ~Qt.ItemIsEditable)  # 设置不可编辑
         self.setItem(row, 1, item_icon)
@@ -115,7 +117,7 @@ class TableWidgetFilelist(QTableWidget):
         else:
             if os.path.isdir(filepath):
                 return FileType.Folder()
-            elif lzytools.archive.is_archive(filepath) or lzytools.archive.is_archive_by_filename(
+            elif lzytools_archive.is_archive(filepath) or lzytools_archive.is_archive_by_filename(
                     os.path.basename(filepath)):
                 return FileType.Archive()
             else:

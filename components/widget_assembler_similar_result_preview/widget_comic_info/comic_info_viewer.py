@@ -1,4 +1,4 @@
-import lzytools._qt_pyside6
+import lzytools_Qt
 from PySide6.QtCore import Signal
 from PySide6.QtGui import QPixmap, Qt
 from PySide6.QtWidgets import QApplication, QFrame
@@ -38,7 +38,7 @@ class ComicInfoViewer(QFrame):
 
     def set_filetype_icon(self, icon_base64: str):
         """设置漫画的文件类型图标"""
-        pixmap = lzytools._qt_pyside6.base64_to_pixmap(icon_base64)
+        pixmap = lzytools_Qt.convert_base64_image_to_pixmap(icon_base64)
         self.ui.label_icon.setPixmap(pixmap)
 
     def set_filetitle(self, filetitle: str):
@@ -79,9 +79,9 @@ class ComicInfoViewer(QFrame):
 
     def _set_icon(self):
         """设置图标"""
-        self.ui.toolButton_open_path.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_JUMP_TO))
-        self.ui.toolButton_refresh.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_REFRESH))
-        self.ui.toolButton_delete.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_DELETE))
+        self.ui.toolButton_open_path.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_JUMP_TO))
+        self.ui.toolButton_refresh.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_REFRESH))
+        self.ui.toolButton_delete.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_DELETE))
 
 
 if __name__ == "__main__":

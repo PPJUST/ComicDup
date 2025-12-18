@@ -1,4 +1,4 @@
-import lzytools._qt_pyside6
+import lzytools_Qt
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget, QApplication, QListWidgetItem
 
@@ -102,7 +102,7 @@ class SimilarResultPreviewViewer(QWidget):
 
     def _set_icon(self):
         """设置图标"""
-        self.ui.toolButton_jump_page.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_JUMP))
+        self.ui.toolButton_jump_page.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_JUMP))
 
 
 if __name__ == "__main__":

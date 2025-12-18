@@ -1,4 +1,4 @@
-import lzytools._qt_pyside6
+import lzytools_Qt
 from PySide6.QtCore import Signal, Qt
 from PySide6.QtWidgets import QWidget, QApplication, QLabel
 
@@ -63,11 +63,11 @@ class ComicPreviewViewer(QWidget):
 
     def set_icon_archive(self):
         """设置文件类型图片为压缩文件"""
-        self.ui.label_icon.setPixmap(lzytools._qt_pyside6.base64_to_pixmap(ICON_ARCHIVE))
+        self.ui.label_icon.setPixmap(lzytools_Qt.convert_base64_image_to_pixmap(ICON_ARCHIVE))
 
     def set_icon_folder(self):
         """设置文件类型图片为文件夹"""
-        self.ui.label_icon.setPixmap(lzytools._qt_pyside6.base64_to_pixmap(ICON_FOLDER))
+        self.ui.label_icon.setPixmap(lzytools_Qt.convert_base64_image_to_pixmap(ICON_FOLDER))
 
     def set_filesize(self, filesize: str):
         """设置文件大小"""
@@ -109,10 +109,10 @@ class ComicPreviewViewer(QWidget):
 
     def _set_icon(self):
         """设置图标"""
-        self.ui.toolButton_previous.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_LEFT_ARROW))
-        self.ui.toolButton_next.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_RIGHT_ARROW))
-        self.ui.toolButton_open.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_JUMP_TO))
-        self.ui.toolButton_delete.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_DELETE))
+        self.ui.toolButton_previous.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_LEFT_ARROW))
+        self.ui.toolButton_next.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_RIGHT_ARROW))
+        self.ui.toolButton_open.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_JUMP_TO))
+        self.ui.toolButton_delete.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_DELETE))
 
 
 if __name__ == "__main__":

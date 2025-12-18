@@ -1,4 +1,4 @@
-import lzytools._qt_pyside6
+import lzytools_Qt
 from PySide6.QtCore import Signal
 from PySide6.QtGui import QMouseEvent, Qt
 from PySide6.QtWidgets import QWidget, QApplication
@@ -19,7 +19,7 @@ class SimilarGroupInfoViewer(QWidget):
         self.ui.setupUi(self)
 
         # 设置图标
-        self.ui.toolButton_preview.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_ZOOM_IN))
+        self.ui.toolButton_preview.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_ZOOM_IN))
         self.ui.toolButton_preview.clicked.connect(self.Preview.emit)
 
     def set_group_index(self, index: int):

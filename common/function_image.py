@@ -1,12 +1,9 @@
 # 图片相关方法
 import io
 import math
-from typing import Union
 
-import lzytools
-import lzytools.archive
-import lzytools.file
-import lzytools.image
+import lzytools_archive
+import lzytools_image
 from PIL import Image
 
 from common.class_config import TYPES_HASH_ALGORITHM
@@ -28,7 +25,7 @@ def calc_image_hash(image_path: str, hash_type: TYPES_HASH_ALGORITHM, hash_lengt
         hash_size = int(math.sqrt(hash_length))
 
     # 计算hash（字典）
-    hash_dict = lzytools.image.calc_hash(image_pil, hash_type, hash_size)
+    hash_dict = lzytools_image.calc_hash(image_pil, hash_type, hash_size)
     image_pil.close()
 
     # 提取需要的hash值
@@ -41,7 +38,7 @@ def calc_archive_image_hash(archive_path: str, inside_image_path: str, hash_type
                             hash_length: int):
     """计算本地压缩文件内图片的的hash值"""
     # 读取压缩文件中的图片
-    image_bytes = lzytools.archive.read_image(archive_path, inside_image_path)
+    image_bytes = lzytools_archive.read_image(archive_path, inside_image_path)
 
     # 将bytes读取到内存流中
     bytes_io = io.BytesIO(image_bytes)
@@ -60,7 +57,7 @@ def calc_archive_image_hash(archive_path: str, inside_image_path: str, hash_type
         hash_size = int(math.sqrt(hash_length))
 
     # 计算hash（字典）
-    hash_dict = lzytools.image.calc_hash(image_pil, hash_type, hash_size)
+    hash_dict = lzytools_image.calc_hash(image_pil, hash_type, hash_size)
     image_pil.close()
 
     # 提取需要的hash值

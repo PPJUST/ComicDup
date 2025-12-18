@@ -2,7 +2,7 @@
 
 import os
 
-import lzytools.file
+import lzytools
 import natsort
 
 from common import function_file, function_archive

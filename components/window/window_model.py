@@ -2,8 +2,7 @@ import os
 from pathlib import Path
 from typing import List
 
-import lzytools.common
-import lzytools.file
+import lzytools
 import natsort
 from PySide6.QtCore import Signal, QObject
 

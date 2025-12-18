@@ -1,4 +1,4 @@
-import lzytools._qt_pyside6
+import lzytools_Qt
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget, QApplication
 
@@ -75,12 +75,12 @@ class SimilarGroupPreviewViewer(QWidget):
 
     def _set_icon(self):
         """设置图标"""
-        self.ui.toolButton_previous2.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_LEFT_ARROW_3))
-        self.ui.toolButton_previous.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_LEFT_ARROW_1))
-        self.ui.toolButton_next.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_RIGHT_ARROW_1))
-        self.ui.toolButton_next2.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_RIGHT_ARROW_3))
-        self.ui.toolButton_reset.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_REFRESH))
-        self.ui.pushButton_quit.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_QUIT))
+        self.ui.toolButton_previous2.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_LEFT_ARROW_3))
+        self.ui.toolButton_previous.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_LEFT_ARROW_1))
+        self.ui.toolButton_next.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_RIGHT_ARROW_1))
+        self.ui.toolButton_next2.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_RIGHT_ARROW_3))
+        self.ui.toolButton_reset.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_REFRESH))
+        self.ui.pushButton_quit.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_QUIT))
 
     def _bind_signal(self):
         """绑定信号"""

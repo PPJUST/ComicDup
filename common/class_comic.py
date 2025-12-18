@@ -3,9 +3,8 @@ import os
 from abc import ABC, abstractmethod
 from typing import Union
 
-import lzytools.archive
-import lzytools.file
-import lzytools.image
+import lzytools
+import lzytools_archive
 import natsort
 
 from common import function_file, function_archive, function_cache_preview
@@ -228,7 +227,7 @@ class ArchiveComicInfo(ComicInfoBase):
 
     def _update_filetitle(self):
         super()._update_filetitle()
-        self.filetitle = lzytools.archive.get_filetitle(self.filename)
+        self.filetitle = lzytools_archive.get_filetitle(self.filename)
 
 
 def calc_comic_point(comic_info: ComicInfoBase) -> float:

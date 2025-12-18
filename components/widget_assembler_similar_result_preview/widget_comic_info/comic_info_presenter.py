@@ -1,6 +1,6 @@
 import os
 
-import lzytools.file
+import lzytools
 from PySide6.QtCore import QObject, Signal
 from PySide6.QtWidgets import QMessageBox
 

@@ -1,4 +1,4 @@
-import lzytools._qt_pyside6
+import lzytools_Qt
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget, QApplication, QFileDialog
 
@@ -31,10 +31,10 @@ class SearchListViewer(QWidget):
         self.ui.pushButton_clear.clicked.connect(self.clear)
 
         # 添加图标
-        self.ui.pushButton_add_files.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_ADD))
-        self.ui.pushButton_add_folders.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_ADD))
-        self.ui.pushButton_delete_useless_path.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_CLEAR))
-        self.ui.pushButton_clear.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_CLEAR))
+        self.ui.pushButton_add_files.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_ADD))
+        self.ui.pushButton_add_folders.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_ADD))
+        self.ui.pushButton_delete_useless_path.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_CLEAR))
+        self.ui.pushButton_clear.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_CLEAR))
 
     def add_row(self, filepath: str):
         """添加新的文件行"""

@@ -2,7 +2,7 @@ import os
 import pickle
 from typing import List
 
-import lzytools.common
+import lzytools
 
 from common.class_comic import ComicInfoBase
 
@@ -20,7 +20,7 @@ def save_match_result(data: List[List[ComicInfoBase]]):
     """保存匹配结果"""
     check_cache_exist(CACHE_MATCH_RESULT_FOLDER)
     # 提取时间戳
-    time_str = lzytools.common.get_current_time(_format='match result %Y%m%d %H_%M_%S')
+    time_str = lzytools.time.get_current_time(_format='match result %Y%m%d %H_%M_%S')
     # 组合文件名
     filename = f'{time_str}{CACHE_MATCH_RESULT_FILE_EXTENSION}'
     # 组合缓存路径

@@ -1,6 +1,6 @@
 from typing import Union
 
-import lzytools._qt_pyside6
+import lzytools_Qt
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QApplication, QDialog
 
@@ -97,16 +97,16 @@ class MatchResultCacheViewer(QDialog):
 
     def _set_icon(self):
         """设置图标"""
-        self.ui.pushButton_restore_1.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_RESTORE))
-        self.ui.pushButton_restore_2.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_RESTORE))
-        self.ui.pushButton_restore_3.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_RESTORE))
-        self.ui.pushButton_restore_4.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_RESTORE))
-        self.ui.pushButton_restore_5.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_RESTORE))
-        self.ui.toolButton_delete_1.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_DELETE))
-        self.ui.toolButton_delete_2.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_DELETE))
-        self.ui.toolButton_delete_3.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_DELETE))
-        self.ui.toolButton_delete_4.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_DELETE))
-        self.ui.toolButton_delete_5.setIcon(lzytools._qt_pyside6.base64_to_pixmap(ICON_DELETE))
+        self.ui.pushButton_restore_1.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_RESTORE))
+        self.ui.pushButton_restore_2.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_RESTORE))
+        self.ui.pushButton_restore_3.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_RESTORE))
+        self.ui.pushButton_restore_4.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_RESTORE))
+        self.ui.pushButton_restore_5.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_RESTORE))
+        self.ui.toolButton_delete_1.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_DELETE))
+        self.ui.toolButton_delete_2.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_DELETE))
+        self.ui.toolButton_delete_3.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_DELETE))
+        self.ui.toolButton_delete_4.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_DELETE))
+        self.ui.toolButton_delete_5.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_DELETE))
 
     def _bind_signal(self):
         """绑定信号"""

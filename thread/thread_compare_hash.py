@@ -2,7 +2,7 @@
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from typing import List
 
-import lzytools.image
+import lzytools_image
 
 from common.class_runtime import TypeRuntimeInfo
 from thread.thread_pattern import ThreadPattern
@@ -158,7 +158,7 @@ class ThreadCompareHash(ThreadPattern):
 
         # 执行匹配
         for hash_compare in match_hash_list_filter:
-            distance = lzytools.image.calc_hash_hamming_distance(hash_, hash_compare)
+            distance = lzytools_image.calc_hash_hamming_distance(hash_, hash_compare)
             if distance <= self.hamming_distance:
                 similar_group.add(hash_compare)
 

@@ -1,6 +1,6 @@
+import lzytools_Qt
 from PySide6.QtCore import QTimer, Signal
 from PySide6.QtWidgets import QApplication, QMainWindow
-from lzytools._qt_pyside6 import base64_to_pixmap
 
 from components.window.res.icon_base64 import ICON_LOGO
 from components.window.res.ui_window import Ui_MainWindow
@@ -25,7 +25,7 @@ class WindowViewer(QMainWindow):
         self.ui.pushButton_back_to_search_list.clicked.connect(self.turn_page_search_list)
 
         # 设置图标
-        self.setWindowIcon(base64_to_pixmap(ICON_LOGO))
+        self.setWindowIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_LOGO))
 
         # 切换到默认页
         self.turn_page_search_list()

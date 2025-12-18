@@ -3,7 +3,7 @@ import os
 import sqlite3
 from typing import Union, List, Tuple
 
-import lzytools.common
+import lzytools
 
 from common import function_file
 from common.class_comic import ComicInfoBase, FolderComicInfo, ArchiveComicInfo
@@ -365,7 +365,7 @@ class DBComicInfo:
     def get_info_update_time(self) -> str:
         """获取数据库文件最后修改时间"""
         modified_time = os.path.getmtime(self.db_filepath)
-        modified_time_str = lzytools.common.convert_time_ymd(modified_time)
+        modified_time_str = lzytools.time.convert_duration_to_date(modified_time)
         return modified_time_str
 
     def clear(self):

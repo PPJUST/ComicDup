@@ -2,7 +2,7 @@
 
 from typing import List
 
-import lzytools.common
+import lzytools
 
 from common.class_comic import ComicInfoBase
 from common.class_config import TYPES_HASH_ALGORITHM

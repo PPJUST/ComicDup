@@ -1,9 +1,7 @@
 import os
 from abc import ABC, abstractmethod
 
-import lzytools.archive
-import lzytools.file
-import lzytools.image
+import lzytools
 
 from common import function_archive, function_image
 from common.class_comic import ComicInfoBase
@@ -198,6 +196,7 @@ class ImageInfoArchive(ImageInfoBase):
         super().calc_filesize()
 
         self.filesize = function_archive.get_filesize_inside(self.belong_comic_path, self.image_path)
+
     def calc_hash(self, hash_type: TYPES_HASH_ALGORITHM, hash_length: int):
         super().calc_hash(hash_type, hash_length)
         hash_ = function_image.calc_archive_image_hash(self.belong_comic_path, self.image_path, hash_type, hash_length)

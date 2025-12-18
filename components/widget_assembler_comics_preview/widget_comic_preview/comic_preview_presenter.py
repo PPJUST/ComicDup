@@ -1,8 +1,8 @@
 import os
 
-import lzytools.archive
-import lzytools.file
-import lzytools.image
+import lzytools
+import lzytools_archive
+import lzytools_image
 from PySide6.QtCore import QObject, Signal
 from PySide6.QtWidgets import QMessageBox
 
@@ -74,7 +74,7 @@ class ComicPreviewPresenter(QObject):
         elif isinstance(self.comic_info.filetype, FileType.Archive) or self.comic_info.filetype == FileType.Archive:
             archive_path = self.comic_info.filepath
             inside_image_path = self.page_paths[page_index - 1]
-            image_bytes = lzytools.archive.read_image(archive_path, inside_image_path)
+            image_bytes = lzytools_archive.read_image(archive_path, inside_image_path)
             self.viewer.show_bytes_image(image_bytes)
 
     def calc_current_image_hash(self):
@@ -98,7 +98,7 @@ class ComicPreviewPresenter(QObject):
         # debug 即使未勾选显示相似度，预览dialog翻页后仍旧会显示相似度
         # 计算相似度
         self_hash = self.calc_current_image_hash()
-        similar = lzytools.image.calc_hash_similar(self_hash, compare_hash)
+        similar = lzytools_image.calc_hash_similar(self_hash, compare_hash)
         similar_str = f'{int(similar * 100)}%'
         # 显示在ui的左上角
         self.viewer.show_similar(similar_str)
