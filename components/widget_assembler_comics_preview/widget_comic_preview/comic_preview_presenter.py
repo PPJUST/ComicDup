@@ -1,3 +1,4 @@
+import base64
 import os
 
 import lzytools
@@ -11,6 +12,7 @@ from common.class_comic import ComicInfoBase
 from common.class_config import FileType
 from components.widget_assembler_comics_preview.widget_comic_preview.comic_preview_model import ComicPreviewModel
 from components.widget_assembler_comics_preview.widget_comic_preview.comic_preview_viewer import ComicPreviewViewer
+from components.widget_assembler_comics_preview.widget_comic_preview.res.icon_base64 import ICON_READ_FAILED
 
 
 class ComicPreviewPresenter(QObject):
@@ -66,15 +68,24 @@ class ComicPreviewPresenter(QObject):
     def show_page(self, page_index: int):
         """显示指定页的图像
         :param page_index:从1开始计数的页码"""
-        # 文件夹类漫画
-        if isinstance(self.comic_info.filetype, FileType.Folder) or self.comic_info.filetype == FileType.Folder:
-            image_path = self.page_paths[page_index - 1]
-            self.viewer.show_image(image_path)
-        # 压缩文件类漫画
-        elif isinstance(self.comic_info.filetype, FileType.Archive) or self.comic_info.filetype == FileType.Archive:
-            archive_path = self.comic_info.filepath
-            inside_image_path = self.page_paths[page_index - 1]
-            image_bytes = lzytools_archive.read_image(archive_path, inside_image_path)
+        try:
+            # 文件夹类漫画
+            if isinstance(self.comic_info.filetype, FileType.Folder) or self.comic_info.filetype == FileType.Folder:
+                image_path = self.page_paths[page_index - 1]
+                if not os.path.exists(image_path):
+                    raise Exception('read failed')
+                self.viewer.show_image(image_path)
+            # 压缩文件类漫画
+            elif isinstance(self.comic_info.filetype, FileType.Archive) or self.comic_info.filetype == FileType.Archive:
+                archive_path = self.comic_info.filepath
+                inside_image_path = self.page_paths[page_index - 1]
+                image_bytes = lzytools_archive.read_image(archive_path, inside_image_path)
+                if not image_bytes:
+                    raise Exception('read failed')
+                self.viewer.show_bytes_image(image_bytes)
+        except:  # 读取失败时
+            image_base64 = ICON_READ_FAILED
+            image_bytes = base64.b64decode(image_base64)
             self.viewer.show_bytes_image(image_bytes)
 
     def calc_current_image_hash(self):
