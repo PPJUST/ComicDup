@@ -114,6 +114,10 @@ class ComicPreviewPresenter(QObject):
         # 显示在ui的左上角
         self.viewer.show_similar(similar_str)
 
+    def show_similar_info(self, info: str):
+        """显示相似度信息"""
+        self.viewer.show_similar(info)
+
     def clear_similar_info(self):
         """清除相似度信息"""
         self.viewer.show_similar('')
