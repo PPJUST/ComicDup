@@ -192,6 +192,9 @@ class ArchiveComicInfo(ComicInfoBase):
         # 压缩文件类漫画的额外参数 解压后的文件大小（字节）
         self.extracted_filesize_bytes: int = 0
 
+        # 计算解压后的文件大小（字节）
+        self._analyse_archive_size_extracted()
+
     def save_preview_image(self):
         super().save_preview_image()
         first_image = self.page_paths[0]
