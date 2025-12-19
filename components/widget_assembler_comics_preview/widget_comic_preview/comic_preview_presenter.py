@@ -98,9 +98,11 @@ class ComicPreviewPresenter(QObject):
         elif isinstance(comic_type, FileType.Archive) or comic_type == FileType.Archive:
             archive_path = self.comic_info.filepath
             inside_image_path = self.page_paths[self.page_index - 1]
-            hash_ = function_image.calc_archive_image_hash(archive_path, inside_image_path, 'dhash', 64)
+            hash_ = function_image.calc_archive_image_hash(archive_path, inside_image_path, 'dhash', 144)
         else:
             hash_ = ''
+
+        print('计算当前显示的图片的hash值', hash_)
 
         return hash_
 
