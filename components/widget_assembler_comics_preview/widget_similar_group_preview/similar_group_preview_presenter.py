@@ -109,12 +109,13 @@ class SimilarGroupPreviewPresenter(QObject):
             # 以第一本漫画作为基准
             # 计算第一本漫画当前页图片的hash值
             self.base_hash = self.widgets_comic[0].calc_current_image_hash()
-            # 显示同组漫画当前页图片的相似度
-            for widget in self.widgets_comic:
-                widget: ComicPreviewPresenter
-                widget.compare_current_image_hash(self.base_hash)
         except:  # 无法正常计算相似度时
             self.show_similar_info('计算失败')
+
+        # 显示同组漫画当前页图片的相似度
+        for widget in self.widgets_comic:
+            widget: ComicPreviewPresenter
+            widget.compare_current_image_hash(self.base_hash)
 
     def show_similar_info(self, info: str):
         """显示相似度信息"""

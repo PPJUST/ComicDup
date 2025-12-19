@@ -106,13 +106,15 @@ class ComicPreviewPresenter(QObject):
 
     def compare_current_image_hash(self, compare_hash: str):
         """计算当前图片的hash值，并于提供的hash值进行对比，计算相似度，并显示在ui上"""
-        # debug 即使未勾选显示相似度，预览dialog翻页后仍旧会显示相似度
-        # 计算相似度
-        self_hash = self.calc_current_image_hash()
-        similar = lzytools_image.calc_hash_similar(self_hash, compare_hash)
-        similar_str = f'{int(similar * 100)}%'
-        # 显示在ui的左上角
-        self.viewer.show_similar(similar_str)
+        try:
+            # 计算相似度
+            self_hash = self.calc_current_image_hash()
+            similar = lzytools_image.calc_hash_similar(self_hash, compare_hash)
+            similar_str = f'{int(similar * 100)}%'
+            # 显示在ui的左上角
+            self.viewer.show_similar(similar_str)
+        except:  # 无法正常计算相似度时
+            self.viewer.show_similar('计算失败')
 
     def show_similar_info(self, info: str):
         """显示相似度信息"""
