@@ -15,6 +15,7 @@ import os.path
 from typing import List
 
 from PySide6.QtCore import QObject, Signal
+from PySide6.QtWidgets import QMessageBox
 
 from common.class_comic import ComicInfoBase
 from common.class_config import SimilarAlgorithm
@@ -116,6 +117,7 @@ class WindowPresenter(QObject):
     def open_about(self):
         """打开程序说明"""
         pass  # todo
+        QMessageBox.information(self.viewer, "提示", "编写中...")
 
     def start(self):
         """执行查重"""
