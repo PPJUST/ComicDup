@@ -1,14 +1,14 @@
 # 漫画相关的自定义类
 import os
 from abc import ABC, abstractmethod
-from typing import Union
+from typing import Union, Dict
 
 import lzytools
 import lzytools_archive
 import natsort
 
-from common import function_file, function_archive, function_cache_preview
-from common.class_config import FileType
+from common import function_file, function_archive, function_cache_preview, function_image
+from common.class_config import FileType, SimilarAlgorithm
 
 _BASE_COLOR = ['black', 'maroon', 'red', 'purple', 'fuchsia',
                'green', 'lime', 'olive', 'yellow', 'navy',
@@ -96,6 +96,10 @@ class ComicInfoBase(ABC):
         """计算漫画评分（10分制）"""
         return calc_comic_point(self)
 
+    @abstractmethod
+    def calc_hashs(self):
+        """计算漫画内所有图片的hash值"""
+
     """数据库模式使用的手动更新信息的方法"""
 
     def update_filesize(self, filesize_bytes: int):
@@ -161,6 +165,14 @@ class FolderComicInfo(ComicInfoBase):
         """获取解压后的文件大小（字节）"""
         return 0
 
+    def calc_hashs(self, hash_type=SimilarAlgorithm.pHash, hash_length: int = 12) -> Dict[str, str]:
+        hash_dict = dict()
+        for image in self.page_paths:
+            image_path = os.path.normpath(os.path.join(self.filepath, image))
+            hash_ = function_image.calc_image_hash(image_path, hash_type, hash_length)
+            hash_dict[image] = hash_
+        return hash_dict
+
     def _analyse_info(self):
         super()._analyse_info()
         self.page_paths = function_file.get_images_in_folder(self.filepath)
@@ -208,6 +220,13 @@ class ArchiveComicInfo(ComicInfoBase):
     def get_extracted_filesize_bytes(self):
         """获取解压后的文件大小（字节）"""
         return self.extracted_filesize_bytes
+
+    def calc_hashs(self, hash_type=SimilarAlgorithm.pHash, hash_length: int = 12) -> Dict[str, str]:
+        hash_dict = dict()
+        for image in self.page_paths:
+            hash_ = function_image.calc_archive_image_hash(self.filepath, image, hash_type, hash_length)
+            hash_dict[image] = hash_
+        return hash_dict
 
     def _analyse_archive_size_extracted(self):
         """分析压缩文件类漫画解压后的文件大小"""
