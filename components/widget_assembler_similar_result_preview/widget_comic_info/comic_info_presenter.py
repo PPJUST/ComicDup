@@ -13,6 +13,7 @@ from components.widget_search_list.res.icon_base64 import ICON_FOLDER, ICON_ARCH
 
 
 # todo 文件名要素高亮标记，例如作者、社团、标题、tag等
+
 class ComicInfoPresenter(QObject):
     """单个漫画信息模块的桥梁组件"""
     ComicDeleted = Signal(name='删除漫画')
@@ -78,6 +79,11 @@ class ComicInfoPresenter(QObject):
     def set_color(self, color: str):
         """为漫画项的文本添加颜色"""
         self.viewer.set_color(color)
+
+    def set_similarity(self, similarity: str):
+        """设置相似度（百分比）
+        :param similarity:百分比数字文本，例如90%"""
+        self.viewer.set_similarity(similarity)
 
     def highlight_pages(self):
         """高亮显示页数"""

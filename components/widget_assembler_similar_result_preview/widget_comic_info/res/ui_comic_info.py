@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'comic_infotvBBqy.ui'
+## Form generated from reading UI file 'comic_infoUksWrD.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.8.1
+## Created by: Qt User Interface Compiler version 6.10.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -71,6 +71,11 @@ class Ui_Form(object):
         self.label_filesize.setObjectName(u"label_filesize")
 
         self.horizontalLayout_3.addWidget(self.label_filesize)
+
+        self.label_similarity = QLabel(Form)
+        self.label_similarity.setObjectName(u"label_similarity")
+
+        self.horizontalLayout_3.addWidget(self.label_similarity)
 
         self.horizontalSpacer_5 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
@@ -143,6 +148,7 @@ class Ui_Form(object):
         self.label_page_count.setText(QCoreApplication.translate("Form", u"page count", None))
         self.label_ye.setText(QCoreApplication.translate("Form", u"\u9875", None))
         self.label_filesize.setText(QCoreApplication.translate("Form", u"filesize", None))
+        self.label_similarity.setText("")
         self.label_preview.setText(QCoreApplication.translate("Form", u"preview", None))
         self.toolButton_open_path.setText(QCoreApplication.translate("Form", u"open path", None))
         self.toolButton_refresh.setText(QCoreApplication.translate("Form", u"refresh", None))

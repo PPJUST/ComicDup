@@ -1,10 +1,12 @@
 import os
 from typing import List
 
+import lzytools_image
 from PySide6.QtCore import QObject
 
-from common import function_file
+from common import function_file, function_image
 from common.class_comic import ComicInfoBase, _BASE_COLOR
+from common.class_config import FileType, SimilarAlgorithm
 from common.class_sign import SignStatus, TYPE_SIGN_STATUS
 from components import widget_assembler_comics_preview
 from components.widget_assembler_comics_preview import AssemblerDialogComicsPreview
@@ -55,6 +57,62 @@ class SimilarGroupInfoPresenter(QObject):
         size = function_file.format_bytes_size(size_bytes)
         self.viewer.set_item_size(size)
 
+    def set_similarity(self):
+        """设置当前组内部项目之间的相似度"""
+        # 内部项目显示的相似度为该项目与其他各个项目之间相似度的最大值
+        # fixme 有问题，貌似只能计算封面的相似度？
+
+        # 按组提取每个项目的图片hash值列表，计算3张图片，dhash，12位
+        hash_groups: List[List[str]] = []
+        for widget_presenter in self.comics_presenter:
+            comic_info = widget_presenter.get_comic_info()
+            images = comic_info.get_page_paths()[0:3]
+            hashs = []
+            for image in images:
+                if isinstance(comic_info.filetype, FileType.Folder):
+                    hash_ = function_image.calc_image_hash(image, SimilarAlgorithm.dHash, 12)
+                elif isinstance(comic_info.filetype, FileType.Archive):
+                    hash_ = function_image.calc_archive_image_hash(comic_info.filepath, image, SimilarAlgorithm.dHash,
+                                                                   12)
+                else:
+                    hash_ = ''
+                hashs.append(hash_)
+            hash_groups.append(hashs)
+
+        # 遍历列表，计算不同hash组之间的相似度最大值
+        similarity_max_group = []
+        for index, hash_group in enumerate(hash_groups):
+            similarity_max = 0
+            # 提取用于对比计算的hash值
+            compare_hashs = []
+            other_groups = hash_groups[0:index] + hash_groups[index + 1:]
+            for i in other_groups:
+                for n in i:
+                    compare_hashs.append(n)
+            # 计算所有hash值的相似度（0~1）
+            similaritys = []
+            for hash_ in hash_group:
+                for c_hash in compare_hashs:
+                    if hash_ and c_hash:
+                        similarity = lzytools_image.calc_hash_similar(hash_, c_hash)
+                        if similarity:
+                            similaritys.append(similarity)
+
+            if similaritys:
+                # 获取最大的相似度
+                similarity_max = max(similaritys)
+                # 转换为百分比相似度
+                similarity = f'{round(similarity_max * 100, 2)}%'
+                similarity_max_group.append(similarity)
+            else:
+                similarity_max_group.append(None)
+
+        # 将相似度显示在对应项目的ui中
+        for index, widget_presenter in enumerate(self.comics_presenter):
+            similarity = similarity_max_group[index]
+            if similarity:
+                widget_presenter.set_similarity(similarity)
+
     def set_group_sign(self, sign: TYPE_SIGN_STATUS):
         """设置当前组的标记"""
         self.viewer.set_group_sign(sign)
@@ -66,6 +124,7 @@ class SimilarGroupInfoPresenter(QObject):
 
         self.set_item_count()
         self.set_item_size()
+        self.set_similarity()
         self.highlight_same_comics()
         # self.highlight_comic_pages()
         # self.highlight_comic_filesize()

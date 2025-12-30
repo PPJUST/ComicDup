@@ -61,6 +61,18 @@ class ComicInfoViewer(QFrame):
         """设置漫画的预览图片"""
         self.ui.label_preview.setPixmap(QPixmap(preview_path))
 
+    def set_similarity(self, similarity: str):
+        """设置相似度（百分比）
+        :param similarity:百分比数字文本，例如90%"""
+        self.ui.label_similarity.setText(str(similarity))
+        # 相似度>90%，绿色文本，相似度>80%，蓝色文本，否则为黑色文本
+        if float(similarity.replace('%', '')) >= 90:
+            self.ui.label_similarity.setStyleSheet("color: green")
+        elif float(similarity.replace('%', '')) >= 80:
+            self.ui.label_similarity.setStyleSheet("color: blue")
+        else:
+            self.ui.label_similarity.setStyleSheet("color: black")
+
     def set_color(self, color: str):
         """为漫画项的文本添加颜色"""
         self.ui.label_filetitle.setStyleSheet(f"color: {color}")
