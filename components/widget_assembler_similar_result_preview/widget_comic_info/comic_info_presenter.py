@@ -5,7 +5,7 @@ from PySide6.QtCore import QObject, Signal
 from PySide6.QtWidgets import QMessageBox
 
 from common import function_file
-from common.class_comic import ComicInfoBase
+from common.class_comic import ComicInfoBase, FolderComicInfo, ArchiveComicInfo
 from common.class_config import FileType
 from components.widget_assembler_similar_result_preview.widget_comic_info.comic_info_model import ComicInfoModel
 from components.widget_assembler_similar_result_preview.widget_comic_info.comic_info_viewer import ComicInfoViewer
@@ -52,9 +52,19 @@ class ComicInfoPresenter(QObject):
         """打开路径"""
         os.startfile(self.comic_info.filepath)
 
-    def refresh_info(self, comic_info: ComicInfoBase):
+    def refresh_info(self):
         """刷新信息"""
-        self.set_comic_info(comic_info)
+        # fixme 刷新方法有问题，临时屏蔽
+        comic_path = self.comic_info.filepath
+        # 根据不同漫画类型，实例化不同的漫画信息类
+        if os.path.isdir(comic_path):
+            new_comic_info = FolderComicInfo(comic_path)
+        elif os.path.isfile(comic_path):
+            new_comic_info = ArchiveComicInfo(comic_path)
+        else:
+            raise Exception(f'{comic_path} 类型错误')
+
+        self.set_comic_info(new_comic_info)
 
     def delete_comic(self):
         """删除文件"""
