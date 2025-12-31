@@ -2,7 +2,7 @@ from PySide6.QtWidgets import QWidget, QApplication
 
 from components.widget_runtime_info.res.ui_runtime_info import Ui_Form
 
-MAX_LINES = 200
+MAX_LINES = 500
 
 
 class RuntimeInfoViewer(QWidget):
