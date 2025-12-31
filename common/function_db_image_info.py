@@ -272,6 +272,24 @@ class DBImageInfo:
         paths = list(set(paths))
         return paths
 
+    def get_hashs_by_belong_comic_fingerprint(self, comic_fingerprint: str, hash_algorithm: TYPES_HASH_ALGORITHM,
+                                              hash_length: int) -> List[str]:
+        """根据所属漫画的指纹获取数据库中对应的图片hash值"""
+        if isinstance(hash_algorithm, SimilarAlgorithm.aHash):
+            key_hash = KEY_AHASH_64.replace('64', str(hash_length))
+        elif isinstance(hash_algorithm, SimilarAlgorithm.pHash):
+            key_hash = KEY_PHASH_64.replace('64', str(hash_length))
+        elif isinstance(hash_algorithm, SimilarAlgorithm.dHash):
+            key_hash = KEY_DHASH_64.replace('64', str(hash_length))
+        else:
+            raise Exception('未知的hash类型')
+
+        self.cursor.execute(f'SELECT {key_hash} FROM {TABLE_NAME} '
+                            f'WHERE {KEY_BELONG_COMIC_FINGERPRINT} = "{comic_fingerprint}"')
+        result: List[str] = self.cursor.fetchall()
+        hashs = [item[0] for item in result if item[0]]
+        return hashs
+
     def get_belong_comic_fingerprint_by_belong_comic_path(self, comic_path: str):
         """根据所属漫画的路径获取数据库中对应的指纹"""
         self.cursor.execute(f'SELECT {KEY_BELONG_COMIC_PATH} FROM {TABLE_NAME} '

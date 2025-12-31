@@ -203,6 +203,18 @@ class WindowModel(QObject):
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, f'完成相似组相关性筛选')
         return comic_info_group_filter
 
+    def write_hash_to_comic_info(self, comic_info_group: List[List[ComicInfoBase]],
+                                 hash_algorithm: TYPES_HASH_ALGORITHM, hash_length: int):
+        """将ComicInfo对应的图片hash值写入ComicInfo中"""
+        for group in comic_info_group:
+            for comic_info in group:
+                fingerprint = comic_info.fingerprint
+                hashs = self.db_image_info.get_hashs_by_belong_comic_fingerprint(fingerprint, hash_algorithm,
+                                                                                 hash_length)
+                comic_info.set_db_hashs(hashs)
+
+        return comic_info_group
+
     def delete_useless_cache(self):
         """删除无用缓存"""
         # 删除无效的漫画数据库项目

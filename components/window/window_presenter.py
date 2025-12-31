@@ -340,14 +340,20 @@ class WindowPresenter(QObject):
             # 检查匹配选项-是否匹配缓存数据
             is_match_cache = self.thread_compare_hash.get_is_match_cache()  # note 检查该选项时需要从子线程读取，缓存内部匹配不修改ui而直接修改子线程参数
             if not is_match_cache:  # 如果未选择匹配缓存数据，则剔除相似组中不在本次搜索目录中的漫画项目（由于hash转换是根据数据库数据，可能存在多余的路径）
-                comic_info_groups_filter = self.model.filter_comic_info_group_is_in_search_list(comic_info_groups,
-                                                                                                comic_path_search_list=self._comic_paths_search)
+                comic_info_groups_filter = self.model.filter_comic_info_group_is_in_search_list(
+                    comic_info_groups_filter, comic_path_search_list=self._comic_paths_search)
             # 检查匹配选项-是否仅匹配相同父目录
             is_match_same_parent_folder = self.widget_setting_match.get_is_match_same_parent_folder()
             match_parent_folder_level = self.widget_setting_match.get_match_parent_folder_level()
             if is_match_same_parent_folder:  # 如果勾选了仅匹配相同父目录，仅进一步筛选
                 comic_info_groups_filter = self.model.filter_comic_info_group_is_in_same_parent_folder(
-                    comic_info_groups, level=match_parent_folder_level)
+                    comic_info_groups_filter, level=match_parent_folder_level)
+
+            # 将图片hash数据写入到ComicInfo中
+            hash_algorithm = self.widget_setting_algorithm.get_base_algorithm()
+            hash_length = self.widget_setting_algorithm.get_hash_length()
+            comic_info_groups_filter = self.model.write_hash_to_comic_info(comic_info_groups_filter, hash_algorithm,
+                                                                           hash_length)
 
             # 保存到缓存
             self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '正在保存相似匹配结果到本地缓存')

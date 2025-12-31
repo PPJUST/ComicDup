@@ -50,11 +50,22 @@ class ComicInfoBase(ABC):
         # 文件指纹（格式为文件大小bytes+内部文件路径，以|间隔）
         self.fingerprint: str = None
 
+        # 数据库中对应的图片hash值，用于计算整体相似度
+        self.db_hashs: str = []
+
         # 非数据库模式时，自动提取信息
         if not db_model:
             self._analyse_info()
             # 计算文件指纹
             self._calc_fingerprint()
+
+    def set_db_hashs(self, hashs: list):
+        """设置对应的图片hash值"""
+        self.db_hashs = hashs
+
+    def get_db_hashs(self):
+        """获取对应的图片hash值"""
+        return self.db_hashs
 
     def get_page_paths(self):
         """获取漫画页路径列表"""

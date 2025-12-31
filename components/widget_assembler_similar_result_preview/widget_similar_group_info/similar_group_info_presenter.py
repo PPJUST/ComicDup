@@ -4,9 +4,8 @@ from typing import List
 import lzytools_image
 from PySide6.QtCore import QObject
 
-from common import function_file, function_image
+from common import function_file
 from common.class_comic import ComicInfoBase, _BASE_COLOR
-from common.class_config import FileType, SimilarAlgorithm
 from common.class_sign import SignStatus, TYPE_SIGN_STATUS
 from components import widget_assembler_comics_preview
 from components.widget_assembler_comics_preview import AssemblerDialogComicsPreview
@@ -60,8 +59,15 @@ class SimilarGroupInfoPresenter(QObject):
     def set_similarity(self):
         """设置当前组内部项目之间的相似度"""
         # 内部项目显示的相似度为该项目与其他各个项目之间相似度的最大值
-        # fixme 有问题，貌似只能计算封面的相似度？
 
+        # 按组提取每个项目的图片hash值列表
+        hash_groups: List[List[str]] = []
+        for widget_presenter in self.comics_presenter:
+            comic_info = widget_presenter.get_comic_info()
+            hashs = comic_info.get_db_hashs()
+            hash_groups.append(hashs)
+
+        """弃用，手工计算hash值太慢了
         # 按组提取每个项目的图片hash值列表，计算3张图片，dhash，12位
         hash_groups: List[List[str]] = []
         for widget_presenter in self.comics_presenter:
@@ -78,6 +84,7 @@ class SimilarGroupInfoPresenter(QObject):
                     hash_ = ''
                 hashs.append(hash_)
             hash_groups.append(hashs)
+        """
 
         # 遍历列表，计算不同hash组之间的相似度最大值
         similarity_max_group = []
