@@ -30,7 +30,8 @@ from thread.thread_analyse_comic_info import ThreadAnalyseComicInfo
 from thread.thread_analyse_image_info import ThreadAnalyseImageInfo
 from thread.thread_compare_hash import ThreadCompareHash
 from thread.thread_compare_ssim import ThreadCompareSSIM
-from thread.thread_convert_hash_to_comic_info import ThreadConvertHashToComicInfo
+from thread.thread_convert_hash_to_image_info import ThreadConvertHashToImageInfo
+from thread.thread_convert_image_info_to_comic_info import ThreadConvertImageInfoToComicInfo
 from thread.thread_refresh_comic_db import ThreadRefreshComicDB
 from thread.thread_save_comic import ThreadSaveComic
 from thread.thread_save_image import ThreadSaveImage
@@ -71,7 +72,8 @@ class WindowPresenter(QObject):
         self.thread_compare_ssim = ThreadCompareSSIM()
         self.thread_save_comic = ThreadSaveComic()
         self.thread_save_image = ThreadSaveImage()
-        self.thread_convert_hash_to_comic_info = ThreadConvertHashToComicInfo()
+        self.thread_convert_hash_to_image_info = ThreadConvertHashToImageInfo()
+        self.thread_convert_image_info_to_comic_info = ThreadConvertImageInfoToComicInfo()
         self.thread_refresh_comic_db = ThreadRefreshComicDB()
 
         # 将设置项传递给子线程
@@ -79,8 +81,9 @@ class WindowPresenter(QObject):
         self.thread_save_comic.set_db_comic_info(self.model.get_comic_db())
         self.thread_save_comic.set_db_image_info(self.model.get_image_db())
         self.thread_save_image.set_db_image_info(self.model.get_image_db())
-        self.thread_convert_hash_to_comic_info.set_db_comic_info(self.model.get_comic_db())
-        self.thread_convert_hash_to_comic_info.set_db_image_info(self.model.get_image_db())
+        self.thread_convert_hash_to_image_info.set_db_image_info(self.model.get_image_db())
+        self.thread_convert_image_info_to_comic_info.set_db_comic_info(self.model.get_comic_db())
+        self.thread_convert_image_info_to_comic_info.set_db_image_info(self.model.get_image_db())
 
         # 初始化viewer
         self._init_viewer()
@@ -312,28 +315,53 @@ class WindowPresenter(QObject):
                 self.stop()
                 self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning, '未找到任何相似图片')
                 return
-            # 将hash列表转换为对应的漫画信息类列表
-            self.start_convert_hash_to_comic_info(similar_hash_groups)
+            # 将hash列表转换为对应的图片信息类列表
+            self.start_thread_convert_hash_to_image_info(similar_hash_groups)
         else:
             self.stop()
 
-    def start_convert_hash_to_comic_info(self, similar_hash_groups: list[list[str]]):
-        """启动子线程-转换hash值为漫画信息类"""
-        print('启动子线程-转换hash值为漫画信息类')
+    def start_thread_convert_hash_to_image_info(self, similar_hash_groups: list[list[str]]):
+        """启动子线程-转换hash值为图片信息类"""
+        print('启动子线程-转换hash值为图片信息类')
         if not self.is_stop:
             hash_type = self.widget_setting_algorithm.get_base_algorithm()  # 提取的hash类型
-            self.thread_convert_hash_to_comic_info.set_hash_group(similar_hash_groups)
-            self.thread_convert_hash_to_comic_info.set_hash_type(hash_type)
-            self.thread_convert_hash_to_comic_info.start()
+            self.thread_convert_hash_to_image_info.set_hash_group(similar_hash_groups)
+            self.thread_convert_hash_to_image_info.set_hash_type(hash_type)
+            self.thread_convert_hash_to_image_info.start()
         else:
             self.stop()
 
-    def thread_convert_hash_to_comic_info_finished(self):
-        """子线程-转换hash值为漫画信息类执行完毕"""
-        print('子线程-转换hash值为漫画信息类执行完毕')
+    def thread_convert_hash_to_image_info_finished(self):
+        """子线程-转换hash值为图片信息类执行完毕"""
+        print('子线程-转换hash值为图片信息类')
+        if not self.is_stop:
+            # 提取图片信息类列表
+            image_info_groups = self.thread_convert_hash_to_image_info.get_image_info_group()
+            print('提取到的原始图片信息类列表', image_info_groups)
+            if not image_info_groups:
+                self.stop()
+                self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning, '未找到任何相似图片')
+                return
+            # 将图片信息类列表转换为对应的漫画信息类列表
+            self.start_convert_image_info_to_comic_info(image_info_groups)
+        else:
+            self.stop()
+
+    def start_convert_image_info_to_comic_info(self, image_info_groups: list[list[ImageInfoBase]]):
+        """启动子线程-转换图片信息类为漫画信息类"""
+        print('启动子线程-转换图片信息类为漫画信息类')
+        if not self.is_stop:
+            self.thread_convert_image_info_to_comic_info.set_image_info_group(image_info_groups)
+            self.thread_convert_image_info_to_comic_info.start()
+        else:
+            self.stop()
+
+    def thread_convert_image_info_to_comic_info_finished(self):
+        """子线程-转换图片信息类为漫画信息类执行完毕"""
+        print('子线程-转换图片信息类为漫画信息类执行完毕')
         if not self.is_stop:
             # 对转换的漫画信息类列表进行处理
-            comic_info_groups = self.thread_convert_hash_to_comic_info.get_comic_info_group()
+            comic_info_groups = self.thread_convert_image_info_to_comic_info.get_comic_info_group()
             print('匹配的原始相似组', comic_info_groups)
             # 检查漫画是否存在，剔除已经不存在的项目
             comic_info_groups_filter = self.model.filter_comic_info_group_is_exist(comic_info_groups)
@@ -653,13 +681,22 @@ class WindowPresenter(QObject):
         self.thread_save_image.SignalFinished.connect(self.thread_save_image_info_finished)
         # self.thread_save_image.SignalStopped.connect()
 
-        # self.thread_convert_hash_to_comic_info.SignalStart.connect()
-        self.thread_convert_hash_to_comic_info.SignalIndex.connect(self.update_runtime_info_index)
-        self.thread_convert_hash_to_comic_info.SignalInfo.connect(self.update_runtime_info_title)
-        self.thread_convert_hash_to_comic_info.SignalRate.connect(self.update_runtime_info_rate)
-        self.thread_convert_hash_to_comic_info.SignalRuntimeInfo.connect(self.update_runtime_info_textline)
-        self.thread_convert_hash_to_comic_info.SignalFinished.connect(self.thread_convert_hash_to_comic_info_finished)
-        # self.thread_convert_hash_to_comic_info.SignalStopped.connect()
+        # self.thread_convert_hash_to_image_info.SignalStart.connect()
+        self.thread_convert_hash_to_image_info.SignalIndex.connect(self.update_runtime_info_index)
+        self.thread_convert_hash_to_image_info.SignalInfo.connect(self.update_runtime_info_title)
+        self.thread_convert_hash_to_image_info.SignalRate.connect(self.update_runtime_info_rate)
+        self.thread_convert_hash_to_image_info.SignalRuntimeInfo.connect(self.update_runtime_info_textline)
+        self.thread_convert_hash_to_image_info.SignalFinished.connect(self.thread_convert_hash_to_image_info_finished)
+        # self.thread_convert_hash_to_image_info.SignalStopped.connect()
+
+        # self.thread_convert_image_info_to_comic_info.SignalStart.connect()
+        self.thread_convert_image_info_to_comic_info.SignalIndex.connect(self.update_runtime_info_index)
+        self.thread_convert_image_info_to_comic_info.SignalInfo.connect(self.update_runtime_info_title)
+        self.thread_convert_image_info_to_comic_info.SignalRate.connect(self.update_runtime_info_rate)
+        self.thread_convert_image_info_to_comic_info.SignalRuntimeInfo.connect(self.update_runtime_info_textline)
+        self.thread_convert_image_info_to_comic_info.SignalFinished.connect(
+            self.thread_convert_image_info_to_comic_info_finished)
+        # self.thread_convert_image_info_to_comic_info.SignalStopped.connect()
 
         # self.thread_refresh_comic_db.SignalStart.connect()
         self.thread_refresh_comic_db.SignalIndex.connect(self.update_runtime_info_index)
