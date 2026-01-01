@@ -2,7 +2,7 @@ import os
 from typing import List
 
 import lzytools_image
-from PySide6.QtCore import QObject
+from PySide6.QtCore import QObject, Signal
 
 from common import function_file
 from common.class_comic import ComicInfoBase, _BASE_COLOR
@@ -21,11 +21,11 @@ from components.widget_assembler_similar_result_preview.widget_similar_group_inf
 # todo 非匹配项目管理器，能够删除添加的项目
 # todo 相似组内的全量对比功能，对比漫画之间的每一张图片，找出相同页与差异页
 # todo 匹配组内删除项目后，对应项目的封面图片变灰色，不直接从布局中删除
-# todo 结合所有单页相似度，计算两本漫画的整体相似度（如取平均值、加权值或通过规则判定）。
 
 
 class SimilarGroupInfoPresenter(QObject):
     """单个相似组信息模块的桥梁组件"""
+    UpdateComicInfo = Signal(ComicInfoBase, name='更新数据库中的漫画信息')
 
     def __init__(self, viewer: SimilarGroupInfoViewer, model: SimilarGroupInfoModel):
         super().__init__()
@@ -147,6 +147,7 @@ class SimilarGroupInfoPresenter(QObject):
             comic_info_presenter = widget_comic_info.get_presenter()
             comic_info_presenter.set_comic_info(comic_info)
             comic_info_presenter.ComicDeleted.connect(self.comic_deleted)
+            comic_info_presenter.UpdateComicInfo.connect(self.UpdateComicInfo.emit)
             self.comics_presenter.append(comic_info_presenter)
 
             widget = comic_info_presenter.get_viewer()

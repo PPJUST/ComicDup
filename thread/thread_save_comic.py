@@ -73,3 +73,27 @@ class ThreadSaveComic(ThreadPattern):
 
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '完成保存漫画信息到本地数据库')
         self.finished()
+
+    def save_comic_info_without_infotips(self, comic_info: ComicInfoBase):
+        """保存漫画信息类，但不进行提示"""
+        print('保存漫画信息类，但不进行提示')
+        # 提取数据库中所有项目的指纹，用于判断漫画是否已存在于数据库但本地文件已被移动
+        db_fingerprint_list = self.db_comic_info.get_fingerprint_list()
+        db_path_fingerprint_list = self.db_comic_info.get_path_fingerprint_list()
+        # 在保存漫画信息前，考虑已存在于数据库中的项目
+        _check_tuple = (comic_info.filepath, comic_info.fingerprint)
+        is_comic_exist_db = comic_info.fingerprint in db_fingerprint_list
+        if is_comic_exist_db:  # 存在则分情况处理
+            is_need_add = _check_tuple not in db_path_fingerprint_list  # 如果指纹存在，但是(路径, 指纹)不存在，则可能是新增的相同漫画或旧漫画已经被移动
+            if is_need_add:
+                comic_path_deleted = self.db_comic_info.update_comic_moved(comic_info)
+                if comic_path_deleted:  # 如果返回了删除的漫画路径，则说明该漫画已被移动，同步移动图片数据库中的对应项
+                    self.db_image_info.update_belong_comic_moved(comic_info.fingerprint,
+                                                                 old_comic_path=comic_path_deleted,
+                                                                 new_comic_path=comic_info.filepath)
+                else:  # 否则，为新增了相同漫画的情形
+                    self.db_comic_info.add(comic_info)
+            else:  # 已存在且未移动则跳过
+                pass
+        else:  # 不存在则新增
+            self.db_comic_info.add(comic_info)

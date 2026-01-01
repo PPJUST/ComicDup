@@ -17,6 +17,7 @@ from components.widget_search_list.res.icon_base64 import ICON_FOLDER, ICON_ARCH
 class ComicInfoPresenter(QObject):
     """单个漫画信息模块的桥梁组件"""
     ComicDeleted = Signal(name='删除漫画')
+    UpdateComicInfo = Signal(ComicInfoBase, name='更新数据库中的漫画信息')
 
     def __init__(self, viewer: ComicInfoViewer, model: ComicInfoModel):
         super().__init__()
@@ -54,9 +55,8 @@ class ComicInfoPresenter(QObject):
 
     def refresh_info(self):
         """刷新信息"""
-        # fixme 刷新方法有问题，临时屏蔽
+        # 根据不同漫画类型，重新生成ComicInfo类
         comic_path = self.comic_info.filepath
-        # 根据不同漫画类型，实例化不同的漫画信息类
         if os.path.isdir(comic_path):
             new_comic_info = FolderComicInfo(comic_path)
         elif os.path.isfile(comic_path):
@@ -64,6 +64,17 @@ class ComicInfoPresenter(QObject):
         else:
             raise Exception(f'{comic_path} 类型错误')
 
+        # 检查新的文件指纹，如果和旧文件指纹一致，则不需要替换ComicInfo，否则重新生成预览图并替换
+        new_fingerprint = new_comic_info.fingerprint
+        old_fingerprint = self.comic_info.fingerprint
+        if new_fingerprint == old_fingerprint:
+            return
+        new_comic_info.save_preview_image()
+
+        # 更新本地数据库
+        self.UpdateComicInfo.emit(new_comic_info)
+
+        # 重新显示
         self.set_comic_info(new_comic_info)
 
     def delete_comic(self):

@@ -592,6 +592,9 @@ class WindowPresenter(QObject):
         self.widget_cache_manager.CacheMatch.connect(self.match_cache_data_self)
         self.widget_cache_manager.CacheClear.connect(self.clear_cache)
 
+        self.assembler_similar_result_preview.UpdateComicInfo.connect(
+            self.thread_save_comic.save_comic_info_without_infotips)
+
     def _bind_thread_signal(self):
         """绑定子线程信号"""
         # self.thread_search_comic.SignalStart.connect()

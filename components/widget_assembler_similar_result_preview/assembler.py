@@ -1,17 +1,23 @@
 from typing import List
 
+from PySide6.QtCore import Signal, QObject
+
 from common.class_comic import ComicInfoBase
 from common.class_order import ORDER_KEYS, ORDER_DIRECTIONS
 from components.widget_assembler_similar_result_preview import widget_similar_result_preview
 
 
-class AssemblerSimilarResultPreview:
+class AssemblerSimilarResultPreview(QObject):
     """相似匹配结果预览器组装器"""
+    UpdateComicInfo = Signal(ComicInfoBase, name='更新数据库中的漫画信息')
 
     def __init__(self):
+        super().__init__()
         self.presenter = widget_similar_result_preview.get_presenter()
 
         self.similar_groups: List[List[ComicInfoBase]] = []  # 原始相似组列表
+
+        self.presenter.UpdateComicInfo.connect(self.UpdateComicInfo.emit)
 
     def get_presenter(self):
         """获取presenter"""

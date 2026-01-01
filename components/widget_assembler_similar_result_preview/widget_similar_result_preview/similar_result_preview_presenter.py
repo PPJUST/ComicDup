@@ -1,6 +1,6 @@
 from typing import List
 
-from PySide6.QtCore import QObject
+from PySide6.QtCore import QObject, Signal
 
 from common import function_file
 from common.class_comic import ComicInfoBase
@@ -15,6 +15,7 @@ from components.widget_assembler_similar_result_preview.widget_similar_result_pr
 
 class SimilarResultPreviewPresenter(QObject):
     """相似匹配结果模块的桥梁组件"""
+    UpdateComicInfo = Signal(ComicInfoBase, name='更新数据库中的漫画信息')
 
     def __init__(self, viewer: SimilarResultPreviewViewer, model: SimilarResultPreviewModel):
         super().__init__()
@@ -50,6 +51,7 @@ class SimilarResultPreviewPresenter(QObject):
             group: List[ComicInfoBase]
             # 实例化单本漫画的控件类
             similar_group_info_presenter = widget_similar_group_info.get_presenter()
+            similar_group_info_presenter.UpdateComicInfo.connect(self.UpdateComicInfo.emit)
             # 向控件中添加漫画信息（路径交由控件内部处理，不需要实例化漫画信息控件）
             similar_group_info_presenter.add_comics(group)
             # 设置编号
