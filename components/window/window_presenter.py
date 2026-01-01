@@ -18,7 +18,6 @@ from PySide6.QtCore import QObject, Signal
 from PySide6.QtWidgets import QMessageBox
 
 from common.class_comic import ComicInfoBase
-from common.class_config import SimilarAlgorithm
 from common.class_image import ImageInfoBase
 from common.class_runtime import TYPE_RUNTIME_INFO, TypeRuntimeInfo
 from components import widget_exec, widget_setting_algorithm, widget_setting_match, widget_setting_comic, \
@@ -29,7 +28,6 @@ from components.window.window_viewer import WindowViewer
 from thread.thread_analyse_comic_info import ThreadAnalyseComicInfo
 from thread.thread_analyse_image_info import ThreadAnalyseImageInfo
 from thread.thread_compare_hash import ThreadCompareHash
-from thread.thread_compare_ssim import ThreadCompareSSIM
 from thread.thread_convert_hash_to_image_info import ThreadConvertHashToImageInfo
 from thread.thread_convert_image_info_to_comic_info import ThreadConvertImageInfoToComicInfo
 from thread.thread_refresh_comic_db import ThreadRefreshComicDB
@@ -69,7 +67,6 @@ class WindowPresenter(QObject):
         self.thread_analyse_comic_info = ThreadAnalyseComicInfo()
         self.thread_analyse_image_info = ThreadAnalyseImageInfo()
         self.thread_compare_hash = ThreadCompareHash()
-        self.thread_compare_ssim = ThreadCompareSSIM()
         self.thread_save_comic = ThreadSaveComic()
         self.thread_save_image = ThreadSaveImage()
         self.thread_convert_hash_to_image_info = ThreadConvertHashToImageInfo()
@@ -161,7 +158,6 @@ class WindowPresenter(QObject):
         self.thread_analyse_comic_info.set_stop()
         self.thread_analyse_image_info.set_stop()
         self.thread_compare_hash.set_stop()
-        self.thread_compare_ssim.set_stop()
 
     """子线程方法"""
 
@@ -325,8 +321,14 @@ class WindowPresenter(QObject):
         print('启动子线程-转换hash值为图片信息类')
         if not self.is_stop:
             hash_type = self.widget_setting_algorithm.get_base_algorithm()  # 提取的hash类型
+            is_enhance_algorithm = self.widget_setting_algorithm.get_is_enhance_algorithm()  # 是否使用增强算法
+            enhance_algorithm = self.widget_setting_algorithm.get_enhance_algorithm()  # 增强hash算法
+            similar_threshold = self.widget_setting_algorithm.get_similar_threshold()  # 相似度阈值
             self.thread_convert_hash_to_image_info.set_hash_group(similar_hash_groups)
             self.thread_convert_hash_to_image_info.set_hash_type(hash_type)
+            self.thread_convert_hash_to_image_info.set_is_enhance_compare(is_enhance_algorithm)
+            self.thread_convert_hash_to_image_info.set_enhance_algorithm(enhance_algorithm)
+            self.thread_convert_hash_to_image_info.set_threshold(similar_threshold)
             self.thread_convert_hash_to_image_info.start()
         else:
             self.stop()
@@ -391,23 +393,6 @@ class WindowPresenter(QObject):
             self._update_cache_info()
             # 显示匹配结果
             self.show_similar_result(comic_info_groups_filter)
-
-            # 检查设置项，是否需要使用增强算法
-            is_enhance_algorithm = self.widget_setting_algorithm.get_is_enhance_algorithm()
-            enhance_algorithm = self.widget_setting_algorithm.get_enhance_algorithm()
-            if is_enhance_algorithm:
-                if isinstance(enhance_algorithm, SimilarAlgorithm.SSIM):
-                    pass  # todo 临时禁用未完成的功能（增强算法）
-                elif isinstance(enhance_algorithm, SimilarAlgorithm.ORB):
-                    pass  # todo 临时禁用未完成的功能（增强算法）
-        else:
-            self.stop()
-
-    def start_thread_compare_ssim(self, image_group: list):
-        """启动子线程-对比图片ssim"""
-        if not self.is_stop:
-            self.thread_compare_ssim.set_image_group(image_group)
-            self.thread_compare_ssim.start()
         else:
             self.stop()
 
@@ -514,7 +499,6 @@ class WindowPresenter(QObject):
         enhance_algorithm = self.widget_setting_algorithm.get_enhance_algorithm()
         # 相似度阈值
         similar_threshold = self.widget_setting_algorithm.get_similar_threshold()
-        self.thread_compare_ssim.set_threshold(similar_threshold)
         # 汉明距离阈值
         hamming_distance = self.widget_setting_algorithm.get_hamming_distance()
         self.thread_compare_hash.set_hamming_distance(hamming_distance)
@@ -534,7 +518,6 @@ class WindowPresenter(QObject):
         self.thread_analyse_comic_info.set_max_workers(thread_count)
         self.thread_analyse_image_info.set_max_workers(thread_count)
         self.thread_compare_hash.set_max_workers(thread_count)
-        self.thread_compare_ssim.set_max_workers(thread_count)
         self.thread_search_comic.set_max_workers(thread_count)
 
         # 漫画页数下限
@@ -656,14 +639,6 @@ class WindowPresenter(QObject):
         self.thread_compare_hash.SignalRuntimeInfo.connect(self.update_runtime_info_textline)
         self.thread_compare_hash.SignalFinished.connect(self.thread_compare_hash_finished)
         # self.thread_compare_hash.SignalStopped.connect()
-
-        # self.thread_compare_ssim.SignalStart.connect()
-        self.thread_compare_ssim.SignalIndex.connect(self.update_runtime_info_index)
-        self.thread_compare_ssim.SignalInfo.connect(self.update_runtime_info_title)
-        self.thread_compare_ssim.SignalRate.connect(self.update_runtime_info_rate)
-        self.thread_compare_ssim.SignalRuntimeInfo.connect(self.update_runtime_info_textline)
-        # self.thread_compare_ssim.SignalFinished.connect()
-        # self.thread_compare_ssim.SignalStopped.connect()
 
         # self.thread_save_comic.SignalStart.connect()
         self.thread_save_comic.SignalIndex.connect(self.update_runtime_info_index)

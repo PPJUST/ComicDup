@@ -1,15 +1,15 @@
 # 子线程-转换hash值为图片信息类
-
+import itertools
 from typing import List
 
-from common.class_config import TYPES_HASH_ALGORITHM
+import lzytools_image
+
+from common.class_config import TYPES_HASH_ALGORITHM, TYPES_ENHANCE_ALGORITHM
 from common.class_image import ImageInfoBase
 from common.class_runtime import TypeRuntimeInfo
 from common.function_db_image_info import DBImageInfo
 from thread.thread_pattern import ThreadPattern
 
-
-# todo 增强算法的校验在这里完成
 
 class ThreadConvertHashToImageInfo(ThreadPattern):
     """子线程-转换hash值为图片信息类"""
@@ -28,6 +28,13 @@ class ThreadConvertHashToImageInfo(ThreadPattern):
         # 图片数据库
         self.db_image_info: DBImageInfo = None
 
+        # 是否使用增强算法再校验
+        self.is_enhance_compare: bool = False
+        # 增强算法类型
+        self.enhance_algorithm: TYPES_ENHANCE_ALGORITHM = None
+        # 相似度阈值
+        self.threshold: float = None
+
     def set_hash_group(self, hash_group):
         self.hash_group = hash_group
 
@@ -36,6 +43,17 @@ class ThreadConvertHashToImageInfo(ThreadPattern):
 
     def set_db_image_info(self, db_image_info: DBImageInfo):
         self.db_image_info = db_image_info
+
+    def set_is_enhance_compare(self, is_enable: bool):
+        self.is_enhance_compare = is_enable
+
+    def set_enhance_algorithm(self, enhance_algorithm: TYPES_ENHANCE_ALGORITHM):
+        self.enhance_algorithm = enhance_algorithm
+
+    def set_threshold(self, threshold: float):
+        if threshold > 1:
+            threshold = threshold / 100
+        self.threshold = threshold
 
     def get_image_info_group(self):
         return self.image_info_group
@@ -53,7 +71,10 @@ class ThreadConvertHashToImageInfo(ThreadPattern):
             for hash_ in h_group:
                 image_infos = self.get_image_info_by_hash(hash_, self.hash_type)
                 i_group.update(image_infos)
-            if len(i_group) >= 2:
+            # 是否进行增强算法再校验
+            if self.is_enhance_compare:
+                i_group = self.enhance_compare_ssim(i_group)
+            if i_group and len(i_group) >= 2:
                 self.image_info_group.append(list(i_group))
         print('转换结果', self.image_info_group)
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, f'共完成{len(self.image_info_group)}组的转换')
@@ -67,3 +88,26 @@ class ThreadConvertHashToImageInfo(ThreadPattern):
         print('将hash值转换为对应的图片')
         print('hash值', hash_)
         return image_infos
+
+    def enhance_compare_ssim(self, image_infos: List[ImageInfoBase]):
+        """增强算法SSIM再校验"""
+        image_infos_filter = set()
+        # 生成两两组合的不重复项的列表
+        group_combinations = itertools.combinations(image_infos, 2)
+
+        # 对列表中的每对图片信息组进行相似计算
+        for group_comb in group_combinations:
+            # 读取为numpy数组图片对象
+            image_1_numpy = group_comb[0].get_numpy_image()
+            image_2_numpy = group_comb[1].get_numpy_image()
+            # 计算相似度
+            similarity = lzytools_image.calc_ssim(image_1_numpy, image_2_numpy)
+            # 相似度大于阈值，则保留图片信息组，否则丢弃
+            if similarity >= self.threshold:
+                image_infos_filter.update(group_comb)
+
+        return image_infos_filter
+
+    def enhance_compare_orb(self, image_infos: List[ImageInfoBase]):
+        """增强算法ORB再校验"""
+        pass  # 不使用ORB算法，计算太慢了

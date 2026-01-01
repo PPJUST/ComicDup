@@ -2,6 +2,8 @@ import os
 from abc import ABC, abstractmethod
 
 import lzytools
+import lzytools_archive
+import lzytools_image
 
 from common import function_archive, function_image
 from common.class_comic import ComicInfoBase
@@ -63,6 +65,10 @@ class ImageInfoBase(ABC):
     @abstractmethod
     def is_useful(self):
         """检查图片是否有效"""
+
+    @abstractmethod
+    def get_numpy_image(self):
+        """获取图片的numpy数组对象"""
 
     def update_hash(self, hash_: str, hash_type: TYPES_HASH_ALGORITHM, hash_length: int):
         """更新hash值"""
@@ -181,6 +187,10 @@ class ImageInfoFolder(ImageInfoBase):
 
         return False
 
+    def get_numpy_image(self):
+        numpy_image = lzytools_image.read_local_image_to_numpy(self.image_path)
+        return numpy_image
+
     def calc_faker_path(self):
         super().calc_faker_path()
         self.faker_path = self.image_path
@@ -230,6 +240,11 @@ class ImageInfoArchive(ImageInfoBase):
             return filesize_latest == self.filesize
 
         return False
+
+    def get_numpy_image(self):
+        bytes_image = lzytools_archive.read_image(self.belong_comic_path, self.image_path)
+        numpy_image = lzytools_image.convert_bytes_to_numpy(bytes_image)
+        return numpy_image
 
     def calc_faker_path(self):
         super().calc_faker_path()
