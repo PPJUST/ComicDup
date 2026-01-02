@@ -188,7 +188,9 @@ class ImageInfoFolder(ImageInfoBase):
         return False
 
     def get_numpy_image(self):
-        numpy_image = lzytools_image.read_local_image_to_numpy(self.image_path)
+        # 特别说明：如果直接读取为numpy图片，由于压缩文件类漫画是先读取bytes再转换为numpy，两者进行SSIM计算时，由于编码转换问题，会导致SSIM值失真
+        bytes_image = lzytools_image.read_local_image_to_bytes(self.image_path)
+        numpy_image = lzytools_image.convert_bytes_to_numpy(bytes_image)
         return numpy_image
 
     def calc_faker_path(self):

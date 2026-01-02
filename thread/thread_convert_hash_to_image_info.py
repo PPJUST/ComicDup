@@ -74,6 +74,7 @@ class ThreadConvertHashToImageInfo(ThreadPattern):
             # 是否进行增强算法再校验
             if self.is_enhance_compare:
                 i_group = self.enhance_compare_ssim(i_group)
+                print('增强算法再校验结果', i_group)
             if i_group and len(i_group) >= 2:
                 self.image_info_group.append(list(i_group))
         print('转换结果', self.image_info_group)
@@ -92,6 +93,7 @@ class ThreadConvertHashToImageInfo(ThreadPattern):
     def enhance_compare_ssim(self, image_infos: List[ImageInfoBase]):
         """增强算法SSIM再校验"""
         image_infos_filter = set()
+
         # 生成两两组合的不重复项的列表
         group_combinations = itertools.combinations(image_infos, 2)
 
@@ -102,6 +104,7 @@ class ThreadConvertHashToImageInfo(ThreadPattern):
             image_2_numpy = group_comb[1].get_numpy_image()
             # 计算相似度
             similarity = lzytools_image.calc_ssim(image_1_numpy, image_2_numpy)
+            print('ssim相似度', group_comb[0].image_path, group_comb[1].image_path, similarity)
             # 相似度大于阈值，则保留图片信息组，否则丢弃
             if similarity >= self.threshold:
                 image_infos_filter.update(group_comb)
