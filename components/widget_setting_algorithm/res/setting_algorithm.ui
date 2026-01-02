@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>154</width>
+    <width>190</width>
     <height>107</height>
    </rect>
   </property>
@@ -48,7 +48,7 @@
      <item>
       <widget class="QCheckBox" name="checkBox_enhance_algorithm">
        <property name="text">
-        <string>增强算法</string>
+        <string>增强算法再校验</string>
        </property>
       </widget>
      </item>

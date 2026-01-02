@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'setting_algorithmnpaNBr.ui'
+## Form generated from reading UI file 'setting_algorithmmtLOqu.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.8.1
+## Created by: Qt User Interface Compiler version 6.10.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -23,7 +23,7 @@ class Ui_Form(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        Form.resize(154, 107)
+        Form.resize(190, 107)
         self.verticalLayout = QVBoxLayout(Form)
         self.verticalLayout.setSpacing(3)
         self.verticalLayout.setObjectName(u"verticalLayout")
@@ -104,7 +104,7 @@ class Ui_Form(object):
     def retranslateUi(self, Form):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
         self.label.setText(QCoreApplication.translate("Form", u"\u57fa\u7840\u7b97\u6cd5", None))
-        self.checkBox_enhance_algorithm.setText(QCoreApplication.translate("Form", u"\u589e\u5f3a\u7b97\u6cd5", None))
+        self.checkBox_enhance_algorithm.setText(QCoreApplication.translate("Form", u"\u589e\u5f3a\u7b97\u6cd5\u518d\u6821\u9a8c", None))
         self.label_2.setText(QCoreApplication.translate("Form", u"\u76f8\u4f3c\u5ea6\u9608\u503c", None))
         self.label_3.setText(QCoreApplication.translate("Form", u"%", None))
         self.label_4.setText(QCoreApplication.translate("Form", u"Hash\u957f\u5ea6", None))

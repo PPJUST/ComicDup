@@ -61,6 +61,8 @@ class ThreadConvertHashToImageInfo(ThreadPattern):
     def run(self):
         super().run()
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '将hash值相似组转换为对应的图片信息类组')
+        if self.is_enhance_compare:
+            self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '并使用增强算法再校验相似组')
         # hash组格式：[[hash1, hash2, hash3], [hash4, hash5, hash6]]
         # 先转换为漫画路径格式
         print('转换hash值为图片信息类')
