@@ -233,8 +233,8 @@ class DBComicInfo:
         result = self.cursor.fetchone()
 
         # 未匹配到数据时，返回空
-        print('数据库匹配失败', comic_path)
         if not result:
+            print('数据库匹配失败', comic_path)
             return None
 
         # 转换为漫画信息类

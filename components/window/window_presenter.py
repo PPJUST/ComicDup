@@ -306,7 +306,6 @@ class WindowPresenter(QObject):
         if not self.is_stop:
             # 提取相似hash组列表
             similar_hash_groups = self.thread_compare_hash.get_similar_hash_group()
-            print('提取到的原始相似hash组', similar_hash_groups)
             if not similar_hash_groups:
                 self.stop()
                 self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning, '未找到任何相似图片')

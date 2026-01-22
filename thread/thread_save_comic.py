@@ -43,9 +43,7 @@ class ThreadSaveComic(ThreadPattern):
         # 提取数据库中所有项目的指纹，用于判断漫画是否已存在于数据库但本地文件已被移动
         print('正在保存漫画信息到本地数据库')
         db_fingerprint_list = self.db_comic_info.get_fingerprint_list()
-        print('提取数据库指纹', db_fingerprint_list)
         db_path_fingerprint_list = self.db_comic_info.get_path_fingerprint_list()
-        print('提取数据库指纹+路径', db_path_fingerprint_list)
         for comic_info in self.comic_info_list:
             # 在保存漫画信息前，考虑已存在于数据库中的项目
             _check_tuple = (comic_info.filepath, comic_info.fingerprint)
