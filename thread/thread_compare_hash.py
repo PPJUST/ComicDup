@@ -123,6 +123,7 @@ class ThreadCompareHash(ThreadPattern):
 
     def _compare(self, hash_: str, match_hash_list: List[str]):
         """对比单个hash值与其他hash值的相似度"""
+        # fixme 公共的匹配hash参数在子线程中被修改，导致匹配结果缺失和相同文件不同顺序时匹配结果不一致
         # 统计需匹配的hash中0和1的个数，如果占比大于90%，则判断为纯色图片，不进行后续匹配
         zero_count = hash_.count('0')
         if zero_count / len(hash_) > 0.8 or zero_count / len(hash_) < 0.2:
