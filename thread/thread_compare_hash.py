@@ -130,10 +130,17 @@ class ThreadCompareHash(ThreadPattern):
             return None
 
         print(f'匹配hash 主hash【{hash_}】')
-        # 由于对比列表复制自需匹配列表，所以包含其自身，需要删除
-        match_hash_list.remove(hash_)
-        # 去重（删除自身后）
-        match_hash_list = list(set(match_hash_list))
+        # 去重对比列表以及剔除自身
+        filter_list = []
+        if match_hash_list.count(hash_) == 1:  # 如果计数为1，则说明自身为匹配列表中的唯一元素，则直接剔除并去重即可
+            for i in match_hash_list:
+                if i != hash_ and i not in filter_list:
+                    filter_list.append(i)
+        else:  # 否则，说明该hash对应的图片存在重复项目，直接去重即可
+            for i in match_hash_list:
+                if i not in filter_list:
+                    filter_list.append(i)
+        match_hash_list = filter_list
 
         # 最终的相似hash值列表
         similar_group = set()
