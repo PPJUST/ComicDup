@@ -63,7 +63,7 @@ class SimilarGroupInfoPresenter(QObject):
         hash_groups: List[List[str]] = []
         for widget_presenter in self.comics_presenter:
             comic_info = widget_presenter.get_comic_info()
-            hashs = comic_info.get_db_hashs()
+            hashs = comic_info.get_image_hashs()
             hash_groups.append(hashs)
 
         """弃用，手工计算hash值太慢了

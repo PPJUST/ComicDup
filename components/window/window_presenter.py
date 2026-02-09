@@ -27,9 +27,7 @@ from components.window.window_model import WindowModel
 from components.window.window_viewer import WindowViewer
 from thread.thread_analyse_comic_info import ThreadAnalyseComicInfo
 from thread.thread_analyse_image_info import ThreadAnalyseImageInfo
-from thread.thread_compare_hash import ThreadCompareHash
-from thread.thread_convert_hash_to_image_info import ThreadConvertHashToImageInfo
-from thread.thread_convert_image_info_to_comic_info import ThreadConvertImageInfoToComicInfo
+from thread.thread_compare_comic import ThreadCompareComic
 from thread.thread_refresh_comic_db import ThreadRefreshComicDB
 from thread.thread_save_comic import ThreadSaveComic
 from thread.thread_save_image import ThreadSaveImage
@@ -66,11 +64,9 @@ class WindowPresenter(QObject):
         self.thread_search_comic = ThreadSearchComic()
         self.thread_analyse_comic_info = ThreadAnalyseComicInfo()
         self.thread_analyse_image_info = ThreadAnalyseImageInfo()
-        self.thread_compare_hash = ThreadCompareHash()
+        self.thread_compare_comic = ThreadCompareComic()
         self.thread_save_comic = ThreadSaveComic()
         self.thread_save_image = ThreadSaveImage()
-        self.thread_convert_hash_to_image_info = ThreadConvertHashToImageInfo()
-        self.thread_convert_image_info_to_comic_info = ThreadConvertImageInfoToComicInfo()
         self.thread_refresh_comic_db = ThreadRefreshComicDB()
 
         # 将设置项传递给子线程
@@ -78,9 +74,6 @@ class WindowPresenter(QObject):
         self.thread_save_comic.set_db_comic_info(self.model.get_comic_db())
         self.thread_save_comic.set_db_image_info(self.model.get_image_db())
         self.thread_save_image.set_db_image_info(self.model.get_image_db())
-        self.thread_convert_hash_to_image_info.set_db_image_info(self.model.get_image_db())
-        self.thread_convert_image_info_to_comic_info.set_db_comic_info(self.model.get_comic_db())
-        self.thread_convert_image_info_to_comic_info.set_db_image_info(self.model.get_image_db())
 
         # 初始化viewer
         self._init_viewer()
@@ -143,9 +136,9 @@ class WindowPresenter(QObject):
         # 将设置项重新传递给子线程
         self._set_thread_setting()
 
-        # 传参给子线程，并启动
+        # 子线程启动
         self.is_stop = False
-        self.start_search_comic(search_paths)
+        self.start_search_comic()
 
     def stop(self):
         """停止查重"""
@@ -157,16 +150,14 @@ class WindowPresenter(QObject):
         self.thread_search_comic.set_stop()
         self.thread_analyse_comic_info.set_stop()
         self.thread_analyse_image_info.set_stop()
-        self.thread_compare_hash.set_stop()
+        self.thread_compare_comic.set_stop()
 
     """子线程方法"""
 
-    def start_search_comic(self, search_paths: list):
+    def start_search_comic(self):
         """启动子线程-搜索漫画"""
         print('启动子线程-搜索漫画')
-        print('需搜索文件夹数量', len(search_paths))
         if not self.is_stop:
-            self.thread_search_comic.set_search_list(search_paths)
             self.thread_search_comic.start()
         else:
             self.stop()
@@ -271,127 +262,38 @@ class WindowPresenter(QObject):
         """子线程-保存图片信息到数据库执行完毕"""
         print('子线程-保存图片信息到数据库执行完毕')
         if not self.is_stop:
-            image_info_list = self.thread_save_image.get_image_info_list()
-            # 提取图片信息中的hash值
-            hash_algorithm = self.widget_setting_algorithm.get_base_algorithm()  # hash算法
-            hash_length = self.widget_setting_algorithm.get_hash_length()  # hash长度
-            hash_list = self.model.get_hash_list_from_image_infos(image_info_list, hash_algorithm, hash_length)
-            # 将提取的hash值列表传递给 子线程-对比图片hash
-            self.start_thread_compare_hash(hash_list)
+            # 提取漫画信息类列表
+            comic_info_dict = self.thread_analyse_comic_info.get_comic_info_dict()
+            comic_info_list = list(comic_info_dict.values())
+            # 将提取的漫画信息类列表传递给子线程
+            self.start_thread_compare_comic(comic_info_list)
         else:
             self.stop()
 
-    def start_thread_compare_hash(self, hash_list: list):
-        """启动子线程-对比图片hash"""
-        print('启动子线程-对比图片hash')
+    def start_thread_compare_comic(self, comic_info_list: list[ComicInfoBase]):
+        """启动子线程-对比漫画信息"""
+        print('启动子线程-对比漫画信息')
         if not self.is_stop:
-            self.thread_compare_hash.set_hash_list(hash_list)
-            # 检查匹配选项-是否匹配缓存数据
-            is_match_cache = self.widget_setting_match.get_is_match_cache()
-            self.thread_compare_hash.set_is_match_cache(is_match_cache)
-            if is_match_cache:
-                # 从漫画信息数据库中提取出所有的项目的对应hash值（不会计算缺失的hash值）
-                hash_algorithm = self.widget_setting_algorithm.get_base_algorithm()  # hash算法
-                hash_length = self.widget_setting_algorithm.get_hash_length()  # hash长度
-                cache_hash_list = self.model.get_hashs(hash_algorithm, hash_length)
-                self.thread_compare_hash.set_cache_hash_list(cache_hash_list)
-
-            self.thread_compare_hash.start()
+            self.thread_compare_comic.set_comic_info_list(comic_info_list)
+            self.thread_compare_comic.start()
         else:
             self.stop()
 
-    def thread_compare_hash_finished(self):
-        """子线程-对比图片hash执行完毕"""
-        print('子线程-对比图片hash执行完毕')
+    def thread_compare_comic_finished(self):
+        """子线程-对比漫画信息执行完毕"""
+        print('子线程-对比漫画信息执行完毕')
         if not self.is_stop:
-            # 提取相似hash组列表
-            similar_hash_groups = self.thread_compare_hash.get_similar_hash_group()
-            if not similar_hash_groups:
-                self.stop()
-                self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning, '未找到任何相似图片')
-                return
-            # 将hash列表转换为对应的图片信息类列表
-            self.start_thread_convert_hash_to_image_info(similar_hash_groups)
-        else:
-            self.stop()
-
-    def start_thread_convert_hash_to_image_info(self, similar_hash_groups: list[list[str]]):
-        """启动子线程-转换hash值为图片信息类"""
-        print('启动子线程-转换hash值为图片信息类')
-        if not self.is_stop:
-            hash_type = self.widget_setting_algorithm.get_base_algorithm()  # 提取的hash类型
-            is_enhance_algorithm = self.widget_setting_algorithm.get_is_enhance_algorithm()  # 是否使用增强算法
-            enhance_algorithm = self.widget_setting_algorithm.get_enhance_algorithm()  # 增强hash算法
-            similar_threshold = self.widget_setting_algorithm.get_similar_threshold()  # 相似度阈值
-            self.thread_convert_hash_to_image_info.set_hash_group(similar_hash_groups)
-            self.thread_convert_hash_to_image_info.set_hash_type(hash_type)
-            self.thread_convert_hash_to_image_info.set_is_enhance_compare(is_enhance_algorithm)
-            self.thread_convert_hash_to_image_info.set_enhance_algorithm(enhance_algorithm)
-            self.thread_convert_hash_to_image_info.set_threshold(similar_threshold)
-            self.thread_convert_hash_to_image_info.start()
-        else:
-            self.stop()
-
-    def thread_convert_hash_to_image_info_finished(self):
-        """子线程-转换hash值为图片信息类执行完毕"""
-        print('子线程-转换hash值为图片信息类')
-        if not self.is_stop:
-            # 提取图片信息类列表
-            image_info_groups = self.thread_convert_hash_to_image_info.get_image_info_group()
-            print('提取到的原始图片信息类列表', image_info_groups)
-            if not image_info_groups:
-                self.stop()
-                self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning, '未找到任何相似图片')
-                return
-            # 将图片信息类列表转换为对应的漫画信息类列表
-            self.start_convert_image_info_to_comic_info(image_info_groups)
-        else:
-            self.stop()
-
-    def start_convert_image_info_to_comic_info(self, image_info_groups: list[list[ImageInfoBase]]):
-        """启动子线程-转换图片信息类为漫画信息类"""
-        print('启动子线程-转换图片信息类为漫画信息类')
-        if not self.is_stop:
-            self.thread_convert_image_info_to_comic_info.set_image_info_group(image_info_groups)
-            self.thread_convert_image_info_to_comic_info.start()
-        else:
-            self.stop()
-
-    def thread_convert_image_info_to_comic_info_finished(self):
-        """子线程-转换图片信息类为漫画信息类执行完毕"""
-        print('子线程-转换图片信息类为漫画信息类执行完毕')
-        if not self.is_stop:
-            # 对转换的漫画信息类列表进行处理
-            comic_info_groups = self.thread_convert_image_info_to_comic_info.get_comic_info_group()
-            print('匹配的原始相似组', comic_info_groups)
-            # 检查漫画是否存在，剔除已经不存在的项目
-            comic_info_groups_filter = self.model.filter_comic_info_group_is_exist(comic_info_groups)
-            # 检查匹配选项-是否匹配缓存数据
-            is_match_cache = self.thread_compare_hash.get_is_match_cache()  # note 检查该选项时需要从子线程读取，缓存内部匹配不修改ui而直接修改子线程参数
-            if not is_match_cache:  # 如果未选择匹配缓存数据，则剔除相似组中不在本次搜索目录中的漫画项目（由于hash转换是根据数据库数据，可能存在多余的路径）
-                comic_info_groups_filter = self.model.filter_comic_info_group_is_in_search_list(
-                    comic_info_groups_filter, comic_path_search_list=self._comic_paths_search)
-            # 检查匹配选项-是否仅匹配相同父目录
-            is_match_same_parent_folder = self.widget_setting_match.get_is_match_same_parent_folder()
-            match_parent_folder_level = self.widget_setting_match.get_match_parent_folder_level()
-            if is_match_same_parent_folder:  # 如果勾选了仅匹配相同父目录，仅进一步筛选
-                comic_info_groups_filter = self.model.filter_comic_info_group_is_in_same_parent_folder(
-                    comic_info_groups_filter, level=match_parent_folder_level)
-
-            # 将图片hash数据写入到ComicInfo中
-            hash_algorithm = self.widget_setting_algorithm.get_base_algorithm()
-            hash_length = self.widget_setting_algorithm.get_hash_length()
-            comic_info_groups_filter = self.model.write_hash_to_comic_info(comic_info_groups_filter, hash_algorithm,
-                                                                           hash_length)
-
-            # 保存到缓存
+            similar_groups = self.thread_compare_comic.get_similar_groups()
+            # 生成组中漫画的预览图并保存到数据库中
+            self.model.save_comic_preview(similar_groups)
+            # 保存相似匹配结果到本地缓存
             self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '正在保存相似匹配结果到本地缓存')
-            self.presenter_match_result_cache.save_match_result(comic_info_groups_filter)
+            self.presenter_match_result_cache.save_match_result(similar_groups)
             self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '完成保存相似匹配结果到本地缓存')
             # 更新缓存统计信息
             self._update_cache_info()
             # 显示匹配结果
-            self.show_similar_result(comic_info_groups_filter)
+            self.show_similar_result(similar_groups)
         else:
             self.stop()
 
@@ -459,6 +361,7 @@ class WindowPresenter(QObject):
 
         # 跳步启动子线程
         self._prepare_before_cache_thread()
+        # fixme
         self.thread_compare_hash.set_hash_list(hash_list)
         self.thread_compare_hash.set_is_match_cache(True)
         self.thread_compare_hash.start()
@@ -489,45 +392,64 @@ class WindowPresenter(QObject):
 
     def _set_thread_setting(self):
         """将设置选项传参给子线程"""
-        # 基础hash算法
-        hash_algorithm = self.widget_setting_algorithm.get_base_algorithm()
+        # 子线程-搜索漫画
+        self.thread_search_comic.initialize()
+        thread_count = self.widget_setting_match.get_thread_count()  # 线程数
+        self.thread_search_comic.set_max_workers(thread_count)
+        search_paths = self.widget_search_list.get_paths()  # 搜索路径
+        self.thread_search_comic.set_search_list(search_paths)
+        pages_lower_limit = self.widget_setting_comic.get_pages_lower_limit()  # 漫画页数下限
+        self.thread_search_comic.set_pages_lower_limit(pages_lower_limit)
+        is_analyze_archive = self.widget_setting_comic.get_is_analyze_archive()  # 是否识别压缩文件
+        self.thread_search_comic.set_is_check_archive(is_analyze_archive)
+        is_allow_other_filetypes = self.widget_setting_comic.get_is_allow_other_filetypes()  # 是否允许其他文件类型
+        self.thread_search_comic.set_is_allow_other_filetypes(is_allow_other_filetypes)
+
+        # 子线程-分析漫画信息
+        self.thread_analyse_comic_info.initialize()
+        self.thread_analyse_comic_info.set_max_workers(thread_count)
+
+        # 子线程-保存漫画信息到数据库
+        self.thread_save_comic.initialize()
+        self.thread_save_comic.set_max_workers(thread_count)
+
+        # 子线程-分析图片信息
+        self.thread_analyse_image_info.initialize()
+        self.thread_analyse_image_info.set_max_workers(thread_count)
+        extract_pages = self.widget_setting_match.get_extract_pages()  # 每本漫画提取的页数
+        self.thread_analyse_image_info.set_extract_pages(extract_pages)
+        hash_algorithm = self.widget_setting_algorithm.get_base_algorithm()  # hash算法
         self.thread_analyse_image_info.set_hash_type(hash_algorithm)
-        # 是否使用增强算法
-        is_enhance_algorithm = self.widget_setting_algorithm.get_is_enhance_algorithm()
-        # 增强hash算法
-        enhance_algorithm = self.widget_setting_algorithm.get_enhance_algorithm()
-        # 相似度阈值
-        similar_threshold = self.widget_setting_algorithm.get_similar_threshold()
-        # 汉明距离阈值
-        hamming_distance = self.widget_setting_algorithm.get_hamming_distance()
-        self.thread_compare_hash.set_hamming_distance(hamming_distance)
-        # hash长度
-        hash_length = self.widget_setting_algorithm.get_hash_length()
+        hash_length = self.widget_setting_algorithm.get_hash_length()  # hash长度
         self.thread_analyse_image_info.set_hash_length(hash_length)
 
-        # 每本漫画提取的页数
-        extract_pages = self.widget_setting_match.get_extract_pages()
-        self.thread_analyse_image_info.set_extract_pages(extract_pages)
-        # 是否匹配缓存
-        is_match_cache = self.widget_setting_match.get_is_match_cache()
-        # 是否仅匹配相似文件名
-        is_match_similar_filename = self.widget_setting_match.get_is_match_similar_filename()
-        # 线程数
-        thread_count = self.widget_setting_match.get_thread_count()
-        self.thread_analyse_comic_info.set_max_workers(thread_count)
-        self.thread_analyse_image_info.set_max_workers(thread_count)
-        self.thread_compare_hash.set_max_workers(thread_count)
-        self.thread_search_comic.set_max_workers(thread_count)
+        # 线程-保存图片信息到数据库
+        self.thread_save_image.initialize()
+        self.thread_save_image.set_max_workers(thread_count)
 
-        # 漫画页数下限
-        pages_lower_limit = self.widget_setting_comic.get_pages_lower_limit()
-        self.thread_search_comic.set_pages_lower_limit(pages_lower_limit)
-        # 是否识别压缩文件
-        is_analyze_archive = self.widget_setting_comic.get_is_analyze_archive()
-        self.thread_search_comic.set_is_check_archive(is_analyze_archive)
-        # 是否允许其他文件类型
-        is_allow_other_filetypes = self.widget_setting_comic.get_is_allow_other_filetypes()
-        self.thread_search_comic.set_is_allow_other_filetypes(is_allow_other_filetypes)
+        # 子线程-对比漫画信息
+        self.thread_compare_comic.initialize()
+        self.thread_compare_comic.set_max_workers(thread_count)
+        is_match_cache = self.widget_setting_match.get_is_match_cache()  # 是否匹配缓存
+        self.thread_compare_comic.set_is_match_cache(is_match_cache)
+        if is_match_cache:
+            cache_comic_info_list = self.model.get_comic_infos()  # 缓存中的漫画信息类列表
+            self.thread_compare_comic.set_cache_comic_info_list(cache_comic_info_list)
+        self.thread_compare_comic.set_extract_pages(extract_pages)
+        self.thread_compare_comic.set_hash_type(hash_algorithm)
+        self.thread_compare_comic.set_hash_length(hash_length)
+        hamming_distance = self.widget_setting_algorithm.get_hamming_distance()  # 汉明距离阈值
+        self.thread_compare_comic.set_hamming_distance(hamming_distance)
+        image_hash_dict = self.model.get_hashs_all_type()  # 哈希值字典，键为虚拟图片路径，值为3种图片hash*3种长度的字典
+        self.thread_compare_comic.set_image_hash_dict(image_hash_dict)
+        is_match_same_parent_dir = self.widget_setting_match.get_is_match_same_parent_folder()  # 是否仅匹配相同父目录
+        self.thread_compare_comic.set_is_match_same_parent_dir(is_match_same_parent_dir)
+        parent_dir_level = self.widget_setting_match.get_match_parent_folder_level()  # 父目录层级
+        self.thread_compare_comic.set_parent_dir_level(parent_dir_level)
+        is_enhance_algorithm = self.widget_setting_algorithm.get_is_enhance_algorithm()  # 是否使用增强算法
+        self.thread_compare_comic.set_is_enhance_algorithm(is_enhance_algorithm)
+        enhance_algorithm = self.widget_setting_algorithm.get_enhance_algorithm()  # 增强hash算法类型
+        self.thread_compare_comic.set_enhance_algorithm(enhance_algorithm)
 
     def _update_cache_info(self):
         """更新缓存统计信息"""
@@ -631,13 +553,13 @@ class WindowPresenter(QObject):
         self.thread_analyse_image_info.SignalFinished.connect(self.thread_analyse_image_info_finished)
         # self.thread_analyse_image_info.SignalStopped.connect()
 
-        # self.thread_compare_hash.SignalStart.connect()
-        self.thread_compare_hash.SignalIndex.connect(self.update_runtime_info_index)
-        self.thread_compare_hash.SignalInfo.connect(self.update_runtime_info_title)
-        self.thread_compare_hash.SignalRate.connect(self.update_runtime_info_rate)
-        self.thread_compare_hash.SignalRuntimeInfo.connect(self.update_runtime_info_textline)
-        self.thread_compare_hash.SignalFinished.connect(self.thread_compare_hash_finished)
-        # self.thread_compare_hash.SignalStopped.connect()
+        # self.thread_compare_comic.SignalStart.connect()
+        self.thread_compare_comic.SignalIndex.connect(self.update_runtime_info_index)
+        self.thread_compare_comic.SignalInfo.connect(self.update_runtime_info_title)
+        self.thread_compare_comic.SignalRate.connect(self.update_runtime_info_rate)
+        self.thread_compare_comic.SignalRuntimeInfo.connect(self.update_runtime_info_textline)
+        self.thread_compare_comic.SignalFinished.connect(self.thread_compare_comic_finished)
+        # self.thread_compare_comic.SignalStopped.connect()
 
         # self.thread_save_comic.SignalStart.connect()
         self.thread_save_comic.SignalIndex.connect(self.update_runtime_info_index)
@@ -654,23 +576,6 @@ class WindowPresenter(QObject):
         self.thread_save_image.SignalRuntimeInfo.connect(self.update_runtime_info_textline)
         self.thread_save_image.SignalFinished.connect(self.thread_save_image_info_finished)
         # self.thread_save_image.SignalStopped.connect()
-
-        # self.thread_convert_hash_to_image_info.SignalStart.connect()
-        self.thread_convert_hash_to_image_info.SignalIndex.connect(self.update_runtime_info_index)
-        self.thread_convert_hash_to_image_info.SignalInfo.connect(self.update_runtime_info_title)
-        self.thread_convert_hash_to_image_info.SignalRate.connect(self.update_runtime_info_rate)
-        self.thread_convert_hash_to_image_info.SignalRuntimeInfo.connect(self.update_runtime_info_textline)
-        self.thread_convert_hash_to_image_info.SignalFinished.connect(self.thread_convert_hash_to_image_info_finished)
-        # self.thread_convert_hash_to_image_info.SignalStopped.connect()
-
-        # self.thread_convert_image_info_to_comic_info.SignalStart.connect()
-        self.thread_convert_image_info_to_comic_info.SignalIndex.connect(self.update_runtime_info_index)
-        self.thread_convert_image_info_to_comic_info.SignalInfo.connect(self.update_runtime_info_title)
-        self.thread_convert_image_info_to_comic_info.SignalRate.connect(self.update_runtime_info_rate)
-        self.thread_convert_image_info_to_comic_info.SignalRuntimeInfo.connect(self.update_runtime_info_textline)
-        self.thread_convert_image_info_to_comic_info.SignalFinished.connect(
-            self.thread_convert_image_info_to_comic_info_finished)
-        # self.thread_convert_image_info_to_comic_info.SignalStopped.connect()
 
         # self.thread_refresh_comic_db.SignalStart.connect()
         self.thread_refresh_comic_db.SignalIndex.connect(self.update_runtime_info_index)

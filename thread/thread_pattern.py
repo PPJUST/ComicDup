@@ -15,15 +15,25 @@ class ThreadPattern(QThread):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self._is_stop = False  # 终止判断
+        # 步骤参数
         self.step_index = 1  # 步骤索引
         self.step_info = ''  # 步骤名称
 
+        # 基础设置参数
         self.max_workers = 1  # 线程数量
+        self._is_stop = False  # 终止判断
+
+    """参数设置方法"""
+
+    def initialize(self):
+        """初始化"""
+        self._is_stop = False
 
     def set_max_workers(self, max_workers: int):
         """设置线程数量"""
         self.max_workers = max_workers
+
+    """线程方法"""
 
     def set_stop(self):
         self._is_stop = True

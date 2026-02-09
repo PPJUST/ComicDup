@@ -112,12 +112,14 @@ class DBComicInfo:
         self.cursor.execute(f'UPDATE {TABLE_NAME} SET {KEY_PAGE_COUNT} = "{comic_info.page_count}" '
                             f'WHERE {KEY_FILEPATH} = "{comic_path}"')
 
+        """调整 不在新增时生成预览图，而在找到相似组时才生成对应预览图
         # 如果漫画预览图不存在或已失效，则需要重新生成预览图
         check_preview = comic_info.preview_path
         if not check_preview or not os.path.exists(check_preview):
             comic_info.save_preview_image()
         self.cursor.execute(f'UPDATE {TABLE_NAME} SET {KEY_PREVIEW_PATH} = "{comic_info.preview_path}" '
                             f'WHERE {KEY_FILEPATH} = "{comic_path}"')
+        """
 
         self.cursor.execute(f'UPDATE {TABLE_NAME} SET {KEY_FINGERPRINT} = "{comic_info.fingerprint}" '
                             f'WHERE {KEY_FILEPATH} = "{comic_path}"')
@@ -134,7 +136,9 @@ class DBComicInfo:
         if old_fingerprint == comic_info.fingerprint:
             return
         else:
+            """调整 不在新增时生成预览图，而在找到相似组时才生成对应预览图
             comic_info.save_preview_image()  # 刷新方法并不会生成新的预览图，所以需要手动调用
+            """
 
             self.cursor.execute(f'UPDATE {TABLE_NAME} SET {KEY_FILENAME} = "{comic_info.filename}" '
                                 f'WHERE {KEY_FILEPATH} = "{comic_path}"')
@@ -193,6 +197,12 @@ class DBComicInfo:
                 break
         return comic_path_deleted
 
+    def update_preview_path(self, comic_path: str, preview_path: str):
+        """设置漫画的预览图路径"""
+        self.cursor.execute(f'UPDATE {TABLE_NAME} SET {KEY_PREVIEW_PATH} = "{preview_path}" '
+                            f'WHERE {KEY_FILEPATH} = "{comic_path}"')
+        self.conn.commit()
+
     def delete(self, comic_path: str):
         """删除记录"""
         comic_path = os.path.normpath(comic_path)
@@ -239,7 +249,6 @@ class DBComicInfo:
 
         # 转换为漫画信息类
         result_dict = dict(zip(columns, result))  # 先转为键名-键值的字典格式
-
         # 提取漫画文件类型，生成漫画信息类实例
         filetype_str = result_dict[KEY_FILETYPE]
         if filetype_str == FileType.Folder.text:
@@ -250,7 +259,6 @@ class DBComicInfo:
             comic_info = ArchiveComicInfo(comic_path, db_model=True)
         else:
             raise Exception('漫画文件类型错误')
-
         # 文件大小
         filesize_bytes = result_dict[KEY_FILESIZE_BYTES]
         comic_info.update_filesize(filesize_bytes)
@@ -274,6 +282,59 @@ class DBComicInfo:
         comic_info.update_filetitle(filetitle)
 
         return comic_info
+
+    def get_comic_infos(self) -> list:
+        """获取所有漫画信息类"""
+        self.cursor.execute(f'SELECT * FROM {TABLE_NAME}')
+
+        # 获取列名
+        columns = [desc[0] for desc in self.cursor.description]
+
+        # 获取结果列表
+        results = self.cursor.fetchall()
+
+        # 未匹配到数据时，返回空
+        if not results:
+            return []
+
+        # 转换为漫画信息类
+        comic_infos = []
+        for result in results:
+            result_dict = dict(zip(columns, result))  # 先转为键名-键值的字典格式
+            # 提取漫画文件路径和文件类型，生成漫画信息类实例
+            filepath = result_dict[KEY_FILEPATH]
+            filetype_str = result_dict[KEY_FILETYPE]
+            if filetype_str == FileType.Folder.text:
+                filetype_class = FileType.Folder()
+                comic_info = FolderComicInfo(filepath, db_model=True)
+            elif filetype_str == FileType.Archive.text:
+                filetype_class = FileType.Archive()
+                comic_info = ArchiveComicInfo(filepath, db_model=True)
+            else:
+                raise Exception('漫画文件类型错误')
+            # 文件大小
+            filesize_bytes = result_dict[KEY_FILESIZE_BYTES]
+            comic_info.update_filesize(filesize_bytes)
+            if isinstance(filetype_class, FileType.Archive) or filetype_class == FileType.Archive:
+                extracted_filesize_bytes = result_dict[KEY_EXTRACTED_FILESIZE_BYTES]
+                comic_info.update_extracted_filesize_bytes(extracted_filesize_bytes)
+            # 文件修改时间
+            modified_time = result_dict[KEY_MODIFIED_TIME]
+            comic_info.update_modified_time(modified_time)
+            # 漫画页路径列表
+            page_paths = convert_str_to_list(result_dict[KEY_PAGE_PATHS])
+            comic_info.update_page_paths(page_paths)
+            # 漫画预览小图路径
+            preview_path = result_dict[KEY_PREVIEW_PATH]
+            comic_info.update_preview_path(preview_path)
+            # 文件指纹
+            fingerprint = result_dict[KEY_FINGERPRINT]
+            comic_info.update_fingerprint(fingerprint)
+            # 文件标题
+            filetitle = result_dict[KEY_FILETITLE]
+            comic_info.update_filetitle(filetitle)
+
+        return comic_infos
 
     def get_comic_paths_by_fingerprint(self, fingerprint: str):
         """根据文件指纹获取所有漫画路径"""
@@ -303,6 +364,13 @@ class DBComicInfo:
         paths = [item[0] for item in result]
         paths = list(set(paths))
         return paths
+
+    def get_preview_path(self, comic_path: str):
+        """获取所有预览图路径"""
+        self.cursor.execute(f'SELECT {KEY_PREVIEW_PATH} FROM {TABLE_NAME} WHERE {KEY_FILEPATH} = "{comic_path}"')
+        result = self.cursor.fetchone()
+        path = result[0]
+        return path
 
     def is_comic_exist(self, comic_path: str, comic_fingerprint: str):
         """检查漫画在数据库中是否已存在

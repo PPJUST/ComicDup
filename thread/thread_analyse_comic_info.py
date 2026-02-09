@@ -18,24 +18,23 @@ class ThreadAnalyseComicInfo(ThreadPattern):
         self.step_index = 2
         self.step_info = '分析漫画信息'
 
-        # 漫画列表
+        # 用于分析的漫画列表
         self.comics: List[str] = []
-        # 漫画信息字典
+        # 分析得到的漫画信息字典
         self.comic_info_dict: Dict[str, ComicInfoBase] = dict()
+
+    def initialize(self):
+        """初始化"""
+        super().initialize()
+        self.comics = []
+        self.comic_info_dict = dict()
 
     def get_comic_info_dict(self):
         """获取漫画信息类字典"""
-        comic_info_dict = self.comic_info_dict
-        self.clear()
-        return comic_info_dict
+        return self.comic_info_dict
 
     def set_comics(self, comics: list):
         self.comics = natsort.os_sorted(comics)
-
-    def clear(self):
-        """清空数据"""
-        self.comics = []
-        self.comic_info_dict = dict()
 
     def run(self):
         super().run()

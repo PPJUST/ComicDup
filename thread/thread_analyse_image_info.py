@@ -18,22 +18,30 @@ class ThreadAnalyseImageInfo(ThreadPattern):
         self.step_index = 3
         self.step_info = '计算图片hash'
 
-        # 漫画信息类列表，用于提取相关数据
+        # 需要提取图片信息的漫画信息类列表
         self.comic_info_list: List[ComicInfoBase] = []
-        # 图片hash字典
+        # 提取得到的图片信息类
         self.image_info_dict: Dict[str, ImageInfoBase] = dict()
-        # 每本漫画提取的图片数
+        # 每本漫画需要提取的图片数
         self.extract_pages = 2
 
         # 计算的图片hash类型
         self.hash_type = SimilarAlgorithm.dHash()
-        # 图片hash长度
+        # 计算的图片hash长度
+        self.hash_length = 64
+
+    def initialize(self):
+        """初始化"""
+        super().initialize()
+        self.comic_info_list = []
+        self.image_info_dict = dict()
+        self.extract_pages = 2
+        self.hash_type = SimilarAlgorithm.dHash()
         self.hash_length = 64
 
     def get_image_info_dict(self):
         """获取图片信息字典"""
         image_info_dict = self.image_info_dict
-        self.clear()
         return image_info_dict
 
     def set_comic_info_list(self, comic_info_list: list):

@@ -28,11 +28,18 @@ class ThreadSearchComic(ThreadPattern):
         self.is_check_archive = False  # 是否识别压缩文件类漫画
         self.is_allow_other_filetypes = False  # 是否允许包含其他类型的文件
 
+    def initialize(self):
+        """初始化"""
+        super().initialize()
+        self.search_list = []
+        self.comics_path = []
+        self.pages_lower_limit = 4
+        self.is_check_archive = False
+        self.is_allow_other_filetypes = False
+
     def get_comics_path(self):
         """获取搜索到的漫画清单"""
-        comics_path = self.comics_path
-        self.clear()
-        return comics_path
+        return self.comics_path
 
     def set_search_list(self, paths: list):
         """设置需要搜索的路径"""
@@ -49,11 +56,6 @@ class ThreadSearchComic(ThreadPattern):
     def set_is_allow_other_filetypes(self, is_enable: bool):
         """设置是否允许包含其他类型的文件"""
         self.is_allow_other_filetypes = is_enable
-
-    def clear(self):
-        """清空数据"""
-        self.search_list = []
-        self.comics_path = []
 
     def run(self):
         super().run()

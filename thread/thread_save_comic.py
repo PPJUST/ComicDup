@@ -24,6 +24,11 @@ class ThreadSaveComic(ThreadPattern):
         # 图片数据库
         self.db_image_info: DBImageInfo = None
 
+    def initialize(self):
+        """初始化"""
+        super().initialize()
+        self.comic_info_list = []
+
     def set_comic_info_list(self, comic_info_list):
         self.comic_info_list = comic_info_list
 

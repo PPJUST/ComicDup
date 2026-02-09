@@ -17,9 +17,14 @@ class ThreadSaveImage(ThreadPattern):
         self.step_info = '保存图片信息到数据库'
 
         # 需要保存的漫画信息列表
-        self.image_info_list: List[ImageInfoBase] = None
+        self.image_info_list: List[ImageInfoBase] = []
         # 图片数据库
         self.db_image_info: DBImageInfo = None
+
+    def initialize(self):
+        """初始化"""
+        super().initialize()
+        self.image_info_list = []
 
     def set_image_info_list(self, image_info_list):
         self.image_info_list = image_info_list

@@ -15,6 +15,9 @@ class SimilarResultPreviewModel:
         is_reverse = (isinstance(sort_direction, OrderDirection.Descending) or
                       sort_direction == OrderDirection.Descending)
 
+        if isinstance(group, set):  # 多做一次检查，防止报错
+            group = list(group)
+
         if sort_key == OrderKey.Filesize:
             group.sort(key=lambda x: x.filesize_bytes, reverse=is_reverse)
         elif sort_key == OrderKey.FileTime:

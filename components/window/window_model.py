@@ -47,6 +47,10 @@ class WindowModel(QObject):
         """获取数据库中所有图片的hash值"""
         return self.db_image_info.get_hashs(hash_algorithm, hash_length)
 
+    def get_hashs_all_type(self):
+        """获取数据库中所有图片的全部类型hash值，3种类型*3种长度"""
+        return self.db_image_info.get_hashs_all_type()
+
     def get_hash_from_image_info(self, image_info: ImageInfoBase, hash_type: TYPES_HASH_ALGORITHM, hash_length: int):
         """从图片信息类中读取图片hash值"""
         hash_ = image_info.get_hash(hash_type, hash_length)
@@ -76,6 +80,11 @@ class WindowModel(QObject):
         """根据漫画路径获取对于的漫画信息类"""
         comic_info = self.db_comic_info.get_comic_info_by_comic_path(comic_path)
         return comic_info
+
+    def get_comic_infos(self):
+        """获取所有漫画信息类"""
+        infos = self.db_comic_info.get_comic_infos()
+        return infos
 
     def get_comic_paths(self) -> List[str]:
         """获取数据库中所有的漫画路径"""
@@ -211,9 +220,23 @@ class WindowModel(QObject):
                 fingerprint = comic_info.fingerprint
                 hashs = self.db_image_info.get_hashs_by_belong_comic_fingerprint(fingerprint, hash_algorithm,
                                                                                  hash_length)
-                comic_info.set_db_hashs(hashs)
+                comic_info.set_image_hashs(hashs)
 
         return comic_info_group
+
+    def save_comic_preview(self, comic_info_group: List[List[ComicInfoBase]]):
+        """生成组中漫画的预览图并保存到数据库中"""
+        for group in comic_info_group:
+            for comic_info in group:
+                preview_path_db = self.db_comic_info.get_preview_path(comic_info.filepath)
+                if not preview_path_db or not os.path.exists(preview_path_db):
+                    # 生成预览图，并保存到数据库中
+                    comic_info.save_preview_image()
+                    preview_path = comic_info.preview_path
+                    self.db_comic_info.update_preview_path(comic_info.filepath, preview_path)
+
+                else:
+                    comic_info.update_preview_path(preview_path_db)
 
     def delete_useless_cache(self):
         """删除无用缓存"""

@@ -51,7 +51,7 @@ class ComicInfoBase(ABC):
         self.fingerprint: str = None
 
         # 数据库中对应的图片hash值，用于计算整体相似度
-        self.db_hashs: str = []
+        self.image_hashs: set = set()
 
         # 非数据库模式时，自动提取信息
         if not db_model:
@@ -59,13 +59,17 @@ class ComicInfoBase(ABC):
             # 计算文件指纹
             self._calc_fingerprint()
 
-    def set_db_hashs(self, hashs: list):
+    def set_image_hashs(self, hashs: set):
         """设置对应的图片hash值"""
-        self.db_hashs = hashs
+        self.image_hashs = hashs
 
-    def get_db_hashs(self):
+    def add_image_hash(self, _hash: str):
+        """添加对应的图片hash值"""
+        self.image_hashs.add(_hash)
+
+    def get_image_hashs(self):
         """获取对应的图片hash值"""
-        return self.db_hashs
+        return self.image_hashs
 
     def get_page_paths(self):
         """获取漫画页路径列表"""
