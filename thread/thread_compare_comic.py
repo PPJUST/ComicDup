@@ -221,6 +221,11 @@ class ThreadCompareComic(ThreadPattern):
             print(f'对比图片相似度，{image_1} 和 {image_2}')
             hash_1 = self.get_hash(image_1, self.hash_type, self.hash_length)
             hash_2 = self.get_hash(image_2, self.hash_type, self.hash_length)
+            print(f'提取的图片hash值：{hash_1} 和 {hash_2}')
+            # 如果未读取到hash值，则跳过
+            if not hash_1 or not hash_2:
+                print('未读取到hash值，跳过')
+                continue
             # todo 跳过纯色页
             # 写入信息类中
             comic_info_1.add_image_hash(hash_1)
@@ -231,6 +236,7 @@ class ThreadCompareComic(ThreadPattern):
                 continue
             # 计算汉明距离
             hamming_distance = lzytools_image.calc_hash_hamming_distance(hash_1, hash_2)
+            print(f'汉明距离：{hamming_distance}')
             if hamming_distance <= self.hamming_distance:
                 # 如果选择了增强算法，则使用相应的增强算法进行校验
                 if self.is_use_enhance_algorithm:

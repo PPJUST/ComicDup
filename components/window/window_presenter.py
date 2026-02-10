@@ -274,6 +274,14 @@ class WindowPresenter(QObject):
         """启动子线程-对比漫画信息"""
         print('启动子线程-对比漫画信息')
         if not self.is_stop:
+            # 传递参数
+            is_match_cache = self.widget_setting_match.get_is_match_cache()  # 是否匹配缓存
+            if is_match_cache:
+                cache_comic_info_list = self.model.get_comic_infos()  # 缓存中的漫画信息类列表
+                self.thread_compare_comic.set_cache_comic_info_list(cache_comic_info_list)
+            image_hash_dict = self.model.get_hashs_all_type()  # 哈希值字典，键为虚拟图片路径，值为3种图片hash*3种长度的字典
+            self.thread_compare_comic.set_image_hash_dict(image_hash_dict)
+
             self.thread_compare_comic.set_comic_info_list(comic_info_list)
             self.thread_compare_comic.start()
         else:
@@ -432,16 +440,11 @@ class WindowPresenter(QObject):
         self.thread_compare_comic.set_max_workers(thread_count)
         is_match_cache = self.widget_setting_match.get_is_match_cache()  # 是否匹配缓存
         self.thread_compare_comic.set_is_match_cache(is_match_cache)
-        if is_match_cache:
-            cache_comic_info_list = self.model.get_comic_infos()  # 缓存中的漫画信息类列表
-            self.thread_compare_comic.set_cache_comic_info_list(cache_comic_info_list)
         self.thread_compare_comic.set_extract_pages(extract_pages)
         self.thread_compare_comic.set_hash_type(hash_algorithm)
         self.thread_compare_comic.set_hash_length(hash_length)
         hamming_distance = self.widget_setting_algorithm.get_hamming_distance()  # 汉明距离阈值
         self.thread_compare_comic.set_hamming_distance(hamming_distance)
-        image_hash_dict = self.model.get_hashs_all_type()  # 哈希值字典，键为虚拟图片路径，值为3种图片hash*3种长度的字典
-        self.thread_compare_comic.set_image_hash_dict(image_hash_dict)
         is_match_same_parent_dir = self.widget_setting_match.get_is_match_same_parent_folder()  # 是否仅匹配相同父目录
         self.thread_compare_comic.set_is_match_same_parent_dir(is_match_same_parent_dir)
         parent_dir_level = self.widget_setting_match.get_match_parent_folder_level()  # 父目录层级
