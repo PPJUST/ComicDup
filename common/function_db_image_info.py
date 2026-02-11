@@ -70,7 +70,7 @@ class DBImageInfo:
         # 组合漫画路径与图片路径，用于处理压缩文件类漫画
         image_path = os.path.normpath(image_info.image_path)
         comic_path = os.path.normpath(image_info.belong_comic_path)
-        fake_path = os.path.normpath(os.path.join(comic_path, os.path.basename(image_path)))
+        fake_path = os.path.normpath(os.path.join(comic_path, image_path))
 
         self.cursor.execute(f'INSERT OR IGNORE INTO {TABLE_NAME} ({KEY_FAKE_PATH}) VALUES ("{fake_path}")')
 

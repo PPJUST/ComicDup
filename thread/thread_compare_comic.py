@@ -9,7 +9,7 @@ import lzytools
 import lzytools_image
 
 from common.class_comic import ComicInfoBase
-from common.class_config import TYPES_HASH_ALGORITHM, TYPES_ENHANCE_ALGORITHM
+from common.class_config import TYPES_HASH_ALGORITHM, TYPES_ENHANCE_ALGORITHM, FileType
 from common.class_runtime import TypeRuntimeInfo
 from thread.thread_pattern import ThreadPattern
 
@@ -172,6 +172,7 @@ class ThreadCompareComic(ThreadPattern):
     def get_hash(self, path, hash_type, hash_length):
         hash_key = f'{hash_type.text}_{hash_length}'
         _hash = self.cache_image_hash_dict.get(path, {}).get(hash_key, '')
+        print('读取数据库hash值', path, _hash)
         return _hash
 
     def _finish_compare(self):
@@ -219,8 +220,21 @@ class ThreadCompareComic(ThreadPattern):
         is_similar_hash = False
         for image_1, image_2 in itertools.product(comic_info_1_images, comic_info_2_images):
             print(f'对比图片相似度，{image_1} 和 {image_2}')
-            hash_1 = self.get_hash(image_1, self.hash_type, self.hash_length)
-            hash_2 = self.get_hash(image_2, self.hash_type, self.hash_length)
+            # 提取图片hash值
+            if isinstance(comic_info_1.filetype, FileType.Folder):
+                hash_1 = self.get_hash(image_1, self.hash_type, self.hash_length)
+            elif isinstance(comic_info_1.filetype, FileType.Archive):
+                path_db_key = os.path.normpath(os.path.join(comic_info_1.filepath, image_1))
+                hash_1 = self.get_hash(path_db_key, self.hash_type, self.hash_length)
+            else:
+                hash_1 = ''
+            if isinstance(comic_info_2.filetype, FileType.Folder):
+                hash_2 = self.get_hash(image_2, self.hash_type, self.hash_length)
+            elif isinstance(comic_info_2.filetype, FileType.Archive):
+                path_db_key = os.path.normpath(os.path.join(comic_info_2.filepath, image_2))
+                hash_2 = self.get_hash(path_db_key, self.hash_type, self.hash_length)
+            else:
+                hash_2 = ''
             print(f'提取的图片hash值：{hash_1} 和 {hash_2}')
             # 如果未读取到hash值，则跳过
             if not hash_1 or not hash_2:
