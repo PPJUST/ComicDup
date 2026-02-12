@@ -131,6 +131,9 @@ class ThreadCompareComic(ThreadPattern):
             return
 
         # 生成两两组合的无序组合迭代器
+        # note 直接生成的漫画信息类和从数据库中读取的漫画信息类不是同一个对象，所以在勾选匹配缓存选项的情况下，
+        # note 会导致漫画信息类与其自身进行匹配并判断为相似，最终导致相似结果中出现相同文件路径的两个不同项目，
+        # note 需要在后续判断时做一次筛选来处理这问题
         if self.is_match_cache:
             # 缓存数据中本身就存在本次匹配的数据，使用笛卡尔积算法即可实现匹配组内部匹配和匹配组与缓存数据匹配
             comb_iterator = itertools.product(self.comic_info_list, self.cache_comic_info_list)
@@ -165,8 +168,26 @@ class ThreadCompareComic(ThreadPattern):
 
         # 处理匹配结果，合并相似组
         print('处理匹配结果，合并相似组')
-        self.similar_comic_info_groups = lzytools.common.merge_intersection_item(similar_groups)
+        # 先统一转换为文件路径
+        similar_groups_filepath = []
+        for similar_group in similar_groups:
+            similar_groups_filepath.append([item.filepath for item in similar_group])
+        # 合并有交集的项目
+        similar_groups_filepath_merged = lzytools.common.merge_intersection_item(similar_groups_filepath)
+        # 转换文件路径为漫画信息类
+        similar_groups_merged = []
+        for similar_group_filepath in similar_groups_filepath_merged:
+            similar_group = []
+            for filepath in set(similar_group_filepath):
+                comic_info_convert = None
+                for comic_info in (self.comic_info_list + self.similar_comic_info_groups):
+                    if filepath == comic_info.filepath:
+                        comic_info_convert = comic_info
+                        break
+                similar_group.append(comic_info_convert)
+            similar_groups_merged.append(similar_group)
 
+        self.similar_comic_info_groups = similar_groups_merged
         self._finish_compare()
 
     def get_hash(self, path, hash_type, hash_length):
@@ -188,11 +209,14 @@ class ThreadCompareComic(ThreadPattern):
         comic_info_1, comic_info_2 = comb
         print(f'正在对比：{comic_info_1.filepath} 和 {comic_info_2.filepath}')
 
-        # 检查漫画是否存在
+        # 检查漫画路径
         comic_path_1 = comic_info_1.filepath
         comic_path_2 = comic_info_2.filepath
         if not os.path.exists(comic_path_1) or not os.path.exists(comic_path_2):
             print('漫画不存在，跳过')
+            return []
+        elif comic_path_1 == comic_path_2:
+            print('漫画路径相同，跳过')
             return []
 
         # 如果选择了仅匹配相同层级父目录选项，则进行父目录判断

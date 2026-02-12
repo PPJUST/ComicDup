@@ -362,17 +362,15 @@ class WindowPresenter(QObject):
     def match_cache_data_self(self):
         """漫画数据库项目自我匹配"""
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '开始数据库内部匹配')
-        # 提取数据库中的hash值
-        hash_algorithm = self.widget_setting_algorithm.get_base_algorithm()  # hash算法
-        hash_length = self.widget_setting_algorithm.get_hash_length()  # hash长度
-        hash_list = self.model.get_hashs(hash_algorithm, hash_length)
-
         # 跳步启动子线程
         self._prepare_before_cache_thread()
-        # fixme
-        self.thread_compare_hash.set_hash_list(hash_list)
-        self.thread_compare_hash.set_is_match_cache(True)
-        self.thread_compare_hash.start()
+        cache_comic_info_list = self.model.get_comic_infos()  # 缓存中的漫画信息类列表
+        image_hash_dict = self.model.get_hashs_all_type()  # 哈希值字典，键为虚拟图片路径，值为3种图片hash*3种长度的字典
+        self.thread_compare_comic.set_image_hash_dict(image_hash_dict)
+        self.thread_compare_comic.set_comic_info_list(cache_comic_info_list)
+        self.thread_compare_comic.set_cache_comic_info_list(
+            cache_comic_info_list)  # note 缓存变量也要赋值，防止同时勾选匹配缓存选项时缓存变量没有值的问题
+        self.thread_compare_comic.start()
 
     """运行信息方法"""
 

@@ -334,6 +334,8 @@ class DBComicInfo:
             filetitle = result_dict[KEY_FILETITLE]
             comic_info.update_filetitle(filetitle)
 
+            comic_infos.append(comic_info)
+
         return comic_infos
 
     def get_comic_paths_by_fingerprint(self, fingerprint: str):
