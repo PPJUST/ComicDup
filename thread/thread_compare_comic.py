@@ -264,7 +264,16 @@ class ThreadCompareComic(ThreadPattern):
             if not hash_1 or not hash_2:
                 print('未读取到hash值，跳过')
                 continue
-            # todo 跳过纯色页
+            # 检查hash值，跳过纯色图片
+            zero_count_hash_1 = hash_1.count('0')
+            zero_count_hash_2 = hash_2.count('0')
+            length_hash = len(hash_1)
+            if zero_count_hash_1 / length_hash >= 0.9 or zero_count_hash_1 / length_hash <= 0.1:
+                print('判断为纯色页，跳过')
+                continue
+            elif zero_count_hash_2 / length_hash >= 0.9 or zero_count_hash_2 / length_hash <= 0.1:
+                print('判断为纯色页，跳过')
+                continue
             # 写入信息类中
             comic_info_1.add_image_hash(hash_1)
             comic_info_2.add_image_hash(hash_2)
