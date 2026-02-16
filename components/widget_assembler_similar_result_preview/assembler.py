@@ -77,10 +77,9 @@ class AssemblerSimilarResultPreview(QObject):
 
         self.show_filter_result(similar_groups_filter)
 
-    def show_similar_pages_item_in_group(self):
+    def show_similar_pages_item_in_group(self, pages_threshold: int = 30):
         """仅在相似组中显示页数相近的漫画项"""
         similar_groups_filter = []
-        threshold_pages = 30
         for group in self.similar_groups:
             group_filter = []
             # 先按页数排序
@@ -92,13 +91,13 @@ class AssemblerSimilarResultPreview(QObject):
                 if index - 1 >= 0:
                     pages_previous = group[index - 1].page_count
                     diff_left = abs(pages_current - pages_previous)
-                    if diff_left <= threshold_pages:
+                    if diff_left <= pages_threshold:
                         group_filter.append(group[index])
                         continue
                 if index + 1 < len(group):
                     pages_next = group[index + 1].page_count
                     diff_right = abs(pages_current - pages_next)
-                    if diff_right <= threshold_pages:
+                    if diff_right <= pages_threshold:
                         group_filter.append(group[index])
                         continue
             if len(group_filter) >= 2:

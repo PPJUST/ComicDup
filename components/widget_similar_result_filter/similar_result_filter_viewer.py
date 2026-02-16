@@ -11,7 +11,7 @@ class SimilarResultFilterViewer(QWidget):
     RefreshResult = Signal(name='重置匹配结果')
     FilterSameItems = Signal(name='筛选器 仅显示页数、文件大小相同项')
     FilterSameFilesizeItems = Signal(name='筛选器 仅显示文件大小相同项')
-    FilterExcludeDiffPages = Signal(name='筛选器 剔除页数差异过大项')
+    FilterExcludeDiffPages = Signal(int, name='筛选器 剔除页数差异过大项')
     ReconfirmDelete = Signal(bool, name='删除前再次确认')
     ChangeSortKey = Signal(str, name='排序键值改变')
     ChangeSortDirection = Signal(str, name='排序方向改变')
@@ -28,7 +28,7 @@ class SimilarResultFilterViewer(QWidget):
         self.ui.pushButton_refresh_result.clicked.connect(self.RefreshResult.emit)
         self.ui.pushButton_filter_same_items.clicked.connect(self.FilterSameItems.emit)
         self.ui.pushButton_filter_same_filesize_items.clicked.connect(self.FilterSameFilesizeItems.emit)
-        self.ui.pushButton_exclude_diff_pages.clicked.connect(self.FilterExcludeDiffPages.emit)
+        self.ui.pushButton_exclude_diff_pages.clicked.connect(self.emit_signal_exclude_diff_pages)
         self.ui.checkBox_reconfirm_before_delete.stateChanged.connect(self.ReconfirmDelete.emit)
         self.ui.comboBox_sort_key.currentTextChanged.connect(self.ChangeSortKey.emit)
         self.ui.comboBox_sort_direction.currentTextChanged.connect(self.ChangeSortDirection.emit)
@@ -56,6 +56,10 @@ class SimilarResultFilterViewer(QWidget):
 
         return OrderDirection.Descending  # 兜底
 
+
+    def emit_signal_exclude_diff_pages(self):
+        """发射信号：剔除页数差异过大项"""
+        self.FilterExcludeDiffPages.emit(self.ui.spinBox_diff_pages_threshold.value())
 
 if __name__ == "__main__":
     app_ = QApplication()
