@@ -119,6 +119,51 @@ class ThreadCompareComic(ThreadPattern):
         """设置增强算法类型"""
         self.enhance_algorithm_type = enhance_algorithm_type
 
+    def get_hashs_neeced(self, comic_info: ComicInfoBase):
+        """获取一个漫画信息类需要匹配的hash值（按0个数排序）"""
+        hashs = []  # 提取的hash值
+
+        # 提取每本漫画指定数量的图片
+        images = comic_info.get_page_paths()[0:self.extract_pages_count]
+        for image in images:
+            # 提取hash值
+            if isinstance(comic_info.filetype, FileType.Folder):
+                hash_ = self.get_hash(image, self.hash_type, self.hash_length)
+            elif isinstance(comic_info.filetype, FileType.Archive):
+                path_db_key = os.path.normpath(os.path.join(comic_info.filepath, image))
+                hash_ = self.get_hash(path_db_key, self.hash_type, self.hash_length)
+            else:
+                hash_ = None
+
+            # 检查hash值，跳过纯色图片
+            zero_count_hash = hash_.count('0')
+            length_hash = len(hash_)
+            if zero_count_hash / length_hash >= 0.9 or zero_count_hash / length_hash <= 0.1:
+                print('判断为纯色页，跳过')
+                continue
+
+            if hash_:
+                hashs.append(hash_)
+
+        # 按0的个数排序
+        hashs.sort(key=lambda x: x.count('0'))
+
+        return hashs
+
+    def preprocess_comic_info(self):
+        """预处理漫画信息类"""
+        # 写入需要匹配的hash到漫画信息类中
+        for comic_info in self.comic_info_list:
+            hashs = self.get_hashs_neeced(comic_info)
+            comic_info.set_image_hashs(hashs)
+        for comic_info in self.cache_comic_info_list:
+            hashs = self.get_hashs_neeced(comic_info)
+            comic_info.set_image_hashs(hashs)
+
+        # 按0的个数排序漫画信息类
+        self.comic_info_list.sort(key=lambda x: x.image_hashs[0].count('0'))
+        self.cache_comic_info_list.sort(key=lambda x: x.image_hashs[0].count('0'))
+
     def run(self):
         super().run()
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '开始对比漫画相似度')
@@ -130,25 +175,20 @@ class ThreadCompareComic(ThreadPattern):
             self._finish_compare()
             return
 
-        # 生成两两组合的无序组合迭代器
         # note 直接生成的漫画信息类和从数据库中读取的漫画信息类不是同一个对象，所以在勾选匹配缓存选项的情况下，
         # note 会导致漫画信息类与其自身进行匹配并判断为相似，最终导致相似结果中出现相同文件路径的两个不同项目，
         # note 需要在后续判断时做一次筛选来处理这问题
-        if self.is_match_cache:
-            # 缓存数据中本身就存在本次匹配的数据，使用笛卡尔积算法即可实现匹配组内部匹配和匹配组与缓存数据匹配
-            comb_iterator = itertools.product(self.comic_info_list, self.cache_comic_info_list)
-            total_combination = len(self.comic_info_list) * len(self.cache_comic_info_list)
-        else:
-            comb_iterator = itertools.combinations(self.comic_info_list, 2)
-            total_combination = total_comic * (total_comic - 1) // 2
-        print('需匹配组合数量', total_combination)
+
+        # 预处理漫画信息类
+        self.preprocess_comic_info()
+        self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '预处理漫画信息类')
 
         similar_groups: List[List[ComicInfoBase]] = []  # 匹配到的两两组合的相似漫画组列表
         # 使用线程池进行并发处理，遍历迭代器，搜索相似项
         completed_count = 0
         with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
             # 提交所有任务
-            futures = {executor.submit(self._compare, combination): combination for combination in comb_iterator}
+            futures = {executor.submit(self._compare, comic): comic for comic in self.comic_info_list}
 
             # 处理完成的任务
             for future in as_completed(futures):
@@ -156,15 +196,15 @@ class ThreadCompareComic(ThreadPattern):
                     executor.shutdown(wait=False, cancel_futures=True)
                     break
 
-                comb = futures[future]
+                comic = futures[future]
                 try:
                     similar_group = future.result()
                     if similar_group:
                         similar_groups.append(similar_group)
                     completed_count += 1
-                    self.SignalRate.emit(f'{completed_count}/{total_combination}')
+                    self.SignalRate.emit(f'{completed_count}/{total_comic}')
                 except Exception as e:
-                    self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning, f'对比{comb}失败：{str(e)}')
+                    self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning, f'对比{comic.filepath}失败：{str(e)}')
 
         # 处理匹配结果，合并相似组
         print('处理匹配结果，合并相似组')
@@ -204,98 +244,66 @@ class ThreadCompareComic(ThreadPattern):
         print(self.similar_comic_info_groups)
         self.finished()
 
-    def _compare(self, comb: tuple[ComicInfoBase, ComicInfoBase]):
-        """对比单个hash值与其他hash值的相似度"""
-        comic_info_1, comic_info_2 = comb
-        print(f'正在对比：{comic_info_1.filepath} 和 {comic_info_2.filepath}')
-
+    def _compare(self, comic_info: ComicInfoBase):
+        """对比漫画相似度"""
+        print(f'正在匹配：{comic_info.filepath}')
         # 检查漫画路径
-        comic_path_1 = comic_info_1.filepath
-        comic_path_2 = comic_info_2.filepath
-        if not os.path.exists(comic_path_1) or not os.path.exists(comic_path_2):
+        comic_path = comic_info.filepath
+        if not comic_path and not os.path.exists(comic_path):
             print('漫画不存在，跳过')
             return []
-        elif comic_path_1 == comic_path_2:
-            print('漫画路径相同，跳过')
-            return []
 
+        # 提取需要匹配的漫画信息列表
+        # 如果选择了匹配缓存，则对应的漫画信息列表为缓存数据库，缓存中本身存在本次需匹配的数据库）
+        if self.is_match_cache:
+            match_comic_info_list = self.cache_comic_info_list  # note 不要修改列表
+        else:
+            match_comic_info_list = self.comic_info_list  # note 不要修改列表
         # 如果选择了仅匹配相同层级父目录选项，则进行父目录判断
         if self.is_match_same_parent_dir:
-            print('同目录判断')
-            # 提取父目录
-            parent_dirpath_1 = lzytools.file.get_parent_dirpath(comic_path_1, self.parent_dir_level)
-            parent_dirpath_2 = lzytools.file.get_parent_dirpath(comic_path_2, self.parent_dir_level)
-            # 层级对比
-            if parent_dirpath_1 == parent_dirpath_2:  # 相同父目录，正常执行
-                pass
-            elif lzytools.file.is_subpath(parent_dirpath_1, parent_dirpath_2):  # 子目录，正常执行
-                pass
-            elif lzytools.file.is_subpath(parent_dirpath_2, parent_dirpath_1):  # 子目录，正常执行
-                pass
-            else:  # 不同父目录，跳过
-                print('不同父目录，跳过')
-                return []
+            print('父目录判断')
+            match_comic_info_list_filter = []
+            parent_dirpath_base = lzytools.file.get_parent_dirpath(comic_path, self.parent_dir_level)
+            for compare_comic_info in match_comic_info_list:
+                compare_comic_path = compare_comic_info.filepath
+                parent_dirpath_compare = lzytools.file.get_parent_dirpath(compare_comic_path, self.parent_dir_level)
+                if parent_dirpath_base == parent_dirpath_compare:
+                    match_comic_info_list_filter.append(compare_comic_info)
+                elif lzytools.file.is_subpath(parent_dirpath_base, parent_dirpath_compare):
+                    match_comic_info_list_filter.append(compare_comic_info)
+                elif lzytools.file.is_subpath(parent_dirpath_compare, parent_dirpath_base):
+                    match_comic_info_list_filter.append(compare_comic_info)
+                else:
+                    continue
 
-        # 提取每本漫画指定数量的图片
-        comic_info_1_images = comic_info_1.get_page_paths()[0:self.extract_pages_count]
-        comic_info_2_images = comic_info_2.get_page_paths()[0:self.extract_pages_count]
+            match_comic_info_list = match_comic_info_list_filter
 
-        # 将图片两两组合进行相似度匹配
-        is_similar_hash = False
-        for image_1, image_2 in itertools.product(comic_info_1_images, comic_info_2_images):
-            print(f'对比图片相似度，{image_1} 和 {image_2}')
-            # 提取图片hash值
-            if isinstance(comic_info_1.filetype, FileType.Folder):
-                hash_1 = self.get_hash(image_1, self.hash_type, self.hash_length)
-            elif isinstance(comic_info_1.filetype, FileType.Archive):
-                path_db_key = os.path.normpath(os.path.join(comic_info_1.filepath, image_1))
-                hash_1 = self.get_hash(path_db_key, self.hash_type, self.hash_length)
-            else:
-                hash_1 = ''
-            if isinstance(comic_info_2.filetype, FileType.Folder):
-                hash_2 = self.get_hash(image_2, self.hash_type, self.hash_length)
-            elif isinstance(comic_info_2.filetype, FileType.Archive):
-                path_db_key = os.path.normpath(os.path.join(comic_info_2.filepath, image_2))
-                hash_2 = self.get_hash(path_db_key, self.hash_type, self.hash_length)
-            else:
-                hash_2 = ''
-            print(f'提取的图片hash值：{hash_1} 和 {hash_2}')
-            # 如果未读取到hash值，则跳过
-            if not hash_1 or not hash_2:
-                print('未读取到hash值，跳过')
+        # 遍历对比列表，匹配相似组
+        similar_group = []
+        hashs_base = comic_info.image_hashs  # 漫画的hash值列表
+        min_zero_count_base = hashs_base[0].count('0')  # 漫画的hash值列表中0的个数最小的值
+        max_zero_count_base = hashs_base[-1].count('0')  # 漫画的hash值列表中0的个数最大的值
+        # 在计算两个hash值的汉明距离时，如果其0的计数差异大于阈值的1/2时，则两个hash值的汉明距离不可能低于阈值
+        threshold_zero_count = (min_zero_count_base - self.hamming_distance * 0.5,
+                                max_zero_count_base + self.hamming_distance * 0.5)
+        for compare_comic_info in match_comic_info_list:
+            filepath_compare = compare_comic_info.filepath
+            if filepath_compare == comic_path:
                 continue
-            # 检查hash值，跳过纯色图片
-            zero_count_hash_1 = hash_1.count('0')
-            zero_count_hash_2 = hash_2.count('0')
-            length_hash = len(hash_1)
-            if zero_count_hash_1 / length_hash >= 0.9 or zero_count_hash_1 / length_hash <= 0.1:
-                print('判断为纯色页，跳过')
+            hashs_compare = compare_comic_info.image_hashs
+            min_zero_count_compare = hashs_compare[0].count('0')
+            max_zero_count_compare = hashs_compare[-1].count('0')
+            if min_zero_count_compare < threshold_zero_count[0] or max_zero_count_compare > threshold_zero_count[1]:
                 continue
-            elif zero_count_hash_2 / length_hash >= 0.9 or zero_count_hash_2 / length_hash <= 0.1:
-                print('判断为纯色页，跳过')
-                continue
-            # 写入信息类中
-            comic_info_1.add_image_hash(hash_1)
-            comic_info_2.add_image_hash(hash_2)
-            # 加快判断速度，在计算两个hash值的汉明距离时，如果其0的计数差异大于阈值的1/2时，则两个hash值的汉明距离不可能低于阈值
-            zero_count_diff = abs(hash_1.count('0') - hash_2.count('0'))
-            if zero_count_diff > self.hamming_distance / 2:
-                continue
-            # 计算汉明距离
-            hamming_distance = lzytools_image.calc_hash_hamming_distance(hash_1, hash_2)
-            print(f'汉明距离：{hamming_distance}')
-            if hamming_distance <= self.hamming_distance:
-                # 如果选择了增强算法，则使用相应的增强算法进行校验
-                if self.is_use_enhance_algorithm:
-                    pass  # todo
-                print('判断为相似')
-                is_similar_hash = True
-                break
-            else:
-                print('判断为不相似')
-                pass
+            # 计算hash组之间的最小汉明距离
+            for hash_1, hash_2 in itertools.product(hashs_base, hashs_compare):
+                hamming_distance = lzytools_image.calc_hash_hamming_distance(hash_1, hash_2)
+                if hamming_distance <= self.hamming_distance:
+                    print('判断为相似')
+                    similar_group.append(compare_comic_info)
+                    break
 
-        if is_similar_hash:
-            return [comic_info_1, comic_info_2]
-        else:
-            return []
+        # 处理结果
+        if similar_group:
+            similar_group.append(comic_info)
+        return similar_group
