@@ -195,7 +195,7 @@ class SettingHashLength(_ModuleChildSetting):
         super().__init__(config_file)
         self.section = 'HashLength'
         self.key = 'length'
-        self._default_value: int = 64
+        self._default_value: int = 144
 
     def read(self) -> int:
         """读取设置项"""
