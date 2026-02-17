@@ -1,5 +1,7 @@
+import os
 from typing import List
 
+import lzytools
 from PySide6.QtCore import QObject, Signal
 
 from common import function_file
@@ -105,6 +107,27 @@ class SimilarResultPreviewPresenter(QObject):
         self.current_page = 1
         self.viewer.set_current_page(self.current_page)
         self.show_page(self.current_page)
+
+    def hide_complete_group(self):
+        """隐藏已经完成处理的相似组"""
+        # 筛选相似组，剔除组中仅存在一个有效元素的相似组
+        similar_groups_filter = []
+        for group in self.comic_info_groups:
+            group_filter = []
+            # 遍历相似组元素
+            for comic_info in group:
+                filepath = comic_info.filepath
+                filesize = comic_info.filesize_bytes
+                if os.path.exists(filepath) and filesize == lzytools.file.get_size(filepath):
+                    group_filter.append(comic_info)
+                else:
+                    continue
+
+            if len(group_filter) >= 2:
+                similar_groups_filter.append(group_filter)
+
+        self.set_groups(similar_groups_filter)
+        self.reload()
 
     def change_show_group_count(self, show_count: int):
         """修改一页显示的组数"""

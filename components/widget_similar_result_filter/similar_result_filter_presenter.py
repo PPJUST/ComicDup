@@ -7,6 +7,7 @@ from components.widget_similar_result_filter.similar_result_filter_viewer import
 class SimilarResultFilterPresenter(QObject):
     """相似结果筛选器模块的桥梁组件"""
     RefreshResult = Signal(name='重置匹配结果')
+    HideCompleteGroup = Signal(name='隐藏完成处理的相似组')
     FilterSameItems = Signal(name='筛选器 仅显示页数、文件大小相同项')
     FilterSameFilesizeItems = Signal(name='筛选器 仅显示文件大小相同项')
     FilterExcludeDiffPages = Signal(int, name='筛选器 剔除页数差异过大项')
@@ -24,6 +25,7 @@ class SimilarResultFilterPresenter(QObject):
         self.viewer.FilterSameFilesizeItems.connect(self.FilterSameFilesizeItems.emit)
         self.viewer.FilterExcludeDiffPages.connect(lambda param: self.FilterExcludeDiffPages.emit(param))
         self.viewer.RefreshResult.connect(self.RefreshResult.emit)
+        self.viewer.HideCompleteGroup.connect(self.HideCompleteGroup.emit)
         self.viewer.ReconfirmDelete.connect(self.ReconfirmDelete.emit)
         self.viewer.ChangeSortKey.connect(self.ChangeSortKey.emit)
         self.viewer.ChangeSortDirection.connect(self.ChangeSortDirection.emit)

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'similar_result_filterLfUKdj.ui'
+## Form generated from reading UI file 'similar_result_filterMTnjCi.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.10.1
 ##
@@ -23,11 +23,13 @@ class Ui_Form(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        Form.resize(613, 83)
+        Form.resize(650, 83)
         self.horizontalLayout_2 = QHBoxLayout(Form)
         self.horizontalLayout_2.setSpacing(3)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
         self.horizontalLayout_2.setContentsMargins(3, 3, 3, 3)
+        self.verticalLayout_3 = QVBoxLayout()
+        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
         self.pushButton_refresh_result = QPushButton(Form)
         self.pushButton_refresh_result.setObjectName(u"pushButton_refresh_result")
         sizePolicy = QSizePolicy(QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
@@ -36,7 +38,16 @@ class Ui_Form(object):
         sizePolicy.setHeightForWidth(self.pushButton_refresh_result.sizePolicy().hasHeightForWidth())
         self.pushButton_refresh_result.setSizePolicy(sizePolicy)
 
-        self.horizontalLayout_2.addWidget(self.pushButton_refresh_result)
+        self.verticalLayout_3.addWidget(self.pushButton_refresh_result)
+
+        self.pushButton_hide_complete_group = QPushButton(Form)
+        self.pushButton_hide_complete_group.setObjectName(u"pushButton_hide_complete_group")
+
+        self.verticalLayout_3.addWidget(self.pushButton_hide_complete_group)
+
+        self.verticalLayout_3.setStretch(0, 1)
+
+        self.horizontalLayout_2.addLayout(self.verticalLayout_3)
 
         self.verticalLayout = QVBoxLayout()
         self.verticalLayout.setSpacing(3)
@@ -87,10 +98,12 @@ class Ui_Form(object):
 
         self.horizontalLayout.addWidget(self.comboBox_sort_direction)
 
-        self.horizontalSpacer_3 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.label_4 = QLabel(Form)
+        self.label_4.setObjectName(u"label_4")
 
-        self.horizontalLayout.addItem(self.horizontalSpacer_3)
+        self.horizontalLayout.addWidget(self.label_4)
 
+        self.horizontalLayout.setStretch(3, 1)
 
         self.verticalLayout_2.addLayout(self.horizontalLayout)
 
@@ -111,10 +124,12 @@ class Ui_Form(object):
 
         self.horizontalLayout_3.addWidget(self.label_3)
 
-        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.label_5 = QLabel(Form)
+        self.label_5.setObjectName(u"label_5")
 
-        self.horizontalLayout_3.addItem(self.horizontalSpacer_2)
+        self.horizontalLayout_3.addWidget(self.label_5)
 
+        self.horizontalLayout_3.setStretch(3, 1)
 
         self.verticalLayout_2.addLayout(self.horizontalLayout_3)
 
@@ -138,6 +153,7 @@ class Ui_Form(object):
 
         self.horizontalLayout_2.addItem(self.horizontalSpacer)
 
+        self.horizontalLayout_2.setStretch(6, 1)
 
         self.retranslateUi(Form)
 
@@ -147,12 +163,15 @@ class Ui_Form(object):
     def retranslateUi(self, Form):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
         self.pushButton_refresh_result.setText(QCoreApplication.translate("Form", u"\u91cd\u7f6e\u7ed3\u679c", None))
+        self.pushButton_hide_complete_group.setText(QCoreApplication.translate("Form", u"\u5254\u9664\u5df2\u5b8c\u6210", None))
         self.pushButton_filter_same_items.setText(QCoreApplication.translate("Form", u"\u4ec5\u663e\u793a100%\u76f8\u540c\u9879", None))
         self.pushButton_filter_same_filesize_items.setText(QCoreApplication.translate("Form", u"\u4ec5\u663e\u793a\u6587\u4ef6\u5927\u5c0f\u76f8\u540c\u9879", None))
         self.pushButton_exclude_diff_pages.setText(QCoreApplication.translate("Form", u"\u5254\u9664\u9875\u6570\u5dee\u5f02\u8fc7\u5927\u9879", None))
         self.label.setText(QCoreApplication.translate("Form", u"\u7ec4\u5185\u6392\u5e8f\u89c4\u5219\uff1a", None))
+        self.label_4.setText("")
         self.label_2.setText(QCoreApplication.translate("Form", u"\u9875\u6570\u9608\u503c\uff1a", None))
         self.label_3.setText(QCoreApplication.translate("Form", u"\u9875", None))
+        self.label_5.setText("")
         self.checkBox_reconfirm_before_delete.setText(QCoreApplication.translate("Form", u"\u5220\u9664\u6f2b\u753b\u524d\u9700\u518d\u6b21\u786e\u8ba4", None))
     # retranslateUi
 

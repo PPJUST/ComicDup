@@ -511,6 +511,7 @@ class WindowPresenter(QObject):
         self.widget_similar_result_filter.ReconfirmDelete.connect(
             self.assembler_similar_result_preview.set_is_reconfirm_before_delete)
         self.widget_similar_result_filter.RefreshResult.connect(self.assembler_similar_result_preview.reload)
+        self.widget_similar_result_filter.HideCompleteGroup.connect(self.assembler_similar_result_preview.hide_complete_group)
         self.widget_similar_result_filter.FilterSameItems.connect(
             self.assembler_similar_result_preview.show_same_item_in_group)
         self.widget_similar_result_filter.FilterSameFilesizeItems.connect(

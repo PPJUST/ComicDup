@@ -9,6 +9,7 @@ from components.widget_similar_result_filter.res.ui_similar_result_filter import
 class SimilarResultFilterViewer(QWidget):
     """相似结果筛选器模块的界面组件"""
     RefreshResult = Signal(name='重置匹配结果')
+    HideCompleteGroup = Signal(name='隐藏完成处理的相似组')
     FilterSameItems = Signal(name='筛选器 仅显示页数、文件大小相同项')
     FilterSameFilesizeItems = Signal(name='筛选器 仅显示文件大小相同项')
     FilterExcludeDiffPages = Signal(int, name='筛选器 剔除页数差异过大项')
@@ -26,6 +27,7 @@ class SimilarResultFilterViewer(QWidget):
 
         # 绑定信号
         self.ui.pushButton_refresh_result.clicked.connect(self.RefreshResult.emit)
+        self.ui.pushButton_hide_complete_group.clicked.connect(self.HideCompleteGroup.emit)
         self.ui.pushButton_filter_same_items.clicked.connect(self.FilterSameItems.emit)
         self.ui.pushButton_filter_same_filesize_items.clicked.connect(self.FilterSameFilesizeItems.emit)
         self.ui.pushButton_exclude_diff_pages.clicked.connect(self.emit_signal_exclude_diff_pages)

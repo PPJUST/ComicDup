@@ -45,6 +45,10 @@ class AssemblerSimilarResultPreview(QObject):
         self.presenter.set_groups(similar_groups_filter)
         self.presenter.reload()
 
+    def hide_complete_group(self):
+        """隐藏已经完成处理的相似组"""
+        self.presenter.hide_complete_group()
+
     def show_same_item_in_group(self):
         """仅在相似组中显示存在相同项的漫画项（根据文件指纹判断）"""
         # 筛选相似组，仅提取同组中存在相同项的漫画项

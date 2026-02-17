@@ -6,14 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>613</width>
+    <width>650</width>
     <height>83</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout_2">
+  <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,0,0,0,0,0,1">
    <property name="spacing">
     <number>3</number>
    </property>
@@ -30,17 +30,28 @@
     <number>3</number>
    </property>
    <item>
-    <widget class="QPushButton" name="pushButton_refresh_result">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>重置结果</string>
-     </property>
-    </widget>
+    <layout class="QVBoxLayout" name="verticalLayout_3" stretch="1,0">
+     <item>
+      <widget class="QPushButton" name="pushButton_refresh_result">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>重置结果</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_hide_complete_group">
+       <property name="text">
+        <string>剔除已完成</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
    <item>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -86,7 +97,7 @@
       <number>3</number>
      </property>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout">
+      <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,1">
        <property name="spacing">
         <number>3</number>
        </property>
@@ -104,22 +115,16 @@
         <widget class="QComboBox" name="comboBox_sort_direction"/>
        </item>
        <item>
-        <spacer name="horizontalSpacer_3">
-         <property name="orientation">
-          <enum>Qt::Orientation::Horizontal</enum>
+        <widget class="QLabel" name="label_4">
+         <property name="text">
+          <string/>
          </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
+        </widget>
        </item>
       </layout>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0,0,0">
+      <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0,0,1">
        <item>
         <widget class="QLabel" name="label_2">
          <property name="text">
@@ -138,17 +143,11 @@
         </widget>
        </item>
        <item>
-        <spacer name="horizontalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Orientation::Horizontal</enum>
+        <widget class="QLabel" name="label_5">
+         <property name="text">
+          <string/>
          </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
+        </widget>
        </item>
       </layout>
      </item>
