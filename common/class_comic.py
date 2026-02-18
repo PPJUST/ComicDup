@@ -112,8 +112,9 @@ class ComicInfoBase(ABC):
         return calc_comic_point(self)
 
     @abstractmethod
-    def calc_hashs(self):
-        """计算漫画内所有图片的hash值"""
+    def calc_all_pages_hash(self) -> Dict[str, str]:
+        """计算漫画内所有图片的hash值
+        :return: 字典，key为内部页路径，value为hash值（pHash，144位）"""
 
     """数据库模式使用的手动更新信息的方法"""
 
@@ -180,7 +181,7 @@ class FolderComicInfo(ComicInfoBase):
         """获取解压后的文件大小（字节）"""
         return 0
 
-    def calc_hashs(self, hash_type=SimilarAlgorithm.pHash, hash_length: int = 12) -> Dict[str, str]:
+    def calc_all_pages_hash(self, hash_type=SimilarAlgorithm.pHash, hash_length: int = 12) -> Dict[str, str]:
         hash_dict = dict()
         for image in self.page_paths:
             image_path = os.path.normpath(os.path.join(self.filepath, image))
@@ -236,7 +237,7 @@ class ArchiveComicInfo(ComicInfoBase):
         """获取解压后的文件大小（字节）"""
         return self.extracted_filesize_bytes
 
-    def calc_hashs(self, hash_type=SimilarAlgorithm.pHash, hash_length: int = 12) -> Dict[str, str]:
+    def calc_all_pages_hash(self, hash_type=SimilarAlgorithm.pHash, hash_length: int = 12) -> Dict[str, str]:
         hash_dict = dict()
         for image in self.page_paths:
             hash_ = function_image.calc_archive_image_hash(self.filepath, image, hash_type, hash_length)

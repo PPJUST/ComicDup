@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'similar_group_previewLiJwjQ.ui'
+## Form generated from reading UI file 'similar_group_previewtAMeZH.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.8.1
+## Created by: Qt User Interface Compiler version 6.10.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -90,6 +90,11 @@ class Ui_Form(object):
 
         self.horizontalLayout.addWidget(self.checkBox_auto_image_diff)
 
+        self.pushButton_calc_diff_pages = QPushButton(Form)
+        self.pushButton_calc_diff_pages.setObjectName(u"pushButton_calc_diff_pages")
+
+        self.horizontalLayout.addWidget(self.pushButton_calc_diff_pages)
+
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout.addItem(self.horizontalSpacer)
@@ -133,5 +138,6 @@ class Ui_Form(object):
         self.pushButton_quit.setText(QCoreApplication.translate("Form", u"\u9000\u51fa", None))
         self.checkBox_auto_calc_similar.setText(QCoreApplication.translate("Form", u"\u5b9e\u65f6\u663e\u793a\u76f8\u4f3c\u5ea6", None))
         self.checkBox_auto_image_diff.setText(QCoreApplication.translate("Form", u"\u5b9e\u65f6\u663e\u793a\u56fe\u7247\u5dee\u5f02", None))
+        self.pushButton_calc_diff_pages.setText(QCoreApplication.translate("Form", u"\u8ba1\u7b97\u5dee\u5f02\u9875\u9762", None))
     # retranslateUi
 
