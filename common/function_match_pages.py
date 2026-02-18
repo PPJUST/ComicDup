@@ -48,7 +48,8 @@ def check_match_result(comic_info_1: ComicInfoBase, comic_info_2: ComicInfoBase,
     if page_count_2 == len(_pages_2):
         is_full_match_comic_2 = True
 
-    match_result = None
+    match_result = MatchResult.Unknown()
+    match_result.page_match = similar_pages
     if is_full_match_comic_1 and is_full_match_comic_2:
         # 检查两本漫画的页数
         if page_count_1 == page_count_2:
@@ -115,3 +116,5 @@ def check_match_result(comic_info_1: ComicInfoBase, comic_info_2: ComicInfoBase,
             match_result = MatchResult.LossPageComic2()
             match_result.wrong_pages_comic_1 = extra_page_comic_1
             return match_result
+
+    return match_result

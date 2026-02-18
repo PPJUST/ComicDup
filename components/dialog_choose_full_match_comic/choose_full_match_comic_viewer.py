@@ -27,8 +27,13 @@ class ChooseFullMatchComicViewer(QDialog):
         self.ui.textBrowser_match_result.clear()
         if isinstance(result_state, str):
             self.ui.textBrowser_match_result.setText(result_state)
-        elif isinstance(result_state, (MatchResult.OneToOne, MatchResult.Unknown)):
+        elif isinstance(result_state, MatchResult.OneToOne):
             self.ui.textBrowser_match_result.setText(result_state.text)
+        elif isinstance(result_state, MatchResult.Unknown):
+            self.ui.textBrowser_match_result.setText(result_state.text)
+            self.ui.textBrowser_match_result.append("\n已匹配的页码对应关系如下：")
+            for i in result_state.page_match.items():
+                self.ui.textBrowser_match_result.append(f'漫画1第 {i[0]} 页对应漫画2第 {i[1]} 页')
         else:
             self.ui.textBrowser_match_result.append(result_state.text)
             self.ui.textBrowser_match_result.append("\n漫画1问题页码如下：")

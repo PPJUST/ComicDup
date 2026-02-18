@@ -1,4 +1,5 @@
 # 漫画页面全量匹配的结果的类
+from typing import Dict
 
 
 class MatchResult:
@@ -35,6 +36,7 @@ class MatchResult:
     class Unknown:
         """未知"""
         text = '未知'
+        page_match: Dict[int, int] = []
 
 
 MatchResults = [MatchResult.OneToOne, MatchResult.SameCountButWrongPageNumber, MatchResult.SameCountButWrongPage,
