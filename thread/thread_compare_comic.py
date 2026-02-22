@@ -139,7 +139,6 @@ class ThreadCompareComic(ThreadPattern):
             zero_count_hash = hash_.count('0')
             length_hash = len(hash_)
             if zero_count_hash / length_hash >= 0.9 or zero_count_hash / length_hash <= 0.1:
-                print('判断为纯色页，跳过')
                 continue
 
             if hash_:
@@ -207,7 +206,6 @@ class ThreadCompareComic(ThreadPattern):
                     self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning, f'对比{comic.filepath}失败：{str(e)}')
 
         # 处理匹配结果，合并相似组
-        print('处理匹配结果，合并相似组')
         # 先统一转换为文件路径
         similar_groups_filepath = []
         for similar_group in similar_groups:
@@ -233,7 +231,6 @@ class ThreadCompareComic(ThreadPattern):
     def get_hash(self, path, hash_type, hash_length):
         hash_key = f'{hash_type.text}_{hash_length}'
         _hash = self.cache_image_hash_dict.get(path, {}).get(hash_key, '')
-        print('读取数据库hash值', path, _hash)
         return _hash
 
     def _finish_compare(self):
@@ -241,16 +238,13 @@ class ThreadCompareComic(ThreadPattern):
         print('结束线程池 对比漫画相似度')
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '全部漫画对比完成')
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, f'共匹配到{len(self.similar_comic_info_groups)}组相似组')
-        print(self.similar_comic_info_groups)
         self.finished()
 
     def _compare(self, comic_info: ComicInfoBase):
         """对比漫画相似度"""
-        print(f'正在匹配：{comic_info.filepath}')
         # 检查漫画路径
         comic_path = comic_info.filepath
         if not comic_path and not os.path.exists(comic_path):
-            print('漫画不存在，跳过')
             return []
 
         # 提取需要匹配的漫画信息列表
@@ -261,7 +255,6 @@ class ThreadCompareComic(ThreadPattern):
             match_comic_info_list = self.comic_info_list  # note 不要修改列表
         # 如果选择了仅匹配相同层级父目录选项，则进行父目录判断
         if self.is_match_same_parent_dir:
-            print('父目录判断')
             match_comic_info_list_filter = []
             parent_dirpath_base = lzytools.file.get_parent_dirpath(comic_path, self.parent_dir_level)
             for compare_comic_info in match_comic_info_list:
@@ -299,7 +292,6 @@ class ThreadCompareComic(ThreadPattern):
             for hash_1, hash_2 in itertools.product(hashs_base, hashs_compare):
                 hamming_distance = lzytools_image.calc_hash_hamming_distance(hash_1, hash_2)
                 if hamming_distance <= self.hamming_distance:
-                    print('判断为相似')
                     similar_group.append(compare_comic_info)
                     break
 

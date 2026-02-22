@@ -66,7 +66,6 @@ class ThreadConvertHashToImageInfo(ThreadPattern):
         # hash组格式：[[hash1, hash2, hash3], [hash4, hash5, hash6]]
         # 先转换为漫画路径格式
         print('转换hash值为图片信息类')
-        print('需要转换的hash值', self.hash_group)
         self.image_info_group = []
         for h_group in self.hash_group:
             i_group = set()
@@ -76,10 +75,8 @@ class ThreadConvertHashToImageInfo(ThreadPattern):
             # 是否进行增强算法再校验
             if self.is_enhance_compare:
                 i_group = self.enhance_compare_ssim(i_group)
-                print('增强算法再校验结果', i_group)
             if i_group and len(i_group) >= 2:
                 self.image_info_group.append(list(i_group))
-        print('转换结果', self.image_info_group)
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, f'共完成{len(self.image_info_group)}组的转换')
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '完成将hash值相似组转换为对应的图片信息类组')
         self.finished()
@@ -88,8 +85,6 @@ class ThreadConvertHashToImageInfo(ThreadPattern):
         """根据hash值获取对应的图片信息类（列表）"""
         # 由于一个hash值可能对应多个图片，因此返回一个列表
         image_infos = self.db_image_info.get_image_info_by_hash(hash_, hash_type)
-        print('将hash值转换为对应的图片')
-        print('hash值', hash_)
         return image_infos
 
     def enhance_compare_ssim(self, image_infos: List[ImageInfoBase]):
@@ -106,7 +101,6 @@ class ThreadConvertHashToImageInfo(ThreadPattern):
             image_2_numpy = group_comb[1].get_numpy_image()
             # 计算相似度
             similarity = lzytools_image.calc_ssim(image_1_numpy, image_2_numpy)
-            print('ssim相似度', group_comb[0].image_path, group_comb[1].image_path, similarity)
             # 相似度大于阈值，则保留图片信息组，否则丢弃
             if similarity >= self.threshold:
                 image_infos_filter.update(group_comb)

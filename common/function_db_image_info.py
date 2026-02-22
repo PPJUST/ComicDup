@@ -389,7 +389,6 @@ class DBImageInfo:
 
     def clear(self):
         """清空数据库"""
-        print('清空数据库')
         self.cursor.execute(f"DELETE FROM {TABLE_NAME};")
         self.conn.commit()
         self._vacuum()

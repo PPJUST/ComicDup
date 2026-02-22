@@ -145,22 +145,9 @@ class SimilarGroupPreviewPresenter(QObject):
         comic_2_info = comic_2_widget.comic_info
 
         two_comic_page_match_group = function_match_pages.match_pages(comic_1_info, comic_2_info)
-        print('全量匹配页码对应', two_comic_page_match_group)
+        print('两本漫画全量匹配页码对应表', two_comic_page_match_group)
         result_code = function_match_pages.check_match_result(comic_1_info, comic_2_info, two_comic_page_match_group)
-        print('全量匹配结果', result_code)
         self.viewer.show_full_match_result(result_code)
-
-    def test(self):
-        """测试"""
-        comic_infos = []
-        for widget in self.widgets_comic:
-            widget: ComicPreviewPresenter
-            comic_info = widget.comic_info
-            comic_infos.append(comic_info)
-        two_comic_page_match_group = function_match_pages.match_pages(comic_infos[0], comic_infos[1])
-        print('测试', two_comic_page_match_group)
-        state = function_match_pages.check_match_result(comic_infos[0], comic_infos[1], two_comic_page_match_group)
-        print('测试结果', state)
 
     def quit(self):
         """退出"""

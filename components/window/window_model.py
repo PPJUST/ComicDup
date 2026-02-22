@@ -64,8 +64,6 @@ class WindowModel(QObject):
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.RateInfo, f'需要转换的hash值：{hash_}')
         for _image_info in image_infos:
             self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, f'转换的图片路径：{_image_info.image_path}')
-        print('将hash值转换为对应的图片')
-        print('hash值', hash_)
         return image_infos
 
     def get_comic_info_by_image_info(self, image_info: ImageInfoBase):
@@ -166,7 +164,6 @@ class WindowModel(QObject):
     def filter_comic_info_group_is_in_same_parent_folder(self, comic_info_group: List[List[ComicInfoBase]],
                                                          level: int):
         """筛选漫画信息类列表，剔除不在相同n层父目录下的项目"""
-        print('相同父目录匹配')
         # 漫画组格式：[[ComicInfo1,ComicInfo2,ComicInfo3], [ComicInfo4,ComicInfo5,ComicInfo6]]
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, f'对相似组进行相关性筛选')
         comic_info_group_filter = []
@@ -196,13 +193,11 @@ class WindowModel(QObject):
                     if p_2 in p_1:
                         parent_folders_filter.add(p_1)
                         parent_folders_filter.add(p_2)
-            print('共同父目录', parent_folders_filter)
             # 最后逐个匹配文件路径，如果在父目录列表下，则添加进相似组中
             for comic_info in group:
                 path = comic_info.filepath
                 for parent in parent_folders_filter:
                     if parent in path:
-                        print('是子目录，添加进相似组', path)
                         group_filter.append(comic_info)
                         break
 
@@ -248,9 +243,7 @@ class WindowModel(QObject):
         preview_paths_in_db = self.db_comic_info.get_preview_paths()
         preview_paths_in_local = function_cache_preview.get_preview_image_paths()
         for preview_path in preview_paths_in_local:
-            print('检查预览图是否存在于数据库', preview_path)
             if preview_path not in preview_paths_in_db:
-                print('不存在，删除')
                 lzytools.file.delete(preview_path, send_to_trash=True)  # note 调试阶段，仅删除到回收站而不是直接删除
 
     def clear_cache(self):

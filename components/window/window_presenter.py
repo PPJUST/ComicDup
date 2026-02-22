@@ -195,7 +195,7 @@ class WindowPresenter(QObject):
             # 提取漫画信息类字典
             comic_info_dict = self.thread_analyse_comic_info.get_comic_info_dict()
             comic_info_list = list(comic_info_dict.values())
-            print('分析完毕的漫画数量', len(comic_info_list))
+            print('分析完成的漫画数量', len(comic_info_list))
             if not comic_info_list:
                 self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning, '未找到任何漫画')
                 self.stop()
@@ -511,7 +511,8 @@ class WindowPresenter(QObject):
         self.widget_similar_result_filter.ReconfirmDelete.connect(
             self.assembler_similar_result_preview.set_is_reconfirm_before_delete)
         self.widget_similar_result_filter.RefreshResult.connect(self.assembler_similar_result_preview.reload)
-        self.widget_similar_result_filter.HideCompleteGroup.connect(self.assembler_similar_result_preview.hide_complete_group)
+        self.widget_similar_result_filter.HideCompleteGroup.connect(
+            self.assembler_similar_result_preview.hide_complete_group)
         self.widget_similar_result_filter.FilterSameItems.connect(
             self.assembler_similar_result_preview.show_same_item_in_group)
         self.widget_similar_result_filter.FilterSameFilesizeItems.connect(

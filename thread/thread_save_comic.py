@@ -46,7 +46,7 @@ class ThreadSaveComic(ThreadPattern):
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '正在保存漫画信息到本地数据库')
         # 在保存漫画信息前，提取数据库中所有项目的(路径, 指纹)，用于判断漫画是否已经存在于数据库中
         # 提取数据库中所有项目的指纹，用于判断漫画是否已存在于数据库但本地文件已被移动
-        print('正在保存漫画信息到本地数据库')
+        print('保存漫画信息到本地数据库')
         db_fingerprint_list = self.db_comic_info.get_fingerprint_list()
         db_path_fingerprint_list = self.db_comic_info.get_path_fingerprint_list()
         for comic_info in self.comic_info_list:
@@ -79,7 +79,7 @@ class ThreadSaveComic(ThreadPattern):
 
     def save_comic_info_without_infotips(self, comic_info: ComicInfoBase):
         """保存漫画信息类，但不进行提示"""
-        print('保存漫画信息类，但不进行提示')
+        print('保存漫画信息到本地数据库，但不进行提示')
         # 提取数据库中所有项目的指纹，用于判断漫画是否已存在于数据库但本地文件已被移动
         db_fingerprint_list = self.db_comic_info.get_fingerprint_list()
         db_path_fingerprint_list = self.db_comic_info.get_path_fingerprint_list()

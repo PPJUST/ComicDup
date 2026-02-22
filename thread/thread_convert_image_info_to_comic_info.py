@@ -47,7 +47,6 @@ class ThreadConvertImageInfoToComicInfo(ThreadPattern):
         # 图片信息类组格式：[[ImageInfo1, ImageInfo2, ImageInfo3], [ImageInfo4, ImageInfo5, ImageInfo6]]
         # 先转换为漫画路径格式
         print('转换图片信息类为漫画路径')
-        print('需要转换的图片信息类', self.image_info_group)
         comic_path_group = []
         for group in self.image_info_group:
             p_group = set()
@@ -56,12 +55,10 @@ class ThreadConvertImageInfoToComicInfo(ThreadPattern):
                 p_group.add(comic_path)
             if len(p_group) >= 2:
                 comic_path_group.append(list(p_group))
-        print('首次转换结果', comic_path_group)
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, f'共完成{len(comic_path_group)}组的转换')
         #  然后合并有交集的项目（用于整合组间相似项）
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, f'合并有交集的相似组')
         comic_path_group = lzytools.common.merge_intersection_item(comic_path_group)
-        print('合并交集后的结果', comic_path_group)
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, f'合并为{len(comic_path_group)}组')
         # 最后转换为漫画信息类格式
         self.comic_info_group = []
@@ -73,5 +70,4 @@ class ThreadConvertImageInfoToComicInfo(ThreadPattern):
                     ci_group.append(comic_info)
             self.comic_info_group.append(ci_group)
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '完成将图片信息类组转换为对应的漫画路径组')
-        print('最终转换的信息类', self.comic_info_group)
         self.finished()

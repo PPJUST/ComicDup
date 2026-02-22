@@ -11,8 +11,8 @@ from common import function_file, function_archive, function_cache_preview, func
 from common.class_config import FileType, SimilarAlgorithm
 
 _BASE_COLOR = ['black', 'maroon', 'red', 'purple', 'fuchsia',
-               'green', 'lime', 'olive', 'yellow', 'navy',
-               'blue', 'teal', 'aqua']
+               'green', 'lime', 'olive', 'navy', 'blue',
+               'teal', 'aqua']
 
 
 class ComicInfoBase(ABC):
@@ -96,7 +96,6 @@ class ComicInfoBase(ABC):
         """修复预览图（会更新预览图变量）"""
         # 获取无效的预览图路径
         useless_preview_path = self.preview_path
-        print('修复无效预览图', '预览图原路径', useless_preview_path)
         # 生成新的预览图
         self.save_preview_image()
         # 将新生成的预览图改名为原预览图文件名

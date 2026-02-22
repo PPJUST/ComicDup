@@ -184,9 +184,9 @@ class DBComicInfo:
     def update_comic_moved(self, comic_info: ComicInfoBase):
         """更新数据库中已移动路径的漫画，更新其最新路径（仅更新数据库中的第一个匹配项）
         :return: 返回在数据库中被删除的路径"""
+        print('更新已移动的漫画信息记录到数据库', comic_info, comic_info.filepath)
         # 提取漫画数据库中文件指纹对应的路径
         comic_paths_db = self.get_comic_paths_by_fingerprint(comic_info.fingerprint)
-        print('提取漫画数据库中文件指纹对应的路径', comic_paths_db)
         # 更新首个不存在路径的数据，并删除该失效项
         comic_path_deleted = ''  # 被删除的漫画路径
         for path in comic_paths_db:
@@ -230,8 +230,6 @@ class DBComicInfo:
 
     def get_comic_info_by_comic_path(self, comic_path: str):
         """根据漫画文件路径获取漫画信息类"""
-        print('根据漫画文件路径获取漫画信息类')
-        print('需要转换的漫画路径', comic_path)
         comic_path = os.path.normpath(comic_path)
 
         self.cursor.execute(f'SELECT * FROM {TABLE_NAME} WHERE {KEY_FILEPATH} = "{comic_path}"')
@@ -244,7 +242,7 @@ class DBComicInfo:
 
         # 未匹配到数据时，返回空
         if not result:
-            print('数据库匹配失败', comic_path)
+            print('漫画信息数据库匹配失败', comic_path)
             return None
 
         # 转换为漫画信息类
@@ -383,7 +381,6 @@ class DBComicInfo:
                             f'WHERE {KEY_FILEPATH} = "{comic_path}" '
                             f'AND {KEY_FINGERPRINT} = "{comic_fingerprint}"')
         result = self.cursor.fetchone()
-        print('检查漫画在数据库中是否已存在', comic_path, result)
         if result:
             return True
         else:
@@ -398,7 +395,6 @@ class DBComicInfo:
         # 与传入路径匹配
         is_path_exist = not comic_path in comic_paths_in_db
 
-        print('检查已存在的漫画指纹，其对应的漫画路径是否已移动', comic_path, is_path_exist)
         return is_path_exist
 
     def is_comic_path_exist(self, comic_path: str):
@@ -440,7 +436,6 @@ class DBComicInfo:
 
     def clear(self):
         """清空数据库"""
-        print('清空数据库')
         self.cursor.execute(f"DELETE FROM {TABLE_NAME};")
         self.conn.commit()
         self._vacuum()

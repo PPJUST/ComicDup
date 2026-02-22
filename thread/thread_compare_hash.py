@@ -66,7 +66,6 @@ class ThreadCompareHash(ThreadPattern):
         print(f'启动线程池 对比图片hash，线程数量：{self.max_workers}')
 
         total = len(self.hash_list)
-        print('hash总数', total)
         if total == 0:
             self._finish_compare()
             return
@@ -82,7 +81,6 @@ class ThreadCompareHash(ThreadPattern):
 
         # 重新排序
         match_hash_list = self.sort_hash(match_hash_list)
-        print('用于匹配的hash列表总数', len(match_hash_list))
         with ThreadPoolExecutor(max_workers=self.max_workers) as executor:
             # 提交所有任务
             # note 线程公用匹配列表，请勿在匹配方法中修改该列表
@@ -97,7 +95,6 @@ class ThreadCompareHash(ThreadPattern):
                 hash_ = futures[future]
                 try:
                     similar_group = future.result()
-                    print('显示匹配结果', similar_group)
                     # 即使只有其自身，仍旧写入相似组，因为可能存在漫画的复制品，导致hash值相同，但是跳过空值（纯色页）
                     if similar_group:
                         self.similar_hash_group.append(similar_group)
@@ -128,7 +125,6 @@ class ThreadCompareHash(ThreadPattern):
         if zero_count / len(hash_) > 0.8 or zero_count / len(hash_) < 0.2:
             return None
 
-        print(f'匹配hash 主hash【{hash_}】')
         # 去重对比列表以及剔除自身
         filter_list = []
         if match_hash_list.count(hash_) == 1:  # 如果计数为1，则说明自身为匹配列表中的唯一元素，则直接剔除并去重即可
@@ -161,7 +157,6 @@ class ThreadCompareHash(ThreadPattern):
                 break
 
         match_hash_list_filter = match_hash_list[start:end]
-        print('对比hash列表', len(match_hash_list_filter))
 
         # 执行匹配
         for hash_compare in match_hash_list_filter:
@@ -176,8 +171,6 @@ class ThreadCompareHash(ThreadPattern):
         # 存在相似项时才返回数据，否则返回空
         if len(similar_group) > 0:
             similar_group.add(hash_)
-            print(f'返回匹配结果{similar_group}')
             return list(similar_group)
         else:
-            print(f'返回匹配结果[]')
             return []

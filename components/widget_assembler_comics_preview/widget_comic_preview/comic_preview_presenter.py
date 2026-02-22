@@ -102,8 +102,6 @@ class ComicPreviewPresenter(QObject):
         else:
             hash_ = ''
 
-        print('计算当前显示的图片的hash值', hash_)
-
         return hash_
 
     def compare_current_image_hash(self, compare_hash: str):

@@ -220,7 +220,6 @@ class SimilarGroupInfoPresenter(QObject):
                 color_dict[_joined] = _BASE_COLOR[len(color_dict) % len(_BASE_COLOR)]  # 使用取模运算实现循环索引
             color = color_dict[_joined]
             widget_presenter.set_color(color)
-        print('组别色码表', color_dict)
 
     def highlight_comic_pages(self):
         """高亮页数最多的漫画的文本"""
