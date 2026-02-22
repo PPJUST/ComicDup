@@ -253,23 +253,6 @@ class ThreadCompareComic(ThreadPattern):
             match_comic_info_list = self.cache_comic_info_list  # note 不要修改列表
         else:
             match_comic_info_list = self.comic_info_list  # note 不要修改列表
-        # 如果选择了仅匹配相同层级父目录选项，则进行父目录判断
-        if self.is_match_same_parent_dir:
-            match_comic_info_list_filter = []
-            parent_dirpath_base = lzytools.file.get_parent_dirpath(comic_path, self.parent_dir_level)
-            for compare_comic_info in match_comic_info_list:
-                compare_comic_path = compare_comic_info.filepath
-                parent_dirpath_compare = lzytools.file.get_parent_dirpath(compare_comic_path, self.parent_dir_level)
-                if parent_dirpath_base == parent_dirpath_compare:
-                    match_comic_info_list_filter.append(compare_comic_info)
-                elif lzytools.file.is_subpath(parent_dirpath_base, parent_dirpath_compare):
-                    match_comic_info_list_filter.append(compare_comic_info)
-                elif lzytools.file.is_subpath(parent_dirpath_compare, parent_dirpath_base):
-                    match_comic_info_list_filter.append(compare_comic_info)
-                else:
-                    continue
-
-            match_comic_info_list = match_comic_info_list_filter
 
         # 遍历对比列表，匹配相似组
         similar_group = []
@@ -281,8 +264,24 @@ class ThreadCompareComic(ThreadPattern):
                                 max_zero_count_base + self.hamming_distance * 0.5)
         for compare_comic_info in match_comic_info_list:
             filepath_compare = compare_comic_info.filepath
+            # 相同路径校验
             if filepath_compare == comic_path:
                 continue
+
+            # 如果选择了仅匹配相同层级父目录选项，则进行父目录判断
+            if self.is_match_same_parent_dir:
+                parent_dirpath_base = lzytools.file.get_parent_dirpath(comic_path, self.parent_dir_level)
+                parent_dirpath_compare = lzytools.file.get_parent_dirpath(filepath_compare, self.parent_dir_level)
+                if parent_dirpath_base == parent_dirpath_compare:
+                    pass
+                elif lzytools.file.is_subpath(parent_dirpath_base, parent_dirpath_compare):
+                    pass
+                elif lzytools.file.is_subpath(parent_dirpath_compare, parent_dirpath_base):
+                    pass
+                else:
+                    continue
+
+            # hash校验
             hashs_compare = compare_comic_info.image_hashs
             min_zero_count_compare = hashs_compare[0].count('0')
             max_zero_count_compare = hashs_compare[-1].count('0')
