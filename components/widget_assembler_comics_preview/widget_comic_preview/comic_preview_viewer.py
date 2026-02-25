@@ -26,7 +26,7 @@ class ComicPreviewViewer(QWidget):
 
         # 添加一个悬浮于左上角的label，用于显示图片信息
         self.label_floating_image_info = QLabel(self)
-        self.label_floating_image_info.setGeometry(5, 5, 150, 20)
+        self.label_floating_image_info.setGeometry(5, 5, 200, 20)
         self.label_floating_image_info.setWindowFlags(Qt.WindowType.SubWindow)
         self.label_floating_image_info.setStyleSheet("color: blue; font-weight: bold;")
         self.label_floating_image_info.show()
@@ -48,9 +48,9 @@ class ComicPreviewViewer(QWidget):
         self.label_image_preview.set_image(preview_path)
         self._show_image_info()
 
-    def show_bytes_image(self, data: bytes):
+    def show_bytes_image(self, data: bytes, filename: str = None):
         """显示bytes图像"""
-        self.label_image_preview.set_bytes_image(data)
+        self.label_image_preview.set_bytes_image(data, filename)
         self._show_image_info()
 
     def resize_image_size(self, parent_width: int, parent_height: int):
@@ -97,8 +97,11 @@ class ComicPreviewViewer(QWidget):
         """显示当前图片的信息"""
         width = self.label_image_preview.pixmap_original.size().width()  # 读取原始图像尺寸
         height = self.label_image_preview.pixmap_original.size().height()  # 读取原始图像尺寸
-        image_size = f'{width} x {height}'
-        self.label_floating_image_info.setText(f'{image_size}')
+        image_size = f'{width}x{height}'
+        image_filename = self.label_image_preview.image_filename
+        if not image_filename:
+            image_filename = ''
+        self.label_floating_image_info.setText(f'{image_size} {image_filename}')
 
     def _bind_signal(self):
         """绑定信号"""

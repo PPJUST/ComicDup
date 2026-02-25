@@ -82,7 +82,7 @@ class ComicPreviewPresenter(QObject):
                 image_bytes = lzytools_archive.read_image(archive_path, inside_image_path)
                 if not image_bytes:
                     raise Exception('read failed')
-                self.viewer.show_bytes_image(image_bytes)
+                self.viewer.show_bytes_image(image_bytes, inside_image_path)
         except:  # 读取失败时
             image_base64 = ICON_READ_FAILED
             image_bytes = base64.b64decode(image_base64)
