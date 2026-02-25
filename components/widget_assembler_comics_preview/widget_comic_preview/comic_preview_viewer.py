@@ -26,7 +26,7 @@ class ComicPreviewViewer(QWidget):
 
         # 添加一个悬浮于左上角的label，用于显示图片信息
         self.label_floating_image_info = QLabel(self)
-        self.label_floating_image_info.setGeometry(5, 5, 200, 20)
+        self.label_floating_image_info.setGeometry(5, 5, 250, 20)
         self.label_floating_image_info.setWindowFlags(Qt.WindowType.SubWindow)
         self.label_floating_image_info.setStyleSheet("color: blue; font-weight: bold;")
         self.label_floating_image_info.show()
@@ -101,7 +101,9 @@ class ComicPreviewViewer(QWidget):
         image_filename = self.label_image_preview.image_filename
         if not image_filename:
             image_filename = ''
-        self.label_floating_image_info.setText(f'{image_size} {image_filename}')
+        image_filesize_bytes = self.label_image_preview.image_filesize
+        image_filesize_KB = round(image_filesize_bytes / 1024 / 8, 2)
+        self.label_floating_image_info.setText(f'{image_size} {image_filename} {image_filesize_KB}KB')
 
     def _bind_signal(self):
         """绑定信号"""

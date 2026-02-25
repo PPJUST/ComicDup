@@ -15,20 +15,24 @@ class LabelImagePreview(QLabel):
         self.setSizePolicy(QSizePolicy.Preferred, QSizePolicy.Preferred)
         self.pixmap_original = None
         self.image_filename = None
+        self.image_filesize = None  # byte
         if image_path:
             self.pixmap_original = QPixmap(image_path)
             self.image_filename = os.path.split(image_path)[1]
+            self.image_filesize = os.path.getsize(image_path)
 
     def set_image(self, image_path: str = None):
         """设置图片"""
         self.pixmap_original = QPixmap(image_path)
         self.image_filename = os.path.split(image_path)[1]
+        self.image_filesize = os.path.getsize(image_path)
         self.resize_image_size(self.width(), self.height())
 
     def set_bytes_image(self, data: bytes, filename: str = None):
         """设置bytes图片"""
         self.pixmap_original = QPixmap()
         self.pixmap_original.loadFromData(data, format=None)
+        self.image_filesize = len(data)
         self.resize_image_size(self.width(), self.height())
         if filename:
             self.image_filename = os.path.split(filename)[1]
