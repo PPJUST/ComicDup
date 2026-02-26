@@ -18,7 +18,6 @@ from components.widget_assembler_similar_result_preview.widget_similar_group_inf
 
 
 # todo 手动设置当前组为非相似组的按钮，管理非相似组的单独模块
-# todo 相似组内的全量对比功能，对比漫画之间的每一张图片，找出相同页与差异页
 # todo 匹配组内删除项目后，对应项目的封面图片变灰色，不直接从布局中删除
 
 

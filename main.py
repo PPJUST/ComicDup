@@ -2,11 +2,13 @@ import os
 import sys
 
 import lzytools
+import lzytools_Qt
 from PySide6.QtGui import QFont
 from PySide6.QtWidgets import QApplication, QMessageBox
 
 from common import function_cache_preview, function_cache_result
 from components import window
+from components.window.res.icon_base64 import ICON_LOGO
 
 
 def load_app():
@@ -20,6 +22,9 @@ def load_app():
     # 设置全局字体
     font = QFont("Microsoft YaHei", 10)  # 字体名称和大小
     app_.setFont(font)
+
+    # 设置图标
+    app_.setWindowIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_LOGO))
 
     presenter = window.get_presenter()
     viewer = presenter.viewer
