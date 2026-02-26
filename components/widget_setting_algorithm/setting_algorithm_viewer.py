@@ -37,6 +37,7 @@ class SettingAlgorithmViewer(QWidget):
         self.ui.spinBox_similarity_threshold.installEventFilter(self)
 
         self.ui.comboBox_enhance_algorithm.setVisible(False)  # 仅使用SSIM算法，不允许选择其他算法
+        self.ui.checkBox_enhance_algorithm.setVisible(False)  # todo 屏蔽未完成功能
 
     def set_basic_algorithm(self, algorithm: str):
         """设置基础算法"""

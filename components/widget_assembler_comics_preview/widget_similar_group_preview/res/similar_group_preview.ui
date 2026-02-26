@@ -43,6 +43,9 @@
      </item>
      <item>
       <widget class="QToolButton" name="toolButton_previous2">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;上5页&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <property name="text">
         <string>previous2</string>
        </property>
@@ -50,6 +53,9 @@
      </item>
      <item>
       <widget class="QToolButton" name="toolButton_previous">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;上1页&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <property name="text">
         <string>previous</string>
        </property>
@@ -57,6 +63,9 @@
      </item>
      <item>
       <widget class="QToolButton" name="toolButton_next">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;下1页&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <property name="text">
         <string>next</string>
        </property>
@@ -64,6 +73,9 @@
      </item>
      <item>
       <widget class="QToolButton" name="toolButton_next2">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;下5页&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <property name="text">
         <string>next2</string>
        </property>
@@ -71,6 +83,9 @@
      </item>
      <item>
       <widget class="QToolButton" name="toolButton_reset">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;重置页码&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <property name="text">
         <string>reset</string>
        </property>
@@ -105,6 +120,9 @@
      </item>
      <item>
       <widget class="QCheckBox" name="checkBox_auto_calc_similar">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;实时显示预览图片页之间的相似度，以第一个项目的图片为基准&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <property name="text">
         <string>实时显示相似度</string>
        </property>
@@ -119,6 +137,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="pushButton_calc_diff_pages">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;对两个项目进行全部图片的相似匹配，分析两个项目之间的差异情况&lt;/p&gt;&lt;p&gt;注意，即使全部正确匹配，仍可能是不同的汉化组、不同的修正&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <property name="text">
         <string>计算差异页面</string>
        </property>

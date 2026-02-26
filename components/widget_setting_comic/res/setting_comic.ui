@@ -33,18 +33,28 @@
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
       <widget class="QLabel" name="label_2">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;一个文件夹/压缩文件中存在n张图片及以上时，才会被识别为漫画&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <property name="text">
         <string>页数下限</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QSpinBox" name="spinBox_pages_lower_limit"/>
+      <widget class="QSpinBox" name="spinBox_pages_lower_limit">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;一个文件夹/压缩文件中存在n张图片及以上时，才会被识别为漫画&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
    <item>
     <widget class="QCheckBox" name="checkBox_analyze_archive">
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;识别漫画时，是否检查压缩文件&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
      <property name="text">
       <string>识别压缩文件类漫画</string>
      </property>
@@ -52,6 +62,9 @@
    </item>
    <item>
     <widget class="QCheckBox" name="checkBox_allow_other_filetypes">
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;在识别漫画时，是否允许文件夹/压缩文件内包含除图片以外的文件类型&lt;/p&gt;&lt;p&gt;（注意，如果文件夹中包含子文件夹，则该文件夹不会被识别为漫画）&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
      <property name="text">
       <string>允许包含除图片外的其他类型文件</string>
      </property>

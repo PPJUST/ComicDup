@@ -33,18 +33,28 @@
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QLabel" name="label_3">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;从每本漫画中提取的图片数量，用于相似匹配，提取页数越多计算量越大（指数级增长）&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <property name="text">
         <string>提取漫画页数</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QSpinBox" name="spinBox_extract_pages"/>
+      <widget class="QSpinBox" name="spinBox_extract_pages">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;从每本漫画中提取的图片数量，用于相似匹配，提取页数越多计算量越大（指数级增长）&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
    <item>
     <widget class="QCheckBox" name="checkBox_match_cache">
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;在匹配相似漫画时，是否额外匹配数据库中已经缓存的漫画数据&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
      <property name="text">
       <string>匹配缓存数据</string>
      </property>
@@ -61,13 +71,20 @@
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QCheckBox" name="checkBox_same_parent_folder">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;在匹配相似漫画时，仅匹配在同n层级父文件夹下的漫画&lt;/p&gt;&lt;p&gt;如果漫画是按作者整理且都在同一目录下，则推荐匹配层级为 1&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <property name="text">
         <string>仅匹配同</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QSpinBox" name="spinBox_same_parent_folder"/>
+      <widget class="QSpinBox" name="spinBox_same_parent_folder">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;在匹配相似漫画时，仅匹配在同n层级父文件夹下的漫画&lt;/p&gt;&lt;p&gt;如果漫画是按作者整理且都在同一目录下，则推荐匹配层级为 1&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
      </item>
      <item>
       <widget class="QLabel" name="label">
@@ -82,13 +99,20 @@
     <layout class="QHBoxLayout" name="horizontalLayout_3">
      <item>
       <widget class="QLabel" name="label_2">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;多线程使用的线程数量，线程数越多计算越快&lt;/p&gt;&lt;p&gt;不能超过CPU线程数上限&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <property name="text">
         <string>线程数</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QSpinBox" name="spinBox_thread_count"/>
+      <widget class="QSpinBox" name="spinBox_thread_count">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;多线程使用的线程数量，线程数越多计算越快&lt;/p&gt;&lt;p&gt;不能超过CPU线程数上限&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>

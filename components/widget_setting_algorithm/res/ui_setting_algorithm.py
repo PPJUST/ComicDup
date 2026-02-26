@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'setting_algorithmmtLOqu.ui'
+## Form generated from reading UI file 'setting_algorithmxRIqpP.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.10.1
 ##
@@ -103,10 +103,28 @@ class Ui_Form(object):
 
     def retranslateUi(self, Form):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
+#if QT_CONFIG(tooltip)
+        self.label.setToolTip(QCoreApplication.translate("Form", u"<html><head/><body><p><span style=\" font-weight:700;\">aHash</span>\uff1a\u5747\u503c\u54c8\u5e0c\uff0c\u8ba1\u7b97\u6700\u5feb\uff0c\u6548\u679c\u6700\u5dee</p><p><span style=\" font-weight:700;\">pHash</span>\uff1a\u611f\u77e5\u54c8\u5e0c\uff0c\u8ba1\u7b97\u6700\u6162\uff0c\u6548\u679c\u6700\u597d</p><p><span style=\" font-weight:700;\">dHash</span>\uff1a\u5dee\u5f02\u54c8\u5e0c\uff0c\u8ba1\u7b97\u4e2d\u7b49\uff0c\u6548\u679c\u4e2d\u7b49</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.label.setText(QCoreApplication.translate("Form", u"\u57fa\u7840\u7b97\u6cd5", None))
+#if QT_CONFIG(tooltip)
+        self.comboBox_basic_algorithm.setToolTip(QCoreApplication.translate("Form", u"<html><head/><body><p><span style=\" font-weight:700;\">aHash</span>\uff1a\u5747\u503c\u54c8\u5e0c\uff0c\u8ba1\u7b97\u6700\u5feb\uff0c\u6548\u679c\u6700\u5dee</p><p><span style=\" font-weight:700;\">pHash</span>\uff1a\u611f\u77e5\u54c8\u5e0c\uff0c\u8ba1\u7b97\u6700\u6162\uff0c\u6548\u679c\u6700\u597d</p><p><span style=\" font-weight:700;\">dHash</span>\uff1a\u5dee\u5f02\u54c8\u5e0c\uff0c\u8ba1\u7b97\u4e2d\u7b49\uff0c\u6548\u679c\u4e2d\u7b49</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.checkBox_enhance_algorithm.setText(QCoreApplication.translate("Form", u"\u589e\u5f3a\u7b97\u6cd5\u518d\u6821\u9a8c", None))
+#if QT_CONFIG(tooltip)
+        self.label_2.setToolTip(QCoreApplication.translate("Form", u"<html><head/><body><p>\u5224\u65ad\u4e3a\u56fe\u7247\u76f8\u4f3c\u7684\u6700\u4f4e\u76f8\u4f3c\u5ea6</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.label_2.setText(QCoreApplication.translate("Form", u"\u76f8\u4f3c\u5ea6\u9608\u503c", None))
+#if QT_CONFIG(tooltip)
+        self.spinBox_similarity_threshold.setToolTip(QCoreApplication.translate("Form", u"<html><head/><body><p>\u5224\u65ad\u4e3a\u56fe\u7247\u76f8\u4f3c\u7684\u6700\u4f4e\u76f8\u4f3c\u5ea6</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.label_3.setText(QCoreApplication.translate("Form", u"%", None))
+#if QT_CONFIG(tooltip)
+        self.label_4.setToolTip(QCoreApplication.translate("Form", u"<html><head/><body><p>\u8ba1\u7b97\u56fe\u7247\u54c8\u5e0c\u7684\u54c8\u5e0c\u957f\u5ea6\uff0c\u957f\u5ea6\u8d8a\u957f\u8ba1\u7b97\u7ed3\u679c\u7cbe\u786e\u4f46\u8ba1\u7b97\u901f\u5ea6\u8d8a\u6162</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
         self.label_4.setText(QCoreApplication.translate("Form", u"Hash\u957f\u5ea6", None))
+#if QT_CONFIG(tooltip)
+        self.comboBox_hash_length.setToolTip(QCoreApplication.translate("Form", u"<html><head/><body><p>\u8ba1\u7b97\u56fe\u7247\u54c8\u5e0c\u7684\u54c8\u5e0c\u957f\u5ea6\uff0c\u957f\u5ea6\u8d8a\u957f\u8ba1\u7b97\u7ed3\u679c\u7cbe\u786e\u4f46\u8ba1\u7b97\u901f\u5ea6\u8d8a\u6162</p></body></html>", None))
+#endif // QT_CONFIG(tooltip)
     # retranslateUi
 

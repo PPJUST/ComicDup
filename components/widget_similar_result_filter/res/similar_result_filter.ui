@@ -39,6 +39,9 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;重置匹配结果为初始状态，但是会剔除已经不存在的项目&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <property name="text">
         <string>重置结果</string>
        </property>
@@ -46,6 +49,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="pushButton_hide_complete_group">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;剔除仅剩余一个项目的组&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <property name="text">
         <string>剔除已完成</string>
        </property>
@@ -60,6 +66,9 @@
      </property>
      <item>
       <widget class="QPushButton" name="pushButton_filter_same_items">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;仅显示文件大小相同、文件指纹相同的项目，基本可以确认组中的项目为复制品&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <property name="text">
         <string>仅显示100%相同项</string>
        </property>
@@ -67,6 +76,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="pushButton_filter_same_filesize_items">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;仅显示文件大小相同的项目，通常情况下可以确认组中的项目为复制品，但是内部图片的文件名、顺序可能不同，最好进行简单检查&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <property name="text">
         <string>仅显示文件大小相同项</string>
        </property>
@@ -74,6 +86,9 @@
      </item>
      <item>
       <widget class="QPushButton" name="pushButton_exclude_diff_pages">
+       <property name="toolTip">
+        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;剔除页数差异过大的项目，配合全量匹配功能，方便手工筛选&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+       </property>
        <property name="text">
         <string>剔除页数差异过大项</string>
        </property>
@@ -103,13 +118,20 @@
        </property>
        <item>
         <widget class="QLabel" name="label">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;组中项目的排序规则&lt;/p&gt;&lt;p&gt;漫画质量评分是结合文件大小、页数、文件名综合计算的评分&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
          <property name="text">
           <string>组内排序规则：</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="comboBox_sort_key"/>
+        <widget class="QComboBox" name="comboBox_sort_key">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;组中项目的排序规则&lt;/p&gt;&lt;p&gt;漫画质量评分是结合文件大小、页数、文件名综合计算的评分&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QComboBox" name="comboBox_sort_direction"/>
@@ -127,13 +149,20 @@
       <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0,0,1">
        <item>
         <widget class="QLabel" name="label_2">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;0页，一般选择，用来筛选不同汉化组、分辨率、黑白全彩等&lt;/p&gt;&lt;p&gt;1~5页，用来筛选某本漫画有多余页或缺页的情况&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
          <property name="text">
           <string>页数阈值：</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QSpinBox" name="spinBox_diff_pages_threshold"/>
+        <widget class="QSpinBox" name="spinBox_diff_pages_threshold">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;0页，一般选择，用来筛选不同汉化组、分辨率、黑白全彩等&lt;/p&gt;&lt;p&gt;1~5页，用来筛选某本漫画有多余页或缺页的情况&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QLabel" name="label_3">
@@ -165,6 +194,9 @@
    </item>
    <item>
     <widget class="QCheckBox" name="checkBox_reconfirm_before_delete">
+     <property name="toolTip">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;如不勾选，则删除漫画时不会弹出确认对话框&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
      <property name="text">
       <string>删除漫画前需再次确认</string>
      </property>
