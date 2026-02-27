@@ -13,7 +13,7 @@ class ThreadSaveImage(ThreadPattern):
 
     def __init__(self):
         super().__init__()
-        self.step_index = 2
+        self.step_index = 5
         self.step_info = '保存图片信息到数据库'
 
         # 需要保存的漫画信息列表
@@ -38,7 +38,9 @@ class ThreadSaveImage(ThreadPattern):
     def run(self):
         super().run()
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '正在保存图片信息到本地数据库')
-        for image_info in self.image_info_list:
+        count = len(self.image_info_list)
+        for index, image_info in enumerate(self.image_info_list, start=1):
+            self.SignalRate.emit(f'{index}/{count}')
             self.db_image_info.add(image_info)
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '完成保存图片信息到本地数据库')
         self.finished()

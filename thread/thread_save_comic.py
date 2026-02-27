@@ -14,7 +14,7 @@ class ThreadSaveComic(ThreadPattern):
 
     def __init__(self):
         super().__init__()
-        self.step_index = 2
+        self.step_index = 3
         self.step_info = '保存漫画信息到数据库'
 
         # 需要保存的漫画信息列表
@@ -49,7 +49,9 @@ class ThreadSaveComic(ThreadPattern):
         print('保存漫画信息到本地数据库')
         db_fingerprint_list = self.db_comic_info.get_fingerprint_list()
         db_path_fingerprint_list = self.db_comic_info.get_path_fingerprint_list()
-        for comic_info in self.comic_info_list:
+        count = len(self.comic_info_list)
+        for index, comic_info in enumerate(self.comic_info_list, start=1):
+            self.SignalRate.emit(f'{index}/{count}')
             # 在保存漫画信息前，考虑已存在于数据库中的项目
             _check_tuple = (comic_info.filepath, comic_info.fingerprint)
             is_comic_exist_db = comic_info.fingerprint in db_fingerprint_list

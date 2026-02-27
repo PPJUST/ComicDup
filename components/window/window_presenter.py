@@ -116,7 +116,6 @@ class WindowPresenter(QObject):
         """执行查重"""
         # 开始计时
         self.widget_runtime_info.start_time()
-        self.widget_runtime_info.update_step_count(4)
 
         # 禁用相关设置选项
         self._set_options_state(False)
@@ -374,9 +373,10 @@ class WindowPresenter(QObject):
 
     """运行信息方法"""
 
-    def update_runtime_info_index(self, index: int):
+    def update_runtime_info_index(self, index: int, count: int):
         """更新运行信息-步骤索引"""
         self.widget_runtime_info.update_step_index(index)
+        self.widget_runtime_info.update_step_count(count)
 
     def update_runtime_info_title(self, title: str):
         """更新运行信息-步骤标题"""

@@ -80,9 +80,11 @@ class ThreadSearchComic(ThreadPattern):
         # 筛选符合条件的漫画
         comics_path = set()
         # 搜索文件夹类漫画
+        dir_count = len(dir_dict)
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.RateInfo, '搜索文件夹类漫画')
-        for dir_, files in dir_dict.items():
+        for index_dir, (dir_, files) in enumerate(dir_dict.items(), start=1):
             self.SignalRuntimeInfo.emit(TypeRuntimeInfo.RateInfo, f'检查文件夹：{dir_}')
+            self.SignalRate.emit(f'{index_dir}/{dir_count}')
             if not os.path.exists(dir_):
                 continue
             # 如果文件夹中存在子文件夹，则不视为漫画
@@ -105,8 +107,10 @@ class ThreadSearchComic(ThreadPattern):
             self.SignalRuntimeInfo.emit(TypeRuntimeInfo.RateInfo, '搜索压缩文件类漫画')
             # 提取文件列表中的压缩文件
             archives = [i for i in files_in_search_list if function_archive.is_archive_by_filename(i)]
-            for archive in archives:
+            archive_count = len(archives)
+            for index_archive, archive in enumerate(archives, start=1):
                 self.SignalRuntimeInfo.emit(TypeRuntimeInfo.RateInfo, f'检查压缩文件：{archive}')
+                self.SignalRate.emit(f'{index_archive}/{archive_count}')
                 if not os.path.exists(archive):
                     continue
                 # 提取压缩文件中的所有图片

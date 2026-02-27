@@ -19,7 +19,7 @@ class ThreadCompareComic(ThreadPattern):
 
     def __init__(self):
         super().__init__()
-        self.step_index = 4
+        self.step_index = 6
         self.step_info = '对比漫画相似度'
 
         # 需要匹配的漫画信息类列表

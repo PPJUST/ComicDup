@@ -15,8 +15,8 @@ class ThreadAnalyseImageInfo(ThreadPattern):
 
     def __init__(self):
         super().__init__()
-        self.step_index = 3
-        self.step_info = '计算图片hash'
+        self.step_index = 4
+        self.step_info = '分析图片信息'
 
         # 需要提取图片信息的漫画信息类列表
         self.comic_info_list: List[ComicInfoBase] = []
