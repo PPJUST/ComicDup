@@ -58,11 +58,11 @@
         </widget>
        </item>
        <item>
-        <widget class="QLabel" name="label_filename">
-         <property name="text">
-          <string>filename</string>
+        <layout class="QHBoxLayout" name="horizontalLayout_filename">
+         <property name="spacing">
+          <number>0</number>
          </property>
-        </widget>
+        </layout>
        </item>
       </layout>
      </item>

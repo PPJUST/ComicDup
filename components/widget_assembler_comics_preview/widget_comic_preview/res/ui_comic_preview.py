@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'comic_previewCXhSJH.ui'
+## Form generated from reading UI file 'comic_previewPGkVOO.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.8.1
+## Created by: Qt User Interface Compiler version 6.10.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -48,10 +48,11 @@ class Ui_Form(object):
 
         self.horizontalLayout.addWidget(self.label_filesize)
 
-        self.label_filename = QLabel(Form)
-        self.label_filename.setObjectName(u"label_filename")
+        self.horizontalLayout_filename = QHBoxLayout()
+        self.horizontalLayout_filename.setSpacing(0)
+        self.horizontalLayout_filename.setObjectName(u"horizontalLayout_filename")
 
-        self.horizontalLayout.addWidget(self.label_filename)
+        self.horizontalLayout.addLayout(self.horizontalLayout_filename)
 
         self.horizontalLayout.setStretch(2, 1)
 
@@ -125,7 +126,6 @@ class Ui_Form(object):
         Form.setWindowTitle(QCoreApplication.translate("Form", u"Form", None))
         self.label_icon.setText(QCoreApplication.translate("Form", u"icon", None))
         self.label_filesize.setText(QCoreApplication.translate("Form", u"filesize", None))
-        self.label_filename.setText(QCoreApplication.translate("Form", u"filename", None))
         self.label_parent_dirpath.setText(QCoreApplication.translate("Form", u"parent_dirpath", None))
         self.toolButton_previous.setText(QCoreApplication.translate("Form", u"previous", None))
         self.toolButton_next.setText(QCoreApplication.translate("Form", u"next", None))

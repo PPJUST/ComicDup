@@ -25,6 +25,10 @@ class ComicPreviewViewer(QWidget):
         self.label_image_preview = LabelImagePreview()
         self.ui.verticalLayout_preview.addWidget(self.label_image_preview)
 
+        # 添加隐藏长文本的label控件
+        self.label_filename = lzytools_Qt.TableWidgetHiddenOverLengthText(self)
+        self.ui.horizontalLayout_filename.addWidget(self.label_filename)
+
         # 添加一个悬浮于左上角的label，用于显示图片信息
         self.label_floating_image_info = QLabel(self)
         self.label_floating_image_info.setGeometry(5, 5, 250, 20)
@@ -38,6 +42,7 @@ class ComicPreviewViewer(QWidget):
         self.label_floating_similar.setWindowFlags(Qt.WindowType.SubWindow)
         self.label_floating_similar.setStyleSheet("color: blue; font-weight: bold;")
         self.label_floating_similar.show()
+
         # 绑定信号
         self._bind_signal()
 
@@ -62,7 +67,7 @@ class ComicPreviewViewer(QWidget):
     def resize_image_size(self, parent_width: int, parent_height: int):
         """设置图片尺寸"""
         # 需要预留其余空间的空间
-        height_info_label = self.ui.label_filename.height() + self.ui.label_parent_dirpath.height() + self.ui.toolButton_previous.height()
+        height_info_label = self.label_filename.height() + self.ui.label_parent_dirpath.height() + self.ui.toolButton_previous.height()
         height_blank = 45
         height = parent_height - height_info_label - height_blank
         self.label_image_preview.resize_image_size(parent_width, height)
@@ -81,11 +86,13 @@ class ComicPreviewViewer(QWidget):
 
     def set_filename(self, filename: str):
         """设置文件名"""
-        self.ui.label_filename.setText(filename)
+        self.label_filename.set_text(filename)
+        self.label_filename.setToolTip(filename)
 
     def set_parent_dirpath(self, parent_dirpath: str):
         """设置父级路径"""
         self.ui.label_parent_dirpath.setText(parent_dirpath)
+        self.ui.label_parent_dirpath.setToolTip(parent_dirpath)
 
     def set_current_page(self, current_page: int):
         """设置当前页码"""
