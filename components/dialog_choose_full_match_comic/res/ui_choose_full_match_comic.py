@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'choose_full_match_comiczFZbwH.ui'
+## Form generated from reading UI file 'choose_full_match_comicuLxkEM.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.10.1
 ##
@@ -40,6 +40,11 @@ class Ui_Dialog(object):
         self.label_6.setObjectName(u"label_6")
 
         self.verticalLayout.addWidget(self.label_6)
+
+        self.label_7 = QLabel(Dialog)
+        self.label_7.setObjectName(u"label_7")
+
+        self.verticalLayout.addWidget(self.label_7)
 
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setObjectName(u"horizontalLayout")
@@ -125,6 +130,7 @@ class Ui_Dialog(object):
         self.label.setText(QCoreApplication.translate("Dialog", u"\u9009\u62e9\u9700\u8981\u8fdb\u884c\u5168\u91cf\u5339\u914d\u7684\u4e24\u672c\u6f2b\u753b\u7684\u7f16\u53f7\uff1a", None))
         self.label_5.setText(QCoreApplication.translate("Dialog", u"\u6ce8\u610f\uff1a\u672c\u529f\u80fd\u4ec5\u4e3a\u5c1d\u9c9c\u4f7f\u7528\uff0c\u4ecd\u5728\u8c03\u8bd5\u9636\u6bb5\u3002", None))
         self.label_6.setText(QCoreApplication.translate("Dialog", u"\u6ce8\u610f\uff1a\u6267\u884c\u540e\u4f1a\u5361\u987f\uff0c\u8fd9\u662f\u6b63\u5e38\u73b0\u8c61\u3002", None))
+        self.label_7.setText(QCoreApplication.translate("Dialog", u"\u6ce8\u610f\uff1a\u5373\u4f7f\u9875\u9762\u5339\u914d\uff0c\u4e5f\u53ef\u80fd\u662f\u4e0d\u540c\u7684\u6c49\u5316\u7ec4\u6216\u4fee\u6b63", None))
         self.label_2.setText(QCoreApplication.translate("Dialog", u"\u6f2b\u753b1\uff1a", None))
         self.label_3.setText(QCoreApplication.translate("Dialog", u"\u6f2b\u753b2\uff1a", None))
         self.pushButton_exec.setText(QCoreApplication.translate("Dialog", u"\u6267\u884c", None))

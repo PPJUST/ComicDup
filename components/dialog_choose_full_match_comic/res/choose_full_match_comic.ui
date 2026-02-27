@@ -36,6 +36,13 @@
     </widget>
    </item>
    <item>
+    <widget class="QLabel" name="label_7">
+     <property name="text">
+      <string>注意：即使页面匹配，也可能是不同的汉化组或修正</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
       <widget class="QLabel" name="label_2">

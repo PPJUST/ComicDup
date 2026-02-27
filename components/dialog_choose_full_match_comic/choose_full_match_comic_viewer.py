@@ -25,7 +25,6 @@ class ChooseFullMatchComicViewer(QDialog):
     def show_result(self, result_state):
         """显示结果"""
         self.ui.textBrowser_match_result.clear()
-        self.ui.textBrowser_match_result.append('即使页面匹配，也可能是不同的汉化组或修正')
         if isinstance(result_state, str):
             self.ui.textBrowser_match_result.setText(result_state)
         elif isinstance(result_state, MatchResult.OneToOne):
