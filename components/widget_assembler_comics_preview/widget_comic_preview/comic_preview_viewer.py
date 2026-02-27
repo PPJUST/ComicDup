@@ -1,5 +1,6 @@
 import lzytools_Qt
 from PySide6.QtCore import Signal, Qt
+from PySide6.QtGui import QFont
 from PySide6.QtWidgets import QWidget, QApplication, QLabel
 
 from components.widget_assembler_comics_preview.widget_comic_preview.res.icon_base64 import ICON_ARCHIVE, ICON_FOLDER, \
@@ -42,6 +43,11 @@ class ComicPreviewViewer(QWidget):
 
         # 设置图标
         self._set_icon()
+
+        # 设置字体
+        font = QFont()
+        font.setBold(True)  # 设置字体加粗
+        self.ui.label_filesize.setFont(font)
 
     def show_image(self, preview_path: str):
         """显示图像"""

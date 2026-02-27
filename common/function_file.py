@@ -47,11 +47,11 @@ def format_bytes_size(bytes_size: int) -> str:
         if bytes_size >= factor:
             format_size = bytes_size / factor  # 转换为当前单位
             format_size = round(format_size, 2)  # 保留两位小数
-            format_str = f'{format_size} {unit}'
+            format_str = f'{format_size}{unit}'
             return format_str
 
     # 如果小于1字节，直接返回0B
-    return '0 B'
+    return '0B'
 
 
 def save_preview_image(origin_image_path: str, preview_image_path: str, height_zoom_out: int = 128):
