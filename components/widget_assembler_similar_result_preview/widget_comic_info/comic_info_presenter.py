@@ -5,7 +5,7 @@ from PySide6.QtCore import QObject, Signal
 from PySide6.QtWidgets import QMessageBox
 
 from common import function_file
-from common.class_comic import ComicInfoBase, FolderComicInfo, ArchiveComicInfo
+from common.class_comic import ComicInfoBase
 from common.class_config import FileType
 from components.widget_assembler_similar_result_preview.widget_comic_info.comic_info_model import ComicInfoModel
 from components.widget_assembler_similar_result_preview.widget_comic_info.comic_info_viewer import ComicInfoViewer
@@ -55,27 +55,15 @@ class ComicInfoPresenter(QObject):
 
     def refresh_info(self):
         """刷新信息"""
-        # 根据不同漫画类型，重新生成ComicInfo类
-        comic_path = self.comic_info.filepath
-        if os.path.isdir(comic_path):
-            new_comic_info = FolderComicInfo(comic_path)
-        elif os.path.isfile(comic_path):
-            new_comic_info = ArchiveComicInfo(comic_path)
-        else:
-            raise Exception(f'{comic_path} 类型错误')
-
-        # 检查新的文件指纹，如果和旧文件指纹一致，则不需要替换ComicInfo，否则重新生成预览图并替换
-        new_fingerprint = new_comic_info.fingerprint
-        old_fingerprint = self.comic_info.fingerprint
-        if new_fingerprint == old_fingerprint:
-            return
-        new_comic_info.save_preview_image()
+        # 调用内部方法更新信息
+        self.comic_info.refresh()
+        self.comic_info.save_preview_image()
 
         # 更新本地数据库
-        self.UpdateComicInfo.emit(new_comic_info)
+        self.UpdateComicInfo.emit(self.comic_info)
 
         # 重新显示
-        self.set_comic_info(new_comic_info)
+        self.set_comic_info(self.comic_info)
 
     def delete_comic(self):
         """删除文件"""

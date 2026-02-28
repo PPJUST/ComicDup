@@ -115,6 +115,12 @@ class ComicInfoBase(ABC):
         """计算漫画内所有图片的hash值
         :return: 字典，key为内部页路径，value为hash值（pHash，144位）"""
 
+    def refresh(self):
+        """刷新所有信息"""
+        if os.path.exists(self.filepath):
+            self._analyse_info()
+            self._calc_fingerprint()
+
     """数据库模式使用的手动更新信息的方法"""
 
     def update_filesize(self, filesize_bytes: int):

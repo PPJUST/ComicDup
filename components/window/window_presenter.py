@@ -34,6 +34,7 @@ from thread.thread_save_image import ThreadSaveImage
 from thread.thread_search_comic import ThreadSearchComic
 
 
+# todo 添加一个选项，是否强制重算图片特征值，不勾选时，如果图片指纹相同则跳过计算hash
 class WindowPresenter(QObject):
     """主窗口的桥梁组件"""
     SignalRuntimeInfo = Signal(object, str, name='运行信息')

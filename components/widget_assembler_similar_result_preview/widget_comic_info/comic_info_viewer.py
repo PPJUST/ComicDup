@@ -36,8 +36,6 @@ class ComicInfoViewer(QFrame):
         self.setLineWidth(1)
         self.ui.label_filetitle.setStyleSheet("font-weight: bold")
 
-        self.ui.toolButton_refresh.setEnabled(False)  # fixme 刷新功能有问题 暂时屏蔽
-
     def set_filetype_icon(self, icon_base64: str):
         """设置漫画的文件类型图标"""
         pixmap = lzytools_Qt.convert_base64_image_to_pixmap(icon_base64)
