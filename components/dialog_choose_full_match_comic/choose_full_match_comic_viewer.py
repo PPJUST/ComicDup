@@ -42,8 +42,10 @@ class ChooseFullMatchComicViewer(QDialog):
 
     def _init_shortcuts(self):
         """绑定快捷键"""
-        shortcut_match = QShortcut(QKeySequence(Qt.Key_Space), self)
+        shortcut_match = QShortcut(QKeySequence(Qt.Key_Return), self)
         shortcut_match.activated.connect(self.emit_signal)
+        shortcut_match_v2 = QShortcut(QKeySequence(Qt.Key_Enter), self)
+        shortcut_match_v2.activated.connect(self.emit_signal)
 
 
 if __name__ == "__main__":
