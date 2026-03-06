@@ -1,4 +1,5 @@
-from PySide6.QtCore import Signal
+from PySide6.QtCore import Signal, Qt
+from PySide6.QtGui import QShortcut, QKeySequence
 from PySide6.QtWidgets import QApplication, QDialog
 
 from common.class_match_page_result import MatchResult
@@ -15,6 +16,8 @@ class ChooseFullMatchComicViewer(QDialog):
 
         self.ui.pushButton_exec.clicked.connect(self.emit_signal)
         self.ui.pushButton_quit.clicked.connect(self.close)
+
+        self._init_shortcuts()
 
     def emit_signal(self):
         """发送信号"""
@@ -36,6 +39,11 @@ class ChooseFullMatchComicViewer(QDialog):
             self.ui.textBrowser_match_result.append(', '.join(str(i + 1) for i in result_state.wrong_pages_comic_1))
             self.ui.textBrowser_match_result.append("\n漫画2问题页码如下：")
             self.ui.textBrowser_match_result.append(', '.join(str(i + 1) for i in result_state.wrong_pages_comic_2))
+
+    def _init_shortcuts(self):
+        """绑定快捷键"""
+        shortcut_match = QShortcut(QKeySequence(Qt.Key_Space), self)
+        shortcut_match.activated.connect(self.emit_signal)
 
 
 if __name__ == "__main__":

@@ -1,5 +1,6 @@
 import lzytools_Qt
-from PySide6.QtCore import Signal
+from PySide6.QtCore import Signal, Qt
+from PySide6.QtGui import QShortcut, QKeySequence
 from PySide6.QtWidgets import QWidget, QApplication
 
 from components.dialog_choose_full_match_comic import ChooseFullMatchComic
@@ -34,6 +35,9 @@ class SimilarGroupPreviewViewer(QWidget):
 
         # 绑定信号
         self._bind_signal()
+
+        # 绑定快捷键
+        self._init_shortcuts()
 
         # 隐藏已经弃用的功能
         self.ui.checkBox_auto_image_diff.setVisible(False)
@@ -85,6 +89,22 @@ class SimilarGroupPreviewViewer(QWidget):
     def show_full_match_result(self, result):
         """显示全量匹配结果"""
         self.dialog.show_result(result)
+
+    def _init_shortcuts(self):
+        """绑定快捷键"""
+        # 上一页
+        shortcut_previous = QShortcut(QKeySequence(Qt.Key_Left), self)
+        shortcut_previous.activated.connect(self.PreviousPage.emit)
+        shortcut_previous_v2 = QShortcut(QKeySequence(Qt.Key_Up), self)
+        shortcut_previous_v2.activated.connect(self.PreviousPage.emit)
+        # 下一页
+        shortcut_next = QShortcut(QKeySequence(Qt.Key_Right), self)
+        shortcut_next.activated.connect(self.NextPage.emit)
+        shortcut_next_v2 = QShortcut(QKeySequence(Qt.Key_Down), self)
+        shortcut_next_v2.activated.connect(self.NextPage.emit)
+        # 打开全量查重
+        shortcut_diff_pages = QShortcut(QKeySequence(Qt.Key_Space), self)
+        shortcut_diff_pages.activated.connect(self.dialog.exec)
 
     def _set_icon(self):
         """设置图标"""
