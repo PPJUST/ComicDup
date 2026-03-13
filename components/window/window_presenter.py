@@ -229,6 +229,8 @@ class WindowPresenter(QObject):
         print('需分析图片的漫画数量', len(comic_info_list))
         if not self.is_stop:
             self.thread_analyse_image_info.set_comic_info_list(comic_info_list)
+            db_image_fingerprint_hashs_dict = self.model.get_fingerprint_hashs_all_type()  # 哈希值字典，键为图片指纹（虚拟图片路径+文件大小bytes），值为3种图片hash*3种长度的字典
+            self.thread_analyse_image_info.set_db_image_hashs_dict(db_image_fingerprint_hashs_dict)
             self.thread_analyse_image_info.start()
         else:
             self.stop()

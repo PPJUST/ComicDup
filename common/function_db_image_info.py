@@ -321,8 +321,48 @@ class DBImageInfo:
                 hashs.append(hash_value)
         return hashs
 
+    def get_fingerprint_hashs_all_type(self) -> Dict[str, Dict[str, str]]:
+        """获取所有图片的hash值
+        键为图片指纹（虚拟图片路径+文件大小bytes），值为3种图片hash*3种长度的字典"""
+        self.cursor.execute(f'SELECT {KEY_FAKE_PATH}, {KEY_FILESIZE_BYTES}, '
+                            f'{KEY_AHASH_64}, {KEY_AHASH_144}, {KEY_AHASH_256}, '
+                            f'{KEY_PHASH_64}, {KEY_PHASH_144}, {KEY_PHASH_256}, '
+                            f'{KEY_DHASH_64}, {KEY_DHASH_144}, {KEY_DHASH_256} '
+                            f'FROM {TABLE_NAME}')
+        columns = [desc[0] for desc in self.cursor.description]
+        results = self.cursor.fetchall()
+
+        hashs_dict = dict()
+        for result in results:
+            result_dict = dict(zip(columns, result))  # 先转为键名-键值的字典格式
+            fake_path = result_dict[KEY_FAKE_PATH]
+            filesize_bytes = result_dict[KEY_FILESIZE_BYTES]
+            ahash_64 = result_dict[KEY_AHASH_64]
+            ahash_144 = result_dict[KEY_AHASH_144]
+            ahash_256 = result_dict[KEY_AHASH_256]
+            phash_64 = result_dict[KEY_PHASH_64]
+            phash_144 = result_dict[KEY_PHASH_144]
+            phash_256 = result_dict[KEY_PHASH_256]
+            dhash_64 = result_dict[KEY_DHASH_64]
+            dhash_144 = result_dict[KEY_DHASH_144]
+            dhash_256 = result_dict[KEY_DHASH_256]
+            inside_hash_dict = dict()
+            inside_hash_dict[KEY_AHASH_64] = ahash_64
+            inside_hash_dict[KEY_AHASH_144] = ahash_144
+            inside_hash_dict[KEY_AHASH_256] = ahash_256
+            inside_hash_dict[KEY_PHASH_64] = phash_64
+            inside_hash_dict[KEY_PHASH_144] = phash_144
+            inside_hash_dict[KEY_PHASH_256] = phash_256
+            inside_hash_dict[KEY_DHASH_64] = dhash_64
+            inside_hash_dict[KEY_DHASH_144] = dhash_144
+            inside_hash_dict[KEY_DHASH_256] = dhash_256
+            hashs_dict[f'{fake_path}{filesize_bytes}'] = inside_hash_dict
+
+        return hashs_dict
+
     def get_hashs_all_type(self) -> Dict[str, Dict[str, str]]:
-        """获取所有图片的hash值"""
+        """获取所有图片的hash值
+        键为虚拟图片路径，值为3种图片hash*3种长度的字典"""
         self.cursor.execute(f'SELECT {KEY_FAKE_PATH}, '
                             f'{KEY_AHASH_64}, {KEY_AHASH_144}, {KEY_AHASH_256}, '
                             f'{KEY_PHASH_64}, {KEY_PHASH_144}, {KEY_PHASH_256}, '

@@ -29,6 +29,8 @@ class ThreadAnalyseImageInfo(ThreadPattern):
         self.hash_type = SimilarAlgorithm.dHash()
         # 计算的图片hash长度
         self.hash_length = 64
+        # 图片指纹（虚拟图片路径+文件大小bytes）对应的9种图片hash值
+        self.fingerprint_hashs_dict: Dict[str, Dict[str, str]] = dict()
 
     def initialize(self):
         """初始化"""
@@ -55,6 +57,11 @@ class ThreadAnalyseImageInfo(ThreadPattern):
     def set_hash_length(self, length: int):
         """设置需要计算的图片hash类型"""
         self.hash_length = length
+
+    def set_db_image_hashs_dict(self, fingerprint_hash_dict: Dict[str, Dict[str, str]]):
+        """设置数据库中的所有图片的hash值
+        键为图片指纹（虚拟图片路径+文件大小bytes），值为3种图片hash*3种长度的字典"""
+        self.fingerprint_hashs_dict = fingerprint_hash_dict
 
     def set_extract_pages(self, extract_pages: int):
         """设置需要提取的图片数"""
@@ -144,7 +151,15 @@ class ThreadAnalyseImageInfo(ThreadPattern):
 
             # 更新图片信息并计算hash
             image_info.update_info_by_comic_info(comic_info)
-            image_info.calc_hash(self.hash_type, self.hash_length)
+            image_fingerprint = f'{image_info.faker_path}{image_info.filesize}'
+            if image_fingerprint in self.fingerprint_hashs_dict:
+                hash_ = self.fingerprint_hashs_dict[image_fingerprint][f'{self.hash_type}_{self.hash_length}']
+                if hash_:
+                    image_info.update_hash(hash_, self.hash_type, self.hash_length)
+                else:
+                    image_info.calc_hash(self.hash_type, self.hash_length)
+            else:
+                image_info.calc_hash(self.hash_type, self.hash_length)
             image_info_list.append(image_info)
 
         return image_info_list

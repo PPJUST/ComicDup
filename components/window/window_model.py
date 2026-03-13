@@ -47,6 +47,10 @@ class WindowModel(QObject):
         """获取数据库中所有图片的hash值"""
         return self.db_image_info.get_hashs(hash_algorithm, hash_length)
 
+    def get_fingerprint_hashs_all_type(self):
+        """获取数据库中所有图片的全部类型hash值，3种类型*3种长度"""
+        return self.db_image_info.get_fingerprint_hashs_all_type()
+
     def get_hashs_all_type(self):
         """获取数据库中所有图片的全部类型hash值，3种类型*3种长度"""
         return self.db_image_info.get_hashs_all_type()
