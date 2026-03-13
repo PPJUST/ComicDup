@@ -119,6 +119,7 @@ class ThreadAnalyseImageInfo(ThreadPattern):
                     completed_count += 1
                     self.SignalRate.emit(f'{completed_count}/{total_comics}')
                 except Exception as e:
+                    print(e)
                     self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning,
                                                 f'分析漫画{comic_info.filepath}的图片失败：{str(e)}')
 
@@ -153,7 +154,7 @@ class ThreadAnalyseImageInfo(ThreadPattern):
             image_info.update_info_by_comic_info(comic_info)
             image_fingerprint = f'{image_info.faker_path}{image_info.filesize}'
             if image_fingerprint in self.fingerprint_hashs_dict:
-                hash_ = self.fingerprint_hashs_dict[image_fingerprint][f'{self.hash_type}_{self.hash_length}']
+                hash_ = self.fingerprint_hashs_dict[image_fingerprint][f'{self.hash_type.text}_{self.hash_length}']
                 if hash_:
                     image_info.update_hash(hash_, self.hash_type, self.hash_length)
                 else:
