@@ -9,6 +9,7 @@ import natsort
 
 from common import function_file, function_archive, function_cache_preview, function_image
 from common.class_config import FileType, SimilarAlgorithm
+import DoujinTools
 
 _BASE_COLOR = ['black', 'maroon', 'red', 'purple', 'fuchsia',
                'green', 'lime', 'olive', 'navy', 'blue',
@@ -293,11 +294,17 @@ def calc_comic_point(comic_info: ComicInfoBase) -> float:
     point_count = min(page_count / base_count, 10)
 
     # 计算文件名规范分
-    # todo 临时按文件名长度评分
+    name_class = DoujinTools.DoujinshiName(comic_info.filetitle)
+    tag_count = (len(name_class.convention_name.get_value())
+                 + len(name_class.circle_names.get_value())
+                 + len(name_class.artist_names.get_value())
+                 + len(name_class.title.get_value())
+                 + len(name_class.parody_names.get_value())
+                 + len(name_class.language.get_value())
+                 + len(name_class.translators.get_value())
+                 + len(name_class.special_indicators.get_value()))
     per_tag = 0.1  # 占比10%
-    base_tag = 5
-    filetitle = comic_info.filetitle
-    point_tag = min(len(filetitle) / base_tag, 10)
+    point_tag = min(tag_count, 10)
 
     # 计算总分
     point_total = round(point_pic * per_pic + point_count * per_count + point_tag * per_tag, 2)
