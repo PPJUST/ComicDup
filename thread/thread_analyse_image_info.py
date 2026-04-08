@@ -136,31 +136,37 @@ class ThreadAnalyseImageInfo(ThreadPattern):
         """分析单本漫画中的图片信息（供线程池调用）"""
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.RateInfo, f'开始分析漫画中的图片信息：{comic_info.filepath}')
 
-        image_info_list = []
-        comic_filetype = comic_info.filetype
-        images_inside = comic_info.get_page_paths()
-        images_extract = images_inside[:self.extract_pages]
+        try:  # fixme
+            image_info_list = []
+            comic_filetype = comic_info.filetype
+            images_inside = comic_info.get_page_paths()
+            images_extract = images_inside[:self.extract_pages]
 
-        for image in images_extract:
-            # 根据漫画类型实例化对应的图片信息类
-            if isinstance(comic_filetype, FileType.Folder):
-                image_info = ImageInfoFolder(image)
-            elif isinstance(comic_filetype, FileType.Archive):
-                image_info = ImageInfoArchive(image)
-            else:
-                raise Exception(f'未知的漫画类型：{type(comic_filetype)}')
+            for image in images_extract:
+                # 根据漫画类型实例化对应的图片信息类
+                if isinstance(comic_filetype, FileType.Folder):
+                    image_info = ImageInfoFolder(image)
+                elif isinstance(comic_filetype, FileType.Archive):
+                    image_info = ImageInfoArchive(image)
+                else:
+                    raise Exception(f'未知的漫画类型：{type(comic_filetype)}')
 
-            # 更新图片信息并计算hash
-            image_info.update_info_by_comic_info(comic_info)
-            image_fingerprint = f'{image_info.faker_path}{image_info.filesize}'
-            if image_fingerprint in self.fingerprint_hashs_dict:
-                hash_ = self.fingerprint_hashs_dict[image_fingerprint][f'{self.hash_type.text}_{self.hash_length}']
-                if hash_:
-                    image_info.update_hash(hash_, self.hash_type, self.hash_length)
+                # 更新图片信息并计算hash
+                image_info.update_info_by_comic_info(comic_info)
+                image_fingerprint = f'{image_info.faker_path}{image_info.filesize}'
+                if image_fingerprint in self.fingerprint_hashs_dict:
+                    hash_ = self.fingerprint_hashs_dict[image_fingerprint][f'{self.hash_type.text}_{self.hash_length}']
+                    if hash_:
+                        image_info.update_hash(hash_, self.hash_type, self.hash_length)
+                    else:
+                        image_info.calc_hash(self.hash_type, self.hash_length)
                 else:
                     image_info.calc_hash(self.hash_type, self.hash_length)
-            else:
-                image_info.calc_hash(self.hash_type, self.hash_length)
-            image_info_list.append(image_info)
+                image_info_list.append(image_info)
 
-        return image_info_list
+            return image_info_list
+        except Exception as e:
+            print(e)
+            self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Warning,
+                                        f'分析漫画{comic_info.filepath}的图片失败：{str(e)}')
+            return []
