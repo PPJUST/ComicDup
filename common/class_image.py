@@ -203,6 +203,8 @@ class ImageInfoArchive(ImageInfoBase):
 
     def __init__(self, image_path: str):
         super().__init__(image_path)
+        # 保留压缩文件的原始图片路径
+        self.image_path: str = image_path
 
     def calc_filesize(self):
         super().calc_filesize()

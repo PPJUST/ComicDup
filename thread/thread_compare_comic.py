@@ -136,10 +136,11 @@ class ThreadCompareComic(ThreadPattern):
                 hash_ = None
 
             # 检查hash值，跳过纯色图片
-            zero_count_hash = hash_.count('0')
-            length_hash = len(hash_)
-            if zero_count_hash / length_hash >= 0.9 or zero_count_hash / length_hash <= 0.1:
-                continue
+            if hash_:
+                zero_count_hash = hash_.count('0')
+                length_hash = len(hash_)
+                if zero_count_hash / length_hash >= 0.9 or zero_count_hash / length_hash <= 0.1:
+                    continue
 
             if hash_:
                 hashs.append(hash_)
