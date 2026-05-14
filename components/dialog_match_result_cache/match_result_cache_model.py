@@ -45,6 +45,10 @@ class MatchResultCacheModel:
         """读取匹配结果"""
         return common.function_cache_result.read_match_result(filename)
 
+    def output(self, filename):
+        """导出缓存文件"""
+        common.function_cache_result.output_match_result_to_excel(filename)
+
     def delete(self, filename):
         """删除缓存文件"""
         # 组合缓存路径

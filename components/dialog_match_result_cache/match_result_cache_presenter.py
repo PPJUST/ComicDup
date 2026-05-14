@@ -15,6 +15,7 @@ class MatchResultCachePresenter(QObject):
 
         # 绑定信号
         self.viewer.Restore.connect(self.restore)
+        self.viewer.Output.connect(self.output)
         self.viewer.Delete.connect(self.delete)
         self.viewer.ShowInfo.connect(self.show_info)
 
@@ -27,6 +28,10 @@ class MatchResultCachePresenter(QObject):
         data = self.model.read_match_result(filename)
         self.Restore.emit(data)
         self.viewer.close()
+
+    def output(self, filename: str):
+        """导出缓存文件"""
+        self.model.output(filename)
 
     def delete(self, filename: str):
         """删除缓存文件"""

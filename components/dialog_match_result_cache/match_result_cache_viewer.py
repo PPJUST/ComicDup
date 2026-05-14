@@ -5,13 +5,14 @@ from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QApplication, QDialog
 
 from common.class_cache import CacheMatchResult
-from components.dialog_match_result_cache.res.icon_base64 import ICON_DELETE, ICON_RESTORE
+from components.dialog_match_result_cache.res.icon_base64 import ICON_DELETE, ICON_RESTORE, ICON_OUTPUT
 from components.dialog_match_result_cache.res.ui_match_result_cache import Ui_Dialog
 
 
 class MatchResultCacheViewer(QDialog):
     """匹配结果缓存模块的界面组件"""
     Restore = Signal(str, name='还原缓存文件')
+    Output = Signal(str, name='导出缓存文件')
     Delete = Signal(str, name='删除缓存文件')
     ShowInfo = Signal(name='显示信息')
 
@@ -48,6 +49,7 @@ class MatchResultCacheViewer(QDialog):
             self.ui.label_group_count_1.setText(str(group_count))
             self.ui.label_size_count_1.setText(str(size_count))
             self.ui.pushButton_restore_1.setEnabled(button_state)
+            self.ui.pushButton_output_1.setEnabled(button_state)
             self.ui.toolButton_delete_1.setEnabled(button_state)
         elif index == 2:
             self.ui.label_filename_2.setText(str(filename))
@@ -55,6 +57,7 @@ class MatchResultCacheViewer(QDialog):
             self.ui.label_group_count_2.setText(str(group_count))
             self.ui.label_size_count_2.setText(str(size_count))
             self.ui.pushButton_restore_2.setEnabled(button_state)
+            self.ui.pushButton_output_2.setEnabled(button_state)
             self.ui.toolButton_delete_2.setEnabled(button_state)
         elif index == 3:
             self.ui.label_filename_3.setText(str(filename))
@@ -62,6 +65,7 @@ class MatchResultCacheViewer(QDialog):
             self.ui.label_group_count_3.setText(str(group_count))
             self.ui.label_size_count_3.setText(str(size_count))
             self.ui.pushButton_restore_3.setEnabled(button_state)
+            self.ui.pushButton_output_3.setEnabled(button_state)
             self.ui.toolButton_delete_3.setEnabled(button_state)
         elif index == 4:
             self.ui.label_filename_4.setText(str(filename))
@@ -69,6 +73,7 @@ class MatchResultCacheViewer(QDialog):
             self.ui.label_group_count_4.setText(str(group_count))
             self.ui.label_size_count_4.setText(str(size_count))
             self.ui.pushButton_restore_4.setEnabled(button_state)
+            self.ui.pushButton_output_4.setEnabled(button_state)
             self.ui.toolButton_delete_4.setEnabled(button_state)
         elif index == 5:
             self.ui.label_filename_5.setText(str(filename))
@@ -76,6 +81,7 @@ class MatchResultCacheViewer(QDialog):
             self.ui.label_group_count_5.setText(str(group_count))
             self.ui.label_size_count_5.setText(str(size_count))
             self.ui.pushButton_restore_5.setEnabled(button_state)
+            self.ui.pushButton_output_5.setEnabled(button_state)
             self.ui.toolButton_delete_5.setEnabled(button_state)
 
     def _init_line(self, index: int):
@@ -89,6 +95,11 @@ class MatchResultCacheViewer(QDialog):
         self.ui.pushButton_restore_3.setEnabled(False)
         self.ui.pushButton_restore_4.setEnabled(False)
         self.ui.pushButton_restore_5.setEnabled(False)
+        self.ui.pushButton_output_1.setEnabled(False)
+        self.ui.pushButton_output_2.setEnabled(False)
+        self.ui.pushButton_output_3.setEnabled(False)
+        self.ui.pushButton_output_4.setEnabled(False)
+        self.ui.pushButton_output_5.setEnabled(False)
         self.ui.toolButton_delete_1.setEnabled(False)
         self.ui.toolButton_delete_2.setEnabled(False)
         self.ui.toolButton_delete_3.setEnabled(False)
@@ -102,6 +113,11 @@ class MatchResultCacheViewer(QDialog):
         self.ui.pushButton_restore_3.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_RESTORE))
         self.ui.pushButton_restore_4.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_RESTORE))
         self.ui.pushButton_restore_5.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_RESTORE))
+        self.ui.pushButton_output_1.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_OUTPUT))
+        self.ui.pushButton_output_2.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_OUTPUT))
+        self.ui.pushButton_output_3.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_OUTPUT))
+        self.ui.pushButton_output_4.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_OUTPUT))
+        self.ui.pushButton_output_5.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_OUTPUT))
         self.ui.toolButton_delete_1.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_DELETE))
         self.ui.toolButton_delete_2.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_DELETE))
         self.ui.toolButton_delete_3.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_DELETE))
@@ -115,6 +131,11 @@ class MatchResultCacheViewer(QDialog):
         self.ui.pushButton_restore_3.clicked.connect(lambda: self.Restore.emit(self.ui.label_filename_3.text()))
         self.ui.pushButton_restore_4.clicked.connect(lambda: self.Restore.emit(self.ui.label_filename_4.text()))
         self.ui.pushButton_restore_5.clicked.connect(lambda: self.Restore.emit(self.ui.label_filename_5.text()))
+        self.ui.pushButton_output_1.clicked.connect(lambda: self.Output.emit(self.ui.label_filename_1.text()))
+        self.ui.pushButton_output_2.clicked.connect(lambda: self.Output.emit(self.ui.label_filename_2.text()))
+        self.ui.pushButton_output_3.clicked.connect(lambda: self.Output.emit(self.ui.label_filename_3.text()))
+        self.ui.pushButton_output_4.clicked.connect(lambda: self.Output.emit(self.ui.label_filename_4.text()))
+        self.ui.pushButton_output_5.clicked.connect(lambda: self.Output.emit(self.ui.label_filename_5.text()))
         self.ui.toolButton_delete_1.clicked.connect(lambda: self.Delete.emit(self.ui.label_filename_1.text()))
         self.ui.toolButton_delete_2.clicked.connect(lambda: self.Delete.emit(self.ui.label_filename_2.text()))
         self.ui.toolButton_delete_3.clicked.connect(lambda: self.Delete.emit(self.ui.label_filename_3.text()))

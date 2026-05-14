@@ -3,6 +3,8 @@ import pickle
 from typing import List
 
 import lzytools
+from openpyxl import Workbook
+from openpyxl.worksheet.hyperlink import Hyperlink
 
 from common.class_comic import ComicInfoBase
 
@@ -38,3 +40,44 @@ def read_match_result(filename) -> List[List[ComicInfoBase]]:
     with open(cache_filepath, 'rb') as file:
         data = pickle.load(file)
         return data
+
+
+def output_match_result_to_excel(filename_cache):
+    """导出匹配结果为excel"""
+    data: List[List[ComicInfoBase]] = read_match_result(filename_cache)
+
+    # xlsx文件
+    wb = Workbook()
+    ws = wb.active
+    ws.title = '相似组'
+
+    # 表头
+    headers = ['组索引', '文件路径', '文件类型', '文件名', '文件大小(MB)']
+    ws.append(headers)
+    rows = []
+    # 遍历二维列表
+    for index, comic_group in enumerate(data, start=1):
+        for comic in comic_group:
+            group_index = f'第{index}组'
+            filepath = comic.filepath
+            filetype = comic.filetype.text
+            filename = comic.filename
+            filesize = f'{round(comic.filesize_bytes / (1024 * 1024), 2)}MB'
+
+            # 追加一行数据
+            row = [group_index, filepath, filetype, filename, filesize]
+            ws.append(row)
+
+            # 设置超链接
+            cell = ws.cell(row=ws.max_row, column=2)
+            cell.hyperlink = Hyperlink(
+                ref=cell.coordinate,
+                target=filepath,
+                location=None,
+            )
+            cell.font = cell.font.copy(color="0000FF", underline="single")
+
+    # 导出Excel
+    output_path = f'{filename_cache}.xlsx'
+    wb.save(output_path)
+    os.startfile(output_path)
