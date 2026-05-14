@@ -104,7 +104,7 @@ class WindowPresenter(QObject):
                 if os.path.exists(comic_path):
                     group_filter.append(comic_info)
             match_result_filter.append(group_filter)
-        self.show_similar_result(match_result_filter)
+        self.load_cache_similar_result(match_result_filter)
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.StepInfo, '完成加载历史匹配结果')
 
     def open_about(self):
@@ -317,6 +317,14 @@ class WindowPresenter(QObject):
             self.viewer.turn_page_match_result()
 
         self.stop()
+
+    def load_cache_similar_result(self, comic_info_groups: List[List[ComicInfoBase]]):
+        """显示缓存中的相似匹配结果"""
+        self.assembler_similar_result_preview.clear()
+        self.assembler_similar_result_preview.set_groups(comic_info_groups)
+        self.assembler_similar_result_preview.show_similar_result()
+        self.order_similar_result()  # 手动进行一次排序
+        self.viewer.turn_page_match_result()
 
     """缓存管理相关方法"""
 
