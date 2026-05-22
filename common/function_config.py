@@ -254,6 +254,13 @@ class SettingIsMatchSameParentFolder(_ModuleChildSettingSingleEnable):
         super().__init__(config_file, section='IsMatchSameParentFolder', key='is_enable', default_value=False)
 
 
+class SettingIsMatchNearPageCount(_ModuleChildSettingSingleEnable):
+    """匹配选项：是否仅匹配相近页数的漫画"""
+
+    def __init__(self, config_file):
+        super().__init__(config_file, section='IsMatchNearPageCount', key='is_enable', default_value=False)
+
+
 class SettingMatchParentFolderLevel(_ModuleChildSetting):
     """匹配选项：匹配父目录的层级"""
 

@@ -26,6 +26,10 @@ class SettingMatchPresenter(QObject):
         """获取是否匹配缓存"""
         return self.model.get_is_match_cache()
 
+    def get_is_match_near_page_count(self) -> bool:
+        """获取是否仅匹配相近页数的漫画"""
+        return self.model.get_is_match_near_page_count()
+
     def get_is_match_same_parent_folder(self) -> bool:
         """获取是否仅匹配相同父目录"""
         return self.model.get_is_match_same_parent_folder()
@@ -54,6 +58,9 @@ class SettingMatchPresenter(QObject):
         is_match_cache = self.model.get_is_match_cache()
         self.viewer.set_is_match_cache(is_match_cache)
 
+        is_match_near_page_count = self.model.get_is_match_near_page_count()
+        self.viewer.set_is_match_near_page_count(is_match_near_page_count)
+
         is_match_same_parent_folder = self.model.get_is_match_same_parent_folder()
         self.viewer.set_is_match_same_parent_folder(is_match_same_parent_folder)
 
@@ -70,6 +77,7 @@ class SettingMatchPresenter(QObject):
         """绑定信号"""
         self.viewer.ChangeExtractPages.connect(self.model.set_extract_pages)
         self.viewer.ChangeIsMatchCache.connect(self.model.set_is_match_cache)
+        self.viewer.ChangeIsMatchNearPageCount.connect(self.model.set_is_match_near_page_count)
         self.viewer.ChangeIsMatchSameParentFolder.connect(self.model.set_is_match_same_parent_folder)
         self.viewer.ChangeSameParentFolderLevel.connect(self.model.set_match_parent_folder_level)
         self.viewer.ChangeIsMatchSimilarFilename.connect(self.model.set_is_match_similar_filename)

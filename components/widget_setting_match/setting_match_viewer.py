@@ -11,6 +11,7 @@ class SettingMatchViewer(QWidget):
     """设置模块（匹配设置项）的界面组件"""
     ChangeExtractPages = Signal(int, name="修改漫画提取页数")
     ChangeIsMatchCache = Signal(bool, name="修改是否匹配缓存")
+    ChangeIsMatchNearPageCount = Signal(bool, name="修改是否匹配相似页数")
     ChangeIsMatchSameParentFolder = Signal(bool, name="修改是否仅匹配相同父目录")
     ChangeSameParentFolderLevel = Signal(int, name="修改匹配父目录的层级")
     ChangeIsMatchSimilarFilename = Signal(bool, name="修改是否仅匹配相似文件名")
@@ -48,6 +49,10 @@ class SettingMatchViewer(QWidget):
         """设置是否匹配缓存"""
         self.ui.checkBox_match_cache.setChecked(is_enable)
 
+    def set_is_match_near_page_count(self, is_enable: bool):
+        """设置是否仅匹配相近页数的漫画"""
+        self.ui.checkBox_match_near_page_count.setChecked(is_enable)
+
     def set_is_match_same_parent_folder(self, is_enable: bool):
         """设置是否仅匹配相同父目录"""
         self.ui.checkBox_same_parent_folder.setChecked(is_enable)
@@ -68,6 +73,7 @@ class SettingMatchViewer(QWidget):
         """设置选项启用/禁用"""
         self.ui.spinBox_extract_pages.setEnabled(is_enable)
         self.ui.checkBox_match_cache.setEnabled(is_enable)
+        self.ui.checkBox_match_near_page_count.setEnabled(is_enable)
         self.ui.checkBox_same_parent_folder.setEnabled(is_enable)
         self.ui.spinBox_same_parent_folder.setEnabled(is_enable)
         self.ui.spinBox_thread_count.setEnabled(is_enable)
@@ -80,6 +86,7 @@ class SettingMatchViewer(QWidget):
         """绑定信号"""
         self.ui.spinBox_extract_pages.valueChanged.connect(self.ChangeExtractPages.emit)
         self.ui.checkBox_match_cache.stateChanged.connect(self.ChangeIsMatchCache.emit)
+        self.ui.checkBox_match_near_page_count.stateChanged.connect(self.ChangeIsMatchNearPageCount.emit)
         self.ui.checkBox_same_parent_folder.stateChanged.connect(self.ChangeIsMatchSameParentFolder.emit)
         self.ui.spinBox_same_parent_folder.valueChanged.connect(self.ChangeSameParentFolderLevel.emit)
         self.ui.checkBox_match_similar_filename.stateChanged.connect(self.ChangeIsMatchSimilarFilename.emit)

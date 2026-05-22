@@ -448,6 +448,8 @@ class WindowPresenter(QObject):
         self.thread_compare_comic.set_max_workers(thread_count)
         is_match_cache = self.widget_setting_match.get_is_match_cache()  # 是否匹配缓存
         self.thread_compare_comic.set_is_match_cache(is_match_cache)
+        is_match_near_page_count = self.widget_setting_match.get_is_match_near_page_count()  # 是否仅匹配相近页数的漫画
+        self.thread_compare_comic.set_is_match_near_page_count(is_match_near_page_count)
         self.thread_compare_comic.set_extract_pages(extract_pages)
         self.thread_compare_comic.set_hash_type(hash_algorithm)
         self.thread_compare_comic.set_hash_length(hash_length)

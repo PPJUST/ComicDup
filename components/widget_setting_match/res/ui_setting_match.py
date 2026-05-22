@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'setting_matchjtIDsW.ui'
+## Form generated from reading UI file 'setting_matchNZSgCk.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.10.1
 ##
@@ -51,6 +51,11 @@ class Ui_Form(object):
         self.checkBox_match_similar_filename.setObjectName(u"checkBox_match_similar_filename")
 
         self.verticalLayout.addWidget(self.checkBox_match_similar_filename)
+
+        self.checkBox_match_near_page_count = QCheckBox(Form)
+        self.checkBox_match_near_page_count.setObjectName(u"checkBox_match_near_page_count")
+
+        self.verticalLayout.addWidget(self.checkBox_match_near_page_count)
 
         self.horizontalLayout_2 = QHBoxLayout()
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
@@ -107,6 +112,7 @@ class Ui_Form(object):
 #endif // QT_CONFIG(tooltip)
         self.checkBox_match_cache.setText(QCoreApplication.translate("Form", u"\u5339\u914d\u7f13\u5b58\u6570\u636e", None))
         self.checkBox_match_similar_filename.setText(QCoreApplication.translate("Form", u"\u4ec5\u5339\u914d\u76f8\u4f3c\u6587\u4ef6\u540d", None))
+        self.checkBox_match_near_page_count.setText(QCoreApplication.translate("Form", u"\u4ec5\u5339\u914d\u76f8\u8fd1\u9875\u6570\u7684\u6f2b\u753b", None))
 #if QT_CONFIG(tooltip)
         self.checkBox_same_parent_folder.setToolTip(QCoreApplication.translate("Form", u"<html><head/><body><p>\u5728\u5339\u914d\u76f8\u4f3c\u6f2b\u753b\u65f6\uff0c\u4ec5\u5339\u914d\u5728\u540cn\u5c42\u7ea7\u7236\u6587\u4ef6\u5939\u4e0b\u7684\u6f2b\u753b</p><p>\u5982\u679c\u6f2b\u753b\u662f\u6309\u4f5c\u8005\u6574\u7406\u4e14\u90fd\u5728\u540c\u4e00\u76ee\u5f55\u4e0b\uff0c\u5219\u63a8\u8350\u5339\u914d\u5c42\u7ea7\u4e3a 1</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)

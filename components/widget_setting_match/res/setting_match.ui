@@ -68,6 +68,13 @@
     </widget>
    </item>
    <item>
+    <widget class="QCheckBox" name="checkBox_match_nearr_page_count">
+     <property name="text">
+      <string>仅匹配相近页数的漫画</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QCheckBox" name="checkBox_same_parent_folder">

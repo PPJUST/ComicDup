@@ -31,6 +31,8 @@ class ThreadCompareComic(ThreadPattern):
         self.cache_image_hash_dict: Dict[str, Dict[str, str]] = dict()
         # 是否匹配缓存数据
         self.is_match_cache = False
+        # 是否仅匹配相近页数的漫画
+        self.is_match_near_page_count = False
         # 缓存中的漫画信息类列表（如果需要匹配缓存数据）
         self.cache_comic_info_list: List[ComicInfoBase] = []
         # 提取的图片数量
@@ -57,6 +59,7 @@ class ThreadCompareComic(ThreadPattern):
         self.similar_comic_info_groups = []
         self.cache_image_hash_dict = dict()
         self.is_match_cache = False
+        self.is_match_near_page_count = False
         self.cache_comic_info_list = []
         self.extract_pages_count = 0
         self.hash_type = None
@@ -78,6 +81,10 @@ class ThreadCompareComic(ThreadPattern):
     def set_is_match_cache(self, is_enable: bool):
         """设置是否匹配缓存数据"""
         self.is_match_cache = is_enable
+
+    def set_is_match_near_page_count(self, is_enable: bool):
+        """设置是否仅匹配相近页数的漫画"""
+        self.is_match_near_page_count = is_enable
 
     def set_cache_comic_info_list(self, cache_comic_info_list: List[ComicInfoBase]):
         """设置缓存中的漫画信息类列表"""
@@ -268,6 +275,14 @@ class ThreadCompareComic(ThreadPattern):
             # 相同路径校验
             if filepath_compare == comic_path:
                 continue
+
+            # 如果选择了仅匹配相近页数的漫画，则进行页数判断
+            if self.is_match_near_page_count:
+                page_count_base = comic_info.page_count
+                page_count_compare = compare_comic_info.page_count
+                threshold = int(min(page_count_base, page_count_compare) * 0.2)
+                if abs(page_count_base - page_count_compare) > threshold:
+                    continue
 
             # 如果选择了仅匹配相同层级父目录选项，则进行父目录判断
             if self.is_match_same_parent_dir:

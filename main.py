@@ -29,7 +29,7 @@ def load_app():
     presenter = window.get_presenter()
     viewer = presenter.viewer
     model = presenter.model
-    viewer.setWindowTitle('ComicDup v3.0.3')
+    viewer.setWindowTitle('ComicDup v3.0.4')
     viewer.show()
     app_.exec()
 
