@@ -11,7 +11,8 @@
 8.如果需要使用增强算法，则将得到的漫画相似组列表传递给对应的子线程并执行，得到一个经过二次筛选的漫画相似组列表
 9.提取该漫画相似组列表，并显示在UI中
 """
-import os.path
+import os
+import sys
 from typing import List
 
 from PySide6.QtCore import QObject, Signal
@@ -23,6 +24,7 @@ from common.class_runtime import TYPE_RUNTIME_INFO, TypeRuntimeInfo
 from components import widget_exec, widget_setting_algorithm, widget_setting_match, widget_setting_comic, \
     widget_search_list, widget_runtime_info, widget_similar_result_filter, widget_assembler_similar_result_preview, \
     dialog_match_result_cache, widget_cache_manager
+from components.obeject_ import ObjectEmittingStream
 from components.window.window_model import WindowModel
 from components.window.window_viewer import WindowViewer
 from thread.thread_analyse_comic_info import ThreadAnalyseComicInfo
@@ -87,6 +89,13 @@ class WindowPresenter(QObject):
         self._bind_thread_signal()
         # 绑定model信号
         self.model.SignalRuntimeInfo.connect(self.update_runtime_info_textline)
+
+        # 创建自定义输出流
+        self.stderr_stream = ObjectEmittingStream()
+        # 将信号连接到界面的更新方法
+        self.stderr_stream.TextWritten.connect(self._show_stderr_text)
+        # 替换系统输出
+        sys.stderr = self.stderr_stream
 
     def open_dialog_match_result_cache(self):
         """打开历史记录dialog"""
@@ -382,6 +391,11 @@ class WindowPresenter(QObject):
         self.thread_compare_comic.start()
 
     """运行信息方法"""
+
+    def _show_stderr_text(self, text: str):
+        """显示运行信息-错误信息"""
+        if text and text.strip():
+            self.update_runtime_info_textline(TypeRuntimeInfo.Warning, f'报错信息：{text}')
 
     def update_runtime_info_index(self, index: int, count: int):
         """更新运行信息-步骤索引"""
