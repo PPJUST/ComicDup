@@ -74,7 +74,7 @@ def check_match_result(comic_info_1: ComicInfoBase, comic_info_2: ComicInfoBase,
         if len(match_pages_1) == len(set(match_pages_2)) and match_pages_1 == sorted(
                 match_pages_1) and match_pages_2 == sorted(match_pages_2):
             if len(set(match_pages_2)) == page_count_2:
-                is_comic_1_loss_page = True
+                is_comic_2_loss_page = True
                 for index_1 in range(page_count_1):
                     if index_1 not in match_pages_1:
                         _wrong_pages_comic_1.append(index_1)
@@ -84,7 +84,7 @@ def check_match_result(comic_info_1: ComicInfoBase, comic_info_2: ComicInfoBase,
         if len(match_pages_1) == len(set(match_pages_2)) and match_pages_1 == sorted(
                 match_pages_1) and match_pages_2 == sorted(match_pages_2):
             if len(set(match_pages_1)) == page_count_1:
-                is_comic_2_loss_page = True
+                is_comic_1_loss_page = True
                 for index_2 in range(page_count_2):
                     if index_2 not in match_pages_2:
                         _wrong_pages_comic_2.append(index_2)
