@@ -160,12 +160,21 @@ class ThreadCompareComic(ThreadPattern):
     def preprocess_comic_info(self):
         """预处理漫画信息类"""
         # 写入需要匹配的hash到漫画信息类中
+        comic_info_list_usefull = []
         for comic_info in self.comic_info_list:
             hashs = self.get_hashs_neeced(comic_info)
-            comic_info.set_image_hashs(hashs)
+            if hashs:
+                comic_info.set_image_hashs(hashs)
+                comic_info_list_usefull.append(comic_info)
+        self.comic_info_list = comic_info_list_usefull
+
+        cache_comic_info_list_usefull = []
         for comic_info in self.cache_comic_info_list:
             hashs = self.get_hashs_neeced(comic_info)
-            comic_info.set_image_hashs(hashs)
+            if hashs:
+                comic_info.set_image_hashs(hashs)
+                cache_comic_info_list_usefull.append(comic_info)
+        self.cache_comic_info_list = cache_comic_info_list_usefull
 
         # 按0的个数排序漫画信息类
         self.comic_info_list.sort(key=lambda x: x.image_hashs[0].count('0'))

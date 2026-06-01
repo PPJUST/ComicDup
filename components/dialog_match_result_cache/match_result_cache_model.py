@@ -25,7 +25,7 @@ class MatchResultCacheModel:
         """获取缓存文件信息"""
         cache_filenames = self.get_cache_filenames()
         cache_filepaths = [os.path.join(CACHE_MATCH_RESULT_FOLDER, i) for i in cache_filenames]
-        cache_infos = [CacheMatchResult(i) for i in cache_filepaths]
+        cache_infos = [CacheMatchResult(i) for i in cache_filepaths if os.path.exists(i)]
         return cache_infos
 
     def save_match_result(self, data):

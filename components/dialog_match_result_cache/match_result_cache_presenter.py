@@ -36,10 +36,14 @@ class MatchResultCachePresenter(QObject):
     def delete(self, filename: str):
         """删除缓存文件"""
         self.model.delete(filename)
+        self.show_info()
 
     def show_info(self):
         """显示缓存信息"""
         result_infos = self.model.get_cache_file_infos()
+        # 补全列表元素至指定个数（暂定5，历史记录显示的数量）
+        result_infos = result_infos + [None] * (5 - len(result_infos))
+
         for index, info in enumerate(result_infos, start=1):
             self.viewer.set_line(index, info)
 
