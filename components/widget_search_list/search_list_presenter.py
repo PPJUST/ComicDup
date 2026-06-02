@@ -1,5 +1,5 @@
 import natsort
-from PySide6.QtCore import QObject
+from PySide6.QtCore import QObject, Signal
 
 from components.widget_search_list.search_list_model import SearchListModel
 from components.widget_search_list.search_list_viewer import SearchListViewer
@@ -7,6 +7,7 @@ from components.widget_search_list.search_list_viewer import SearchListViewer
 
 class SearchListPresenter(QObject):
     """搜索列表模块的桥梁组件"""
+    JumpToRunningInfoPage = Signal(name="跳转至运行信息页")
 
     def __init__(self, viewer: SearchListViewer, model: SearchListModel):
         super().__init__()
@@ -19,6 +20,7 @@ class SearchListPresenter(QObject):
         # 绑定信号
         self.viewer.DropFiles.connect(self.drop_files)
         self.viewer.PathsChanged.connect(self.save_paths_to_config)
+        self.viewer.JumpToRunningInfoPage.connect(self.JumpToRunningInfoPage.emit)
 
     def get_paths(self):
         """获取所有文件路径"""

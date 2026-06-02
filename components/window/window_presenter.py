@@ -556,6 +556,8 @@ class WindowPresenter(QObject):
         self.assembler_similar_result_preview.UpdateComicInfo.connect(
             self.thread_save_comic.save_comic_info_without_infotips)
 
+        self.widget_search_list.JumpToRunningInfoPage.connect(self.viewer.turn_page_running_info)
+
     def _bind_thread_signal(self):
         """绑定子线程信号"""
         # self.thread_search_comic.SignalStart.connect()

@@ -11,6 +11,7 @@ class SearchListViewer(QWidget):
     """搜索列表模块的界面组件"""
     DropFiles = Signal(object, name="拖入文件")
     PathsChanged = Signal(name="路径改变")
+    JumpToRunningInfoPage = Signal(name="跳转至运行信息页")
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -29,6 +30,7 @@ class SearchListViewer(QWidget):
         self.ui.pushButton_add_folders.clicked.connect(self._choose_folder)
         self.ui.pushButton_delete_useless_path.clicked.connect(self.remove_useless_row)
         self.ui.pushButton_clear.clicked.connect(self.clear)
+        self.ui.pushButton_jump_to_info_page.clicked.connect(self.JumpToRunningInfoPage.emit)
 
         # 添加图标
         self.ui.pushButton_add_files.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_ADD))
