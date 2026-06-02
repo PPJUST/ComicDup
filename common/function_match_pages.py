@@ -110,12 +110,8 @@ def check_match_result(comic_info_1: ComicInfoBase, comic_info_2: ComicInfoBase,
         match_result.wrong_pages_comic_2 = _wrong_pages_comic_2
     else:
         match_result = MatchResult.Unknown()
-        _wrong_pages_comic_1.extend([i for i in range(page_count_1)])
-        _wrong_pages_comic_2.extend([i for i in range(page_count_2)])
-        for index_1, index_2 in similar_pages.items():
-            if index_1 == index_2:
-                _wrong_pages_comic_1.remove(index_1)
-                _wrong_pages_comic_2.remove(index_2)
+        _wrong_pages_comic_1.extend([i for i in range(page_count_1) if i not in match_pages_1])
+        _wrong_pages_comic_2.extend([i for i in range(page_count_2) if i not in match_pages_2])
         match_result.wrong_pages_comic_1 = _wrong_pages_comic_1
         match_result.wrong_pages_comic_2 = _wrong_pages_comic_2
 
