@@ -115,7 +115,7 @@ class ComicPreviewViewer(QWidget):
         if not image_filename:
             image_filename = ''
         image_filesize_bytes = self.label_image_preview.image_filesize
-        image_filesize_KB = round(image_filesize_bytes / 1024 / 8, 2)
+        image_filesize_KB = round(image_filesize_bytes / 1024, 2)
         self.label_floating_image_info.setText(f'{image_size} {image_filename} {image_filesize_KB}KB')
 
     def _bind_signal(self):
