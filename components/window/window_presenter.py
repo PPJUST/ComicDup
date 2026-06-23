@@ -90,12 +90,18 @@ class WindowPresenter(QObject):
         # 绑定model信号
         self.model.SignalRuntimeInfo.connect(self.update_runtime_info_textline)
 
-        # 创建自定义输出流
-        self.stderr_stream = ObjectEmittingStream()
-        # 将信号连接到界面的更新方法
-        self.stderr_stream.TextWritten.connect(self._show_stderr_text)
-        # 替换系统输出
-        sys.stderr = self.stderr_stream
+        # 分情况替换系统输出
+        if getattr(sys, 'frozen', False) or getattr(sys, '_nuitka',
+                                                    False) or '__compiled__' in globals():  # frozen处理PyInstaller打包，_nuitka处理Nuitka打包
+            # 打包方式运行程序
+            self.stderr_stream = ObjectEmittingStream()
+            # 将信号连接到界面的更新方法
+            self.stderr_stream.TextWritten.connect(self._show_stderr_text)
+            # 替换系统输出
+            sys.stderr = self.stderr_stream
+        else:
+            # 源码方式运行程序
+            pass
 
     def open_dialog_match_result_cache(self):
         """打开历史记录dialog"""
