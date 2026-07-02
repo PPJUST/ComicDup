@@ -159,8 +159,6 @@ class DBImageInfo:
 
         self.conn.commit()
 
-        self._vacuum()
-
     def delete_useless_items(self):
         """删除无效的项目"""
         # 提取所有图片路径以及对应的漫画路径、类型

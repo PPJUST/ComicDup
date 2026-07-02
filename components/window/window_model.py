@@ -241,8 +241,10 @@ class WindowModel(QObject):
         """删除无用缓存"""
         # 删除无效的漫画数据库项目
         self.db_comic_info.delete_useless_items()
+        self.db_comic_info._vacuum()  # 手动重建一次数据库，清除已删除的数据
         # 删除无效的图片数据库项目
         self.db_image_info.delete_useless_items()
+        self.db_image_info._vacuum()  # 手动重建一次数据库，清除已删除的数据
         # 删除无效的预览图
         preview_paths_in_db = self.db_comic_info.get_preview_paths()
         preview_paths_in_local = function_cache_preview.get_preview_image_paths()

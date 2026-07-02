@@ -212,8 +212,6 @@ class DBComicInfo:
 
         self.conn.commit()
 
-        self._vacuum()
-
     def delete_useless_items(self):
         """删除无效的项目"""
         self.cursor.execute(f'SELECT {KEY_FILEPATH} FROM {TABLE_NAME}')

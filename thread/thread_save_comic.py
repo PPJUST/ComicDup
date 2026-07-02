@@ -76,6 +76,7 @@ class ThreadSaveComic(ThreadPattern):
                 self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, f'保存{comic_info.filename}到数据库')
                 self.db_comic_info.add(comic_info)
 
+        self.db_comic_info._vacuum()  # 手动重建一次数据库，清除已删除的数据
         self.SignalRuntimeInfo.emit(TypeRuntimeInfo.Notice, '完成保存漫画信息到本地数据库')
         self.finished()
 
