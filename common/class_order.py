@@ -47,7 +47,9 @@ class OrderDirection:
 
 ORDER_KEYS = [OrderKey.ComicPoint, OrderKey.Filesize, OrderKey.Pages, OrderKey.Filename, OrderKey.FileTime,
               OrderKey.ParentDirpath]
+ORDER_KEYS_SIMPLE = [OrderKey.Filesize, OrderKey.Pages, OrderKey.Filename, OrderKey.ParentDirpath]
 ORDER_KEYS_TEXT = [key.text for key in ORDER_KEYS]
+ORDER_KEYS_TEXT_SIMPLE = [key.text for key in ORDER_KEYS_SIMPLE]
 
 ORDER_DIRECTIONS = [OrderDirection.Descending, OrderDirection.Ascending]
 ORDER_DIRECTIONS_TEXT = [direction.text for direction in ORDER_DIRECTIONS]

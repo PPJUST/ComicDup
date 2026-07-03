@@ -2,7 +2,7 @@ from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget, QApplication
 
 from common.class_order import ORDER_KEYS_TEXT, ORDER_DIRECTIONS_TEXT, ORDER_KEYS, ORDER_DIRECTIONS, OrderKey, \
-    OrderDirection
+    OrderDirection, ORDER_KEYS_TEXT_SIMPLE
 from components.widget_similar_result_filter.res.ui_similar_result_filter import Ui_Form
 
 
@@ -14,8 +14,10 @@ class SimilarResultFilterViewer(QWidget):
     FilterSameFilesizeItems = Signal(name='筛选器 仅显示文件大小相同项')
     FilterExcludeDiffPages = Signal(int, name='筛选器 剔除页数差异过大项')
     ReconfirmDelete = Signal(bool, name='删除前再次确认')
-    ChangeSortKey = Signal(str, name='排序键值改变')
-    ChangeSortDirection = Signal(str, name='排序方向改变')
+    ChangeSortKeyInGroup = Signal(str, name='组内排序的排序键值改变')
+    ChangeSortDirectionInGroup = Signal(str, name='组内排序的排序方向改变')
+    ChangeSortKeyBetweenGroup = Signal(str, name='组间排序的排序键值改变')
+    ChangeSortDirectionBetweenGroup = Signal(str, name='组间排序的排序方向改变')
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -32,36 +34,59 @@ class SimilarResultFilterViewer(QWidget):
         self.ui.pushButton_filter_same_filesize_items.clicked.connect(self.FilterSameFilesizeItems.emit)
         self.ui.pushButton_exclude_diff_pages.clicked.connect(self.emit_signal_exclude_diff_pages)
         self.ui.checkBox_reconfirm_before_delete.stateChanged.connect(self.ReconfirmDelete.emit)
-        self.ui.comboBox_sort_key.currentTextChanged.connect(self.ChangeSortKey.emit)
-        self.ui.comboBox_sort_direction.currentTextChanged.connect(self.ChangeSortDirection.emit)
+        self.ui.comboBox_sort_key_in_group.currentTextChanged.connect(self.ChangeSortKeyInGroup.emit)
+        self.ui.comboBox_sort_direction_in_group.currentTextChanged.connect(self.ChangeSortDirectionInGroup.emit)
+        self.ui.comboBox_sort_key_between_group.currentTextChanged.connect(self.ChangeSortKeyBetweenGroup.emit)
+        self.ui.comboBox_sort_direction_between_group.currentTextChanged.connect(
+            self.ChangeSortDirectionBetweenGroup.emit)
 
     def _load_setting(self):
         """加载设置"""
-        self.ui.comboBox_sort_key.addItems(ORDER_KEYS_TEXT)
-        self.ui.comboBox_sort_direction.addItems(ORDER_DIRECTIONS_TEXT)
+        self.ui.comboBox_sort_key_in_group.addItems(ORDER_KEYS_TEXT)
+        self.ui.comboBox_sort_key_between_group.addItems(ORDER_KEYS_TEXT_SIMPLE)
+        self.ui.comboBox_sort_direction_in_group.addItems(ORDER_DIRECTIONS_TEXT)
+        self.ui.comboBox_sort_direction_between_group.addItems(ORDER_DIRECTIONS_TEXT)
 
-    def get_order_key(self):
-        """获取排序键"""
-        key = self.ui.comboBox_sort_key.currentText()
+    def get_order_key_in_group(self):
+        """获取组内排序的排序键"""
+        key = self.ui.comboBox_sort_key_in_group.currentText()
         for type_key in ORDER_KEYS:
             if type_key.text == key:
                 return type_key
 
         return OrderKey.ComicPoint  # 兜底
 
-    def get_order_direction(self):
-        """获取排序方向"""
-        direction = self.ui.comboBox_sort_direction.currentText()
+    def get_order_direction_in_group(self):
+        """获取组内排序的排序方向"""
+        direction = self.ui.comboBox_sort_direction_in_group.currentText()
         for type_direction in ORDER_DIRECTIONS:
             if type_direction.text == direction:
                 return type_direction
 
         return OrderDirection.Descending  # 兜底
 
+    def get_order_key_between_group(self):
+        """获取组间排序的排序键"""
+        key = self.ui.comboBox_sort_key_between_group.currentText()
+        for type_key in ORDER_KEYS:
+            if type_key.text == key:
+                return type_key
+
+        return OrderKey.Filesize  # 兜底
+
+    def get_order_direction_between_group(self):
+        """获取组间排序的排序方向"""
+        direction = self.ui.comboBox_sort_direction_between_group.currentText()
+        for type_direction in ORDER_DIRECTIONS:
+            if type_direction.text == direction:
+                return type_direction
+
+        return OrderDirection.Descending  # 兜底
 
     def emit_signal_exclude_diff_pages(self):
         """发射信号：剔除页数差异过大项"""
         self.FilterExcludeDiffPages.emit(self.ui.spinBox_diff_pages_threshold.value())
+
 
 if __name__ == "__main__":
     app_ = QApplication()

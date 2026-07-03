@@ -91,6 +91,12 @@ class SimilarResultPreviewPresenter(QObject):
         self.viewer.set_current_page(self.current_page)
         self.show_page(self.current_page)
 
+    def sort_groups(self, sort_key: ORDER_KEYS, sort_direction: ORDER_DIRECTIONS):
+        """排序相似组"""
+        group_sorted = self.model.sort_groups(self.comic_info_groups, sort_key, sort_direction)
+        self.set_groups(group_sorted)
+        self.reload()
+
     def sort_groups_item(self, sort_key: ORDER_KEYS, sort_direction: ORDER_DIRECTIONS):
         """排序相似组内元素"""
         comic_info_groups_sorted = []

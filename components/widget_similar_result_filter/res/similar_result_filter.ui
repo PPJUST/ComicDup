@@ -112,7 +112,27 @@
       <number>3</number>
      </property>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0,1">
+      <layout class="QHBoxLayout" name="horizontalLayout_4">
+       <property name="spacing">
+        <number>3</number>
+       </property>
+       <item>
+        <widget class="QLabel" name="label_6">
+         <property name="text">
+          <string>组间排序规则：</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboBox_sort_key_between_group"/>
+       </item>
+       <item>
+        <widget class="QComboBox" name="comboBox_sort_direction_between_group"/>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,0,0">
        <property name="spacing">
         <number>3</number>
        </property>
@@ -127,21 +147,14 @@
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="comboBox_sort_key">
+        <widget class="QComboBox" name="comboBox_sort_key_in_group">
          <property name="toolTip">
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;组中项目的排序规则&lt;/p&gt;&lt;p&gt;漫画质量评分是结合文件大小、页数、文件名综合计算的评分&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QComboBox" name="comboBox_sort_direction"/>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_4">
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
+        <widget class="QComboBox" name="comboBox_sort_direction_in_group"/>
        </item>
       </layout>
      </item>

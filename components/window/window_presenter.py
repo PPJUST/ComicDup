@@ -328,7 +328,7 @@ class WindowPresenter(QObject):
             self.assembler_similar_result_preview.clear()
             self.assembler_similar_result_preview.set_groups(comic_info_groups)
             self.assembler_similar_result_preview.show_similar_result()
-            self.order_similar_result()  # 手动进行一次排序
+            self.order_similar_result_in_group()  # 手动进行一次排序
             self.viewer.turn_page_match_result()
 
         self.stop()
@@ -338,7 +338,7 @@ class WindowPresenter(QObject):
         self.assembler_similar_result_preview.clear()
         self.assembler_similar_result_preview.set_groups(comic_info_groups)
         self.assembler_similar_result_preview.show_similar_result()
-        self.order_similar_result()  # 手动进行一次排序
+        self.order_similar_result_in_group()  # 手动进行一次排序
         self.viewer.turn_page_match_result()
 
     """缓存管理相关方法"""
@@ -420,11 +420,17 @@ class WindowPresenter(QObject):
         """更新运行信息-文本行信息"""
         self.widget_runtime_info.update_textline(info_type, text_info)
 
-    def order_similar_result(self):
-        """排序相似匹配结果"""
-        order_key = self.widget_similar_result_filter.get_order_key()
-        order_direction = self.widget_similar_result_filter.get_order_direction()
+    def order_similar_result_in_group(self):
+        """组内排序相似匹配结果"""
+        order_key = self.widget_similar_result_filter.get_order_key_in_group()
+        order_direction = self.widget_similar_result_filter.get_order_direction_in_group()
         self.assembler_similar_result_preview.sort_groups_item(order_key, order_direction)
+
+    def order_similar_result_between_group(self):
+        """组间排序相似匹配结果"""
+        order_key = self.widget_similar_result_filter.get_order_key_between_group()
+        order_direction = self.widget_similar_result_filter.get_order_direction_between_group()
+        self.assembler_similar_result_preview.sort_groups(order_key, order_direction)
 
     def _set_thread_setting(self):
         """将设置选项传参给子线程"""
@@ -551,8 +557,11 @@ class WindowPresenter(QObject):
             self.assembler_similar_result_preview.show_same_filesize_item_in_group)
         self.widget_similar_result_filter.FilterExcludeDiffPages.connect(
             self.assembler_similar_result_preview.show_similar_pages_item_in_group)
-        self.widget_similar_result_filter.ChangeSortKey.connect(self.order_similar_result)
-        self.widget_similar_result_filter.ChangeSortDirection.connect(self.order_similar_result)
+        self.widget_similar_result_filter.ChangeSortKeyInGroup.connect(self.order_similar_result_in_group)
+        self.widget_similar_result_filter.ChangeSortDirectionInGroup.connect(self.order_similar_result_in_group)
+        self.widget_similar_result_filter.ChangeSortKeyBetweenGroup.connect(self.order_similar_result_between_group)
+        self.widget_similar_result_filter.ChangeSortDirectionBetweenGroup.connect(
+            self.order_similar_result_between_group)
 
         self.widget_cache_manager.CacheRefresh.connect(self.refresh_cache)
         self.widget_cache_manager.CacheDeleteUseless.connect(self.delete_useless_cache)

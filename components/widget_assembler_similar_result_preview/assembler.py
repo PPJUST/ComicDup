@@ -31,6 +31,10 @@ class AssemblerSimilarResultPreview(QObject):
         """显示相似结果"""
         self.presenter.reload()
 
+    def sort_groups(self, sort_key: ORDER_KEYS, sort_direction: ORDER_DIRECTIONS):
+        """排序相似组"""
+        self.presenter.sort_groups(sort_key, sort_direction)
+
     def sort_groups_item(self, sort_key: ORDER_KEYS, sort_direction: ORDER_DIRECTIONS):
         """排序相似组内元素"""
         self.presenter.sort_groups_item(sort_key, sort_direction)

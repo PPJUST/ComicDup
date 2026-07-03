@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'similar_result_filtermwYJdr.ui'
+## Form generated from reading UI file 'similar_result_filterpefcOm.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.10.1
 ##
@@ -80,6 +80,27 @@ class Ui_Form(object):
         self.verticalLayout_2 = QVBoxLayout()
         self.verticalLayout_2.setSpacing(3)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.horizontalLayout_4 = QHBoxLayout()
+        self.horizontalLayout_4.setSpacing(3)
+        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
+        self.label_6 = QLabel(Form)
+        self.label_6.setObjectName(u"label_6")
+
+        self.horizontalLayout_4.addWidget(self.label_6)
+
+        self.comboBox_sort_key_between_group = QComboBox(Form)
+        self.comboBox_sort_key_between_group.setObjectName(u"comboBox_sort_key_between_group")
+
+        self.horizontalLayout_4.addWidget(self.comboBox_sort_key_between_group)
+
+        self.comboBox_sort_direction_between_group = QComboBox(Form)
+        self.comboBox_sort_direction_between_group.setObjectName(u"comboBox_sort_direction_between_group")
+
+        self.horizontalLayout_4.addWidget(self.comboBox_sort_direction_between_group)
+
+
+        self.verticalLayout_2.addLayout(self.horizontalLayout_4)
+
         self.horizontalLayout = QHBoxLayout()
         self.horizontalLayout.setSpacing(3)
         self.horizontalLayout.setObjectName(u"horizontalLayout")
@@ -88,22 +109,16 @@ class Ui_Form(object):
 
         self.horizontalLayout.addWidget(self.label)
 
-        self.comboBox_sort_key = QComboBox(Form)
-        self.comboBox_sort_key.setObjectName(u"comboBox_sort_key")
+        self.comboBox_sort_key_in_group = QComboBox(Form)
+        self.comboBox_sort_key_in_group.setObjectName(u"comboBox_sort_key_in_group")
 
-        self.horizontalLayout.addWidget(self.comboBox_sort_key)
+        self.horizontalLayout.addWidget(self.comboBox_sort_key_in_group)
 
-        self.comboBox_sort_direction = QComboBox(Form)
-        self.comboBox_sort_direction.setObjectName(u"comboBox_sort_direction")
+        self.comboBox_sort_direction_in_group = QComboBox(Form)
+        self.comboBox_sort_direction_in_group.setObjectName(u"comboBox_sort_direction_in_group")
 
-        self.horizontalLayout.addWidget(self.comboBox_sort_direction)
+        self.horizontalLayout.addWidget(self.comboBox_sort_direction_in_group)
 
-        self.label_4 = QLabel(Form)
-        self.label_4.setObjectName(u"label_4")
-
-        self.horizontalLayout.addWidget(self.label_4)
-
-        self.horizontalLayout.setStretch(3, 1)
 
         self.verticalLayout_2.addLayout(self.horizontalLayout)
 
@@ -182,14 +197,14 @@ class Ui_Form(object):
         self.pushButton_exclude_diff_pages.setToolTip(QCoreApplication.translate("Form", u"<html><head/><body><p>\u5254\u9664\u9875\u6570\u5dee\u5f02\u8fc7\u5927\u7684\u9879\u76ee\uff0c\u914d\u5408\u5168\u91cf\u5339\u914d\u529f\u80fd\uff0c\u65b9\u4fbf\u624b\u5de5\u7b5b\u9009</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.pushButton_exclude_diff_pages.setText(QCoreApplication.translate("Form", u"\u5254\u9664\u9875\u6570\u5dee\u5f02\u8fc7\u5927\u9879", None))
+        self.label_6.setText(QCoreApplication.translate("Form", u"\u7ec4\u95f4\u6392\u5e8f\u89c4\u5219\uff1a", None))
 #if QT_CONFIG(tooltip)
         self.label.setToolTip(QCoreApplication.translate("Form", u"<html><head/><body><p>\u7ec4\u4e2d\u9879\u76ee\u7684\u6392\u5e8f\u89c4\u5219</p><p>\u6f2b\u753b\u8d28\u91cf\u8bc4\u5206\u662f\u7ed3\u5408\u6587\u4ef6\u5927\u5c0f\u3001\u9875\u6570\u3001\u6587\u4ef6\u540d\u7efc\u5408\u8ba1\u7b97\u7684\u8bc4\u5206</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
         self.label.setText(QCoreApplication.translate("Form", u"\u7ec4\u5185\u6392\u5e8f\u89c4\u5219\uff1a", None))
 #if QT_CONFIG(tooltip)
-        self.comboBox_sort_key.setToolTip(QCoreApplication.translate("Form", u"<html><head/><body><p>\u7ec4\u4e2d\u9879\u76ee\u7684\u6392\u5e8f\u89c4\u5219</p><p>\u6f2b\u753b\u8d28\u91cf\u8bc4\u5206\u662f\u7ed3\u5408\u6587\u4ef6\u5927\u5c0f\u3001\u9875\u6570\u3001\u6587\u4ef6\u540d\u7efc\u5408\u8ba1\u7b97\u7684\u8bc4\u5206</p></body></html>", None))
+        self.comboBox_sort_key_in_group.setToolTip(QCoreApplication.translate("Form", u"<html><head/><body><p>\u7ec4\u4e2d\u9879\u76ee\u7684\u6392\u5e8f\u89c4\u5219</p><p>\u6f2b\u753b\u8d28\u91cf\u8bc4\u5206\u662f\u7ed3\u5408\u6587\u4ef6\u5927\u5c0f\u3001\u9875\u6570\u3001\u6587\u4ef6\u540d\u7efc\u5408\u8ba1\u7b97\u7684\u8bc4\u5206</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
-        self.label_4.setText("")
 #if QT_CONFIG(tooltip)
         self.label_2.setToolTip(QCoreApplication.translate("Form", u"<html><head/><body><p>0\u9875\uff0c\u4e00\u822c\u9009\u62e9\uff0c\u7528\u6765\u7b5b\u9009\u4e0d\u540c\u6c49\u5316\u7ec4\u3001\u5206\u8fa8\u7387\u3001\u9ed1\u767d\u5168\u5f69\u7b49</p><p>1~5\u9875\uff0c\u7528\u6765\u7b5b\u9009\u67d0\u672c\u6f2b\u753b\u6709\u591a\u4f59\u9875\u6216\u7f3a\u9875\u7684\u60c5\u51b5</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
