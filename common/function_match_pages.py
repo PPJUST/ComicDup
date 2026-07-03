@@ -9,7 +9,19 @@ from common.class_match_page_result import MatchResult
 
 
 def match_pages(comic_info_1: ComicInfoBase, comic_info_2: ComicInfoBase) -> Dict[int, int]:
-    """匹配两本漫画相似的页面
+    """匹配两本漫画相似的页面"""
+    # 先尝试使用文件大小进行匹配
+    page_match_group = match_pages_by_filesize(comic_info_1, comic_info_2)
+    if page_match_group:
+        return page_match_group
+
+    # 否则使用图片hash进行匹配
+    page_match_group = match_pages_by_hash(comic_info_1, comic_info_2)
+    return page_match_group
+
+
+def match_pages_by_hash(comic_info_1: ComicInfoBase, comic_info_2: ComicInfoBase) -> Dict[int, int]:
+    """根据图片hash匹配两本漫画相似的页面
     :return: key为comic_1的页码，value为匹配到的最相似的comic_2的页码"""
     # 计算所有页面的hash值（pHash，144位）
     images_hash_1 = comic_info_1.calc_all_pages_hash()
@@ -29,6 +41,30 @@ def match_pages(comic_info_1: ComicInfoBase, comic_info_2: ComicInfoBase) -> Dic
             page_match_group[index_1] = similarest_page
 
     return page_match_group
+
+
+def match_pages_by_filesize(comic_info_1: ComicInfoBase, comic_info_2: ComicInfoBase) -> Dict[int, int]:
+    """根据图片大小匹配两本漫画相似的页面
+    :return: key为comic_1的页码，value为匹配到的最相似的comic_2的页码"""
+    # 计算所有页面的hash值（pHash，144位）
+    images_filesize_1 = comic_info_1.calc_all_pages_filesize()
+    images_filesize_2 = comic_info_2.calc_all_pages_filesize()
+
+    # 由comic_1匹配comic_2，匹配相同文件大小的页码
+    page_match_group: Dict[int, int] = dict()  # key为comic_1的页码，value为匹配到的最相似的comic_2的页码
+    for index_1, (page_1, size_1) in enumerate(images_filesize_1.items()):
+        for index_2, (page_2, size_2) in enumerate(images_filesize_2.items()):
+            if size_1 == size_2:
+                page_match_group[index_1] = index_2
+                break
+
+    # 只有在某一组都被匹配时才返回匹配列表
+    if len(page_match_group) == comic_info_1.page_count:
+        return page_match_group
+    if len(set(page_match_group.values())) == comic_info_2.page_count:
+        return page_match_group
+
+    return None
 
 
 def check_match_result(comic_info_1: ComicInfoBase, comic_info_2: ComicInfoBase, similar_pages: Dict[int, int]):

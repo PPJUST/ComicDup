@@ -115,6 +115,11 @@ class ComicInfoBase(ABC):
         """计算漫画内所有图片的hash值
         :return: 字典，key为内部页路径，value为hash值（pHash，144位）"""
 
+    @abstractmethod
+    def calc_all_pages_filesize(self) -> Dict[str, int]:
+        """计算漫画内所有图片的文件大小
+        :return: 字典，key为内部页路径，value为文件大小（字节）"""
+
     def refresh(self):
         """刷新所有信息"""
         if os.path.exists(self.filepath):
@@ -194,6 +199,14 @@ class FolderComicInfo(ComicInfoBase):
             hash_dict[image] = hash_
         return hash_dict
 
+    def calc_all_pages_filesize(self):
+        filesize_dict = dict()
+        for image in self.page_paths:
+            image_path = os.path.normpath(os.path.join(self.filepath, image))
+            filesize = lzytools.file.get_size(image_path)
+            filesize_dict[image] = filesize
+        return filesize_dict
+
     def _analyse_info(self):
         super()._analyse_info()
         self.page_paths = function_file.get_images_in_folder(self.filepath)
@@ -248,6 +261,13 @@ class ArchiveComicInfo(ComicInfoBase):
             hash_ = function_image.calc_archive_image_hash(self.filepath, image, hash_type, hash_length)
             hash_dict[image] = hash_
         return hash_dict
+
+    def calc_all_pages_filesize(self):
+        filesize_dict = dict()
+        for image in self.page_paths:
+            filesize = function_archive.get_filesize_inside(archive_path=self.filepath, filepath_inside=image)
+            filesize_dict[image] = filesize
+        return filesize_dict
 
     def _analyse_archive_size_extracted(self):
         """分析压缩文件类漫画解压后的文件大小"""
