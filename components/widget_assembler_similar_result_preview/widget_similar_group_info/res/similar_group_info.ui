@@ -133,23 +133,7 @@
         <height>134</height>
        </rect>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
-       <property name="spacing">
-        <number>20</number>
-       </property>
-       <property name="leftMargin">
-        <number>3</number>
-       </property>
-       <property name="topMargin">
-        <number>3</number>
-       </property>
-       <property name="rightMargin">
-        <number>3</number>
-       </property>
-       <property name="bottomMargin">
-        <number>3</number>
-       </property>
-      </layout>
+      <layout class="QHBoxLayout" name="horizontalLayout_2"/>
      </widget>
     </widget>
    </item>

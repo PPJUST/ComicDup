@@ -1,5 +1,5 @@
 import os
-from typing import List
+from typing import List, Union
 
 import lzytools_image
 from PySide6.QtCore import QObject, Signal
@@ -9,8 +9,9 @@ from common.class_comic import ComicInfoBase, _BASE_COLOR
 from common.class_sign import SignStatus, TYPE_SIGN_STATUS
 from components import widget_assembler_comics_preview
 from components.widget_assembler_comics_preview import AssemblerDialogComicsPreview
-from components.widget_assembler_similar_result_preview import widget_comic_info
+from components.widget_assembler_similar_result_preview import widget_comic_info, widget_comic_info_line
 from components.widget_assembler_similar_result_preview.widget_comic_info import ComicInfoPresenter
+from components.widget_assembler_similar_result_preview.widget_comic_info_line import ComicInfoLinePresenter
 from components.widget_assembler_similar_result_preview.widget_similar_group_info.similar_group_info_model import \
     SimilarGroupInfoModel
 from components.widget_assembler_similar_result_preview.widget_similar_group_info.similar_group_info_viewer import \
@@ -29,13 +30,20 @@ class SimilarGroupInfoPresenter(QObject):
         self.viewer = viewer
         self.model = model
 
+        self.item_view_type = 'v'  # 视图类型，h横向视图，v纵向视图
+
         self.comic_info_list: List[ComicInfoBase] = []  # 内部漫画项的漫画信息类列表
-        self.comics_presenter: List[ComicInfoPresenter] = []  # 内部漫画项的桥梁组件
+        self.comics_presenter: List[Union[ComicInfoPresenter, ComicInfoLinePresenter]] = []  # 内部漫画项的桥梁组件
         self.dialog_comics_preview: AssemblerDialogComicsPreview = widget_assembler_comics_preview.get_assembler()  # 预览漫画的dialog
 
         # 绑定信号
         self.viewer.Preview.connect(self.preview)
         self.dialog_comics_preview.ComicDeleted.connect(self.dialog_comic_deleted)
+
+    def set_view_mode(self, mode: str):
+        """设置当前组的视图模式
+        h横向视图，b纵向视图"""
+        self.item_view_type = mode
 
     def set_group_index(self, index: int):
         """设置当前组的编号"""
@@ -123,13 +131,16 @@ class SimilarGroupInfoPresenter(QObject):
 
     def add_comics(self, comic_info_list: List[ComicInfoBase]):
         """批量添加内部漫画信息项"""
+        self.viewer.set_view_mode(self.item_view_type)
+
         for comic_info in comic_info_list:
             self.add_comic(comic_info)
 
         self.set_item_count()
         self.set_item_size()
         self.set_similarity()
-        self.highlight_same_comics()
+        if self.item_view_type == 'h':
+            self.highlight_same_comics()
         # self.highlight_comic_pages()
         # self.highlight_comic_filesize()
         self.set_group_sign(SignStatus.Pending)
@@ -141,7 +152,10 @@ class SimilarGroupInfoPresenter(QObject):
         if os.path.exists(filepath):
             self.comic_info_list.append(comic_info)
 
-            comic_info_presenter = widget_comic_info.get_presenter()
+            if self.item_view_type == 'h':
+                comic_info_presenter = widget_comic_info.get_presenter()
+            else:
+                comic_info_presenter = widget_comic_info_line.get_presenter()
             comic_info_presenter.set_comic_info(comic_info)
             comic_info_presenter.ComicDeleted.connect(self.comic_deleted)
             comic_info_presenter.UpdateComicInfo.connect(self.UpdateComicInfo.emit)

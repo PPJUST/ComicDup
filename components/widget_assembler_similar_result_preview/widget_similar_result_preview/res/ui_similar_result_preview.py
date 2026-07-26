@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'similar_result_previewuNHxpv.ui'
+## Form generated from reading UI file 'similar_result_previewTeixkE.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.10.0
+## Created by: Qt User Interface Compiler version 6.10.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -64,6 +64,16 @@ class Ui_Form(object):
         self.horizontalSpacer_3 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
         self.horizontalLayout.addItem(self.horizontalSpacer_3)
+
+        self.toolButton_view_mode_h = QToolButton(Form)
+        self.toolButton_view_mode_h.setObjectName(u"toolButton_view_mode_h")
+
+        self.horizontalLayout.addWidget(self.toolButton_view_mode_h)
+
+        self.toolButton_view_mode_v = QToolButton(Form)
+        self.toolButton_view_mode_v.setObjectName(u"toolButton_view_mode_v")
+
+        self.horizontalLayout.addWidget(self.toolButton_view_mode_v)
 
         self.label = QLabel(Form)
         self.label.setObjectName(u"label")
@@ -148,6 +158,8 @@ class Ui_Form(object):
         self.label_comic_count.setText(QCoreApplication.translate("Form", u"0", None))
         self.label_6.setText(QCoreApplication.translate("Form", u"\u9879", None))
         self.label_size_count.setText("")
+        self.toolButton_view_mode_h.setText(QCoreApplication.translate("Form", u"h", None))
+        self.toolButton_view_mode_v.setText(QCoreApplication.translate("Form", u"v", None))
         self.label.setText(QCoreApplication.translate("Form", u"\u6bcf\u9875\u663e\u793a\u7ec4\u6570", None))
         self.comboBox_show_group_count.setItemText(0, QCoreApplication.translate("Form", u"5", None))
         self.comboBox_show_group_count.setItemText(1, QCoreApplication.translate("Form", u"10", None))

@@ -3,7 +3,8 @@ from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QWidget, QApplication, QListWidgetItem
 
 from components.dialog_choose_number import DialogChooseNumber
-from components.widget_assembler_similar_result_preview.widget_similar_result_preview.res.icon_base64 import ICON_JUMP
+from components.widget_assembler_similar_result_preview.widget_similar_result_preview.res.icon_base64 import ICON_JUMP, \
+    ICON_HORIZONTAL, ICON_VERTICAL
 from components.widget_assembler_similar_result_preview.widget_similar_result_preview.res.ui_similar_result_preview import \
     Ui_Form
 
@@ -14,6 +15,8 @@ class SimilarResultPreviewViewer(QWidget):
     NextPage = Signal(name='下一页')
     ChangeShowGroupCount = Signal(str, name='改变每页显示的组数')
     JumpPage = Signal(int, name='跳转页面')
+    ViewModeHorizontal = Signal(name='横向视图')
+    ViewModeVertical = Signal(name='纵向视图')
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -28,6 +31,8 @@ class SimilarResultPreviewViewer(QWidget):
         self.ui.pushButton_next_page.clicked.connect(self.NextPage.emit)
         self.ui.comboBox_show_group_count.currentTextChanged.connect(self.ChangeShowGroupCount.emit)
         self.ui.toolButton_jump_page.clicked.connect(self.jump_page)
+        self.ui.toolButton_view_mode_h.clicked.connect(self.ViewModeHorizontal.emit)
+        self.ui.toolButton_view_mode_v.clicked.connect(self.ViewModeVertical.emit)
 
     def add_similar_group(self, similar_group_widget: QWidget):
         """添加相似匹配结果组"""
@@ -103,6 +108,8 @@ class SimilarResultPreviewViewer(QWidget):
     def _set_icon(self):
         """设置图标"""
         self.ui.toolButton_jump_page.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_JUMP))
+        self.ui.toolButton_view_mode_h.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_HORIZONTAL))
+        self.ui.toolButton_view_mode_v.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_VERTICAL))
 
 
 if __name__ == "__main__":

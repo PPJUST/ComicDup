@@ -1,7 +1,7 @@
 import lzytools_Qt
 from PySide6.QtCore import Signal
 from PySide6.QtGui import QMouseEvent, Qt
-from PySide6.QtWidgets import QWidget, QApplication
+from PySide6.QtWidgets import QWidget, QApplication, QVBoxLayout, QHBoxLayout
 
 from common.class_sign import TYPE_SIGN_STATUS
 from components.widget_assembler_similar_result_preview.widget_similar_group_info.res.icon_base64 import ICON_ZOOM_IN
@@ -18,9 +18,28 @@ class SimilarGroupInfoViewer(QWidget):
         self.ui = Ui_Form()
         self.ui.setupUi(self)
 
+        self.ui.scrollArea_similar_group.setWidgetResizable(True)
+
         # 设置图标
         self.ui.toolButton_preview.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_ZOOM_IN))
         self.ui.toolButton_preview.clicked.connect(self.Preview.emit)
+
+    def set_view_mode(self, mode: str):
+        """设置当前组的视图模式
+        h横向视图，v纵向视图"""
+        self.widget = QWidget()
+
+        if mode == 'h':
+            new_layout = QHBoxLayout()
+            self.widget.setLayout(new_layout)
+        else:
+            new_layout = QVBoxLayout()
+            self.widget.setLayout(new_layout)
+
+        self.ui.scrollAreaWidgetContents_similar_group = self.widget
+        self.ui.scrollArea_similar_group.setWidget(self.ui.scrollAreaWidgetContents_similar_group)
+
+        self.ui.scrollAreaWidgetContents_similar_group.update()
 
     def set_group_index(self, index: int):
         """设置当前组的编号"""

@@ -90,6 +90,20 @@
       </spacer>
      </item>
      <item>
+      <widget class="QToolButton" name="toolButton_view_mode_h">
+       <property name="text">
+        <string>h</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="toolButton_view_mode_v">
+       <property name="text">
+        <string>v</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QLabel" name="label">
        <property name="text">
         <string>每页显示组数</string>

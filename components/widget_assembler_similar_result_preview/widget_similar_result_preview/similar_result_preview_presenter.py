@@ -24,6 +24,8 @@ class SimilarResultPreviewPresenter(QObject):
         self.viewer = viewer
         self.model = model
 
+        self.item_view_type = 'v'  # 视图类型，h横向视图，v纵向视图
+
         self.comic_info_groups: List[List[ComicInfoBase]] = []  # 相似组列表
         self.comic_widgets_showed: List[SimilarGroupInfoPresenter] = []  # 显示的相似组控件
         self.current_page = 1  # 当前页数
@@ -36,6 +38,8 @@ class SimilarResultPreviewPresenter(QObject):
         self.viewer.PreviousPage.connect(self.previous_page)
         self.viewer.ChangeShowGroupCount.connect(self.change_show_group_count)
         self.viewer.JumpPage.connect(self.jump_page)
+        self.viewer.ViewModeHorizontal.connect(lambda: self.change_view_mode('h'))
+        self.viewer.ViewModeVertical.connect(lambda: self.change_view_mode('v'))
 
     def set_groups(self, comic_info_list_list: List[List[ComicInfoBase]]):
         """设置相似组列表"""
@@ -54,6 +58,7 @@ class SimilarResultPreviewPresenter(QObject):
             # 实例化单本漫画的控件类
             similar_group_info_presenter = widget_similar_group_info.get_presenter()
             similar_group_info_presenter.UpdateComicInfo.connect(self.UpdateComicInfo.emit)
+            similar_group_info_presenter.set_view_mode(self.item_view_type)
             # 向控件中添加漫画信息（路径交由控件内部处理，不需要实例化漫画信息控件）
             similar_group_info_presenter.add_comics(group)
             # 设置编号
@@ -113,6 +118,12 @@ class SimilarResultPreviewPresenter(QObject):
         self.current_page = 1
         self.viewer.set_current_page(self.current_page)
         self.show_page(self.current_page)
+
+    def change_view_mode(self, mode: str):
+        """修改视图类型
+        h横向布局，v纵向布局"""
+        self.item_view_type = mode
+        self.reload()
 
     def hide_complete_group(self):
         """隐藏已经完成处理的相似组"""
