@@ -120,7 +120,7 @@ class ComicInfoLinePresenter(QObject):
         self.viewer.set_page_count(self.comic_info.page_count)
         # 最后修改时间
         modified_time = self.comic_info.modified_time
-        modified_time_str = lzytools.time.convert_duration_to_date(modified_time)
+        modified_time_str = lzytools.time.convert_duration_to_date(modified_time, _format="%Y-%m-%d")
         self.viewer.set_file_time(modified_time_str)
 
         self._analyse_filetitle()
@@ -135,9 +135,6 @@ class ComicInfoLinePresenter(QObject):
 
         artist_names = doujin_name.artist_names.get_value()
         self.viewer.set_attribute_artist_name(artist_names)
-
-        convention_name = doujin_name.convention_name.get_value()
-        self.viewer.set_attribute_convention_name(convention_name)
 
         language = doujin_name.language.get_value()
         self.viewer.set_attribute_language(language)

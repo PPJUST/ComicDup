@@ -28,9 +28,9 @@ class ComicInfoLineViewer(QFrame):
         self._set_icon()
 
         # 设置ui
-        self.ui.label_preview.setFixedSize(125, 64)
+        self.ui.label_preview.setFixedSize(250, 128)
         self.ui.label_preview.setAlignment(Qt.AlignCenter)
-        self.setMinimumWidth(125)
+        self.setMinimumWidth(250)
         self.setFrameShape(QFrame.Shape.Box)
         self.setFrameShadow(QFrame.Shadow.Plain)
         self.setLineWidth(1)
@@ -68,10 +68,6 @@ class ComicInfoLineViewer(QFrame):
     def set_attribute_artist_name(self, artist_name: list):
         """设置作者名称"""
         self.ui.label_artist_name.setText(' | '.join(artist_name))
-
-    def set_attribute_convention_name(self, convention_name: list):
-        """设置即卖会名称"""
-        self.ui.label_convention_name.setText(' | '.join(convention_name))
 
     def set_attribute_language(self, language: list):
         """设置语言"""
