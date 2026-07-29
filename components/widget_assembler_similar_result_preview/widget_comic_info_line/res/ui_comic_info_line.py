@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'comic_info_lineomCSAH.ui'
+## Form generated from reading UI file 'comic_info_linefiSFGx.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.11.0
 ##
@@ -90,10 +90,10 @@ class Ui_Form(object):
 
         self.horizontalLayout_3.addWidget(self.label_page_count)
 
-        self.label_2 = QLabel(Form)
-        self.label_2.setObjectName(u"label_2")
+        self.label_ye = QLabel(Form)
+        self.label_ye.setObjectName(u"label_ye")
 
-        self.horizontalLayout_3.addWidget(self.label_2)
+        self.horizontalLayout_3.addWidget(self.label_ye)
 
         self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
@@ -211,7 +211,7 @@ class Ui_Form(object):
         self.label_icon.setText(QCoreApplication.translate("Form", u"filetype", None))
         self.label_filesize.setText(QCoreApplication.translate("Form", u"filesize", None))
         self.label_page_count.setText(QCoreApplication.translate("Form", u"page_count", None))
-        self.label_2.setText(QCoreApplication.translate("Form", u"\u9875", None))
+        self.label_ye.setText(QCoreApplication.translate("Form", u"\u9875", None))
         self.label_file_time.setText(QCoreApplication.translate("Form", u"file time", None))
         self.label_artist_name.setText("")
         self.label_special_indicators.setText("")

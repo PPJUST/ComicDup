@@ -93,9 +93,22 @@ class ComicInfoLineViewer(QFrame):
         else:
             self.ui.label_similarity.setStyleSheet("color: black")
 
-    def highlight_attribute(self):
-        """高亮属性"""
-        # todo
+    def highlight_filesize(self):
+        """高亮显示文件大小"""
+        self.ui.label_filesize.setStyleSheet("color: green")
+
+    def highlight_pages(self):
+        """高亮显示页数"""
+        self.ui.label_page_count.setStyleSheet("color: green")
+        self.ui.label_ye.setStyleSheet("color: green")
+
+    def highlight_file_time(self):
+        """高亮显示文件时间"""
+        self.ui.label_file_time.setStyleSheet("color: green")
+
+    def highlight_filename(self):
+        """高亮显示文件名"""
+        self.ui.label_filepath.setStyleSheet("color: green")
 
     def _set_icon(self):
         """设置图标"""

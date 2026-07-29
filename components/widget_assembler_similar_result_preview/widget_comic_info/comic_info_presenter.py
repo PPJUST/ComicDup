@@ -92,13 +92,21 @@ class ComicInfoPresenter(QObject):
         :param similarity:百分比数字文本，例如90%"""
         self.viewer.set_similarity(similarity)
 
+    def highlight_filesize(self):
+        """高亮显示文件大小"""
+        self.viewer.highlight_filesize()
+
     def highlight_pages(self):
         """高亮显示页数"""
         self.viewer.highlight_pages()
 
-    def highlight_filesize(self):
-        """高亮显示文件大小"""
-        self.viewer.highlight_filesize()
+    def highlight_file_time(self):
+        """高亮显示文件时间"""
+        self.viewer.highlight_file_time()
+
+    def highlight_filename(self):
+        """高亮显示文件名"""
+        self.viewer.highlight_filename()
 
     def _show_comic_info(self):
         """在viewer上显示漫画信息"""

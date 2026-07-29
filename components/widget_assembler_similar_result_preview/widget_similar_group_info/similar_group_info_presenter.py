@@ -1,6 +1,7 @@
 import os
 from typing import List, Union
 
+import DoujinTools
 import lzytools_image
 from PySide6.QtCore import QObject, Signal
 
@@ -141,6 +142,8 @@ class SimilarGroupInfoPresenter(QObject):
         self.set_similarity()
         if self.item_view_type == 'h':
             self.highlight_same_comics()
+        else:
+            self.highlight_best_attribute()
         # self.highlight_comic_pages()
         # self.highlight_comic_filesize()
         self.set_group_sign(SignStatus.Pending)
@@ -233,21 +236,12 @@ class SimilarGroupInfoPresenter(QObject):
             color = color_dict[_joined]
             widget_presenter.set_color(color)
 
-    def highlight_comic_pages(self):
-        """高亮页数最多的漫画的文本"""
-        max_pages = 0
-        # 获取最大页数
-        for widget_presenter in self.comics_presenter:
-            comic_info = widget_presenter.get_comic_info()
-            pages = comic_info.page_count
-            if pages > max_pages:
-                max_pages = pages
-        # 高亮最大页数
-        for widget_presenter in self.comics_presenter:
-            comic_info = widget_presenter.get_comic_info()
-            pages = comic_info.page_count
-            if pages == max_pages:
-                widget_presenter.highlight_pages()
+    def highlight_best_attribute(self):
+        """高亮每个属性中的最优项"""
+        self.highlight_comic_filesize()
+        self.highlight_comic_pages()
+        self.highlight_filename()
+        self.highlight_file_time()
 
     def highlight_comic_filesize(self):
         """高亮文件大小最大的漫画的文本"""
@@ -264,6 +258,70 @@ class SimilarGroupInfoPresenter(QObject):
             filesize = comic_info.filesize_bytes
             if filesize == max_filesize:
                 widget_presenter.highlight_filesize()
+
+    def highlight_comic_pages(self):
+        """高亮页数最多的漫画的文本"""
+        max_pages = 0
+        # 获取最大页数
+        for widget_presenter in self.comics_presenter:
+            comic_info = widget_presenter.get_comic_info()
+            pages = comic_info.page_count
+            if pages > max_pages:
+                max_pages = pages
+        # 高亮最大页数
+        for widget_presenter in self.comics_presenter:
+            comic_info = widget_presenter.get_comic_info()
+            pages = comic_info.page_count
+            if pages == max_pages:
+                widget_presenter.highlight_pages()
+
+    def highlight_file_time(self):
+        """高亮文件时间最新的漫画的文本"""
+        newest_time = 0
+        # 获取最新的文件时间
+        for widget_presenter in self.comics_presenter:
+            comic_info = widget_presenter.get_comic_info()
+            _time = comic_info.modified_time
+            if _time > newest_time:
+                newest_time = _time
+        # 高亮最新的文件时间
+        for widget_presenter in self.comics_presenter:
+            comic_info = widget_presenter.get_comic_info()
+            _time = comic_info.modified_time
+            if _time == newest_time:
+                widget_presenter.highlight_file_time()
+
+    def highlight_filename(self):
+        """高亮最优文件名的漫画的文本"""
+        max_tag_count = 0
+        # 获取最大tag计数
+        for widget_presenter in self.comics_presenter:
+            comic_info = widget_presenter.get_comic_info()
+            filetitle = comic_info.filetitle
+            doujinshi_name = DoujinTools.DoujinshiName(filetitle)
+            tag_count = (len(doujinshi_name.convention_name.get_value()) +
+                         len(doujinshi_name.circle_names.get_value()) +
+                         len(doujinshi_name.artist_names.get_value()) +
+                         len(doujinshi_name.parody_names.get_value()) +
+                         len(doujinshi_name.language.get_value()) +
+                         len(doujinshi_name.translators.get_value()) +
+                         len(doujinshi_name.special_indicators.get_value()))
+            if tag_count > max_tag_count:
+                max_tag_count = tag_count
+        # 高亮最大tag的文件名
+        for widget_presenter in self.comics_presenter:
+            comic_info = widget_presenter.get_comic_info()
+            filetitle = comic_info.filetitle
+            doujinshi_name = DoujinTools.DoujinshiName(filetitle)
+            tag_count = (len(doujinshi_name.convention_name.get_value()) +
+                         len(doujinshi_name.circle_names.get_value()) +
+                         len(doujinshi_name.artist_names.get_value()) +
+                         len(doujinshi_name.parody_names.get_value()) +
+                         len(doujinshi_name.language.get_value()) +
+                         len(doujinshi_name.translators.get_value()) +
+                         len(doujinshi_name.special_indicators.get_value()))
+            if tag_count == max_tag_count:
+                widget_presenter.highlight_filename()
 
     def _update_group_sign(self):
         """更新当前组的标记"""
