@@ -119,6 +119,16 @@
       </widget>
      </item>
      <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>翻页页数</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="spinBox_turn_pages"/>
+     </item>
+     <item>
       <widget class="QCheckBox" name="checkBox_auto_calc_similar">
        <property name="toolTip">
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;实时显示预览图片页之间的相似度，以第一个项目的图片为基准&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>

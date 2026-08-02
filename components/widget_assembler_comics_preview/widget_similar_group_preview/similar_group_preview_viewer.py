@@ -13,9 +13,9 @@ from components.widget_assembler_comics_preview.widget_similar_group_preview.res
 class SimilarGroupPreviewViewer(QWidget):
     """相似组预览框架模块的界面组件"""
     PreviousPage = Signal(name='上一页')
-    PreviousPage2 = Signal(name='上一页2')
+    PreviousPage2 = Signal(int, name='上一页2')
     NextPage = Signal(name='下一页')
-    NextPage2 = Signal(name='下一页2')
+    NextPage2 = Signal(int, name='下一页2')
     Reset = Signal(name='重置页码')
     Quit = Signal(name='退出')
     IsShowSimilar = Signal(bool, name='是否显示图片相似度')
@@ -25,6 +25,10 @@ class SimilarGroupPreviewViewer(QWidget):
         super().__init__(parent)
         self.ui = Ui_Form()
         self.ui.setupUi(self)
+
+        self.ui.spinBox_turn_pages.setValue(5)
+        self.ui.spinBox_turn_pages.setMinimum(1)
+        self.ui.spinBox_turn_pages.setMaximum(10)
 
         # 设置图标
         self._set_icon()
@@ -117,10 +121,11 @@ class SimilarGroupPreviewViewer(QWidget):
 
     def _bind_signal(self):
         """绑定信号"""
+        pages = self.ui.spinBox_turn_pages.value()
         self.ui.toolButton_previous.clicked.connect(self.PreviousPage.emit)
-        self.ui.toolButton_previous2.clicked.connect(self.PreviousPage2.emit)
+        self.ui.toolButton_previous2.clicked.connect(lambda: self.PreviousPage2.emit(pages))
         self.ui.toolButton_next.clicked.connect(self.NextPage.emit)
-        self.ui.toolButton_next2.clicked.connect(self.NextPage2.emit)
+        self.ui.toolButton_next2.clicked.connect(lambda: self.NextPage2.emit(pages))
         self.ui.toolButton_reset.clicked.connect(self.Reset.emit)
         self.ui.pushButton_quit.clicked.connect(self.Quit.emit)
         self.ui.checkBox_auto_calc_similar.stateChanged.connect(self.IsShowSimilar.emit)

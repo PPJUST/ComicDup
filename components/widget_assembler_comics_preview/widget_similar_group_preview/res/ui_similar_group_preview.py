@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'similar_group_previewKntLlU.ui'
+## Form generated from reading UI file 'similar_group_previewsiRkiN.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.10.1
+## Created by: Qt User Interface Compiler version 6.11.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -17,13 +17,14 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QCheckBox, QFrame, QHBoxLayout,
     QLabel, QPushButton, QScrollArea, QSizePolicy,
-    QSpacerItem, QToolButton, QVBoxLayout, QWidget)
+    QSpacerItem, QSpinBox, QToolButton, QVBoxLayout,
+    QWidget)
 
 class Ui_Form(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        Form.resize(800, 600)
+        Form.resize(835, 600)
         self.verticalLayout = QVBoxLayout(Form)
         self.verticalLayout.setSpacing(3)
         self.verticalLayout.setObjectName(u"verticalLayout")
@@ -80,6 +81,16 @@ class Ui_Form(object):
 
         self.horizontalLayout.addWidget(self.line_2)
 
+        self.label_2 = QLabel(Form)
+        self.label_2.setObjectName(u"label_2")
+
+        self.horizontalLayout.addWidget(self.label_2)
+
+        self.spinBox_turn_pages = QSpinBox(Form)
+        self.spinBox_turn_pages.setObjectName(u"spinBox_turn_pages")
+
+        self.horizontalLayout.addWidget(self.spinBox_turn_pages)
+
         self.checkBox_auto_calc_similar = QCheckBox(Form)
         self.checkBox_auto_calc_similar.setObjectName(u"checkBox_auto_calc_similar")
 
@@ -107,7 +118,7 @@ class Ui_Form(object):
         self.scrollArea.setWidgetResizable(True)
         self.scrollAreaWidgetContents = QWidget()
         self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
-        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 792, 564))
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 827, 564))
         self.horizontalLayout_2 = QHBoxLayout(self.scrollAreaWidgetContents)
         self.horizontalLayout_2.setSpacing(0)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
@@ -151,6 +162,7 @@ class Ui_Form(object):
 #endif // QT_CONFIG(tooltip)
         self.toolButton_reset.setText(QCoreApplication.translate("Form", u"reset", None))
         self.pushButton_quit.setText(QCoreApplication.translate("Form", u"\u9000\u51fa", None))
+        self.label_2.setText(QCoreApplication.translate("Form", u"\u7ffb\u9875\u9875\u6570", None))
 #if QT_CONFIG(tooltip)
         self.checkBox_auto_calc_similar.setToolTip(QCoreApplication.translate("Form", u"<html><head/><body><p>\u5b9e\u65f6\u663e\u793a\u9884\u89c8\u56fe\u7247\u9875\u4e4b\u95f4\u7684\u76f8\u4f3c\u5ea6\uff0c\u4ee5\u7b2c\u4e00\u4e2a\u9879\u76ee\u7684\u56fe\u7247\u4e3a\u57fa\u51c6</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)

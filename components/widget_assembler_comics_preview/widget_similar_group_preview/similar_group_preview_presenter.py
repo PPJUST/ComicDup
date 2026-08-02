@@ -176,9 +176,9 @@ class SimilarGroupPreviewPresenter(QObject):
     def _bind_signal(self):
         """绑定信号"""
         self.viewer.PreviousPage.connect(self.turn_to_previous_page)
-        self.viewer.PreviousPage2.connect(lambda: self.turn_to_previous_page(5))
+        self.viewer.PreviousPage2.connect(lambda x: self.turn_to_previous_page(x))
         self.viewer.NextPage.connect(self.turn_to_next_page)
-        self.viewer.NextPage2.connect(lambda: self.turn_to_next_page(5))
+        self.viewer.NextPage2.connect(lambda x: self.turn_to_next_page(x))
         self.viewer.Reset.connect(self.reset_page_number)
         self.viewer.Quit.connect(self.quit)
         self.viewer.IsShowSimilar.connect(self.set_is_show_similar)
