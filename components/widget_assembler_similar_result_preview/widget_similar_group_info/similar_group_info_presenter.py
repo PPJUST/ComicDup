@@ -2,10 +2,10 @@ import os
 from typing import List, Union
 
 import DoujinTools
+import lzytools
 import lzytools_image
 from PySide6.QtCore import QObject, Signal
 
-from common import function_file
 from common.class_comic import ComicInfoBase, _BASE_COLOR
 from common.class_sign import SignStatus, TYPE_SIGN_STATUS
 from components import widget_assembler_comics_preview
