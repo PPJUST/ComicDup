@@ -7,7 +7,7 @@ import lzytools_image
 from PySide6.QtCore import QObject, Signal
 from PySide6.QtWidgets import QMessageBox
 
-from common import function_file, function_image
+from common import function_image
 from common.class_comic import ComicInfoBase
 from common.class_config import FileType
 from components.widget_assembler_comics_preview.widget_comic_preview.comic_preview_model import ComicPreviewModel
@@ -52,7 +52,7 @@ class ComicPreviewPresenter(QObject):
             self.viewer.set_icon_archive()
         # 文件大小
         filesize = self.comic_info.filesize_bytes
-        filesize_str = function_file.format_bytes_size(filesize)
+        filesize_str = lzytools.file.format_bytes_size(filesize)
         self.viewer.set_filesize(filesize_str)
         # 文件名
         self.viewer.set_filename(self.comic_info.filename)

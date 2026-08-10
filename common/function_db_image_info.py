@@ -5,7 +5,6 @@ from typing import List, Tuple, Dict
 
 import lzytools
 
-from common import function_file
 from common.class_config import SimilarAlgorithm, TYPES_HASH_ALGORITHM, FileType
 from common.class_image import ImageInfoBase, ImageInfoFolder, ImageInfoArchive
 
@@ -416,7 +415,7 @@ class DBImageInfo:
     def get_info_db_size(self) -> str:
         """获取数据库文件大小"""
         size_bytes = os.path.getsize(self.db_filepath)
-        size = function_file.format_bytes_size(size_bytes)
+        size = lzytools.file.format_bytes_size(size_bytes)
         return size
 
     def get_info_update_time(self) -> str:

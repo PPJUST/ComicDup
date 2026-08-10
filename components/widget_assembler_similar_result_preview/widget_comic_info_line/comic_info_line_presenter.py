@@ -140,7 +140,7 @@ class ComicInfoLinePresenter(QObject):
             bytes_size = self.comic_info.filesize_bytes
         else:
             bytes_size = 0
-        size_str = function_file.format_bytes_size(bytes_size)
+        size_str = lzytools.file.format_bytes_size(bytes_size)
         self.viewer.set_filesize(size_str)
 
         self.viewer.set_page_count(self.comic_info.page_count)

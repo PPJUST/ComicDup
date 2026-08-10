@@ -183,7 +183,7 @@ class SimilarResultPreviewPresenter(QObject):
         for group in self.comic_info_groups:
             for comic_info in group:
                 filesize_count_bytes += comic_info.filesize_bytes
-        filesize_str = function_file.format_bytes_size(filesize_count_bytes)  # 规范文件大小表示
+        filesize_str = lzytools.file.format_bytes_size(filesize_count_bytes)  # 规范文件大小表示
 
         self.viewer.set_group_count(groups_count)
         self.viewer.set_item_count(items_count)

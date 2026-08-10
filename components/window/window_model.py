@@ -6,7 +6,7 @@ import lzytools
 import natsort
 from PySide6.QtCore import Signal, QObject
 
-from common import function_cache_preview, function_file
+from common import function_cache_preview
 from common.class_comic import ComicInfoBase
 from common.class_config import TYPES_HASH_ALGORITHM
 from common.class_count_info import CountInfo
@@ -291,7 +291,7 @@ class WindowModel(QObject):
         """获取预览图缓存的统计信息"""
         item_count = function_cache_preview.get_preview_image_count()
         filesize_bytes = function_cache_preview.get_preview_size()
-        filesize_str = function_file.format_bytes_size(filesize_bytes)
+        filesize_str = lzytools.file.format_bytes_size(filesize_bytes)
 
         info_count = CountInfo()
         info_count.set_item_count(item_count)

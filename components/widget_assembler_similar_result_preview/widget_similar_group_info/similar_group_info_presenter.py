@@ -59,7 +59,7 @@ class SimilarGroupInfoPresenter(QObject):
         size_bytes = 0
         for comic_info in self.comic_info_list:
             size_bytes += comic_info.filesize_bytes
-        size = function_file.format_bytes_size(size_bytes)
+        size = lzytools.file.format_bytes_size(size_bytes)
         self.viewer.set_item_size(size)
 
     def set_similarity(self):

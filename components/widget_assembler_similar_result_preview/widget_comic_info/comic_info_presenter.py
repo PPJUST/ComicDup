@@ -4,7 +4,6 @@ import lzytools
 from PySide6.QtCore import QObject, Signal
 from PySide6.QtWidgets import QMessageBox
 
-from common import function_file
 from common.class_comic import ComicInfoBase
 from common.class_config import FileType
 from components.widget_assembler_similar_result_preview.widget_comic_info.comic_info_model import ComicInfoModel
@@ -143,7 +142,7 @@ class ComicInfoPresenter(QObject):
             bytes_size = self.comic_info.filesize_bytes
         else:
             bytes_size = 0
-        size_str = function_file.format_bytes_size(bytes_size)
+        size_str = lzytools.file.format_bytes_size(bytes_size)
         self.viewer.set_filesize(size_str)
 
     def get_viewer(self) -> ComicInfoViewer:

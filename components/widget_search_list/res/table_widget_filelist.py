@@ -1,7 +1,5 @@
 import os
 
-import lzytools
-import lzytools
 import lzytools_Qt
 import lzytools_archive
 from PySide6.QtCore import Qt, Signal

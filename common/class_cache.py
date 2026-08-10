@@ -2,8 +2,9 @@
 import os
 from datetime import datetime
 
+import lzytools
+
 import common.function_cache_result
-from common import function_file
 
 
 class CacheMatchResult:
@@ -25,4 +26,4 @@ class CacheMatchResult:
             for comic_info in group:
                 filesize = comic_info.filesize_bytes
                 size_count_bytes += filesize
-        self.size_count = function_file.format_bytes_size(size_count_bytes)
+        self.size_count = lzytools.file.format_bytes_size(size_count_bytes)
