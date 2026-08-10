@@ -27,8 +27,10 @@ class ComicInfoPresenter(QObject):
 
         # 绑定信号
         self.viewer.OpenPath.connect(self.open_path)
+        self.viewer.OpenDir.connect(self.open_dir)
         self.viewer.RefreshInfo.connect(self.refresh_info)
         self.viewer.Delete.connect(self.delete_comic)
+        self.viewer.Rename.connect(self.rename_comic)
 
     def get_comic_path(self):
         """获取漫画路径"""
@@ -50,6 +52,10 @@ class ComicInfoPresenter(QObject):
     def open_path(self):
         """打开路径"""
         os.startfile(self.comic_info.filepath)
+
+    def open_dir(self):
+        """打开路径所在目录"""
+        os.startfile(os.path.dirname(self.comic_info.filepath))
 
     def refresh_info(self):
         """刷新信息"""
@@ -82,6 +88,10 @@ class ComicInfoPresenter(QObject):
             path = self.comic_info.filepath
             lzytools.file.delete(path, send_to_trash=True)
             self.ComicDeleted.emit()
+
+    def rename_comic(self):
+        """重命名文件"""
+        pass  # todo
 
     def set_color(self, color: str):
         """为漫画项的文本添加颜色"""

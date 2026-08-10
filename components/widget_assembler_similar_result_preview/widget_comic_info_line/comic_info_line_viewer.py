@@ -1,7 +1,7 @@
 import lzytools_Qt
 from PySide6.QtCore import Signal
-from PySide6.QtGui import QPixmap, Qt
-from PySide6.QtWidgets import QApplication, QFrame
+from PySide6.QtGui import QPixmap, Qt, QAction
+from PySide6.QtWidgets import QApplication, QFrame, QMenu
 
 from components.widget_assembler_similar_result_preview.widget_comic_info_line.res.icon_base64 import ICON_JUMP_TO, \
     ICON_REFRESH, ICON_DELETE
@@ -10,9 +10,11 @@ from components.widget_assembler_similar_result_preview.widget_comic_info_line.r
 
 class ComicInfoLineViewer(QFrame):
     """单个漫画信息模块的界面组件"""
-    OpenPath = Signal(name='打开文件路径')
+    OpenPath = Signal(name='打开文件')
+    OpenDir = Signal(name='打开文件所在路径')
     RefreshInfo = Signal(name='刷新漫画信息')
     Delete = Signal(name='删除漫画')
+    Rename = Signal(name='重命名漫画')
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -35,6 +37,10 @@ class ComicInfoLineViewer(QFrame):
         self.setFrameShadow(QFrame.Shadow.Plain)
         self.setLineWidth(1)
         self.ui.label_filepath.setStyleSheet("font-weight: bold")
+
+        # 添加右键菜单
+        self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
+        self.customContextMenuRequested.connect(self._context_menu)  # 右键菜单
 
     def set_filepath(self, filepath: str):
         """设置漫画路径"""
@@ -109,6 +115,33 @@ class ComicInfoLineViewer(QFrame):
     def highlight_filename(self):
         """高亮显示文件名"""
         self.ui.label_filepath.setStyleSheet("color: green")
+
+    def _context_menu(self, pos):
+        """添加右键菜单"""
+        menu = QMenu()
+        menu.adjustSize()
+
+        action_open_file = QAction('打开文件', menu)
+        action_open_file.triggered.connect(self.OpenPath.emit)
+        menu.addAction(action_open_file)
+
+        action_open_dir = QAction('打开目录', menu)
+        action_open_dir.triggered.connect(self.OpenDir.emit)
+        menu.addAction(action_open_dir)
+
+        action_refresh = QAction('刷新信息', menu)
+        action_refresh.triggered.connect(self.RefreshInfo.emit)
+        menu.addAction(action_refresh)
+
+        action_rename = QAction('重命名', menu)
+        action_rename.triggered.connect(self.Rename.emit)
+        menu.addAction(action_rename)
+
+        action_delete = QAction('删除', menu)
+        action_delete.triggered.connect(self.Delete.emit)
+        menu.addAction(action_delete)
+
+        menu.exec(self.mapToGlobal(pos))
 
     def _set_icon(self):
         """设置图标"""
