@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'similar_result_filterpefcOm.ui'
+## Form generated from reading UI file 'similar_result_filterxMQtbA.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.10.1
 ##
@@ -23,7 +23,7 @@ class Ui_Form(object):
     def setupUi(self, Form):
         if not Form.objectName():
             Form.setObjectName(u"Form")
-        Form.resize(650, 83)
+        Form.resize(643, 83)
         self.horizontalLayout_2 = QHBoxLayout(Form)
         self.horizontalLayout_2.setSpacing(3)
         self.horizontalLayout_2.setObjectName(u"horizontalLayout_2")
@@ -208,7 +208,7 @@ class Ui_Form(object):
 #if QT_CONFIG(tooltip)
         self.label_2.setToolTip(QCoreApplication.translate("Form", u"<html><head/><body><p>0\u9875\uff0c\u4e00\u822c\u9009\u62e9\uff0c\u7528\u6765\u7b5b\u9009\u4e0d\u540c\u6c49\u5316\u7ec4\u3001\u5206\u8fa8\u7387\u3001\u9ed1\u767d\u5168\u5f69\u7b49</p><p>1~5\u9875\uff0c\u7528\u6765\u7b5b\u9009\u67d0\u672c\u6f2b\u753b\u6709\u591a\u4f59\u9875\u6216\u7f3a\u9875\u7684\u60c5\u51b5</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)
-        self.label_2.setText(QCoreApplication.translate("Form", u"\u9875\u6570\u9608\u503c\uff1a", None))
+        self.label_2.setText(QCoreApplication.translate("Form", u"\u5dee\u5f02\u9875\u6570\u9608\u503c\uff1a", None))
 #if QT_CONFIG(tooltip)
         self.spinBox_diff_pages_threshold.setToolTip(QCoreApplication.translate("Form", u"<html><head/><body><p>0\u9875\uff0c\u4e00\u822c\u9009\u62e9\uff0c\u7528\u6765\u7b5b\u9009\u4e0d\u540c\u6c49\u5316\u7ec4\u3001\u5206\u8fa8\u7387\u3001\u9ed1\u767d\u5168\u5f69\u7b49</p><p>1~5\u9875\uff0c\u7528\u6765\u7b5b\u9009\u67d0\u672c\u6f2b\u753b\u6709\u591a\u4f59\u9875\u6216\u7f3a\u9875\u7684\u60c5\u51b5</p></body></html>", None))
 #endif // QT_CONFIG(tooltip)

@@ -40,7 +40,12 @@ class ComicInfoViewer(QFrame):
 
         # 添加右键菜单
         self.setContextMenuPolicy(Qt.ContextMenuPolicy.CustomContextMenu)
-        self.customContextMenuRequested.connect(self._context_menu)  # 右键菜单
+        self.customContextMenuRequested.connect(self._context_menu)
+
+        # 添加tips提示
+        self.ui.toolButton_open_path.setToolTip("打开文件所在路径")
+        self.ui.toolButton_refresh.setToolTip("刷新漫画信息")
+        self.ui.toolButton_delete.setToolTip("删除漫画")
 
     def set_filetype_icon(self, icon_base64: str):
         """设置漫画的文件类型图标"""

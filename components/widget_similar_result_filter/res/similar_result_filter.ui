@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>650</width>
+    <width>643</width>
     <height>83</height>
    </rect>
   </property>
@@ -166,7 +166,7 @@
           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;0页，一般选择，用来筛选不同汉化组、分辨率、黑白全彩等&lt;/p&gt;&lt;p&gt;1~5页，用来筛选某本漫画有多余页或缺页的情况&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="text">
-          <string>页数阈值：</string>
+          <string>差异页数阈值：</string>
          </property>
         </widget>
        </item>
