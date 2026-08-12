@@ -6,6 +6,7 @@ from PySide6.QtWidgets import QMessageBox
 
 from common.class_comic import ComicInfoBase
 from common.class_config import FileType
+from components.dialog_rename_comic import DialogRenameComic
 from components.widget_assembler_similar_result_preview.widget_comic_info.comic_info_model import ComicInfoModel
 from components.widget_assembler_similar_result_preview.widget_comic_info.comic_info_viewer import ComicInfoViewer
 from components.widget_search_list.res.icon_base64 import ICON_FOLDER, ICON_ARCHIVE
@@ -90,7 +91,8 @@ class ComicInfoPresenter(QObject):
 
     def rename_comic(self):
         """重命名文件"""
-        pass  # todo
+        dialog = DialogRenameComic()
+        dialog.exec()
 
     def set_color(self, color: str):
         """为漫画项的文本添加颜色"""

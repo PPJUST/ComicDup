@@ -1,0 +1,1 @@
+from .rename_comic_viewer import RenameComicViewer as DialogRenameComic
