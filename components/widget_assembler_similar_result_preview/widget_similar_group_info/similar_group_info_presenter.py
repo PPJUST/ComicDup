@@ -19,9 +19,6 @@ from components.widget_assembler_similar_result_preview.widget_similar_group_inf
     SimilarGroupInfoViewer
 
 
-# todo 手动设置当前组为非相似组的按钮，管理非相似组的单独模块
-
-
 class SimilarGroupInfoPresenter(QObject):
     """单个相似组信息模块的桥梁组件"""
     UpdateComicInfo = Signal(ComicInfoBase, name='更新数据库中的漫画信息')

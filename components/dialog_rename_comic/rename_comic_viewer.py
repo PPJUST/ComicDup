@@ -1,5 +1,6 @@
 import os.path
 
+import lzytools.file
 from DoujinTools import DoujinshiName
 from PySide6.QtCore import Signal
 from PySide6.QtWidgets import QApplication, QDialog
@@ -8,7 +9,7 @@ from components.dialog_rename_comic.res.ui_rename_comic import Ui_Dialog
 
 
 class RenameComicViewer(QDialog):
-    Rename = Signal(str, name='重命名的文件名（不含文件扩展名')
+    Rename = Signal(str, name='重命名后的新路径')
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -53,14 +54,36 @@ class RenameComicViewer(QDialog):
         self.ui.toolButton_add_translator.clicked.connect(self._set_field_pattern_translator)
         self.ui.toolButton_add_special_indicator.clicked.connect(self._set_field_pattern_special_indicator)
 
-        self.ui.pushButton_rename.clicked.connect(
-            lambda: self.Rename.emit(self.ui.lineEdit_new_filename.text().strip()))
+        self.ui.pushButton_rename.clicked.connect(self.rename_comic)
         self.ui.pushButton_quit.clicked.connect(self.close)
 
     def set_comic_path(self, comic_path: str):
         """设置对应的漫画路径"""
         self.comic_path = comic_path
         self._update_field()
+
+    def rename_comic(self):
+        """重命名漫画"""
+        filetitle = self.ui.lineEdit_new_filename.text().strip()
+        dirpath = os.path.dirname(self.comic_path)
+        if os.path.isfile(self.comic_path):
+            extension = os.path.splitext(self.comic_path)[1]
+        else:
+            extension = ''
+
+        if self.ui.checkBox_auto_dup_name.isChecked() and self.ui.lineEdit_suffix.text().strip():
+            suffix = self.ui.lineEdit_suffix.text()
+        else:
+            suffix = ''
+
+        no_dup_name = lzytools.file.create_nodup_filename_custom_suffix(filetitle=filetitle,
+                                                                        check_dirpath=dirpath,
+                                                                        add_suffix=suffix,
+                                                                        filename_extension=extension)
+        new_path = os.path.normpath(os.path.join(dirpath, no_dup_name))
+        os.rename(self.comic_path, new_path)
+        self.Rename.emit(new_path)
+        self.close()
 
     def _update_field(self):
         """更新字段文本"""

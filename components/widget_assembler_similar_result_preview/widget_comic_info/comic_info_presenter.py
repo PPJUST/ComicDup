@@ -12,6 +12,8 @@ from components.widget_assembler_similar_result_preview.widget_comic_info.comic_
 from components.widget_search_list.res.icon_base64 import ICON_FOLDER, ICON_ARCHIVE
 
 
+# todo 重命名后的操作，添加一个单独的信号进行处理
+
 class ComicInfoPresenter(QObject):
     """单个漫画信息模块的桥梁组件"""
     ComicDeleted = Signal(name='删除漫画')
