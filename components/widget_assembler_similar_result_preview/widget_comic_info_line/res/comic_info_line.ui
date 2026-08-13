@@ -198,7 +198,7 @@
        <item row="4" column="0">
         <widget class="QLabel" name="label_12">
          <property name="text">
-          <string>特殊标识：</string>
+          <string>特别标示：</string>
          </property>
         </widget>
        </item>

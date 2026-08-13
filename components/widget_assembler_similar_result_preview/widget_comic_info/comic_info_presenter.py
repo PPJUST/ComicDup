@@ -92,6 +92,7 @@ class ComicInfoPresenter(QObject):
     def rename_comic(self):
         """重命名文件"""
         dialog = DialogRenameComic()
+        dialog.set_comic_path(self.comic_info.filepath)
         dialog.exec()
 
     def set_color(self, color: str):

@@ -89,7 +89,7 @@ class ComicInfoLineViewer(QFrame):
         self.ui.label_translator.setText(' | '.join(translator_name))
 
     def set_attribute_special_indicators(self, special_indicators: list):
-        """设置特殊标识"""
+        """设置特别标示"""
         self.ui.label_special_indicators.setText(' | '.join(special_indicators))
 
     def set_similarity(self, similarity: str):

@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'rename_comicHLOsfa.ui'
+## Form generated from reading UI file 'rename_comiccOZuzm.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.10.1
+## Created by: Qt User Interface Compiler version 6.11.0
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -134,10 +134,28 @@ class Ui_Dialog(object):
 
         self.verticalLayout = QVBoxLayout()
         self.verticalLayout.setObjectName(u"verticalLayout")
+        self.horizontalLayout_4 = QHBoxLayout()
+        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
         self.checkBox_choose_field = QCheckBox(Dialog)
         self.checkBox_choose_field.setObjectName(u"checkBox_choose_field")
 
-        self.verticalLayout.addWidget(self.checkBox_choose_field)
+        self.horizontalLayout_4.addWidget(self.checkBox_choose_field)
+
+        self.line_2 = QFrame(Dialog)
+        self.line_2.setObjectName(u"line_2")
+        self.line_2.setFrameShape(QFrame.Shape.VLine)
+        self.line_2.setFrameShadow(QFrame.Shadow.Sunken)
+
+        self.horizontalLayout_4.addWidget(self.line_2)
+
+        self.label_field_pattern = QLabel(Dialog)
+        self.label_field_pattern.setObjectName(u"label_field_pattern")
+
+        self.horizontalLayout_4.addWidget(self.label_field_pattern)
+
+        self.horizontalLayout_4.setStretch(2, 1)
+
+        self.verticalLayout.addLayout(self.horizontalLayout_4)
 
         self.gridLayout_2 = QGridLayout()
         self.gridLayout_2.setObjectName(u"gridLayout_2")
@@ -286,21 +304,22 @@ class Ui_Dialog(object):
         self.pushButton_quit.setText(QCoreApplication.translate("Dialog", u"\u9000\u51fa", None))
         self.checkBox_rename_pattern.setText(QCoreApplication.translate("Dialog", u"\u547d\u540d\u6a21\u677f", None))
         self.checkBox_choose_field.setText(QCoreApplication.translate("Dialog", u"\u624b\u52a8\u6dfb\u52a0", None))
-        self.toolButton_add_circle.setText(QCoreApplication.translate("Dialog", u"+", None))
+        self.label_field_pattern.setText(QCoreApplication.translate("Dialog", u"\u6a21\u677f\u9884\u89c8", None))
+        self.toolButton_add_circle.setText(QCoreApplication.translate("Dialog", u"\uff0b", None))
         self.label_3.setText(QCoreApplication.translate("Dialog", u"\u793e\u56e2", None))
-        self.toolButton_add_artist.setText(QCoreApplication.translate("Dialog", u"+", None))
+        self.toolButton_add_artist.setText(QCoreApplication.translate("Dialog", u"\uff0b", None))
         self.label_4.setText(QCoreApplication.translate("Dialog", u"\u4f5c\u8005", None))
-        self.toolButton_add_title.setText(QCoreApplication.translate("Dialog", u"+", None))
+        self.toolButton_add_title.setText(QCoreApplication.translate("Dialog", u"\uff0b", None))
         self.label_5.setText(QCoreApplication.translate("Dialog", u"\u6807\u9898", None))
-        self.toolButton_add_convention.setText(QCoreApplication.translate("Dialog", u"+", None))
+        self.toolButton_add_convention.setText(QCoreApplication.translate("Dialog", u"\uff0b", None))
         self.label_6.setText(QCoreApplication.translate("Dialog", u"\u5373\u5356\u4f1a", None))
-        self.toolButton_add_parody.setText(QCoreApplication.translate("Dialog", u"+", None))
+        self.toolButton_add_parody.setText(QCoreApplication.translate("Dialog", u"\uff0b", None))
         self.label_7.setText(QCoreApplication.translate("Dialog", u"\u539f\u4f5c", None))
-        self.toolButton_add_language.setText(QCoreApplication.translate("Dialog", u"+", None))
+        self.toolButton_add_language.setText(QCoreApplication.translate("Dialog", u"\uff0b", None))
         self.label_8.setText(QCoreApplication.translate("Dialog", u"\u8bed\u8a00", None))
-        self.toolButton_add_translator.setText(QCoreApplication.translate("Dialog", u"+", None))
+        self.toolButton_add_translator.setText(QCoreApplication.translate("Dialog", u"\uff0b", None))
         self.label_9.setText(QCoreApplication.translate("Dialog", u"\u8bd1\u8005", None))
-        self.toolButton_add_special_indicator.setText(QCoreApplication.translate("Dialog", u"+", None))
-        self.label_10.setText(QCoreApplication.translate("Dialog", u"\u6807\u8bc6", None))
+        self.toolButton_add_special_indicator.setText(QCoreApplication.translate("Dialog", u"\uff0b", None))
+        self.label_10.setText(QCoreApplication.translate("Dialog", u"\u6807\u793a", None))
     # retranslateUi
 
