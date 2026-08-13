@@ -41,6 +41,8 @@ class RenameComicViewer(QDialog):
         self.ui.checkBox_choose_field.clicked.connect(self._set_mode_field)
         self.ui.checkBox_choose_field.stateChanged.connect(self._model_field_state)
         self.ui.lineEdit_new_filename.textChanged.connect(self._enable_rename_button)
+        self.ui.checkBox_auto_dup_name.stateChanged.connect(self._enable_rename_button)
+        self.ui.lineEdit_suffix.textChanged.connect(self._enable_rename_button)
         self.ui.comboBox_rename_pattern.currentTextChanged.connect(self._set_mode_pattern)
         self.ui.toolButton_add_circle.clicked.connect(self._set_field_pattern_circle)
         self.ui.toolButton_add_artist.clicked.connect(self._set_field_pattern_artist)
@@ -100,12 +102,40 @@ class RenameComicViewer(QDialog):
         self.ui.comboBox_rename_pattern.addItems([pattern_1, pattern_2, pattern_3, pattern_4, pattern_5, pattern_6])
 
     def _enable_rename_button(self):
-        old = self.ui.lineEdit_original_filename.text().strip().lower()
-        new = self.ui.lineEdit_new_filename.text().strip().lower()
-        if new and old != new:
-            self.ui.pushButton_rename.setEnabled(True)
+        if os.path.exists(self.comic_path):
+            # 设置重命名按钮
+            old = self.ui.lineEdit_original_filename.text().strip().lower()
+            new = self.ui.lineEdit_new_filename.text().strip().lower()
+            if new and old != new:
+                self.ui.pushButton_rename.setEnabled(True)
+
+                # 设置新文件名文本框
+                dirpath = os.path.dirname(self.comic_path)
+                if os.path.isfile(self.comic_path):
+                    extension = os.path.splitext(self.comic_path)[1]
+                else:
+                    extension = ''
+                guess_new_path = os.path.join(dirpath, new + extension)
+                if os.path.exists(guess_new_path):
+                    is_auto_dup = self.ui.checkBox_auto_dup_name.isChecked() and self.ui.lineEdit_suffix.text().strip()
+                    if is_auto_dup:
+                        self.ui.lineEdit_new_filename.setStyleSheet("color: black;")
+                        self._set_tips('新文件名已存在，但重命名时会自动添加后缀')
+                        self.ui.pushButton_rename.setEnabled(True)
+                    else:
+                        self.ui.lineEdit_new_filename.setStyleSheet("color: red;")
+                        self._set_tips('新文件名已存在，请重新命名或者添加后缀')
+                        self.ui.pushButton_rename.setEnabled(False)
+                else:
+                    self.ui.lineEdit_new_filename.setStyleSheet("color: black;")
+                    self._set_tips('')
+            else:
+                self.ui.pushButton_rename.setEnabled(False)
+                self._set_tips('新旧文件名一致，不需要重命名')
         else:
             self.ui.pushButton_rename.setEnabled(False)
+            self.ui.lineEdit_original_filename.setStyleSheet("color: red;")
+            self._set_tips('文件已不存在，请检查本地文件')
 
     def _set_mode_pattern(self):
         """设置互斥模式选择-模板模式"""
@@ -168,6 +198,9 @@ class RenameComicViewer(QDialog):
             self.ui.lineEdit_language.setEnabled(False)
             self.ui.lineEdit_translator.setEnabled(False)
             self.ui.lineEdit_special_indicator.setEnabled(False)
+
+    def _set_tips(self, tips: str):
+        self.ui.label_tips.setText(tips)
 
     def _set_field_pattern(self, model: str, field: str):
         if model == 'add':

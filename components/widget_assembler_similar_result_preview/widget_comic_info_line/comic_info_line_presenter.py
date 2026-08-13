@@ -5,9 +5,9 @@ import lzytools
 from PySide6.QtCore import QObject, Signal
 from PySide6.QtWidgets import QMessageBox
 
-from common import function_file
 from common.class_comic import ComicInfoBase
 from common.class_config import FileType
+from components.dialog_rename_comic import DialogRenameComic
 from components.widget_assembler_similar_result_preview.widget_comic_info_line.comic_info_line_model import \
     ComicInfoLineModel
 from components.widget_assembler_similar_result_preview.widget_comic_info_line.comic_info_line_viewer import \
@@ -94,7 +94,9 @@ class ComicInfoLinePresenter(QObject):
 
     def rename_comic(self):
         """重命名文件"""
-        pass  # todo
+        dialog = DialogRenameComic()
+        dialog.set_comic_path(self.comic_info.filepath)
+        dialog.exec()
 
     def set_similarity(self, similarity: str):
         """设置相似度（百分比）

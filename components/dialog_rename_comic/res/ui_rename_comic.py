@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'rename_comiccOZuzm.ui'
+## Form generated from reading UI file 'rename_comicAnnvyV.ui'
 ##
-## Created by: Qt User Interface Compiler version 6.11.0
+## Created by: Qt User Interface Compiler version 6.10.1
 ##
 ## WARNING! All changes made in this file will be lost when recompiling UI file!
 ################################################################################
@@ -102,6 +102,11 @@ class Ui_Dialog(object):
 
 
         self.verticalLayout_4.addLayout(self.verticalLayout_3)
+
+        self.label_tips = QLabel(Dialog)
+        self.label_tips.setObjectName(u"label_tips")
+
+        self.verticalLayout_4.addWidget(self.label_tips)
 
         self.verticalSpacer = QSpacerItem(20, 48, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
@@ -302,6 +307,7 @@ class Ui_Dialog(object):
         self.checkBox_auto_dup_name.setText(QCoreApplication.translate("Dialog", u"\u81ea\u52a8\u5904\u7406\u91cd\u590d\u6587\u4ef6\u540d\uff0c\u6dfb\u52a0\u6307\u5b9a\u540e\u7f00", None))
         self.pushButton_rename.setText(QCoreApplication.translate("Dialog", u"\u91cd\u547d\u540d", None))
         self.pushButton_quit.setText(QCoreApplication.translate("Dialog", u"\u9000\u51fa", None))
+        self.label_tips.setText("")
         self.checkBox_rename_pattern.setText(QCoreApplication.translate("Dialog", u"\u547d\u540d\u6a21\u677f", None))
         self.checkBox_choose_field.setText(QCoreApplication.translate("Dialog", u"\u624b\u52a8\u6dfb\u52a0", None))
         self.label_field_pattern.setText(QCoreApplication.translate("Dialog", u"\u6a21\u677f\u9884\u89c8", None))
