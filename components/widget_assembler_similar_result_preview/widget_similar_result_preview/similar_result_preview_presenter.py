@@ -4,7 +4,6 @@ from typing import List
 import lzytools
 from PySide6.QtCore import QObject, Signal
 
-from common import function_file
 from common.class_comic import ComicInfoBase
 from common.class_order import ORDER_KEYS, ORDER_DIRECTIONS
 from components.widget_assembler_similar_result_preview import widget_similar_group_info
@@ -58,6 +57,7 @@ class SimilarResultPreviewPresenter(QObject):
             # 实例化单本漫画的控件类
             similar_group_info_presenter = widget_similar_group_info.get_presenter()
             similar_group_info_presenter.UpdateComicInfo.connect(self.UpdateComicInfo.emit)
+            similar_group_info_presenter.RenameComic.connect(self.replace_comic_info_class)
             similar_group_info_presenter.set_view_mode(self.item_view_type)
             # 向控件中添加漫画信息（路径交由控件内部处理，不需要实例化漫画信息控件）
             similar_group_info_presenter.add_comics(group)
@@ -118,6 +118,13 @@ class SimilarResultPreviewPresenter(QObject):
         self.current_page = 1
         self.viewer.set_current_page(self.current_page)
         self.show_page(self.current_page)
+
+    def replace_comic_info_class(self, old_comic_info_class: ComicInfoBase, new_comic_info_class: ComicInfoBase):
+        """替换漫画信息类（重命名时使用）"""
+        for group in self.comic_info_groups:
+            for index in range(len(group)):
+                if group[index] == old_comic_info_class:
+                    group[index] = new_comic_info_class
 
     def change_view_mode(self, mode: str):
         """修改视图类型

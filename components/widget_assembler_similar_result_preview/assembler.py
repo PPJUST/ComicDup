@@ -118,6 +118,13 @@ class AssemblerSimilarResultPreview(QObject):
         self.similar_groups = comic_info_lists
         self.presenter.set_groups(comic_info_lists)
 
+    def replace_comic_info_class(self, old_comic_info_class: ComicInfoBase, new_comic_info_class: ComicInfoBase):
+        """替换漫画信息类（重命名时使用）"""
+        for group in self.similar_groups:
+            for index in range(len(group)):
+                if group[index] == old_comic_info_class:
+                    group[index] = new_comic_info_class
+
     def set_is_reconfirm_before_delete(self, is_reconfirm: bool):
         """设置是否删除前再次确认"""
         self.presenter.set_is_reconfirm_before_delete(is_reconfirm)

@@ -22,13 +22,14 @@ from components.widget_assembler_similar_result_preview.widget_similar_group_inf
 class SimilarGroupInfoPresenter(QObject):
     """单个相似组信息模块的桥梁组件"""
     UpdateComicInfo = Signal(ComicInfoBase, name='更新数据库中的漫画信息')
+    RenameComic: Signal = Signal(ComicInfoBase, ComicInfoBase, name='重命名漫画的新类')
 
     def __init__(self, viewer: SimilarGroupInfoViewer, model: SimilarGroupInfoModel):
         super().__init__()
         self.viewer = viewer
         self.model = model
 
-        self.item_view_type = 'v'  # 视图类型，h横向视图，v纵向视图
+        self.item_view_type = 'h'  # 视图类型，h横向视图，v纵向视图
 
         self.comic_info_list: List[ComicInfoBase] = []  # 内部漫画项的漫画信息类列表
         self.comics_presenter: List[Union[ComicInfoPresenter, ComicInfoLinePresenter]] = []  # 内部漫画项的桥梁组件
@@ -159,10 +160,19 @@ class SimilarGroupInfoPresenter(QObject):
             comic_info_presenter.set_comic_info(comic_info)
             comic_info_presenter.ComicDeleted.connect(self.comic_deleted)
             comic_info_presenter.UpdateComicInfo.connect(self.UpdateComicInfo.emit)
+            comic_info_presenter.RenameComic.connect(self.replace_comic_info_class)
             self.comics_presenter.append(comic_info_presenter)
 
             widget = comic_info_presenter.get_viewer()
             self.viewer.add_widget(widget)
+
+    def replace_comic_info_class(self, old_comic_info_class: ComicInfoBase, new_comic_info_class: ComicInfoBase):
+        """替换漫画信息类（重命名时使用）"""
+        for index in range(len(self.comic_info_list)):
+            if self.comic_info_list[index] == old_comic_info_class:
+                self.comic_info_list[index] = new_comic_info_class
+
+        self.RenameComic.emit(old_comic_info_class, new_comic_info_class)
 
     def preview(self):
         """预览当前组内的所有漫画"""

@@ -4,7 +4,7 @@ import lzytools
 from PySide6.QtCore import QObject, Signal
 from PySide6.QtWidgets import QMessageBox
 
-from common.class_comic import ComicInfoBase
+from common.class_comic import ComicInfoBase, ArchiveComicInfo, FolderComicInfo
 from common.class_config import FileType
 from components.dialog_rename_comic import DialogRenameComic
 from components.widget_assembler_similar_result_preview.widget_comic_info.comic_info_model import ComicInfoModel
@@ -12,12 +12,11 @@ from components.widget_assembler_similar_result_preview.widget_comic_info.comic_
 from components.widget_search_list.res.icon_base64 import ICON_FOLDER, ICON_ARCHIVE
 
 
-# todo 重命名后的操作，添加一个单独的信号进行处理
-
 class ComicInfoPresenter(QObject):
     """单个漫画信息模块的桥梁组件"""
     ComicDeleted = Signal(name='删除漫画')
     UpdateComicInfo = Signal(ComicInfoBase, name='更新数据库中的漫画信息')
+    RenameComic = Signal(ComicInfoBase, ComicInfoBase, name='重命名漫画的新类')
 
     def __init__(self, viewer: ComicInfoViewer, model: ComicInfoModel):
         super().__init__()
@@ -94,6 +93,7 @@ class ComicInfoPresenter(QObject):
     def rename_comic(self):
         """重命名文件"""
         dialog = DialogRenameComic()
+        dialog.Rename.connect(self._renamed_comic)
         dialog.set_comic_path(self.comic_info.filepath)
         dialog.exec()
 
@@ -121,6 +121,26 @@ class ComicInfoPresenter(QObject):
     def highlight_filename(self):
         """高亮显示文件名"""
         self.viewer.highlight_filename()
+
+    def _renamed_comic(self, new_comic_path: str):
+        """重命名漫画后的操作"""
+        origin_comic_info = self.comic_info
+        # 由于路径变更，生成新的comic_info对象
+        if os.path.isfile(new_comic_path):
+            new_comic_info = ArchiveComicInfo(new_comic_path)
+        else:
+            new_comic_info = FolderComicInfo(new_comic_path)
+        self.comic_info = new_comic_info
+        self.comic_info.save_preview_image()
+
+        # 更新本地数据库
+        self.UpdateComicInfo.emit(self.comic_info)
+
+        # 重新显示
+        self.set_comic_info(self.comic_info)
+
+        # 发送信号，更新外部list
+        self.RenameComic.emit(origin_comic_info, new_comic_info)
 
     def _show_comic_info(self):
         """在viewer上显示漫画信息"""
