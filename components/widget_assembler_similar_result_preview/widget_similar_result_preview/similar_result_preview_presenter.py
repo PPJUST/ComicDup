@@ -23,7 +23,7 @@ class SimilarResultPreviewPresenter(QObject):
         self.viewer = viewer
         self.model = model
 
-        self.item_view_type = 'v'  # 视图类型，h横向视图，v纵向视图
+        self.item_view_type = 'h'  # 视图类型，h横向视图，v纵向视图
 
         self.comic_info_groups: List[List[ComicInfoBase]] = []  # 相似组列表
         self.comic_widgets_showed: List[SimilarGroupInfoPresenter] = []  # 显示的相似组控件
