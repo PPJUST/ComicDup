@@ -1,7 +1,7 @@
 from PySide6.QtCore import QObject, Signal
 
-from common import function_match_pages
 from common.class_comic import ComicInfoBase
+from components import dialog_full_match_comics
 from components.widget_assembler_comics_preview import widget_comic_preview
 from components.widget_assembler_comics_preview.widget_comic_preview import ComicPreviewPresenter
 from components.widget_assembler_comics_preview.widget_similar_group_preview.similar_group_preview_model import \
@@ -24,6 +24,9 @@ class SimilarGroupPreviewPresenter(QObject):
         self.is_reconfirm_before_delete = True  # 删除前是否需要再次确认（在此模块单独存储一次，用于创建子模块时进行赋值）
         self.is_show_similar = False  # 是否显示相似度
         self.base_hash = ''  # 第一本漫画当前页图片的hash值
+
+        # 用于全量匹配的dialog
+        self.dialog_full_match = dialog_full_match_comics.get_presenter()
 
         # 绑定信号
         self._bind_signal()
@@ -130,24 +133,17 @@ class SimilarGroupPreviewPresenter(QObject):
             widget: ComicPreviewPresenter
             widget.clear_similar_info()
 
-    def full_match_pages(self, comic_index_1, comic_index_2):
-        """全量匹配漫画页面"""
-        if comic_index_1 == comic_index_2:
-            self.viewer.show_full_match_result('错误：编号相同，请重选')
-        if comic_index_1 > len(self.widgets_comic):
-            self.viewer.show_full_match_result('错误：编号1超出范围，请重选')
-        if comic_index_2 > len(self.widgets_comic):
-            self.viewer.show_full_match_result('错误：编号2超出范围，请重选')
+    def _full_match_comics(self):
+        """全量匹配漫画"""
+        # 提取所有漫画类
+        comic_infos = []
+        for widget in self.widgets_comic:
+            widget: ComicPreviewPresenter
+            comic_info_class = widget.comic_info
+            comic_infos.append(comic_info_class)
+        self.dialog_full_match.set_comic_info_group(comic_infos)
 
-        comic_1_widget = self.widgets_comic[comic_index_1 - 1]
-        comic_1_info = comic_1_widget.comic_info
-        comic_2_widget = self.widgets_comic[comic_index_2 - 1]
-        comic_2_info = comic_2_widget.comic_info
-
-        two_comic_page_match_group = function_match_pages.match_pages(comic_1_info, comic_2_info)
-        print('两本漫画全量匹配页码对应表', two_comic_page_match_group)
-        result_code = function_match_pages.check_match_result(comic_1_info, comic_2_info, two_comic_page_match_group)
-        self.viewer.show_full_match_result(result_code)
+        self.dialog_full_match.exec()
 
     def quit(self):
         """退出"""
@@ -182,4 +178,4 @@ class SimilarGroupPreviewPresenter(QObject):
         self.viewer.Reset.connect(self.reset_page_number)
         self.viewer.Quit.connect(self.quit)
         self.viewer.IsShowSimilar.connect(self.set_is_show_similar)
-        self.viewer.ChooseFullMatchComicsIndex.connect(self.full_match_pages)
+        self.viewer.FullMatchComics.connect(self._full_match_comics)

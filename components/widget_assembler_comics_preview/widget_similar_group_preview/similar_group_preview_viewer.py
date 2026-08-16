@@ -3,7 +3,6 @@ from PySide6.QtCore import Signal, Qt
 from PySide6.QtGui import QShortcut, QKeySequence
 from PySide6.QtWidgets import QWidget, QApplication
 
-from components.dialog_choose_full_match_comic import ChooseFullMatchComic
 from components.widget_assembler_comics_preview.widget_comic_preview import ComicPreviewViewer
 from components.widget_assembler_comics_preview.widget_similar_group_preview.res.icon_base64 import ICON_LEFT_ARROW_1, \
     ICON_LEFT_ARROW_3, ICON_RIGHT_ARROW_1, ICON_RIGHT_ARROW_3, ICON_QUIT, ICON_REFRESH
@@ -19,7 +18,7 @@ class SimilarGroupPreviewViewer(QWidget):
     Reset = Signal(name='重置页码')
     Quit = Signal(name='退出')
     IsShowSimilar = Signal(bool, name='是否显示图片相似度')
-    ChooseFullMatchComicsIndex = Signal(int, int, name='选择的漫画索引')
+    FullMatchComics = Signal(name='全量对比')
 
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -32,10 +31,6 @@ class SimilarGroupPreviewViewer(QWidget):
 
         # 设置图标
         self._set_icon()
-
-        # 用于全量匹配的dialog
-        self.dialog = ChooseFullMatchComic()
-        self.dialog.ChooseFullMatchComicsIndex.connect(self.emit_full_match_comics_index)
 
         # 绑定信号
         self._bind_signal()
@@ -87,13 +82,6 @@ class SimilarGroupPreviewViewer(QWidget):
                 # 从内存中删除
                 widget.deleteLater()
 
-    def emit_full_match_comics_index(self, comic_index_1, comic_index_2):
-        self.ChooseFullMatchComicsIndex.emit(comic_index_1, comic_index_2)
-
-    def show_full_match_result(self, result):
-        """显示全量匹配结果"""
-        self.dialog.show_result(result)
-
     def _init_shortcuts(self):
         """绑定快捷键"""
         # 上一页
@@ -108,7 +96,7 @@ class SimilarGroupPreviewViewer(QWidget):
         shortcut_next_v2.activated.connect(self.NextPage.emit)
         # 打开全量查重
         shortcut_diff_pages = QShortcut(QKeySequence(Qt.Key_Space), self)
-        shortcut_diff_pages.activated.connect(self.dialog.exec)
+        shortcut_diff_pages.activated.connect(self.FullMatchComics.emit)
 
     def _set_icon(self):
         """设置图标"""
@@ -129,7 +117,7 @@ class SimilarGroupPreviewViewer(QWidget):
         self.ui.toolButton_reset.clicked.connect(self.Reset.emit)
         self.ui.pushButton_quit.clicked.connect(self.Quit.emit)
         self.ui.checkBox_auto_calc_similar.stateChanged.connect(self.IsShowSimilar.emit)
-        self.ui.pushButton_calc_diff_pages.clicked.connect(self.dialog.exec)
+        self.ui.pushButton_calc_diff_pages.clicked.connect(self.FullMatchComics.emit)
 
 
 if __name__ == "__main__":

@@ -10,7 +10,7 @@ class MatchResult:
 
     class SameCountButWrongPageNumber:
         """全部页面都被匹配，但是页面顺序错误"""
-        text = '全部页面都被匹配，但是页面顺序错误'
+        text = '全部页面都匹配，但页面顺序存在错误'
         wrong_pages_comic_1 = []
         wrong_pages_comic_2 = []
 
@@ -22,13 +22,13 @@ class MatchResult:
 
     class LossPageComic1:
         """漫画1有缺页，即漫画2有多余页"""
-        text = '漫画1有缺页，即漫画2有多余页'
+        text = '主漫画有缺页，即次漫画有多余页'
         wrong_pages_comic_1 = []
         wrong_pages_comic_2 = []
 
     class LossPageComic2:
         """漫画2有缺页，即漫画1有多余页"""
-        text = '漫画2有缺页，即漫画1有多余页'
+        text = '次漫画有缺页，即主漫画有多余页'
         wrong_pages_comic_1 = []
         wrong_pages_comic_2 = []
 
