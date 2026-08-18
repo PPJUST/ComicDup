@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'full_match_comicsRwVjyr.ui'
+## Form generated from reading UI file 'full_match_comicsLDhbmS.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.10.1
 ##
@@ -24,7 +24,7 @@ class Ui_Dialog(object):
     def setupUi(self, Dialog):
         if not Dialog.objectName():
             Dialog.setObjectName(u"Dialog")
-        Dialog.resize(390, 515)
+        Dialog.resize(390, 443)
         self.verticalLayout_2 = QVBoxLayout(Dialog)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.label = QLabel(Dialog)
@@ -101,26 +101,20 @@ class Ui_Dialog(object):
 
         self.verticalLayout_2.addLayout(self.horizontalLayout)
 
-        self.horizontalLayout_5 = QHBoxLayout()
-        self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
         self.label_8 = QLabel(Dialog)
         self.label_8.setObjectName(u"label_8")
 
-        self.horizontalLayout_5.addWidget(self.label_8)
+        self.verticalLayout_2.addWidget(self.label_8)
 
         self.label_simple_result = QLabel(Dialog)
         self.label_simple_result.setObjectName(u"label_simple_result")
+        sizePolicy = QSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_simple_result.sizePolicy().hasHeightForWidth())
+        self.label_simple_result.setSizePolicy(sizePolicy)
 
-        self.horizontalLayout_5.addWidget(self.label_simple_result)
-
-        self.horizontalLayout_5.setStretch(1, 1)
-
-        self.verticalLayout_2.addLayout(self.horizontalLayout_5)
-
-        self.label_11 = QLabel(Dialog)
-        self.label_11.setObjectName(u"label_11")
-
-        self.verticalLayout_2.addWidget(self.label_11)
+        self.verticalLayout_2.addWidget(self.label_simple_result)
 
         self.verticalLayout = QVBoxLayout()
         self.verticalLayout.setObjectName(u"verticalLayout")
@@ -153,6 +147,10 @@ class Ui_Dialog(object):
 
         self.verticalLayout_2.addLayout(self.verticalLayout)
 
+        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.verticalLayout_2.addItem(self.verticalSpacer)
+
 
         self.retranslateUi(Dialog)
 
@@ -169,8 +167,7 @@ class Ui_Dialog(object):
         self.pushButton_match.setText(QCoreApplication.translate("Dialog", u"\u5f00\u59cb\u6bd4\u5bf9", None))
         self.pushButton_quit.setText(QCoreApplication.translate("Dialog", u"\u9000\u51fa", None))
         self.label_8.setText(QCoreApplication.translate("Dialog", u"\u7b80\u6613\u6bd4\u5bf9\u7ed3\u679c\uff1a", None))
-        self.label_simple_result.setText(QCoreApplication.translate("Dialog", u"\u6bd4\u5bf9\u7ed3\u679c", None))
-        self.label_11.setText("")
+        self.label_simple_result.setText("")
         self.toolButton_show_details.setText(QCoreApplication.translate("Dialog", u"...", None))
         self.label_10.setText(QCoreApplication.translate("Dialog", u"\u6bd4\u5bf9\u8be6\u60c5\uff1a", None))
         self.checkBox_show_diff_pages.setText(QCoreApplication.translate("Dialog", u"\u4ec5\u663e\u793a\u5dee\u5f02\u9875", None))
