@@ -56,7 +56,7 @@ class ComicInfoPresenter(QObject):
 
     def open_dir(self):
         """打开路径所在目录"""
-        os.startfile(os.path.dirname(self.comic_info.filepath))
+        lzytools.file.open_parent_and_select(self.comic_info.filepath)
 
     def refresh_info(self):
         """刷新信息"""
