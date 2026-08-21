@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 ################################################################################
-## Form generated from reading UI file 'full_match_comicsLDhbmS.ui'
+## Form generated from reading UI file 'full_match_comicsPYBZVe.ui'
 ##
 ## Created by: Qt User Interface Compiler version 6.10.1
 ##
@@ -17,14 +17,14 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QPalette, QPixmap, QRadialGradient, QTransform)
 from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QDialog,
     QHBoxLayout, QHeaderView, QLabel, QPushButton,
-    QSizePolicy, QSpacerItem, QTableWidget, QTableWidgetItem,
-    QToolButton, QVBoxLayout, QWidget)
+    QScrollArea, QSizePolicy, QSpacerItem, QTableWidget,
+    QTableWidgetItem, QVBoxLayout, QWidget)
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
         if not Dialog.objectName():
             Dialog.setObjectName(u"Dialog")
-        Dialog.resize(390, 443)
+        Dialog.resize(390, 436)
         self.verticalLayout_2 = QVBoxLayout(Dialog)
         self.verticalLayout_2.setObjectName(u"verticalLayout_2")
         self.label = QLabel(Dialog)
@@ -118,38 +118,41 @@ class Ui_Dialog(object):
 
         self.verticalLayout = QVBoxLayout()
         self.verticalLayout.setObjectName(u"verticalLayout")
-        self.horizontalLayout_4 = QHBoxLayout()
-        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
-        self.toolButton_show_details = QToolButton(Dialog)
-        self.toolButton_show_details.setObjectName(u"toolButton_show_details")
+        self.label_3 = QLabel(Dialog)
+        self.label_3.setObjectName(u"label_3")
 
-        self.horizontalLayout_4.addWidget(self.toolButton_show_details)
-
-        self.label_10 = QLabel(Dialog)
-        self.label_10.setObjectName(u"label_10")
-
-        self.horizontalLayout_4.addWidget(self.label_10)
-
-
-        self.verticalLayout.addLayout(self.horizontalLayout_4)
+        self.verticalLayout.addWidget(self.label_3)
 
         self.checkBox_show_diff_pages = QCheckBox(Dialog)
         self.checkBox_show_diff_pages.setObjectName(u"checkBox_show_diff_pages")
 
         self.verticalLayout.addWidget(self.checkBox_show_diff_pages)
 
-        self.tableWidget_details_pages = QTableWidget(Dialog)
+        self.scrollArea = QScrollArea(Dialog)
+        self.scrollArea.setObjectName(u"scrollArea")
+        self.scrollArea.setWidgetResizable(True)
+        self.scrollAreaWidgetContents = QWidget()
+        self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 368, 174))
+        self.horizontalLayout_4 = QHBoxLayout(self.scrollAreaWidgetContents)
+        self.horizontalLayout_4.setSpacing(0)
+        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
+        self.horizontalLayout_4.setContentsMargins(0, 0, 0, 0)
+        self.tableWidget_details_pages = QTableWidget(self.scrollAreaWidgetContents)
         self.tableWidget_details_pages.setObjectName(u"tableWidget_details_pages")
 
-        self.verticalLayout.addWidget(self.tableWidget_details_pages)
+        self.horizontalLayout_4.addWidget(self.tableWidget_details_pages)
 
-        self.verticalLayout.setStretch(2, 1)
+        self.horizontalSpacer_4 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.horizontalLayout_4.addItem(self.horizontalSpacer_4)
+
+        self.scrollArea.setWidget(self.scrollAreaWidgetContents)
+
+        self.verticalLayout.addWidget(self.scrollArea)
+
 
         self.verticalLayout_2.addLayout(self.verticalLayout)
-
-        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
-
-        self.verticalLayout_2.addItem(self.verticalSpacer)
 
 
         self.retranslateUi(Dialog)
@@ -168,8 +171,7 @@ class Ui_Dialog(object):
         self.pushButton_quit.setText(QCoreApplication.translate("Dialog", u"\u9000\u51fa", None))
         self.label_8.setText(QCoreApplication.translate("Dialog", u"\u7b80\u6613\u6bd4\u5bf9\u7ed3\u679c\uff1a", None))
         self.label_simple_result.setText("")
-        self.toolButton_show_details.setText(QCoreApplication.translate("Dialog", u"...", None))
-        self.label_10.setText(QCoreApplication.translate("Dialog", u"\u6bd4\u5bf9\u8be6\u60c5\uff1a", None))
+        self.label_3.setText(QCoreApplication.translate("Dialog", u"\u6bd4\u5bf9\u8be6\u60c5\uff1a", None))
         self.checkBox_show_diff_pages.setText(QCoreApplication.translate("Dialog", u"\u4ec5\u663e\u793a\u5dee\u5f02\u9875", None))
     # retranslateUi
 

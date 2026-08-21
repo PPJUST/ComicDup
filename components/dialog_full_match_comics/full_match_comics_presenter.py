@@ -1,9 +1,12 @@
+import os
 from typing import List
 
+import lzytools.file
 from PySide6.QtCore import QObject
 
 from common import function_match_pages
 from common.class_comic import ComicInfoBase
+from common.class_config import FileType
 from components.dialog_full_match_comics.full_match_comics_model import FullMatchComicsModel
 from components.dialog_full_match_comics.full_match_comics_viewer import FullMatchComicsViewer
 
@@ -18,6 +21,8 @@ class FullMatchComicsPresenter(QObject):
         self.comic_info_group = []
 
         self.viewer.FullMatch.connect(self.full_match)
+        self.viewer.OpenMainComicPage.connect(self.open_main_comic_page)
+        self.viewer.OpenSecComicPage.connect(self.open_sec_comic_page)
 
     def full_match(self):
         """执行全量对比"""
@@ -43,7 +48,26 @@ class FullMatchComicsPresenter(QObject):
         print('两本漫画全量匹配页码对应表', two_comic_page_match_group)
         result_code = function_match_pages.check_match_result(comic_1_info, comic_2_info,
                                                               two_comic_page_match_group)
+
+        # 显示简单结果
         self.viewer.show_simple_result(result_code.text)
+
+        # 显示详细页码对应表
+        for i in range(comic_1_info.page_count):
+            main_index = i + 1
+            if main_index in two_comic_page_match_group:
+                sec_index = two_comic_page_match_group[main_index]
+                self.viewer.add_index_button(main_index, sec_index)
+            else:
+                sec_index = None
+                self.viewer.add_index_button(main_index, sec_index)
+        for n in range(comic_2_info.page_count):
+            sec_index = n + 1
+            if sec_index in two_comic_page_match_group.values():
+                pass
+            else:
+                main_index = None
+                self.viewer.add_index_button(main_index, sec_index)
 
     def set_comic_info_group(self, comic_info_group: List[ComicInfoBase]):
         """设置漫画信息组"""
@@ -56,6 +80,28 @@ class FullMatchComicsPresenter(QObject):
             info = f'{index} - {comic_info.filename}'
             items.append(info)
         self.viewer.add_combobox_items(items)
+
+    def open_main_comic_page(self, index: int):
+        """打开主漫画页面"""
+        comic_mian_index = self.viewer.get_comic_index_1()
+        comic_info = self.comic_info_group[comic_mian_index - 1]
+        filetype = comic_info.filetype
+        if isinstance(filetype, FileType.Folder):
+            page_path = comic_info.page_paths[index - 1]
+            lzytools.file.open_parent_and_select(page_path)
+        else:
+            os.startfile(comic_info.filepath)
+
+    def open_sec_comic_page(self, index: int):
+        """打开次漫画页面"""
+        comic_sec_index = self.viewer.get_comic_index_1()
+        comic_info = self.comic_info_group[comic_sec_index - 1]
+        filetype = comic_info.filetype
+        if isinstance(filetype, FileType.Folder):
+            page_path = comic_info.page_paths[index - 1]
+            lzytools.file.open_parent_and_select(page_path)
+        else:
+            os.startfile(comic_info.filepath)
 
     def exec(self):
         self.viewer.exec()
