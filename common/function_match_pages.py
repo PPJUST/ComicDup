@@ -29,9 +29,9 @@ def match_pages_by_hash(comic_info_1: ComicInfoBase, comic_info_2: ComicInfoBase
 
     # 由comic_1匹配comic_2，匹配最相似的页码
     page_match_group: Dict[int, int] = dict()  # key为comic_1的页码，value为匹配到的最相似的comic_2的页码
-    for index_1, (page_1, hash_1) in enumerate(images_hash_1.items()):
+    for index_1, (page_1, hash_1) in enumerate(images_hash_1.items(), start=1):
         similar_pages: List[int, int] = []
-        for index_2, (page_2, hash_2) in enumerate(images_hash_2.items()):
+        for index_2, (page_2, hash_2) in enumerate(images_hash_2.items(), start=1):
             hamming_distance = lzytools_image.calc_hash_hamming_distance(hash_1, hash_2)
             if hamming_distance <= 15:  # hash长度为144，相似度阈值为10%
                 similar_pages.append((index_2, hamming_distance))
@@ -52,8 +52,8 @@ def match_pages_by_filesize(comic_info_1: ComicInfoBase, comic_info_2: ComicInfo
 
     # 由comic_1匹配comic_2，匹配相同文件大小的页码
     page_match_group: Dict[int, int] = dict()  # key为comic_1的页码，value为匹配到的最相似的comic_2的页码
-    for index_1, (page_1, size_1) in enumerate(images_filesize_1.items()):
-        for index_2, (page_2, size_2) in enumerate(images_filesize_2.items()):
+    for index_1, (page_1, size_1) in enumerate(images_filesize_1.items(), start=1):
+        for index_2, (page_2, size_2) in enumerate(images_filesize_2.items(), start=1):
             if size_1 == size_2:
                 page_match_group[index_1] = index_2
                 break

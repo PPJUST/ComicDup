@@ -94,7 +94,7 @@ class FullMatchComicsPresenter(QObject):
 
     def open_sec_comic_page(self, index: int):
         """打开次漫画页面"""
-        comic_sec_index = self.viewer.get_comic_index_1()
+        comic_sec_index = self.viewer.get_comic_index_2()
         comic_info = self.comic_info_group[comic_sec_index - 1]
         filetype = comic_info.filetype
         if isinstance(filetype, FileType.Folder):

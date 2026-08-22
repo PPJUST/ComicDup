@@ -25,6 +25,7 @@ class FullMatchComicsViewer(QDialog):
         # 绑定信号
         self.ui.pushButton_match.clicked.connect(self.FullMatch.emit)
         self.ui.pushButton_quit.clicked.connect(self.close)
+        self.ui.checkBox_show_diff_pages.stateChanged.connect(self._hide_right_match_group)
 
     def show_simple_result(self, result: str):
         """显示简单结果"""
@@ -94,6 +95,29 @@ class FullMatchComicsViewer(QDialog):
         button: QPushButton = self.sender()
         index = button.text()
         self.OpenSecComicPage.emit(int(index))
+
+    def _hide_right_match_group(self):
+        """隐藏一一对应的页码组"""
+        table = self.ui.tableWidget_details_pages
+        if self.ui.checkBox_show_diff_pages.isChecked():
+            for row in range(table.rowCount()):
+                cell_main = table.cellWidget(row, 0)
+                if cell_main:
+                    page_main = cell_main.text()
+                else:
+                    page_main = None
+                cell_sec = table.cellWidget(row, 1)
+                if cell_sec:
+                    page_sec = cell_sec.text()
+                else:
+                    page_sec = None
+                if page_main == page_sec:
+                    table.hideRow(row)
+                else:
+                    table.showRow(row)
+        else:
+            for row in range(table.rowCount()):
+                table.showRow(row)
 
 
 if __name__ == "__main__":
