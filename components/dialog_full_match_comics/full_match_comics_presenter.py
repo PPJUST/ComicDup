@@ -22,12 +22,12 @@ class FullMatchComicsPresenter(QObject):
 
         self.viewer.FullMatch.connect(self.full_match)
         self.viewer.OpenMainComicPage.connect(self.open_main_comic_page)
-        self.viewer.OpenSecComicPage.connect(self.open_sec_comic_page)
+        self.viewer.OpenCompComicPage.connect(self.open_comp_comic_page)
 
     def full_match(self):
         """执行全量对比"""
-        comic_1_index = self.viewer.get_comic_index_1()
-        comic_2_index = self.viewer.get_comic_index_2()
+        comic_1_index = self.viewer.get_main_comic_index()
+        comic_2_index = self.viewer.get_comp_comic_index()
 
         print(comic_1_index, comic_2_index)
 
@@ -56,18 +56,19 @@ class FullMatchComicsPresenter(QObject):
         for i in range(comic_1_info.page_count):
             main_index = i + 1
             if main_index in two_comic_page_match_group:
-                sec_index = two_comic_page_match_group[main_index]
-                self.viewer.add_index_button(main_index, sec_index)
+                comp_index = two_comic_page_match_group[main_index]
+                self.viewer.add_index_button(main_index, comp_index)
             else:
-                sec_index = None
-                self.viewer.add_index_button(main_index, sec_index)
+                comp_index = None
+                self.viewer.add_index_button(main_index, comp_index)
         for n in range(comic_2_info.page_count):
-            sec_index = n + 1
-            if sec_index in two_comic_page_match_group.values():
+            comp_index = n + 1
+            if comp_index in two_comic_page_match_group.values():
                 pass
             else:
                 main_index = None
-                self.viewer.add_index_button(main_index, sec_index)
+                self.viewer.add_index_button(main_index, comp_index)
+        self.viewer._hide_right_match_group()  # 手动调用一次
 
     def set_comic_info_group(self, comic_info_group: List[ComicInfoBase]):
         """设置漫画信息组"""
@@ -83,7 +84,7 @@ class FullMatchComicsPresenter(QObject):
 
     def open_main_comic_page(self, index: int):
         """打开主漫画页面"""
-        comic_mian_index = self.viewer.get_comic_index_1()
+        comic_mian_index = self.viewer.get_main_comic_index()
         comic_info = self.comic_info_group[comic_mian_index - 1]
         filetype = comic_info.filetype
         if isinstance(filetype, FileType.Folder):
@@ -92,10 +93,10 @@ class FullMatchComicsPresenter(QObject):
         else:
             os.startfile(comic_info.filepath)
 
-    def open_sec_comic_page(self, index: int):
+    def open_comp_comic_page(self, index: int):
         """打开次漫画页面"""
-        comic_sec_index = self.viewer.get_comic_index_2()
-        comic_info = self.comic_info_group[comic_sec_index - 1]
+        comic_comp_index = self.viewer.get_comp_comic_index()
+        comic_info = self.comic_info_group[comic_comp_index - 1]
         filetype = comic_info.filetype
         if isinstance(filetype, FileType.Folder):
             page_path = comic_info.page_paths[index - 1]

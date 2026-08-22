@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>390</width>
-    <height>436</height>
+    <height>401</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>全量比对</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0,0,0,0,0,0,0,0">
+  <layout class="QVBoxLayout" name="verticalLayout_3">
    <item>
     <widget class="QLabel" name="label">
      <property name="text">
@@ -29,6 +29,13 @@
     </widget>
    </item>
    <item>
+    <widget class="QLabel" name="label_7">
+     <property name="text">
+      <string>注意：未做多线程，所以比对时UI会卡住！！！</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,1">
      <item>
       <widget class="QLabel" name="label_4">
@@ -38,7 +45,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="comboBox_comic_main"/>
+      <widget class="QComboBox" name="comboBox_main_comic"/>
      </item>
     </layout>
    </item>
@@ -52,7 +59,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QComboBox" name="comboBox_comic_comp"/>
+      <widget class="QComboBox" name="comboBox_comp_comic"/>
      </item>
     </layout>
    </item>
@@ -121,90 +128,93 @@
     </layout>
    </item>
    <item>
-    <widget class="QLabel" name="label_8">
-     <property name="text">
-      <string>简易比对结果：</string>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QLabel" name="label_simple_result">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string/>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0">
+    <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="1,0">
      <item>
-      <widget class="QLabel" name="label_3">
-       <property name="text">
-        <string>比对详情：</string>
-       </property>
-      </widget>
+      <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,0">
+       <item>
+        <widget class="QLabel" name="label_8">
+         <property name="text">
+          <string>比对结果：</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QTextBrowser" name="textBrowser_simple_result"/>
+       </item>
+      </layout>
      </item>
      <item>
-      <widget class="QCheckBox" name="checkBox_show_diff_pages">
-       <property name="text">
-        <string>仅显示差异页</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QScrollArea" name="scrollArea">
-       <property name="widgetResizable">
-        <bool>true</bool>
-       </property>
-       <widget class="QWidget" name="scrollAreaWidgetContents">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>0</y>
-          <width>368</width>
-          <height>174</height>
-         </rect>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout_4">
-         <property name="spacing">
-          <number>0</number>
+      <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,1">
+       <item>
+        <widget class="QLabel" name="label_3">
+         <property name="text">
+          <string>比对详情：</string>
          </property>
-         <property name="leftMargin">
-          <number>0</number>
+        </widget>
+       </item>
+       <item>
+        <widget class="QCheckBox" name="checkBox_show_diff_pages">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
-         <property name="topMargin">
-          <number>0</number>
+         <property name="text">
+          <string>仅显示差异页面</string>
          </property>
-         <property name="rightMargin">
-          <number>0</number>
+        </widget>
+       </item>
+       <item>
+        <widget class="QScrollArea" name="scrollArea">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
-         <property name="bottomMargin">
-          <number>0</number>
+         <property name="maximumSize">
+          <size>
+           <width>160</width>
+           <height>16777215</height>
+          </size>
          </property>
-         <item>
-          <widget class="QTableWidget" name="tableWidget_details_pages"/>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_4">
-           <property name="orientation">
-            <enum>Qt::Orientation::Horizontal</enum>
+         <property name="widgetResizable">
+          <bool>true</bool>
+         </property>
+         <widget class="QWidget" name="scrollAreaWidgetContents">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>158</width>
+            <height>158</height>
+           </rect>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_4">
+           <property name="spacing">
+            <number>0</number>
            </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
+           <property name="leftMargin">
+            <number>0</number>
            </property>
-          </spacer>
-         </item>
-        </layout>
-       </widget>
-      </widget>
+           <property name="topMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QTableWidget" name="tableWidget_details_pages"/>
+           </item>
+          </layout>
+         </widget>
+        </widget>
+       </item>
+      </layout>
      </item>
     </layout>
    </item>
