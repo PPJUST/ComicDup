@@ -1,3 +1,4 @@
+import lzytools
 import lzytools_Qt
 from PySide6.QtCore import Signal, Qt
 from PySide6.QtWidgets import QApplication, QDialog, QPushButton, QLabel
@@ -25,18 +26,22 @@ class FullMatchComicsViewer(QDialog):
         self.ui.tableWidget_details_pages.verticalHeader().setVisible(False)
 
         # 绑定信号
-        self.ui.pushButton_match.clicked.connect(self.FullMatch.emit)
+        self.ui.pushButton_match.clicked.connect(self._clear_info)
         self.ui.pushButton_quit.clicked.connect(self.close)
         self.ui.checkBox_show_diff_pages.stateChanged.connect(self._hide_right_match_group)
 
     def show_simple_result(self, result: str):
         """显示简单结果"""
-        self.ui.textBrowser_simple_result.setText(result)
+        current_time = lzytools.time.get_current_time()
+        self.ui.textBrowser_simple_result.setText(f'{current_time}\n{result}')
 
     def add_combobox_items(self, items: list[str]):
         """添加下拉框项目"""
         self.ui.comboBox_main_comic.addItems(items)
         self.ui.comboBox_comp_comic.addItems(items)
+
+        self.ui.comboBox_main_comic.setCurrentIndex(0)
+        self.ui.comboBox_comp_comic.setCurrentIndex(1)
 
     def clear_combobox_items(self):
         """清空下拉框项目"""
@@ -80,10 +85,13 @@ class FullMatchComicsViewer(QDialog):
         label_icon.setAlignment(Qt.AlignCenter)
         self.ui.tableWidget_details_pages.setCellWidget(row, 2, label_icon)
 
-    def clear_index_button(self):
-        """清空页码按钮"""
-        self.ui.tableWidget_details_pages.clearContents()
-        self.ui.tableWidget_details_pages.setRowCount(0)
+    def _clear_info(self):
+        """清空信息"""
+        self.ui.textBrowser_simple_result.setText('检查中...')
+        self.ui.tableWidget_details_pages.clear()
+        self.ui.tableWidget_details_pages.setHorizontalHeaderLabels(["主编号", "次编号", "比对情况"])
+
+        self.FullMatch.emit()
 
     def _open_page_main_comic(self):
         """打开主漫画页面"""
@@ -113,7 +121,8 @@ class FullMatchComicsViewer(QDialog):
                     page_comp = cell_comp.text()
                 else:
                     page_comp = None
-                if page_main == page_comp:
+                # if page_main == page_comp:
+                if page_main and page_comp:
                     table.hideRow(row)
                 else:
                     table.showRow(row)

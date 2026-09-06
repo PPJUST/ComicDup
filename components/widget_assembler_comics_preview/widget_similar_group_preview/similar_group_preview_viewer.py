@@ -107,13 +107,20 @@ class SimilarGroupPreviewViewer(QWidget):
         self.ui.toolButton_reset.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_REFRESH))
         self.ui.pushButton_quit.setIcon(lzytools_Qt.convert_base64_image_to_pixmap(ICON_QUIT))
 
+    def _emit_signal_pre_pages(self):
+        pages = self.ui.spinBox_turn_pages.value()
+        self.PreviousPage2.emit(pages)
+
+    def _emit_signal_next_pages(self):
+        pages = self.ui.spinBox_turn_pages.value()
+        self.NextPage2.emit(pages)
+
     def _bind_signal(self):
         """绑定信号"""
-        pages = self.ui.spinBox_turn_pages.value()
         self.ui.toolButton_previous.clicked.connect(self.PreviousPage.emit)
-        self.ui.toolButton_previous2.clicked.connect(lambda: self.PreviousPage2.emit(pages))
+        self.ui.toolButton_previous2.clicked.connect(self._emit_signal_pre_pages)
         self.ui.toolButton_next.clicked.connect(self.NextPage.emit)
-        self.ui.toolButton_next2.clicked.connect(lambda: self.NextPage2.emit(pages))
+        self.ui.toolButton_next2.clicked.connect(self._emit_signal_next_pages)
         self.ui.toolButton_reset.clicked.connect(self.Reset.emit)
         self.ui.pushButton_quit.clicked.connect(self.Quit.emit)
         self.ui.checkBox_auto_calc_similar.stateChanged.connect(self.IsShowSimilar.emit)
