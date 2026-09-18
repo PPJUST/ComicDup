@@ -88,8 +88,7 @@ class FullMatchComicsViewer(QDialog):
     def _clear_info(self):
         """清空信息"""
         self.ui.textBrowser_simple_result.setText('检查中...')
-        self.ui.tableWidget_details_pages.clear()
-        self.ui.tableWidget_details_pages.setHorizontalHeaderLabels(["主编号", "次编号", "比对情况"])
+        self.ui.tableWidget_details_pages.setRowCount(0)
 
         self.FullMatch.emit()
 
